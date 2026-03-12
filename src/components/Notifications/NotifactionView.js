@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => ({
     width: '235px',
     minHeight: '50px',
     boxSizing: 'border-box',
+    
 
     // Fonts
     color: '#ffffff',

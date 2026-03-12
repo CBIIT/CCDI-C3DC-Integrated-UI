@@ -1,330 +1,281 @@
 export const tblHeader = {
-  MuiTableCell: {
-    root: {
-      padding: '5px 16px',
-    },
-    head: {
-      color: '#0F253A',
-      position: 'relative',
-      fontSize: '15px',
-      fontFamily: 'Open Sans',
-      fontWeight: '700',
-      letterSpacing: '0.06em',
-      textDecoration: 'none',
-    },
-  },
-  MuiTableSortLabel: {
-    root: {
-      color: '#0F253A',
-      position: 'relative',
-      fontSize: '17px',
-      fontFamily: 'Open Sans',
-      fontWeight: '700',
-      letterSpacing: '-0.019em',
-      lineHeight: '18px',
-      textDecoration: 'none',
-      '&:hover': {
-        color: '#13344A',
-      },
-      '&:hover $svg': {
-      },
-    },
-  },
-  MuiTableRow: {
-    head: {
-      height: '40px',
-      borderBottom: '1px solid #000000',
-    },
-  },
-};
-
-const tblBody = {
-  MuiTableCell: {
-    root: {
-      minHeight: '45px',
-      padding: '10px 5px 10px 20px',
-      color: '#004C73',
-      borderBottom: 'none',
-    },
-    paddingCheckbox: {
-      width: '48px',
-      padding: '0 0 0 16px',
-    },
-    body: {
-      fontFamily: 'Open Sans',
-      fontSize: '16px',
-      lineHeight: '19.2px',
-      color: '#24415C',
-      '& p': {
+    MuiTableSortLabel: {
+      root: {
+        color: '#0F253A !important',
+        position: 'relative',
+        fontSize: '15px',
         fontFamily: 'Open Sans',
-        fontSize: '16px',
-        lineHeight: '19.2px',
-      },
-      '&.pubmed_id': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
+        fontWeight: '700',
+        textDecoration: 'none',
+        '&:hover': {
+          color: '#13344A',
         },
-      },
-      '&.grant_id': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.study_id': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.sex_at_birth': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.file_name': {
-        minWidth: '300px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.study_name': {
-        minWidth: '300px',
-      },
-      '&.md5sum': {
-        minWidth: '160px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.num_of_participants': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.num_of_samples': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.num_of_files': {
-        minWidth: '150px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.diagnosis': {
-        minWidth: '300px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.anatomic_site': {
-        minWidth: '300px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.file_type': {
-        minWidth: '200px',
-        '& p': {
-          lineBreak: 'anywhere',
-        },
-      },
-      '&.acl': {
-        textAlign: 'center',
       },
     },
-  },
-}
-
-export const extendedView = {
-  MuiIconButton: {
-    root: {
-      padding: '0 0 0 0',
+    MuiTableCell: {
+      root: {
+        padding: '0px 0px 0px 20px',
+        paddingRight: '5px',
+        color: '#13344A',
+        '&.del_all_row': {
+          minWidth: '150px',
+          cursor: 'pointer',
+        },
+      },
     },
-  },
-  tblTopPgn: {
+    MuiTooltip: {
+      tooltipPlacementBottom: {
+        '@media (min-width: 600px)': {
+          marginTop: '-10px',
+          marginLeft: '-20px',
+          background: 'none',
+        },
+      },
+      popper: {
+        '&#header-tooltip div': {
+          background: '#61614F',
+          marginTop: '0px',
+          marginLeft: '0px',
+        },
+      },
+    },
+    MuiIconButton: {
+      root: {
+        '&.del_all_row_btn': {
+          paddingLeft: '5px',
+        },
+      },
+    },
+    MuiTypography: {
+      root: {
+        color: '#A61401',
+        '&.remove_all_tooltip': {
+          width: '110px',
+          border: '2px solid #A61401',
+          height: '48px',
+          padding: '5px 10px',
+          fontSize: '12px',
+          background: '#fff',
+          textAlign: 'center',
+          fontWeight: '500',
+          borderRadius: '7px',
+        },
+        '&.del_all_row_text': {
+          float: 'left',
+          fontSize: '11pt',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          fontFamily: 'Lato Regular, Raleway, sans-serif',
+          lineHeight: '47px',
+        },
+      },
+    },
+    MuiTableRow: {
+        head: {
+            height: '40px',
+            borderTop: '3px solid #8A7F7C',
+            borderBottom: '1px solid #000000',
+        },
+    },
+  };
+  
+  export const tblPgn = {
     MuiTablePagination: {
       root: {
-        paddingRight: '50px',
         // borderTop: '1px solid #8A7F7C',
         marginLeft: 'auto',
       },
-      caption: {
-        textTransform: 'none',
+    caption: {
+        textTransform: 'uppercase',
         fontFamily: 'Open Sans',
-        fontSize: '14px',
+        fontSize: '12px',
       },
-      select: {
+    select: {
         fontFamily: 'Open Sans',
-        fontSize: '14px',
+        fontSize: '12px',
       },
-      toolbar: {
+    toolbar: {
         minHeight: '40px',
       },
     },
     MuiSelect: {
-      select: {
-        '&:focus': {
-          backgroundColor: '#FFFFFF'
-        }
-      },
-      icon: {
-        padding: '2px 0 0 3px',
-      },
-      iconOpen: {
-        padding: '2px 0 0 3px',
-      },
+      nativeInput: {
+        visibility: "hidden !important"
+      }
     },
-    MuiMenu: {
-      paper: {
-        boxShadow: 'none',
-        border: '1px solid #99A1B7',
-        background: '#F5F5F5',
-      },
-      list: {
-        paddingTop: '0',
-        paddingBottom: '0',
-      },
-    },
-    MuiMenuItem: {
+  };
+  
+  export const tblBody = {
+    MuiTableBody: {
       root: {
-        fontFamily: 'Open Sans',
-        fontSize: '14px',
-        padding: '2px 8px',
-        paddingTop: '2px',
-        paddingBottom: '2px',
-        minHeight: '24px',
+        margin: 'auto 3% auto 3%',
+        maxWidth: '100%',
       },
     },
-    MuiListItem: {
-      button: {
+    MuiTableRow :{
+      root:{
+        height: '40px',
+        fontSize: '8px',
+        color: '#004C73',
+        '&:nth-child(odd)': {
+          backgroundColor: '#F4F4F4',
+        },
+      },
+    },
+    MuiTableCell: {
+      body: {
+        color: '#0F253A',
+        fontSize: '14px',
+        maxWidth: '250px',
+        fontStyle: 'normal',
+        fontFamily: 'Open Sans',
+        fontWeight: '400',
+        paddingLeft: '20px',
+        overflowWrap: 'break-word',
+        letterSpacing: '0.025em',
+        '&:first-of-type': {
+          color: '#004C73',
+        },
+        '&.numberOfSubjects': {
+          paddingLeft: '55px',
+        },
+        '&.numberOfFiles': {
+          paddingLeft: '55px',
+        },
+      },
+      root: {
+        display: 'table-cell',
+        padding: '5px',
+        fontSize: '.875rem',
+        textAlign: 'left',
+        fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+        fontWeight: '400',
+        lineHeight: '1.43',
+        borderBottom: '0px',
+        letterSpacing: '0.01071em',
+        verticalAlign: 'inherit',
+        height: '40px',
+      },
+    },
+    MuiLink: {
+      root: {
+        color: '#3156A0',
+        textDecoration: 'underline .5px !important',
+        textDecorationThickness: '.5px',
         '&:hover': {
-          backgroundColor: '#F5F5F5',
-          color: 'rgb(96, 121, 123)',
-        }
+            textDecoration: 'underline 1.5px !important',
+        },
       },
     },
-  },
-};
-
-export const toolbar = {
-  MuiToolbar: {
-    root: {
-      borderTop: '1px solid #8A7F7C',
-      '& div' :{
+    MuiTypography: {
+      body1: {
+        fontSize: '16px',
         fontFamily: 'Open Sans',
-        fontSize: '14px',
-      }
-    },
-    regular: {
-      '@media (min-width: 600px)': {
-        minHeight: '35px',
+        fontWeight: '600',
       },
     },
-  },
-};
-
-export const tblPgn = {
-  MuiTablePagination: {
-    root: {
-      paddingRight: '48px',
-      marginLeft: 'auto',
-      // borderBottom: '1px solid #8A7F7C',
-      '&:last-child': {
-        paddingRight: '48px',
+  };
+  
+  export const tblContainer = {
+    MuiTableContainer: {
+      root: {
+        width: '100%',
+        overflowX: 'auto',
+        transform: 'rotateX(180deg)',
+        boxShadow: 'none',
+        borderRadius: '0',
       }
     },
-    toolbar: {
-      minHeight: '40px',
+    MuiTable: {
+      root: {
+        transform: 'rotateX(180deg)',
+        width: '100%',
+        display: 'table',
+        borderSpacing: '0',
+        borderCollapse: 'collapse',
+      },
     },
-    caption: {
-      textTransform: 'none',
-      fontFamily: 'Open Sans',
-      fontSize: '14px',
-    },
-    select: {
-      fontFamily: 'Open Sans',
-      fontSize: '14px',
-    },
-  },
-  MuiSelect: {
-    select: {
-      '&:focus': {
-        backgroundColor: '#FFFFFF'
-      }
-    },
-    icon: {
-      padding: '2px 0 0 3px',
-    },
-    iconOpen: {
-      padding: '2px 0 0 3px',
-    },
-  },
-  MuiMenu: {
-    paper: {
-      boxShadow: 'none',
-      border: '1px solid #99A1B7',
-      background: '#F5F5F5',
-    },
-    list: {
-      paddingTop: '0',
-      paddingBottom: '0',
-    }
-  },
-  MuiMenuItem: {
-    root: {
-      fontFamily: 'Open Sans',
-      fontSize: '14px',
-      padding: '2px 8px',
-      paddingTop: '2px',
-      paddingBottom: '2px',
-      minHeight: '24px',
-    }
-  },
-  MuiListItem: {
-    button: {
-      '&:hover': {
-        backgroundColor: '#F5F5F5',
-        color: 'rgb(96, 121, 123)',
-      }
-    },
-  },
-};
+  };
 
-export const tblContainer = {
-  MuiTableContainer: {
-    root: {
-      width: '100%',
-      overflowX: 'auto',
-      transform: 'rotateX(180deg)',
-      boxShadow: 'none',
-      borderRadius: '0',
-    }
-  },
-  MuiTable: {
-    root: {
-      transform: 'rotateX(180deg)',
-      width: '100%',
-      display: 'table',
-      borderSpacing: '0',
-      borderCollapse: 'collapse',
-      borderTop: '3px solid #8A7F7C',
-      borderBottom: '2px solid #8A7F7C',
+  export const extendedView = {
+    tblTopPgn: {
+        MuiButtonBase: {
+            root: {
+                '&:hover': {
+                    backgroundColor: '#F5F5F5',
+                },
+            },
+        },
+        MuiTablePagination: {
+            root: {
+                // borderTop: '1px solid #8A7F7C',
+                marginLeft: 'auto',
+            },
+            caption: {
+                textTransform: 'uppercase',
+                fontFamily: 'Open Sans',
+                fontSize: '12px',
+            },
+            select: {
+                fontFamily: 'Open Sans',
+                fontSize: '12px',
+            },
+            toolbar: {
+                minHeight: '40px',
+            },
+        },
+      MuiSelect: {
+        nativeInput: {
+          visibility: "hidden !important"
+        },
+        select: {
+          '&:focus': {
+            backgroundColor: '#FFFFFF'
+          }
+        },
+        icon: {
+          padding: '2px 0 0 3px',
+        },
+        iconOpen: {
+          padding: '2px 0 0 3px',
+        },
+      },
+        MuiMenu: {
+            paper: {
+                boxShadow: 'none',
+                border: '1px solid #99A1B7',
+                background: '#F5F5F5',
+            },
+            list: {
+                paddingTop: '0',
+                paddingBottom: '0',
+            },
+        },
+        MuiMenuItem: {
+            root: {
+                fontFamily: 'Open Sans',
+                fontSize: '14px',
+                padding: '2px 8px',
+                paddingTop: '2px',
+                paddingBottom: '2px',
+                minHeight: '24px',
+            },
+        },
+        MuiListItem: {
+            button: {
+                '&:hover': {
+                    backgroundColor: '#F5F5F5',
+                    color: 'rgb(96, 121, 123)',
+                }
+            },
+        },
     },
-  },
-};
-
-export const themeConfig = {
-  tblHeader,
-  tblBody,
-  tblContainer,
-  tblPgn,
-  extendedView,
-  toolbar,
-};
+  };
+  
+  export const themeConfig = {
+    tblHeader,
+    tblPgn,
+    tblBody,
+    tblContainer,
+    extendedView,
+  };

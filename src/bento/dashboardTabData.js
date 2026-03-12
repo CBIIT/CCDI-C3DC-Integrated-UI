@@ -1,1820 +1,1812 @@
-/* eslint-disable */
-import gql from 'graphql-tag';
-import { cellTypes, cellStyles } from '@bento-core/table';
-import { customParticipantsTabDownloadCSV, customFilesTabDownloadCSV, customSamplesTabDownloadCSV, customStudyTabDownloadCSV } from './tableDownloadCSV';
-import { dataFormatTypes } from '@bento-core/table';
-import questionIcon from '../assets/icons/Question_Icon.svg';
-import React from 'react';
+import gql from "graphql-tag";
+import { cellTypes } from "@bento-core/table";
+import questionIcon from "../assets/icons/Question_Icon.svg";
+import { FACET_ORDER, FACET_NAMES } from "./dashTemplate";
+import React from "react";
 
 // --------------- Tooltip configuration --------------
-const createNewCohortToolTip = 
-  <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
-    Create a new cohort using the selected Participant IDs.
-    <br/> 
-    <div style={{height: 10}}/>
-    <b>
-      Note:&nbsp;
-    </b> 
-    The optimal number of participants in a cohort is =&lt; 4000 participants
-  </p>;
-const addExistingCohortToolTip = 
-  <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
-    Add selected Participant IDs to an existing cohort.
-    <br/>
-    <div style={{height: 10}}/>
-    <b>
-      Note:&nbsp;
-    </b>
-    The optimal number of participants in a cohort is =&lt; 4000 participants
-  </p>;
-  
-export const tooltipContentAddAll = {
-  icon: questionIcon,
-  alt: 'tooltipIcon',
-  Participants: 'Click button to add all files associated with the filtered row(s).',
-  Studies: 'Click button to add all files associated with the filtered row(s).',
-  Samples: 'Click button to add all files associated with the filtered row(s).',
-  Files: 'Click button to add all files associated with the filtered row(s).',
-  arrow: true,
-  styles: {
-    border: '#03A383 1px solid',
-  }
-};
 
-export const tooltipContent = {
-  icon: questionIcon,
-  alt: 'tooltipIcon',
-  Participants: 'Click button to add files associated with the selected row(s).',
-  Studies: 'Click button to add files associated with the selected row(s).',
-  Samples: 'Click button to add files associated with the selected row(s).',
-  Files: 'Click button to add files associated with the selected row(s).',
-  arrow: true,
-  styles: {
-    border: '#03A383 1px solid',
-  }
-};
+const newCohortToolTip = (
+  <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
+    Create a new cohort with the selected Participant IDs.
+    <br />
+    <div style={{ height: 10 }} />
+    <b>Note:&nbsp;</b>
+    The optimal number of participants in a cohort is =&lt; 4000 participants
+  </p>
+);
+const existingCohortToolTip = (
+  <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
+    Add selected Participant IDs to existing cohort from dropdown list.
+    <br />
+    <div style={{ height: 10 }} />
+    <b>Note:&nbsp;</b>
+    The optimal number of participants in a cohort is =&lt; 4000 participants
+  </p>
+);
+
 export const tooltipContentAddToNewCohort = {
   icon: questionIcon,
-  alt: 'tooltipIcon',
-  Participants: createNewCohortToolTip,
-  Studies: createNewCohortToolTip,
-  Treatment: createNewCohortToolTip,
-  Survival: createNewCohortToolTip,
-  "Treatment Response": createNewCohortToolTip,
+  alt: "tooltipIcon",
+  maxWidth: "290px",
+  Participants: newCohortToolTip,
+  Diagnosis: newCohortToolTip,
+  Studies: newCohortToolTip,
+  Treatment: newCohortToolTip,
+  Survival: newCohortToolTip,
+  "Treatment Response": newCohortToolTip,
+  "Genetic Analysis": newCohortToolTip,
   arrow: true,
-  styles: {
-    border: '1px red solid'
-  }
-}
+};
 
 export const tooltipContentAddToExistingCohort = {
   icon: questionIcon,
-  alt: 'tooltipIcon',
-  Participants: addExistingCohortToolTip,
-  Studies: addExistingCohortToolTip,
-  Survival: addExistingCohortToolTip,
-  Treatment: addExistingCohortToolTip,
-  "Treatment Response": addExistingCohortToolTip,
+  alt: "tooltipIcon",
+  maxWidth: "290px",
+  Participants: existingCohortToolTip,
+  Diagnosis: existingCohortToolTip,
+  Studies: existingCohortToolTip,
+  Survival: existingCohortToolTip,
+  Treatment: existingCohortToolTip,
+  "Treatment Response": existingCohortToolTip,
+  "Genetic Analysis": existingCohortToolTip,
   arrow: true,
-  styles: {
-  }
-}
+};
 
 export const tooltipContentListAll = {
   icon: questionIcon,
-  alt: 'tooltipIcon',
-  Participants: 'Click to view the complete list of all cohorts',
-  Studies: 'Click to view the complete list of all cohorts',
-  Treatment: 'Click to view the complete list of all cohorts',
-  Survival: 'Click to view the complete list of all cohorts',
-  "Treatment Response": 'Click to view the complete list of all cohorts',
+  alt: "tooltipIcon",
+  Participants: "Click to view the complete list of all cohorts",
+  Diagnosis: "Click to view the complete list of all cohorts",
+  Studies: "Click to view the complete list of all cohorts",
+  Treatment: "Click to view the complete list of all cohorts",
+  Survival: "Click to view the complete list of all cohorts",
+  "Treatment Response": "Click to view the complete list of all cohorts",
+  "Genetic Analysis": "Click to view the complete list of all cohorts",
   arrow: true,
-  styles: {
-  }
-}
+};
 
 // --------------- Dahboard Table external link configuration --------------
 // Ideal size for externalLinkIcon is 16x16 px
 export const externalLinkIcon = {
-  src: 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/main/bento/images/icons/svgs/externalLinkIcon.svg',
-  alt: 'External link icon',
+  src: "https://raw.githubusercontent.com/CBIIT/datacommons-assets/main/bento/images/icons/svgs/externalLinkIcon.svg",
+  alt: "External link icon",
 };
 
+// --------------- Responsive Tab Breakpoint Configuration --------------
+// These breakpoints are calculated by multiplying the width of each tab
+// including the padding/margin (203px)
+// and counting the more button as a tab (203px)
+// We will have enough space for tabs + more button + empty tab space
+// e.g. 2 tabs: (203 * 2) + 203 + 203 = 812px
+export const tabResponsiveBreakpoints = {
+  breakpoints: [
+    { maxWidth: 812, tabLimit: 2 },
+    { maxWidth: 1015, tabLimit: 3 },
+    { maxWidth: 1281, tabLimit: 4 },
+    { maxWidth: 1421, tabLimit: 5 },
+  ],
+  defaultTabLimit: 6,
+};
 
-// --------------- Tabs Header Data configuration --------------
-export const tabs = [
-  {
-    id: 'participant_tab',
-    title: 'Participants',
-    dataField: 'dataParticipant',
-    count: 'numberOfParticipants',
-  },
-  {
-    id: 'study_tab',
-    title: 'Studies',
-    dataField: 'dataStudy',
-    count: 'numberOfStudies',
-  },
-  {
-    id: 'sample_tab',
-    title: 'Samples',
-    dataField: 'dataSample',
-    count: 'numberOfSamples',
-  },
-  {
-    id: 'file_tab',
-    title: 'Files',
-    dataField: 'dataFile',
-    count: 'numberOfFiles',
-  },
-];
-
-// --------------- Tabs Header Style configuration --------------
-export const tabIndex = [
-  {
-    title: 'Participants',
-    primaryColor: '#D6F2EA',
-    secondaryColor: '#FFDFB8',
-    selectedColor: '#10A075',
-  },
-  {
-    title: 'Samples',
-    primaryColor: '#CFEDF9',
-    secondaryColor: '#C9F1F1',
-    selectedColor: '#0DAFEC',
-  },
-  {
-    title: 'Files',
-    primaryColor: '#F7D7F7',
-    secondaryColor: '#86D6F0',
-    selectedColor: '#C92EC7',
-  },
-  {
-    title: 'Studies',
-    primaryColor: '#F7D7F7',
-    secondaryColor: '#86D6F0',
-    selectedColor: '#C92EC7',
-  },
-];
-
+//NOTE: Change 'getParticipants' to 'searchParticipants' in the backend.
 export const DASHBOARD_QUERY_NEW = gql`
-query search (
-    $import_data: [String],    
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
+  query search(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
     $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $diagnosis_basis: [String] ,
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
     $dbgap_accession: [String],
     $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
-){
-    searchParticipants (
-        import_data: $import_data,          
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        dbgap_accession: $dbgap_accession,       
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level,
-    ) {
-        numberOfDiagnosis
-        numberOfFiles
-        numberOfParticipants
-        numberOfSamples
-        numberOfStudies
-        participantsFileCount
-        diagnosisFileCount
-        samplesFileCount
-        studiesFileCount
-        filesFileCount
-        participantCountByDiagnosis {
-            group
-            subjects
-        }
-        participantCountByDiagnosisAge {
-            group
-            subjects
-        }
-        participantCountBySexAtBirth {
-            group
-            subjects
-        }
-        participantCountByRace {
-            group
-            subjects
-        }
-        participantCountByStudy {
-            group
-            subjects
-        }
-        participantCountByDataCategory{
-            group
-            subjects
-        }
-        filterParticipantCountByDataCategory{
-            group
-            subjects
-        }
-        filterParticipantCountByDiagnosisAnatomicSite{
-            group
-            subjects
-        }
-        filterParticipantCountByDiseasePhase{
-            group
-            subjects
-        }
-        filterParticipantCountByFileType{
-            group
-            subjects
-        }
-        filterParticipantCountBySexAtBirth{
-            group
-            subjects
-        }
-        filterParticipantCountByDiagnosis{
-            group
-            subjects
-        }
-        filterParticipantCountByDiagnosisClassificationSystem{
-            group
-            subjects
-        }
-        filterParticipantCountByDiagnosisVerificationStatus{
-            group
-            subjects
-        }
-        filterParticipantCountByDiagnosisBasis{
-          group
-          subjects
-        }
-        filterParticipantCountByDiagnosisCategory{
-          group
-          subjects
-        }
-        filterParticipantCountByLibrarySelection{
-            group
-            subjects
-        }
-        filterParticipantCountByTumorGradeSource{
-            group
-            subjects
-        }
-        filterParticipantCountByTumorStageSource{
-            group
-            subjects
-        }
-        filterParticipantCountByLibrarySourceMaterial{
-            group
-            subjects
-        }
-        filterParticipantCountByLibrarySourceMolecule{
-            group
-            subjects
-        }
-        filterParticipantCountByLibraryStrategy{
-            group
-            subjects
-        }
-        filterParticipantCountByFileMappingLevel{
-            group
-            subjects
-        }
-        filterParticipantCountByDBGAPAccession{
-            group
-            subjects
-        }
-        filterParticipantCountByRace{
-          group
-          subjects
-        }
-        filterParticipantCountBySampleAnatomicSite{
-          group
-          subjects
-        }
-        filterParticipantCountByStudyTitle{
-          group
-          subjects
-        }
-        filterParticipantCountByStudyStatus{
-          group
-          subjects
-        }
-        filterParticipantCountByTumorClassification{
-          group
-          subjects
-        }
-        filterParticipantCountByTumorStatus{
-          group
-          subjects
-        }
-        filterParticipantCountBySurvivalStatus{
-          group
-          subjects
-        } 
-        filterParticipantCountByFirstEvent{
-          group
-          subjects
-        }
-        filterParticipantCountByTreatmentType{
-          group
-          subjects
-        }
-        filterParticipantCountByTreatmentAgent{
-          group
-          subjects
-        }
-        filterParticipantCountByResponseCategory{
-          group
-          subjects
-        }
-        filterParticipantCountByAgeAtResponse{
-          lowerBound
-          upperBound
-          subjects
-        }
-        filterParticipantCountByDiagnosisAge{
-            lowerBound
-            upperBound
-            subjects
-        }
-        filterParticipantCountBySampleAge{
-          lowerBound
-          upperBound
-          subjects
-      }
-      filterParticipantCountByAgeAtLastKnownSurvivalStatus{
-          lowerBound
-          upperBound
-          subjects
-      }
-      filterParticipantCountByAgeAtTreatmentStart {
-          lowerBound
-          upperBound
-          subjects
-      }
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String]
+  ) {
+  getParticipants(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system
+  ) {
+    numberOfParticipants
+    numberOfDiagnoses
+    numberOfDiseases
+    numberOfGeneticAnalyses
+    numberOfStudies
+    numberOfSurvivals
+    numberOfTreatments
+    numberOfTreatmentResponses
+
+    pageSize
+
+    # Widget counts
+    participantCountByRace {
+      group
+      subjects
+      __typename
     }
+    participantCountBySexAtBirth {
+      group
+      subjects
+      __typename
+    }
+    participantCountByAgeAtDiagnosis {
+      group
+      subjects
+      __typename
+    }
+    participantCountByAnatomicSite {
+      group
+      subjects
+      __typename
+    }
+    participantCountByDiagnosis {
+      group
+      subjects
+      __typename
+    }
+    participantCountByTreatmentType {
+      group
+      subjects
+      __typename
+    }
+
+    # Demographic filter counts
+    filterParticipantCountByRace {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountBySexAtBirth {
+      group
+      subjects
+      __typename
+    }
+
+    # Diagnosis filter counts
+    filterParticipantCountByAgeAtDiagnosis {
+      lowerBound
+      upperBound
+      subjects
+      __typename
+    }
+    filterParticipantCountByAnatomicSite {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByDiagnosis {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByDiagnosisClassificationSystem {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByDiagnosisBasis {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByDiseasePhase {
+      group
+      subjects
+      __typename
+    }
+
+    # Genetic Analysis filter counts
+    filterParticipantCountByAlteration {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByAlterationType {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByFusionPartnerGene {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByGeneSymbol {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByReportedSignificance {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByReportedSignificanceSystem {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByStatus {
+      group
+      subjects
+      __typename
+    }
+
+    # Study filter counts
+    filterParticipantCountByDbgapAccession {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByStudyName {
+      group
+      subjects
+      __typename
+    }
+
+    # Survival filter counts
+    filterParticipantCountByAgeAtLastKnownSurvivalStatus {
+      lowerBound
+      upperBound
+      subjects
+      __typename
+    }
+    filterParticipantCountByCauseOfDeath {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByFirstEvent {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByLastKnownSurvivalStatus {
+      group
+      subjects
+      __typename
+    }
+
+    # Treatment filter counts
+    filterParticipantCountByAgeAtTreatmentStart {
+      lowerBound
+      upperBound
+      subjects
+      __typename
+    }
+    filterParticipantCountByAgeAtTreatmentEnd {
+      lowerBound
+      upperBound
+      subjects
+      __typename
+    }
+    filterParticipantCountByTreatmentType {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByTreatmentAgent {
+      group
+      subjects
+      __typename
+    }
+
+    # Treatment Response filter counts
+    filterParticipantCountByResponse {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByAgeAtResponse {
+      lowerBound
+      upperBound
+      subjects
+      __typename
+    }
+    filterParticipantCountByResponseCategory {
+      group
+      subjects
+      __typename
+    }
+    filterParticipantCountByResponseSystem {
+      group
+      subjects
+      __typename
+    }
+
+    __typename
+  }
 }
 `;
 
-export const GET_FILES_OVERVIEW_QUERY = gql`
-query fileOverview(
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
+export const DASHBOARD_QUERY_STATS = gql`
+  query search(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
     $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $diagnosis_basis: [String] ,
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
     $dbgap_accession: [String],
     $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
-    $first: Int, 
-    $offset: Int, 
-    $order_by: String,
-    $sort_direction: String ){
-    fileOverview(
-        import_data: $import_data,
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        dbgap_accession: $dbgap_accession,       
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level
-        first: $first, 
-        offset: $offset, 
-        order_by: $order_by,
-        sort_direction: $sort_direction
-    ){
-        id
-        file_name
-        data_category
-        file_description
-        file_type
-        file_size
-        study_id
-        participant_id
-        sample_id
-        file_id
-        guid
-        md5sum
-        library_selection
-        library_source_material
-        library_source_molecule
-        library_strategy
-        file_access
-        file_mapping_level
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String]
+  ) {
+  getParticipants(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system
+  ) {
+      numberOfParticipants
+      numberOfDiagnoses
+      numberOfDiseases
+      numberOfGeneticAnalyses
+      numberOfStudies
+      numberOfSurvivals
+      numberOfTreatments
+      numberOfTreatmentResponses
+      pageSize
+
+      __typename
     }
-}
+  }
 `;
 
 export const GET_COHORT_METADATA_QUERY = gql`
 query cohortMetadata(
-    $id: [String],
+  # Demographics
+  $participant_pk: [String],
+
+  # Table config
+  $first: Int,
+  $offset: Int,
+  $order_by: String,
+  $sort_direction: String
+) {
+cohortMetadata(
+  # Demographics
+  participant_pk: $participant_pk,
+
+  # Table config
+  first: $first,
+  offset: $offset,
+  order_by: $order_by,
+  sort_direction: $sort_direction
+) {
+  dbgap_accession
+
+  consent_groups {
+    consent_group_name
+    consent_group_number
+
+    participants {
+      id
+      participant_id
+      race
+      sex_at_birth
+
+      diagnoses {
+        id
+        diagnosis_id
+        age_at_diagnosis
+        anatomic_site
+        diagnosis
+        diagnosis_basis
+        diagnosis_classification_system
+        diagnosis_comment
+        disease_phase
+        toronto_childhood_cancer_staging
+        tumor_classification
+        tumor_grade
+        tumor_stage_clinical_m
+        tumor_stage_clinical_n
+        tumor_stage_clinical_t
+
+        __typename
+      }
+      genetic_analyses {
+        id
+        genetic_analysis_id
+        alteration
+        alteration_effect
+        alteration_type
+        chromosome
+        cytoband
+        exon
+        fusion_partner_exon
+        fusion_partner_gene
+        gene_symbol
+        genomic_source_category
+        hgvs_coding
+        hgvs_genome
+        hgvs_protein
+        reference_genome
+        reported_significance
+        reported_significance_system
+        status
+        test
+      }
+      survivals {
+        id
+        survival_id
+        age_at_event_free_survival_status
+        age_at_last_known_survival_status
+        cause_of_death
+        event_free_survival_status
+        first_event
+        last_known_survival_status
+
+        __typename
+      }
+      synonyms {
+        associated_id
+        data_location
+        domain_category
+        domain_description
+        repository_of_synonym_id
+
+        __typename
+      }
+      treatments {
+        id
+        treatment_id
+        age_at_treatment_end
+        age_at_treatment_start
+        treatment_agent
+        treatment_type
+
+        __typename
+      }
+      treatment_responses {
+        id
+        treatment_response_id
+        age_at_response
+        response
+        response_category
+        response_system
+
+        __typename
+      }
+
+      __typename
+    }
+  }
+
+  __typename
+}}
+`;
+
+export const DISPLAY_COHORT_QUERY = gql`
+  query participantOverview(
+    # Demographics
+    $participant_pk: [String]
+    # Table config
+    $first: Int
+    $offset: Int
+    $order_by: String
+    $sort_direction: String
+  ) {
+    participantOverview(
+      # Demographics
+      participant_pk: $participant_pk
+
+      # Table config
+      first: $first
+      offset: $offset
+      order_by: $order_by
+      sort_direction: $sort_direction
+    ) {
+      # Participants
+      participant_id
+      id
+      race
+      sex_at_birth
+
+      # Studies
+      dbgap_accession
+
+      __typename
+    }
+  }
+`;
+export const GET_COHORT_MANIFEST_QUERY = gql`
+  query cohortManifest(
+    # Demographics
+    $participant_pk: [String]
+    # Table config
+    $first: Int
+    $offset: Int
+    $order_by: String
+    $sort_direction: String
+) {
+cohortManifest(
+    # Demographics
+    participant_pk: $participant_pk,
+
+      # Table config
+      first: $first
+      offset: $offset
+      order_by: $order_by
+      sort_direction: $sort_direction
+    ) {
+      # Diagnosis
+      id
+      diagnosis
+
+      # Participants
+      participant {
+        id
+        participant_id
+        race
+        sex_at_birth
+      }
+
+      # Study
+      dbgap_accession
+
+      __typename
+    }
+  }
+`;
+
+export const GET_STUDY_OVERVIEW_QUERY = gql`
+  query studyOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
     $first: Int,
     $offset: Int,
     $order_by: String,
     $sort_direction: String
-) {
+  ) {
+  studyOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
 
-cohortMetadata(
-    id: $id,
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
     first: $first,
     offset: $offset,
     order_by: $order_by,
     sort_direction: $sort_direction
-) {
+  ) {
+    # Studies
+    id
+    external_url
     dbgap_accession
+    study_description
+    study_id
+    study_name
 
-    participants {
-        participant_id
-        dbgap_accession  
-        race
-        sex_at_birth
-        diagnoses {
-            diagnosis_id
-            diagnosis
-            diagnosis_classification_system
-            diagnosis_category,
-            diagnosis_basis
-            disease_phase
-            anatomic_site
-            age_at_diagnosis
-        }
-        survivals {
-            survival_id
-            age_at_event_free_survival_status
-            age_at_last_known_survival_status
-            cause_of_death
-            event_free_survival_status
-            first_event
-            last_known_survival_status
-        }
-        treatments {
-            treatment_id
-            age_at_treatment_end
-            age_at_treatment_start
-            treatment_agent
-            treatment_type
-        }
-        treatment_responses {    
-            treatment_response_id
-            age_at_response
-            response
-            response_category
-            response_system
-        }
-        samples {
-            sample_id
-            anatomic_site
-            participant_age_at_collection
-            sample_tumor_status
-            tumor_classification
-        }
-        files {
-            file_name
-            data_category
-            file_description
-            file_type
-            file_size
-            study_id
-            participant_id
-            sample_id
-            file_id
-            guid
-            md5sum
-            library_selection
-            library_source_material
-            library_source_molecule
-            library_strategy
-            file_access
-            file_mapping_level
-        }
-    }
-}}
-`;
-
-export const GET_COHORT_MANIFEST_QUERY = gql`
-  query cohortManifest(
-    $id: [String],
-    $first: Int,
-    $offset: Int,
-    $order_by: String,
-    $sort_direction: String) {
-      cohortManifest(
-        id: $id,
-        first: $first,
-        offset: $offset,
-        order_by: $order_by,
-        sort_direction: $sort_direction
-      ) {
-        participant_id
-        dbgap_accession  
-        race
-        sex_at_birth
-        diagnosis
-      }
-    }
-`
-
-export const GET_SAMPLES_OVERVIEW_QUERY = gql`
-query sampleOverview(
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
-    $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $diagnosis_basis: [String] ,
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
-    $dbgap_accession: [String],
-    $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
-    $first: Int, 
-    $offset: Int, 
-    $order_by: String,
-    $sort_direction: String ){
-    sampleOverview(
-        import_data: $import_data,
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        dbgap_accession: $dbgap_accession,       
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level
-        first: $first, 
-        offset: $offset, 
-        order_by: $order_by,
-        sort_direction: $sort_direction
-    ){
-        id
-        sample_id
-        participant_id
-        study_id
-        anatomic_site
-        participant_age_at_collection
-        sample_tumor_status
-        tumor_classification
-        diagnosis
-        diagnosis_category
-    }
+    __typename
+  }
 }
 `;
 
 export const GET_PARTICIPANTS_OVERVIEW_QUERY = gql`
-query participantOverview(
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
-    $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $diagnosis_basis: [String] ,
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
-    $dbgap_accession: [String],
-    $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
-    $first: Int, 
-    $offset: Int, 
-    $order_by: String,
-    $sort_direction: String ){
-    participantOverview(
-        import_data: $import_data,
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        dbgap_accession: $dbgap_accession,       
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level
-        first: $first, 
-        offset: $offset, 
-        order_by: $order_by,
-        sort_direction: $sort_direction
-    ) {
-        id
-        participant_id
-        dbgap_accession
-        study_id
-        race
-        sex_at_birth
-        diagnosis
-        diagnosis_category
-        anatomic_site
-        age_at_diagnosis
-        treatment_agent
-        treatment_type
-        age_at_treatment_start
-        first_event
-        last_known_survival_status
-        age_at_last_known_survival_status
-        cpi_data {
-          associated_id
-          repository_of_synonym_id
-          domain_description
-          domain_category
-          data_location
-          data_type
-          p_id
-        }
-    }
-}
-`;
-
-export const GET_STUDY_OVERVIEW_QUERY = gql`
-query studyOverview(
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
-    $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_basis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
-    $file_mapping_level: [String],
-    $dbgap_accession: [String],
-    $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $first: Int, 
-    $offset: Int, 
-    $order_by: String,
-    $sort_direction: String ){
-    studyOverview(
-        import_data: $import_data,
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        file_mapping_level: $file_mapping_level,
-        dbgap_accession: $dbgap_accession,       
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        first: $first, 
-        offset: $offset, 
-        order_by: $order_by,
-        sort_direction: $sort_direction
-    ) {
-        id
-        study_id
-        pubmed_id
-        grant_id
-        dbgap_accession
-        study_name
-        study_status
-        personnel_name
-        diagnosis
-        anatomic_site
-        num_of_participants
-        num_of_samples
-        num_of_files
-        file_type
-    }
-}
-`;
-
-export const GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $participant_ids: [String],
-){
-  fileIDsFromList (          
-      participant_ids: $participant_ids,
-  ) 
-}
-  `;
-
-export const GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $sample_ids: [String],
-){
-  fileIDsFromList (          
-    sample_ids: $sample_ids,
-  ) 
-}
-  `;
-
-export const GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $file_ids: [String] 
-){
-  fileIDsFromList (          
-      file_ids: $file_ids
-  ) 
-}
-  `;
-
-export const GET_ALL_FILEIDS_DIAGNOSISTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $diagnosis_ids: [String] 
-){
-  fileIDsFromList (          
-      diagnosis_ids: $diagnosis_ids
-  ) 
-}
-  `;
-export const GET_ALL_FILEIDS_STUDYISTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $study_ids: [String] 
-){
-  fileIDsFromList (          
-      study_ids: $study_ids
-  ) 
-}
-  `;
-
-export const GET_ALL_FILEIDS_FROM_PARTICIPANTSTAB_FOR_ADD_ALL_CART = gql`
-query participantsAddAllToCart(
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String] ,
-    $race: [String] ,
-    $age_at_diagnosis: [Int] ,
-    $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String] ,
-    $disease_phase: [String] ,
-    $diagnosis: [String] ,
-    $diagnosis_classification_system: [String] ,
-    $diagnosis_category: [String],
-    $diagnosis_basis: [String] ,
-    $last_known_survival_status: [String] ,
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String] ,
-    $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String] ,
-    $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String] ,
-    $tumor_classification: [String] ,
-    $data_category: [String],
-    $file_type: [String],
-    $dbgap_accession: [String],
-    $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
-    $first: Int,
-    $offset: Int= 0, 
-    $order_by: String = "file_id",
-    $sort_direction: String = "asc" 
-  ){
-    participantOverview(
-      import_data: $import_data,
-      participant_ids: $participant_ids,
-      sex_at_birth: $sex_at_birth,
-      race: $race,
-      age_at_diagnosis: $age_at_diagnosis,
-      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-      diagnosis_anatomic_site: $diagnosis_anatomic_site,
-      disease_phase: $disease_phase,
-      diagnosis: $diagnosis,
-      diagnosis_classification_system: $diagnosis_classification_system,
-      diagnosis_category: $diagnosis_category,
-      diagnosis_basis: $diagnosis_basis,
-      last_known_survival_status: $last_known_survival_status,
-      age_at_last_known_survival_status: $age_at_last_known_survival_status,
-      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-      first_event: $first_event,
-      treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
-      age_at_treatment_start: $age_at_treatment_start,
-      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-      response_category: $response_category,
-      age_at_response: $age_at_response,
-      age_at_response_unknownAges: $age_at_response_unknownAges,
-      sample_anatomic_site: $sample_anatomic_site,
-      participant_age_at_collection: $participant_age_at_collection,
-      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-      sample_tumor_status: $sample_tumor_status,
-      tumor_classification: $tumor_classification,
-      data_category: $data_category,
-      file_type: $file_type,
-      dbgap_accession: $dbgap_accession,       
-      study_name: $study_name,
-      study_status: $study_status,
-      library_selection: $library_selection,
-      library_source_material: $library_source_material,
-      library_source_molecule: $library_source_molecule,
-      library_strategy: $library_strategy,
-      file_mapping_level: $file_mapping_level,
-      first: $first,
-      offset: $offset,
-      order_by: $order_by,
-      sort_direction: $sort_direction
-      ) {
-      files
-  }
-}
-    `;
-
-export const GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART = gql`
-    query samplesAddAllToCart(
-      $import_data: [String],
-      $participant_ids: [String],
-      $sex_at_birth: [String] ,
-      $race: [String] ,
-      $age_at_diagnosis: [Int] ,
-      $diagnosis_anatomic_site: [String] ,
-      $disease_phase: [String] ,
-      $diagnosis: [String] ,
-      $diagnosis_basis: [String] ,
-      $diagnosis_classification_system: [String] ,
-      $diagnosis_category: [String],
-      $last_known_survival_status: [String] ,
-      $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-      $first_event: [String],
-      $treatment_type: [String],
-      $treatment_agent: [String],
-      $age_at_treatment_start: [Int] ,
-    $age_at_treatment_start_unknownAges: [String],
-      $response_category: [String] ,
-      $age_at_response: [Int] ,
-    $age_at_response_unknownAges: [String],
-      $sample_anatomic_site: [String] ,
-      $participant_age_at_collection: [Int] ,
-    $participant_age_at_collection_unknownAges: [String],
-      $sample_tumor_status: [String] ,
-      $tumor_classification: [String] ,
-      $data_category: [String],
-      $file_type: [String],
-      $file_mapping_level: [String],
-      $dbgap_accession: [String],
-      $study_name: [String],
-      $study_status: [String],
-      $library_selection: [String],
-      $library_source_material: [String],
-      $library_source_molecule: [String],
-      $library_strategy: [String],
-      $first: Int,
-      $offset: Int= 0, 
-      $order_by: String = "file_id",
-      $sort_direction: String = "asc" ){
-      sampleOverview(
-          import_data: $import_data,
-          participant_ids: $participant_ids,
-          sex_at_birth: $sex_at_birth,
-          race: $race,
-          age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-          diagnosis_anatomic_site: $diagnosis_anatomic_site,
-          disease_phase: $disease_phase,
-          diagnosis: $diagnosis ,
-          diagnosis_basis: $diagnosis_basis ,
-          diagnosis_classification_system: $diagnosis_classification_system ,
-          diagnosis_category: $diagnosis_category,
-          last_known_survival_status: $last_known_survival_status,
-          age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-          first_event: $first_event,
-          treatment_type: $treatment_type,
-          treatment_agent: $treatment_agent,
-          age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-          response_category: $response_category,
-          age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-          sample_anatomic_site: $sample_anatomic_site,
-          participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-          sample_tumor_status: $sample_tumor_status,
-          tumor_classification: $tumor_classification,
-          data_category: $data_category,
-          file_type: $file_type,
-          file_mapping_level: $file_mapping_level,
-          dbgap_accession: $dbgap_accession,       
-          study_name: $study_name,
-          study_status: $study_status,
-          library_selection: $library_selection,
-          library_source_material: $library_source_material,
-          library_source_molecule: $library_source_molecule,
-          library_strategy: $library_strategy,
-          first: $first,
-          offset: $offset,
-          order_by: $order_by,
-          sort_direction: $sort_direction
-          ) {
-          files
-      }
-    }
-        `;
-
-export const GET_ALL_FILEIDS_FROM_FILESTAB_FOR_ADD_ALL_CART = gql`
-query fileAddAllToCart(
-  $import_data: [String],
-  $participant_ids: [String],
-  $sex_at_birth: [String] ,
-  $race: [String] ,
-  $age_at_diagnosis: [Int] ,
-  $age_at_diagnosis_unknownAges: [String],
-  $diagnosis_anatomic_site: [String] ,
-  $disease_phase: [String] ,
-  $diagnosis: [String] ,
-  $diagnosis_classification_system: [String] ,
-  $diagnosis_category: [String],
-  $diagnosis_basis: [String] ,
-  $last_known_survival_status: [String] ,
-  $age_at_last_known_survival_status: [Int],
-  $age_at_last_known_survival_status_unknownAges: [String],
-  $first_event: [String],
-  $treatment_type: [String],
-  $treatment_agent: [String],
-  $age_at_treatment_start: [Int] ,
-  $age_at_treatment_start_unknownAges: [String],
-  $response_category: [String] ,
-  $age_at_response: [Int] ,
-  $age_at_response_unknownAges: [String],
-  $sample_anatomic_site: [String] ,
-  $participant_age_at_collection: [Int] ,
-  $participant_age_at_collection_unknownAges: [String],
-  $sample_tumor_status: [String] ,
-  $tumor_classification: [String] ,
-  $data_category: [String],
-  $file_type: [String],
-  $dbgap_accession: [String],
-  $study_name: [String],
-  $study_status: [String],
-  $library_selection: [String],
-  $library_source_material: [String],
-  $library_source_molecule: [String],
-  $library_strategy: [String],
-  $file_mapping_level: [String],
-  $first: Int,
-  $offset: Int= 0, 
-  $order_by: String = "file_id",
-  $sort_direction: String = "asc"
- ){
-  fileOverview(
-      import_data: $import_data,
-      participant_ids: $participant_ids,
-      sex_at_birth: $sex_at_birth,
-      race: $race,
-      age_at_diagnosis: $age_at_diagnosis,
-      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-      diagnosis_anatomic_site: $diagnosis_anatomic_site,
-      disease_phase: $disease_phase,
-      diagnosis: $diagnosis,
-      diagnosis_classification_system: $diagnosis_classification_system,
-      diagnosis_category: $diagnosis_category,
-      diagnosis_basis: $diagnosis_basis,
-      last_known_survival_status: $last_known_survival_status,
-      age_at_last_known_survival_status: $age_at_last_known_survival_status,
-      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-      first_event: $first_event,
-      treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
-      age_at_treatment_start: $age_at_treatment_start,
-      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-      response_category: $response_category,
-      age_at_response: $age_at_response,
-      age_at_response_unknownAges: $age_at_response_unknownAges,
-      sample_anatomic_site: $sample_anatomic_site,
-      participant_age_at_collection: $participant_age_at_collection,
-      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-      sample_tumor_status: $sample_tumor_status,
-      tumor_classification: $tumor_classification,
-      data_category: $data_category,
-      file_type: $file_type,
-      dbgap_accession: $dbgap_accession,       
-      study_name: $study_name,
-      study_status: $study_status,
-      library_selection: $library_selection,
-      library_source_material: $library_source_material,
-      library_source_molecule: $library_source_molecule,
-      library_strategy: $library_strategy,
-      file_mapping_level: $file_mapping_level,
-      first: $first,
-      offset: $offset,
-      order_by: $order_by,
-      sort_direction: $sort_direction
-  ){
-    files
-  }
-}
-            `;
-
-export const GET_ALL_FILEIDS_FROM_DIAGNOSISTAB_FOR_ADD_ALL_CART = gql`
-query diagnosisAddAllToCart(
-  $import_data: [String],
-  $participant_ids: [String],
-  $sex_at_birth: [String] ,
-  $race: [String] ,
-  $age_at_diagnosis: [Int] ,
-  $age_at_diagnosis_unknownAges: [String],
-  $diagnosis_anatomic_site: [String] ,
-  $disease_phase: [String] ,
-  $diagnosis: [String] ,
-  $diagnosis_classification_system: [String] ,
-  $diagnosis_category: [String],
-  $diagnosis_basis: [String] ,
-  $last_known_survival_status: [String] ,
-  $age_at_last_known_survival_status: [Int],
-  $age_at_last_known_survival_status_unknownAges: [String],
-  $first_event: [String],
-  $treatment_type: [String],
-  $treatment_agent: [String],
-  $age_at_treatment_start: [Int] ,
-  $age_at_treatment_start_unknownAges: [String],
-  $response_category: [String] ,
-  $age_at_response: [Int] ,
-  $age_at_response_unknownAges: [String],
-  $sample_anatomic_site: [String] ,
-  $participant_age_at_collection: [Int] ,
-  $participant_age_at_collection_unknownAges: [String],
-  $sample_tumor_status: [String] ,
-  $tumor_classification: [String] ,
-  $data_category: [String],
-  $file_type: [String],
-  $dbgap_accession: [String],
-  $study_name: [String],
-  $study_status: [String],
-  $library_selection: [String],
-  $library_source_material: [String],
-  $library_source_molecule: [String],
-  $library_strategy: [String],
-  $file_mapping_level: [String],
-  $first: Int,
-  $offset: Int= 0, 
-  $order_by: String = "file_id",
-  $sort_direction: String = "asc" ){
-  diagnosisOverview(
-      import_data: $import_data,
-      participant_ids: $participant_ids,
-      sex_at_birth: $sex_at_birth,
-      race: $race,
-      age_at_diagnosis: $age_at_diagnosis,
-      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-      diagnosis_anatomic_site: $diagnosis_anatomic_site,
-      disease_phase: $disease_phase,
-      diagnosis: $diagnosis,
-      diagnosis_classification_system: $diagnosis_classification_system,
-      diagnosis_category: $diagnosis_category,
-      diagnosis_basis: $diagnosis_basis,
-      last_known_survival_status: $last_known_survival_status,
-      age_at_last_known_survival_status: $age_at_last_known_survival_status,
-      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-      first_event: $first_event,
-      treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
-      age_at_treatment_start: $age_at_treatment_start,
-      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-      response_category: $response_category,
-      age_at_response: $age_at_response,
-      age_at_response_unknownAges: $age_at_response_unknownAges,
-      sample_anatomic_site: $sample_anatomic_site,
-      participant_age_at_collection: $participant_age_at_collection,
-      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-      sample_tumor_status: $sample_tumor_status,
-      tumor_classification: $tumor_classification,
-      data_category: $data_category,
-      file_type: $file_type,
-      dbgap_accession: $dbgap_accession,       
-      study_name: $study_name,
-      study_status: $study_status,
-      library_selection: $library_selection,
-      library_source_material: $library_source_material,
-      library_source_molecule: $library_source_molecule,
-      library_strategy: $library_strategy,
-      file_mapping_level: $file_mapping_level,
-      first: $first,
-      offset: $offset,
-      order_by: $order_by,
-      sort_direction: $sort_direction
-      ) {
-      files
-  }
-}
-    `;
-
-export const GET_ALL_FILEIDS_FROM_STUDYTAB_FOR_ADD_ALL_CART = gql`
-query studyAddAllToCart(
-  $import_data: [String],
-  $participant_ids: [String],
-  $sex_at_birth: [String] ,
-  $race: [String] ,
-  $age_at_diagnosis: [Int] ,
-  $age_at_diagnosis_unknownAges: [String],
-  $diagnosis_anatomic_site: [String] ,
-  $disease_phase: [String] ,
-  $diagnosis: [String] ,
-  $diagnosis_classification_system: [String] ,
-  $diagnosis_category: [String],
-  $diagnosis_basis: [String] ,
-  $last_known_survival_status: [String] ,
-  $age_at_last_known_survival_status: [Int],
-  $age_at_last_known_survival_status_unknownAges: [String],
-  $first_event: [String],
-  $treatment_type: [String],
-  $treatment_agent: [String],
-  $age_at_treatment_start: [Int] ,
-  $age_at_treatment_start_unknownAges: [String],
-  $response_category: [String] ,
-  $age_at_response: [Int] ,
-  $age_at_response_unknownAges: [String],
-  $sample_anatomic_site: [String] ,
-  $participant_age_at_collection: [Int] ,
-  $participant_age_at_collection_unknownAges: [String],
-  $sample_tumor_status: [String] ,
-  $tumor_classification: [String] ,
-  $data_category: [String],
-  $file_type: [String],
-  $dbgap_accession: [String],
-  $study_name: [String],
-  $study_status: [String],
-  $library_selection: [String],
-  $library_source_material: [String],
-  $library_source_molecule: [String],
-  $library_strategy: [String],
-  $file_mapping_level: [String],
-  $first: Int,
-  $offset: Int= 0, 
-  $order_by: String = "file_id",
-  $sort_direction: String = "asc" ){
-  studyOverview(
-      import_data: $import_data,
-      participant_ids: $participant_ids,
-      sex_at_birth: $sex_at_birth,
-      race: $race,
-      age_at_diagnosis: $age_at_diagnosis,
-      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-      diagnosis_anatomic_site: $diagnosis_anatomic_site,
-      disease_phase: $disease_phase,
-      diagnosis: $diagnosis,
-      diagnosis_classification_system: $diagnosis_classification_system,
-      diagnosis_category: $diagnosis_category,
-      diagnosis_basis: $diagnosis_basis,
-      last_known_survival_status: $last_known_survival_status,
-      age_at_last_known_survival_status: $age_at_last_known_survival_status,
-      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-      first_event: $first_event,
-      treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
-      age_at_treatment_start: $age_at_treatment_start,
-      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-      response_category: $response_category,
-      age_at_response: $age_at_response,
-      age_at_response_unknownAges: $age_at_response_unknownAges,
-      sample_anatomic_site: $sample_anatomic_site,
-      participant_age_at_collection: $participant_age_at_collection,
-      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-      sample_tumor_status: $sample_tumor_status,
-      tumor_classification: $tumor_classification,
-      data_category: $data_category,
-      file_type: $file_type,
-      dbgap_accession: $dbgap_accession,       
-      study_name: $study_name,
-      study_status: $study_status,
-      library_selection: $library_selection,
-      library_source_material: $library_source_material,
-      library_source_molecule: $library_source_molecule,
-      library_strategy: $library_strategy,
-      file_mapping_level: $file_mapping_level,
-      first: $first,
-      offset: $offset,
-      order_by: $order_by,
-      sort_direction: $sort_direction
-      ) {
-      files
-  }
-}
-    `;
-
-// --------------- GraphQL query - Retrieve files tab details --------------
-export const GET_FILES_NAME_QUERY = gql`
-query fileOverview($file_ids: [String], $offset: Int = 0, $first: Int = 100000, $order_by:String ="file_name"){
-  fileOverview(file_ids: $file_ids, offset: $offset,first: $first, order_by: $order_by) {
-    file_name
-  }
-}
-  `;
-
-export const GET_FILE_IDS_FROM_FILE_NAME = gql`
-  query (
-      $file_name: [String],
-      $offset: Int,
-      $first: Int,
-      $order_by: String
-  )
-  {
-      fileIdsFromFileNameDesc(
-          file_name:$file_name, 
-          offset:$offset,
-          first:$first,
-          order_by:$order_by
-      )
-      {
-          file_id
-      }
-  }`;
-
-// --------------- GraphQL query - Search files by filename --------------
-export const GET_FILENAMES_QUERY = gql`
-query getFilenames(
-    $filename: String,
-    $import_data: [String],
-    $participant_ids: [String],
-    $sex_at_birth: [String],
+  query participantOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
     $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
     $age_at_diagnosis: [Int],
     $age_at_diagnosis_unknownAges: [String],
-    $diagnosis_anatomic_site: [String],
-    $disease_phase: [String],
+    $anatomic_site: [String],
     $diagnosis: [String],
     $diagnosis_classification_system: [String],
-    $diagnosis_category: [String],
     $diagnosis_basis: [String],
-    $last_known_survival_status: [String],
-    $age_at_last_known_survival_status: [Int],
-    $age_at_last_known_survival_status_unknownAges: [String],
-    $first_event: [String],
-    $treatment_type: [String],
-    $treatment_agent: [String],
-    $age_at_treatment_start: [Int],
-    $age_at_treatment_start_unknownAges: [String],
-    $response_category: [String],
-    $age_at_response: [Int],
-    $age_at_response_unknownAges: [String],
-    $sample_anatomic_site: [String],
-    $participant_age_at_collection: [Int],
-    $participant_age_at_collection_unknownAges: [String],
-    $sample_tumor_status: [String],
-    $tumor_classification: [String],
-    $data_category: [String],
-    $file_type: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
     $dbgap_accession: [String],
     $study_name: [String],
-    $study_status: [String],
-    $library_selection: [String],
-    $library_source_material: [String],
-    $library_source_molecule: [String],
-    $library_strategy: [String],
-    $file_mapping_level: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
     $first: Int,
     $offset: Int,
     $order_by: String,
     $sort_direction: String
-){
-    getFilenames(
-        filename: $filename,
-        import_data: $import_data,
-        participant_ids: $participant_ids,
-        sex_at_birth: $sex_at_birth,
-        race: $race,
-        age_at_diagnosis: $age_at_diagnosis,
-        age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
-        diagnosis_anatomic_site: $diagnosis_anatomic_site,
-        disease_phase: $disease_phase,
-        diagnosis: $diagnosis,
-        diagnosis_classification_system: $diagnosis_classification_system,
-        diagnosis_category: $diagnosis_category,
-        diagnosis_basis: $diagnosis_basis,
-        last_known_survival_status: $last_known_survival_status,
-        age_at_last_known_survival_status: $age_at_last_known_survival_status,
-        age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
-        first_event: $first_event,
-        treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
-        age_at_treatment_start: $age_at_treatment_start,
-        age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
-        response_category: $response_category,
-        age_at_response: $age_at_response,
-        age_at_response_unknownAges: $age_at_response_unknownAges,
-        sample_anatomic_site: $sample_anatomic_site,
-        participant_age_at_collection: $participant_age_at_collection,
-        participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges,
-        sample_tumor_status: $sample_tumor_status,
-        tumor_classification: $tumor_classification,
-        data_category: $data_category,
-        file_type: $file_type,
-        dbgap_accession: $dbgap_accession,
-        study_name: $study_name,
-        study_status: $study_status,
-        library_selection: $library_selection,
-        library_source_material: $library_source_material,
-        library_source_molecule: $library_source_molecule,
-        library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level,
-        first: $first,
-        offset: $offset,
-        order_by: $order_by,
-        sort_direction: $sort_direction
-    ){
-        totalCount
-        files {
-            id
-            file_name
-            data_category
-            file_description
-            file_type
-            file_size
-            study_id
-            participant_id
-            sample_id
-            file_id
-            guid
-            md5sum
-            library_selection
-            library_source_material
-            library_source_molecule
-            library_strategy
-            file_access
-            file_mapping_level
-        }
+  ) {
+  participantOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Participiants
+    id
+    participant_id
+    race
+    sex_at_birth
+
+    # Studies
+    dbgap_accession
+    study_id
+
+    # Synonyms
+    cpi_data {
+      associated_id
+      repository_of_synonym_id
+      domain_description
+      domain_category
+      data_location
+      data_type
+
+      __typename
     }
+    
+    __typename
+  }
 }
 `;
 
+export const GET_DIAGNOSIS_OVERVIEW_QUERY = gql`
+  query diagnosisOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_end: [Int],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+  diagnosisOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_end: $age_at_treatment_end,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Demographics
+    participant {
+      id
+      participant_id
+      race
+      sex_at_birth
+    }
+
+    # Diagnosis
+    id
+    age_at_diagnosis
+    anatomic_site
+    diagnosis_basis
+    diagnosis
+    diagnosis_classification_system
+    diagnosis_comment
+    diagnosis_id
+    disease_phase
+    toronto_childhood_cancer_staging
+    tumor_classification
+    tumor_grade
+    tumor_stage_clinical_m
+    tumor_stage_clinical_n
+    tumor_stage_clinical_t
+
+    # Study
+    dbgap_accession
+    study_id
+
+    __typename
+  }
+}
+`;
+
+export const GET_TREATMENT_OVERVIEW_QUERY = gql`
+  query treatmentOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_end: [Int],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+  treatmentOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_end: $age_at_treatment_end,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Participant
+    participant {
+      id
+      participant_id
+      race
+      sex_at_birth
+    }
+
+    # Study
+    dbgap_accession
+    study_id
+
+    # Treatment
+    id
+    treatment_id
+    age_at_treatment_start
+    age_at_treatment_end
+    treatment_type
+    treatment_agent
+
+    __typename
+  }
+}
+`;
+
+export const GET_TREATMENT_RESPONSE_OVERVIEW_QUERY = gql`
+  query treatmentResponseOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+  treatmentResponseOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Participant
+    participant {
+      id
+      participant_id
+      race
+      sex_at_birth
+    }
+
+    # Study
+    dbgap_accession
+    study_id
+
+    # Treatment Response
+    id
+    treatment_response_id
+    response
+    age_at_response
+    response_category
+    response_system
+
+    __typename
+  }
+}
+`;
+
+export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
+  query survivalOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+  survivalOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Participant
+    participant {
+      id
+      participant_id
+      race
+      sex_at_birth
+    }
+
+    # Study
+    dbgap_accession
+    study_id
+
+    # Survival
+    id
+    age_at_event_free_survival_status
+    age_at_last_known_survival_status
+    cause_of_death
+    event_free_survival_status
+    first_event
+    last_known_survival_status
+    survival_id
+
+    __typename
+  }
+}
+`;
+
+export const GET_GENETIC_ANALYSIS_OVERVIEW_QUERY = gql`
+  query geneticAnalysisOverview(
+    # Demographics
+    $participant_pk: [String],
+    $participant_id: [String],
+    $race: [String],
+    $sex_at_birth: [String],
+
+    # Diagnoses
+    $age_at_diagnosis: [Int],
+    $age_at_diagnosis_unknownAges: [String],
+    $anatomic_site: [String],
+    $diagnosis: [String],
+    $diagnosis_classification_system: [String],
+    $diagnosis_basis: [String],
+    $disease_phase: [String],
+
+    # Genetic Analyses
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
+
+    # Studies
+    $dbgap_accession: [String],
+    $study_name: [String],
+
+    # Survivals
+    $age_at_last_known_survival_status: [Int],
+    $age_at_last_known_survival_status_unknownAges: [String],
+    $cause_of_death: [String],
+    $first_event: [String],
+    $last_known_survival_status: [String],
+
+    # Treatments
+    $age_at_treatment_start: [Int],
+    $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $treatment_type: [String],
+    $treatment_agent: [String],
+
+    # Treatment Responses
+    $response: [String],
+    $age_at_response: [Int],
+    $age_at_response_unknownAges: [String],
+    $response_category: [String],
+    $response_system: [String],
+
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+  geneticAnalysisOverview(
+    # Demographics
+    participant_pk: $participant_pk,
+    participant_id: $participant_id,
+    race: $race,
+    sex_at_birth: $sex_at_birth,
+
+    # Diagnoses
+    age_at_diagnosis: $age_at_diagnosis,
+    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges,
+    anatomic_site: $anatomic_site,
+    diagnosis: $diagnosis,
+    diagnosis_classification_system: $diagnosis_classification_system,
+    diagnosis_basis: $diagnosis_basis,
+    disease_phase: $disease_phase,
+
+    # Genetic Analyses
+    alteration: $alteration,
+    alteration_type: $alteration_type,
+    fusion_partner_gene: $fusion_partner_gene,
+    gene_symbol: $gene_symbol,
+    reported_significance: $reported_significance,
+    reported_significance_system: $reported_significance_system,
+    status: $status,
+    
+    # Studies
+    dbgap_accession: $dbgap_accession,
+    study_name: $study_name,
+
+    # Survivals
+    age_at_last_known_survival_status: $age_at_last_known_survival_status,
+    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
+    cause_of_death: $cause_of_death,
+    first_event: $first_event,
+    last_known_survival_status: $last_known_survival_status
+
+    # Treatments
+    age_at_treatment_start: $age_at_treatment_start,
+    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+    age_at_treatment_end: $age_at_treatment_end,
+    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+    treatment_type: $treatment_type,
+    treatment_agent: $treatment_agent,
+
+    # Treatment Responses
+    response: $response,
+    age_at_response: $age_at_response,
+    age_at_response_unknownAges: $age_at_response_unknownAges,
+    response_category: $response_category,
+    response_system: $response_system,
+
+    # Table config
+    first: $first,
+    offset: $offset,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
+    # Study
+    study_id
+    dbgap_accession
+
+    # Participant
+    participant {
+      id
+      participant_id
+    }
+
+    # Genetic Analysis
+    id
+    genetic_analysis_id
+    alteration
+    cytoband
+    gene_symbol
+    genomic_source_category
+    hgvs_coding
+    hgvs_genome
+    hgvs_protein
+    status
+    test
+    reported_significance
+    reported_significance_system
+
+    # Additional properties for download
+    alteration_effect
+    alteration_type
+    chromosome
+    exon
+    fusion_partner_exon
+    fusion_partner_gene
+    reference_genome
+
+    __typename
+  }
+}
+`;
+
+export const GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL = gql`
+  query search($participant_id: [String]) {
+    fileIDsFromList(participant_id: $participant_id)
+  }
+`;
+
+export const GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL = gql`
+  query search($sample_ids: [String]) {
+    fileIDsFromList(sample_ids: $sample_ids)
+  }
+`;
+
+export const GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL = gql`
+  query search($file_ids: [String]) {
+    fileIDsFromList(file_ids: $file_ids)
+  }
+`;
+
+export const GET_ALL_FILEIDS_DIAGNOSISTAB_FOR_SELECT_ALL = gql`
+  query search($diagnosis_ids: [String]) {
+    fileIDsFromList(diagnosis_ids: $diagnosis_ids)
+  }
+`;
+export const GET_ALL_FILEIDS_STUDYISTAB_FOR_SELECT_ALL = gql`
+  query search($study_ids: [String]) {
+    fileIDsFromList(study_ids: $study_ids)
+  }
+`;
+
+// --------------- GraphQL query - Retrieve files tab details --------------
+export const GET_FILES_NAME_QUERY = gql`
+  query fileOverview(
+    $file_ids: [String]
+    $offset: Int = 0
+    $first: Int = 100000
+    $order_by: String = "file_name"
+  ) {
+    fileOverview(
+      file_ids: $file_ids
+      offset: $offset
+      first: $first
+      order_by: $order_by
+    ) {
+      file_name
+    }
+  }
+`;
+
+export const GET_FILE_IDS_FROM_FILE_NAME = gql`
+  query ($file_name: [String], $offset: Int, $first: Int, $order_by: String) {
+    fileIdsFromFileNameDesc(
+      file_name: $file_name
+      offset: $offset
+      first: $first
+      order_by: $order_by
+    ) {
+      file_id
+    }
+  }
+`;
+
 // --------------- Tabs Table configuration --------------
-export const tabContainers = [
-  {
-    name: 'Participants',
-    dataField: 'dataParticipant',
-    api: GET_PARTICIPANTS_OVERVIEW_QUERY,
-    paginationAPIField: 'participantOverview',
-    count: 'numberOfParticipants',
-    fileCount: 'participantsFileCount',
-    dataKey: 'id',
-    hiddenDataKeys: ['id', 'participant_id', 'study_id'],
-    defaultSortField: 'participant_id',
-    defaultSortDirection: 'asc',
-    buttonText: 'Add Selected Files',
-    tableID: 'participant_tab_table',
-    extendedViewConfig: {
-      pagination: true,
-      manageViewColumns: {
-        title: 'Displayed Columns',
-      },
-    },
-    columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
-      // {
-      //   dataField: 'participant_id',
-      //   header: 'Participant ID',
-      //   cellType: cellTypes.LINK,
-      //   linkAttr : {
-      //     rootPath: '/participant',
-      //     pathParams: ['participant_id'],
-      //   },
-      //   display: true,
-      //   tooltipText: 'sort',
-      // },
-      {
-        dataField: 'participant_id',
-        header: 'Participant ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'cpi_data',
-        header: 'Available CPI Mapping',
-        display: true,
-        sortable: false,
-        role: cellTypes.DISPLAY,
-        cellType: cellTypes.CPI_MAPPING,
-        cellStyle: cellStyles.EXCLUDE_FROM_DOWNLOAD,
-      },
-      {
-        dataField: 'study_id',
-        header: 'Study ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'sex_at_birth',
-        header: 'Sex at Birth',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'race',
-        header: 'Race',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'diagnosis',
-        header: 'Diagnosis',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'anatomic_site',
-        header: 'Diagnosis Anatomic Site',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'diagnosis_category',
-        header: 'Diagnosis Category',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'age_at_diagnosis',
-        header: 'Age at Diagnosis (days)',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'treatment_agent',
-        header: 'Treatment Agent',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'treatment_type',
-        header: 'Treatment Type',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'age_at_treatment_start',
-        header: 'Age at Treatment Start (days)',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'first_event',
-        header: 'First Event',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'last_known_survival_status',
-        header: 'Last Known Survival Status',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'age_at_last_known_survival_status',
-        header: 'Age at Last Known Survival Status (days)',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-    ],
-    id: 'participant_tab',
-    tableID: 'participant_tab_table',
-    tableDownloadCSV: customParticipantsTabDownloadCSV,
-    tabIndex: '0',
-    downloadFileName: 'CCDI Hub Participants Download',
-    tableMsg: {
-      noMatch: 'No Matching Records Found',
-    },
-    addFilesRequestVariableKey: 'participant_ids',
-    addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['participantOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_PARTICIPANTSTAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL,
-  },
-  {
+const studyTab = {
     name: 'Studies',
     dataField: 'dataStudy',
     api: GET_STUDY_OVERVIEW_QUERY,
+    statsQuery: DASHBOARD_QUERY_STATS,
+    statsQueryName: 'getParticipants',
+    //asyncDownload: true,
     paginationAPIField: 'studyOverview',
-    defaultSortField: 'study_name',
+    defaultSortField: 'dbgap_accession',
     defaultSortDirection: 'asc',
     count: 'numberOfStudies',
     fileCount: 'studiesFileCount',
+    toolTipText: 'Count of Study Record',
     dataKey: 'id',
     tableID: 'study_tab_table',
     extendedViewConfig: {
       pagination: true,
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
       manageViewColumns: {
         title: 'Displayed Columns',
       },
     },
     columns: [
       {
-        cellType: cellTypes.CHECKBOX,
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
         display: true,
-        role: cellTypes.CHECKBOX,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+        cellType: cellTypes.CUSTOM_ELEM,
       },
       {
         dataField: 'study_name',
@@ -1822,149 +1814,850 @@ export const tabContainers = [
         display: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'study_id',
-        header: 'Study ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: '/studies/',
+          linkField: 'dbgap_accession',
+        },
         cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.DBGAP,
       },
       {
-        dataField: 'study_status',
-        header: 'Study Status',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
+        dataField: "study_description",
+        header: "Study Description",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
       },
       {
-        dataField: 'dbgap_accession',
-        header: 'Manifest',
-        display: true,
-        sortable: false,
-        tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.STUDY_DOWNLOAD,
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'diagnosis',
-        header: 'Diagnosis (Top 5)',
-        downloadHeader: 'Diagnosis',
-        display: true,
-        sortable: false,
-        headerType: cellTypes.CUSTOM_ELEM,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.EXPAND,
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'anatomic_site',
-        header: 'Diagnosis Anatomic Site (Top 5)',
-        downloadHeader: 'Diagnosis Anatomic Site',
-        display: true,
-        sortable: false,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.EXPAND,
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'num_of_participants',
-        header: 'Number of Participants',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'num_of_samples',
-        header: 'Number of Samples',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'num_of_files',
-        header: 'Number of Files',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'file_type',
-        header: 'File Type (Top 5)',
-        downloadHeader: 'File Type',
-        display: true,
-        sortable: false,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.EXPAND,
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'pubmed_id',
-        header: 'PubMed ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'personnel_name',
-        header: 'Principal Investigator(s)',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'grant_id',
-        header: 'Grant ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
+        dataField: "external_url",
+        header: "External URL",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      }
     ],
     id: 'study_tab',
-    tableID: 'study_tab_table',
     tabIndex: '4',
     selectableRows: true,
-    tableDownloadCSV: customStudyTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Studies Download',
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Studies Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
-    addFilesRequestVariableKey: 'study_ids',
+
+  // addFilesRequestVariableKey: 'study_ids',
+  // addFilesResponseKeys: ['fileIDsFromList'],
+  // addAllFilesResponseKeys: ['studyOverview', 'files'],
+  // addAllFileQuery: GET_ALL_FILEIDS_FROM_STUDYTAB_FOR_ADD_ALL_CART,
+  // addSelectedFilesQuery: GET_ALL_FILEIDS_STUDYISTAB_FOR_SELECT_ALL,
+};
+
+const participantTab = {
+  name: "Participants",
+  dataField: "dataParticipant",
+  api: GET_PARTICIPANTS_OVERVIEW_QUERY,
+  statsQuery: DASHBOARD_QUERY_STATS,
+  statsQueryName: "getParticipants",
+  //asyncDownload: true,
+  paginationAPIField: "participantOverview",
+  count: "numberOfParticipants",
+  fileCount: "participantsFileCount",
+  dataKey: "participant_id",
+  hiddenDataKeys: ["participant_id", "id", "dbgap_accession"],
+  defaultSortField: "participant_id",
+  defaultSortDirection: "asc",
+  toolTipText: "Count of Participant Record",
+  buttonText: "Add Selected Files",
+  tableID: "participant_tab_table",
+  hasToolTip: true,
+  extendedViewConfig: {
+    pagination: true,
+    manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
+    },
+    columns: [
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
+      {
+        dataField: 'participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CPI,
+      },
+      {
+        dataField: 'race',
+        header: 'Race',
+        display: true,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+      cellType: cellTypes.CUSTOM_ELEM,
+    },
+    {
+      dataField: "sex_at_birth",
+      header: "Sex at Birth",
+      display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          linkAttr: {
+            rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+          },
+          cellType: cellTypes.CUSTOM_ELEM,
+        },
+        doNotDownload: true,
+      },
+      {
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+    ],
+    id: 'participant_tab',
+    tableDownloadCSV: {},
+    tabIndex: '0',
+    downloadFileName: 'C3DC Participants Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+  };
+const diagnosisTab = {
+  name: "Diagnosis",
+  dataField: "dataDiagnosis",
+  api: GET_DIAGNOSIS_OVERVIEW_QUERY,
+  statsQuery: DASHBOARD_QUERY_STATS,
+  statsQueryName: "getParticipants",
+  //asyncDownload: true,
+  paginationAPIField: "diagnosisOverview",
+  defaultSortField: "participant.participant_id",
+  defaultSortDirection: "asc",
+  count: "numberOfDiagnoses",
+  fileCount: "diagnosisFileCount",
+  toolTipText: "Count of Diagnosis Record",
+  dataKey: "id",
+  hiddenDataKeys: ["participant", "participant_pk", "dbgap_accession"],
+  tableID: "diagnosis_tab_table",
+  extendedViewConfig: {
+    pagination: true,
+    manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
+    },
+    columns: [
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
+      {
+        dataField: 'participant',
+        sortField: 'participant.participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM
+      },
+      {
+        dataField: 'diagnosis_id',
+        header: 'Diagnosis ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'diagnosis',
+        header: 'Diagnosis',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'age_at_diagnosis',
+        header: 'Age at Diagnosis (days)',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.COMMA,
+        cellType: cellTypes.COMMA,
+      },
+      {
+        dataField: 'anatomic_site',
+        header: 'Anatomic Site',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Diagnosis Category' here once the data is available
+      {
+        dataField: 'diagnosis_classification_system',
+        header: 'Diagnosis Classification System',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+        cellType: cellTypes.CUSTOM_ELEM,
+        doNotDownload: true,
+      },
+      {
+        dataField: 'diagnosis_basis',
+        header: 'Diagnosis Basis',
+        display: false,
+        hideable: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+    },
+    {
+      dataField: "diagnosis_comment",
+      header: "Diagnosis Comment",
+      display: false,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "disease_phase",
+      header: "Disease Phase",
+      display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'tumor_classification',
+        header: 'Tumor Classification',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Laterality' here once the data is available
+      // Add 'Year of Diagnosis' here once the data is available
+      {
+        dataField: 'toronto_childhood_cancer_staging',
+        header: 'Toronto Childhood Cancer Staging',
+        display: false,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "tumor_grade",
+      header: "Tumor Grade",
+      display: false,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "tumor_stage_clinical_t",
+      header: "Tumor Stage Clinical T",
+      display: false,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "tumor_stage_clinical_n",
+      header: "Tumor Stage Clinical N",
+      display: false,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "tumor_stage_clinical_m",
+      header: "Tumor Stage Clinical M",
+      display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+    ],
+    id: 'diagnosis_tab',
+    tabIndex: '3',
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Diagnosis Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+    /*
+    addFilesRequestVariableKey: 'diagnosis_ids',
     addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['studyOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_STUDYTAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_STUDYISTAB_FOR_SELECT_ALL,
-  },
-  {
-    name: 'Samples',
-    dataField: 'dataSample',
-    api: GET_SAMPLES_OVERVIEW_QUERY,
-    count: 'numberOfSamples',
-    fileCount: 'samplesFileCount',
-    paginationAPIField: 'sampleOverview',
-    dataKey: 'id',
-    defaultSortField: 'sample_id',
+    addAllFilesResponseKeys: ['diagnosisOverview', 'files'],
+    addAllFileQuery: GET_ALL_FILEIDS_FROM_DIAGNOSISTAB_FOR_ADD_ALL_CART,
+    addSelectedFilesQuery: GET_ALL_FILEIDS_DIAGNOSISTAB_FOR_SELECT_ALL,
+    */
+};
+const geneticAnalysisTab = {
+  name: "Genetic Analysis",
+  dataField: "dataGeneticAnalysis",
+  api: GET_GENETIC_ANALYSIS_OVERVIEW_QUERY,
+  statsQuery: DASHBOARD_QUERY_STATS,
+  statsQueryName: "getParticipants",
+  //asyncDownload: true,
+  paginationAPIField: "geneticAnalysisOverview",
+  defaultSortField: "participant.participant_id",
+  defaultSortDirection: "asc",
+  count: "numberOfGeneticAnalyses",
+  fileCount: "geneticAnalysisFileCount",
+  toolTipText: "Count of Genetic Analysis Record",
+  dataKey: "id",
+  hiddenDataKeys: ["participant", "participant_pk", "dbgap_accession"],
+  tableID: "genetic_analysis_tab_table",
+  extendedViewConfig: {
+    pagination: true,
+    manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
+    },
+    columns: [
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
+      {
+        dataField: 'participant',
+        sortField: 'participant.participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM
+      },
+      {
+        dataField: 'genetic_analysis_id',
+        header: 'Genetic Analysis ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'gene_symbol',
+        header: 'Gene Symbol',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+      },
+      {
+        dataField: 'status',
+        header: 'Status',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'reported_significance',
+        header: 'Reported Significance',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'reported_significance_system',
+        header: 'Reported Significance System',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'hgvs_genome',
+        header: 'HGVS Genome',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'alteration',
+        header: 'Alteration',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+        cellType: cellTypes.CUSTOM_ELEM,
+        doNotDownload: true,
+      },
+      {
+        dataField: 'hgvs_coding',
+        header: 'HGVS Coding',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'hgvs_protein',
+        header: 'HGVS Protein',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'reference_genome',
+        header: 'Reference Genome',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'chromosome',
+        header: 'Chromosome',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'cytoband',
+        header: 'Cytoband',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Transcript here once the data is available
+      {
+        dataField: 'exon',
+        header: 'Exon',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'fusion_partner_gene',
+        header: 'Fusion Partner Gene',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Fusion Partner Transcript' here once the data is available
+      {
+        dataField: 'fusion_partner_exon',
+        header: 'Fusion Partner Exon',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Translocation Partner Chromosome' here once the data is available
+      // Add 'Translocation Partner Cytoband' here once the data is available
+      {
+        dataField: 'alteration_type',
+        header: 'Alteration Type',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'alteration_effect',
+        header: 'Alteration Effect',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Age at Genetic Analysis' here once the data is available
+      {
+        dataField: 'genomic_source_category',
+        header: 'Genomic Source Category',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'test',
+        header: 'Test',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      // Add 'Method' here once the data is available
+      // Add 'Result' here once the data is available
+      // Add 'Allelic Ratio' here once the data is available
+      // Add 'Variant Allele Fraction' here once the data is available
+      // Add 'DNA Index' here once the data is available
+      // Add 'ISCN' here once the data is available
+      {
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+    ],
+    id: 'genetic_analysis_tab',
+    tabIndex: '3',
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Genetic Analysis Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+  };
+const treatmentTab = {
+  name: "Treatment",
+  dataField: "dataTreatment",
+  api: GET_TREATMENT_OVERVIEW_QUERY,
+  statsQuery: DASHBOARD_QUERY_STATS,
+  statsQueryName: "getParticipants",
+  //asyncDownload: true,
+  paginationAPIField: "treatmentOverview",
+  defaultSortField: "participant.participant_id",
+  sortBy: "participant.participant_id",
+  defaultSortDirection: "asc",
+  count: "numberOfTreatments",
+  fileCount: "treatmentFileCount",
+  dataKey: "treatment_id",
+  hiddenDataKeys: ["participant", "participant_pk", "dbgap_accession"],
+  tableID: "treatment_tab_table",
+  toolTipText: "Count of Treatment Record",
+  extendedViewConfig: {
+    pagination: true,
+    manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
+    },
+    columns: [
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
+      {
+        dataField: 'participant',
+        sortField: 'participant.participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM
+      },
+      {
+        dataField: "treatment_id",
+        header: "Treatment ID",
+        display: true,
+        hideable: false,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+      {
+        dataField: "age_at_treatment_start",
+        header: "Age at Treatment Start",
+        display: true,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+      cellType: cellTypes.COMMA,
+    },
+    {
+      dataField: "age_at_treatment_end",
+      header: "Age at Treatment End",
+      display: true,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+      cellType: cellTypes.COMMA,
+    },
+    {
+      dataField: "treatment_type",
+      header: "Treatment Type",
+      display: true,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "treatment_agent",
+      header: "Treatment Agent",
+      display: true,
+        hideable: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+        cellType: cellTypes.CUSTOM_ELEM,
+        doNotDownload: true,
+      },
+      // Add 'Dose' here once the data is available
+      // Add 'Dose Unit' here once the data is available
+      // Add 'Dose Route' here once the data is available
+      // Add 'Dose Frequency' here once the data is available
+      {
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+
+    ],
+    id: 'treatment_tab',
+    tabIndex: '4',
+    selectableRows: true,
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Treatment Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+    addFilesRequestVariableKey: 'treatment_ids',
+    addFilesResponseKeys: ['fileIDsFromList'],
+    addAllFilesResponseKeys: ['treatmentOverview', 'files'],
+    addAllFileQuery: "",
+    addSelectedFilesQuery: GET_ALL_FILEIDS_DIAGNOSISTAB_FOR_SELECT_ALL,
+  };
+const treatmentResponseTab = {
+    name: 'Treatment Response',
+    dataField: 'dataTreatmentResponse',
+    api: GET_TREATMENT_RESPONSE_OVERVIEW_QUERY,
+    statsQuery: DASHBOARD_QUERY_STATS,
+    statsQueryName: 'getParticipants',
+    //asyncDownload: true,
+    paginationAPIField: 'treatmentResponseOverview',
+    defaultSortField: 'participant.participant_id',
     defaultSortDirection: 'asc',
-    tableID: 'sample_tab_table',
+    count: 'numberOfTreatmentResponses',
+    fileCount: 'treatmentResponseFileCount',
+    dataKey: 'treatment_response_id',
+    hiddenDataKeys: ['participant', 'participant_pk', 'dbgap_accession'],
+    tableID: 'treatment_response_tab_table',
+    toolTipText: 'Count of Treatment Response Record',
     extendedViewConfig: {
       pagination: true,
       manageViewColumns: {
         title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
+      },
+    },
+    columns: [
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
+      {
+         dataField: 'participant',
+        sortField: 'participant.participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM
+      },
+      {
+        dataField: "treatment_response_id",
+        header: "Treatment Response ID",
+        display: true,
+        hideable: false,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+      {
+        dataField: 'response',
+        header: 'Response',
+        display: true,
+        hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "age_at_response",
+      header: "Age at Response",
+      display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.COMMA,
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+        cellType: cellTypes.CUSTOM_ELEM,
+        doNotDownload: true,
+      },
+      {
+        dataField: "response_category",
+        header: "Response Category",
+        display: false,
+        hideable: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+      {
+        dataField: "response_system",
+        header: "Response System",
+        display: false,
+        hideable: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+      {
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
+      },
+    ],
+    id: 'treatment_response_tab',
+    tabIndex: '4',
+    selectableRows: true,
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Treatment Response Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+    addFilesRequestVariableKey: 'treatment_response_ids',
+    addFilesResponseKeys: ['fileIDsFromList'],
+    addAllFilesResponseKeys: ['treatmentResponseOverview', 'files'],
+  };
+  const survivalTab = {
+    name: 'Survival',
+    dataField: 'dataSurvival',
+    api: GET_SURVIVAL_OVERVIEW_QUERY,
+    statsQuery: DASHBOARD_QUERY_STATS,
+    statsQueryName: 'getParticipants',
+    //asyncDownload: true,
+    count: 'numberOfSurvivals',
+    fileCount: 'samplesFileCount',
+    paginationAPIField: 'survivalOverview',
+    dataKey: 'id',
+    hiddenDataKeys: ['participant', 'participant_pk', 'dbgap_accession'],
+    defaultSortField: 'participant.participant_id',
+    defaultSortDirection: 'asc',
+    toolTipText: 'Count of Survival Record',
+    tableID: 'survival_tab_table',
+    extendedViewConfig: {
+      pagination: true,
+      manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+      download: true,
+      downloadButtonConfig: {
+        title: 'DOWNLOAD DATA',
+        cloudIcon: true,
+        //downloadLimit: 5000,
       },
     },
     saveButtonDefaultStyle: {
@@ -1983,7 +2676,6 @@ export const tabContainers = [
       opacity: 'unset',
       border: 'unset',
     },
-
     columns: [
       {
         cellType: cellTypes.CHECKBOX,
@@ -1991,279 +2683,120 @@ export const tabContainers = [
         role: cellTypes.CHECKBOX,
       },
       {
-        dataField: 'sample_id',
-        header: 'Sample ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'participant_id',
+        dataField: 'participant',
+        sortField: 'participant.participant_id',
         header: 'Participant ID',
         display: true,
+        hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM
       },
       {
-        dataField: 'study_id',
-        header: 'Study ID',
+        dataField: "survival_id",
+        header: "Survival ID",
         display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        hideable: false,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
       },
       {
-        dataField: 'anatomic_site',
-        header: 'Sample Anatomic Site',
+        dataField: 'last_known_survival_status',
+        header: 'Last Known Survival Status',
         display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "age_at_last_known_survival_status",
+      header: "Age at Last Known Survival Status",
+      display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.COMMA,
       },
       {
-        dataField: 'participant_age_at_collection',
-        header: 'Age at Sample Collection (days)',
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
         display: true,
+        hideable: false,
         tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (!dt || dt === -999) {
-            return 'Not Reported';
-          }
-          return dt.toString();
+        role: cellTypes.DISPLAY,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
         },
-        role: cellTypes.DISPLAY,
-        hideable: true,
+        cellType: cellTypes.CUSTOM_ELEM,
+        doNotDownload: true,
       },
       {
-        dataField: 'sample_tumor_status',
-        header: 'Sample Tumor Status',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        dataField: "event_free_survival_status",
+        header: "Event-Free Survival Status",
+        display: false,
         hideable: true,
+      tooltipText: "sort",
+      role: cellTypes.DISPLAY,
+    },
+    {
+      dataField: "age_at_event_free_survival_status",
+      header: "Age at Event-Free Survival Status",
+      display: false,
+        hideable: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.COMMA,
       },
       {
-        dataField: 'tumor_classification',
-        header: 'Sample Tumor Classification',
-        display: true,
+        dataField: 'first_event',
+        header: 'First Event',
+        display: false,
+        hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        hideable: true,
       },
       {
-        dataField: 'diagnosis',
-        header: 'Sample Diagnosis',
-        display: true,
+        dataField: 'cause_of_death',
+        header: 'Cause of Death',
+        display: false,
+        hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        hideable: true,
       },
       {
-        dataField: 'diagnosis_category',
-        header: 'Diagnosis Category',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
+        dataField: "study_id",
+        header: "Study ID",
+        display: false,
+        downloadOnly: true,
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY
       },
+
     ],
-    id: 'sample_tab',
-    tableID: 'sample_tab_table',
+    id: 'survival_tab',
     tabIndex: '1',
-    tableDownloadCSV: customSamplesTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Samples Download',
+    tableDownloadCSV: {},
+    downloadFileName: 'C3DC Survival Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
-    addFilesRequestVariableKey: 'sample_ids',
-    addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['sampleOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
-  },
-  {
-    name: 'Files',
-    dataField: 'dataFile',
-    api: GET_FILES_OVERVIEW_QUERY,
-    paginationAPIField: 'fileOverview',
-    defaultSortField: 'file_name',
-    defaultSortDirection: 'asc',
-    count: 'numberOfFiles',
-    fileCount: 'filesFileCount',
-    dataKey: 'id',
-    tableID: 'file_tab_table',
-    extendedViewConfig: {
-      pagination: true,
-      manageViewColumns: {
-        title: 'Displayed Columns',
-      },
-    },
-    columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
-      {
-        dataField: 'file_name',
-        header: 'File Name',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'data_category',
-        header: 'Data Category',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (dt instanceof Array) {
-            return dt.join(',')
-          }
-          else if (dt === null) {
-            return "";
-          }
-          else if (dt.toString().charAt(0) === '[' && dt.toString().charAt(dt.toString().length - 1) === ']') {
-            return dt.toString().substring(1, dt.length - 1)
-          }
-          return dt.toString();
-        },
-        hideable: true,
-      },
-      {
-        dataField: 'file_description',
-        header: 'File Description',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'file_type',
-        header: 'File Type',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'file_size',
-        header: 'File Size',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        dataFormatType: dataFormatTypes.FORMAT_BYTES,
-        cellType: cellTypes.FORMAT_DATA,
-        hideable: true,
-      },
-      {
-        dataField: 'file_access',
-        header: 'File Access',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'study_id',
-        header: 'Study ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'participant_id',
-        header: 'Participant ID',
-        display: true,
-        tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.MODAL,
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'sample_id',
-        header: 'Sample ID',
-        display: true,
-        tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.MODAL,
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'guid',
-        header: 'GUID',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'md5sum',
-        header: 'MD5sum',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'library_selection',
-        header: 'Library Selection',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'library_source_material',
-        header: 'Library Source Material',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'library_strategy',
-        header: 'Library Strategy',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'library_source_molecule',
-        header: 'Library Source Molecule',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'file_mapping_level',
-        header: 'File Mapping',
-        display: false,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-    ],
-    id: 'file_tab',
-    tableID: 'file_tab_table',
-    tabIndex: '2',
-    selectableRows: true,
-    tableDownloadCSV: customFilesTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Files Download',
-    tableMsg: {
-      noMatch: 'No Matching Records Found',
-    },
-    addFilesRequestVariableKey: 'file_ids',
-    addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['fileOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_FILESTAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL,
-  },
-];
+  };
 
+  // Map facet section names to their corresponding tab objects
+const facetTabMap = {
+  [FACET_NAMES.STUDY]: studyTab,
+  [FACET_NAMES.DEMOGRAPHICS]: participantTab,  // Demographics tab is called 'Participants'
+  [FACET_NAMES.DIAGNOSIS]: diagnosisTab,
+  [FACET_NAMES.GENETICANALYSIS]: geneticAnalysisTab,
+  [FACET_NAMES.TREATMENT]: treatmentTab,
+  [FACET_NAMES.TREATMENTRESPONSE]: treatmentResponseTab,
+  [FACET_NAMES.SURVIVAL]: survivalTab,
+};
+
+// Generate tabContainers array based on FACET_ORDER
+export const tabContainers = FACET_ORDER.reduce((acc, section) => {
+  if (facetTabMap[section]) {
+    return [...acc, facetTabMap[section]];
+  }
+  return acc;
+}, []);

@@ -1,1037 +1,984 @@
-import React, { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
-import { introData, titleData, statsNote, resourcesAppliationsListData, resourcesCloudListData } from '../../bento/landingPageData';
-import ReactHtmlParser from 'html-react-parser';
-import Carousel from '../landing/component/carousel';
-import HeroMobile from '../landing/component/heroMobile'
-import LatestUpdate from '../landing/component/latestUpdate'
-import exportIcon from '../../assets/landing/Export_Icon_Black.svg';
-import bg1 from '../../assets/landing/bg_1.png';
-import bg2 from '../../assets/landing/bg_2.png';
-import bg3 from '../../assets/landing/bg_3.png';
-
-const LandingViewContainer = styled.div`
-    font-family: Poppins;
-    position: relative;
-    background: white;
-    
-    @media (min-width: 1200px) {
-      // height: 3180px;
-    }
-`;
-
-const BackgroundFirst = styled.div`
-  position: absolute;
-  top: -1px;
-  left: 0;
-  margin-left: calc(50% - 720px);
-  width: 1440px;
-  height: 900px;
-  background-image: url(${bg1});
-  z-index: 3;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  @media (max-width: 1199px) {
-    display: none;
-  }
-`;
-
-const BackgroundSecond = styled.div`
-  position: absolute;
-  top: 1085px;
-  left: 0;
-  margin-left: calc(50% - 720px);
-  width: 1440px;
-  height: 900px;
-  background-image: url(${bg2});
-  z-index: 2;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  @media (max-width: 1199px) {
-    display: none;
-  }
-`;
-
-const BackgroundThird = styled.div`
-  position: absolute;
-  top: 1980px;
-  left: 0;
-  margin-left: calc(50% - 720px);
-  width: 1440px;
-  height: 1000px;
-  background-image: url(${bg3});
-  z-index: 1;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  @media (max-width: 1199px) {
-    display: none;
-  }
-`;
-
-const HeroSection = styled.div`
-  position: relative;
-  height: 730px;
-  z-index: 5;
-
-  @media (max-width: 1199px) {
-    display: none;
-  }
-`;
-
-const Banner = styled.div`
-  position: absolute;
-  top: 120px;
-  left: 0;
-  height: 489px;
-  width: 100%;
-  background: linear-gradient(180deg, rgba(17, 196, 212, 0.4) 0%, rgba(55, 210, 176, 0.392465) 37.67%, rgba(120, 233, 117, 0.38) 100%), linear-gradient(0deg, #56B0B8, #56B0B8), #2ADEC7;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.05);
-  z-index: 8;
-`;
-
-const BannerDarker = styled.div`
-  position: absolute;
-  top: 332px;
-  height: 98px;
-  width: 50%
-  background: #087D6F;
-  z-index: 9;
-`;
-
-const StatsSection = styled.div`
-  position: relative;
-  z-index: 5;
-`;
-
-const ResourcesSection = styled.div`
-  position: relative;
-  z-index: 5;
-  margin-top: 94px;
-  margin-bottom: 75px;
-
-  @media (max-width: 1199px) {
-    margin-top: 380px;
-    margin-bottom: 20px;
-  }
-
-  @media (max-width: 700px) {
-    margin-top: 400px;
-  }
-`;
-
-const FirstContainer = styled.div`
-    width: 1440px;
-    margin: 0 auto;
-    display: flex;
-    z-index: 10;
-    position: relative;
-`;
-
-const IntroContainer = styled.div`
-    margin-top: 120px;
-    width: calc(50vw - 160px);
-    height: 492px;
-    @media (min-width: 1420px) {
-      width: 550px;
-    }
-`;
-
-const IntroTextContainer = styled.div`
-    padding: 51px 0 0 calc(50vw - 573px);
-    
-    .introTextTitle1 {
-      text-align: left;
-      color: #002A2E;
-      font-family: poppins;
-      font-weight: 600;
-      font-size: 50px;
-      letter-spacing: -0.02em;
-      line-height: 45px;
-      margin: 0;
-    }
-
-    .introTextTitle2 {
-      width: 526px;
-      text-align: left;
-      color: #FFFFFF;
-      font-family: Poppins;
-      font-weight: 500;
-      font-size: 16px;
-      text-transform: uppercase;
-      line-height: 24px;
-      background: #087D6F;
-      padding: 13px 0;
-      margin: 26px 0 43px 0;
-    }
-
-    @media (min-width: 1420px) {
-      padding: 51px 0 0 135px;
-    }
-`;
-
-const ListContainer = styled.div`
-    margin: 60px 33px 0 calc(50vw - 620px);;
-
-    @media (min-width: 1420px) {
-      margin: 60px 33px 0 90px;
-    }
-`;
-
-const IntroAboutButtonContainer = styled.div`
-    display: flex;
-
-    .introAboutButton {
-        display: block;
-        text-decoration: none;
-        color: #ffffff;
-        margin-right: 30px;
-        width: 176px;
-        height: 57px;
-        border: 1px solid #ffffff;
-        border-radius: 5px;
-        font-family: poppins;
-        font-weight: 600;
-        font-size: 16px;
-        text-align: center;
-        line-height: 57px;
-        background: #05555C;
-    }
-
-    .introAboutButton:hover {
-      color: #05555C;
-      background: #FFFFFF;
-      cursor: pointer;
-      border: 1px solid #05555C;
-  }
-`;
-
-const StatsContainer = styled.div`
-    margin: 0 auto;
-    justify-content: center;
-    position: relative;
-
-    .leftbox {
-      position: absolute;
-      top: 8px;
-      left: calc(1440px - 100vw - 200px);
-      width: calc(100vw - 1440px + 400px);
-      height: 520px;
-      z-index: 9;
-      background: white;
-      filter: blur(30px);
-
-      @media (min-width: 1440px) {
-        left: calc(1440px - 100vw - 230px);
-        width: calc(100vw - 1440px + 400px);
-      }
-      
-      @media (max-width: 1440px) {
-        left: calc(50vw - 950px);
-        width: 400px;
-      }
-
-      @media (max-width: 1199px) {
-        display: none;
-      }
-    }
-
-    .rightbox {
-      position: absolute;
-      top: 8px;
-      height: 520px;
-      z-index: 9;
-      background: white;
-      filter: blur(30px);
-    
-      @media (min-width: 1440px) {
-        right: calc(1440px - 100vw - 230px);
-        width: calc(100vw - 1440px + 400px);
-      }
-      
-      @media (max-width: 1440px) {
-        right: calc(50vw - 950px);
-        width: 400px;
-      }
-
-      @media (max-width: 1199px) {
-        display: none;
-      }
-    }
-
-    .borderTop {
-      height: 72px;
-      transform: matrix(1, 0, 0, -1, 0, 0);
-      border-top: 1.8px solid #4BBFC6;
-      position: relative;
-      background: linear-gradient(180deg, rgba(158, 158, 158, 0.1) 0%, rgba(255, 255, 255, 0) 34.44%);
-    }
-
-    .borderBottom {
-      height: 12px;
-      border-top: 1.8px solid #4BBFC6;
-      background: linear-gradient(180deg, rgba(158, 158, 158, 0.1) 0%, rgba(255, 255, 255, 0) 34.44%);
-    }
-
-    .statGlance {
-      position: relative;
-      padding: 40px 0;
-      text-align: center;
-      font-family: poppins;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 35px;
-      color: #298085;
-      line-height: 38px;
-      letter-spacing: 0.02em;
-      background-color: white;
-      margin: 0;
-    }
-
-    .statList {
-      display: flex;
-      justify-content: center;
-      padding-bottom: 50px;
-      background-color: white;
-    }
-
-    .statItem {
-      width: 278px;
-      padding: 0 45px 0 45px;
-    }
-
-    .statNum {
-      display: flex;
-      color: #00838F;
-      font-family: Inter;
-      font-weight: 800;
-      font-size: 32px;
-      line-height: 40px;
-      text-align: left;
-      margin: 0;
-    }
-
-    .statNumIcon {
-      font-family: Poppins;
-      font-size: 25px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      text-align: left;
-    }
-
-    .statTitle {
-      color: #05555C;
-      font-family: Poppins;
-      font-weight: 300;
-      font-size: 19px;
-      line-height: 21px;
-      text-align: left;
-      margin-bottom: 2px;
-    }
-
-    .statDetail {
-      color: #00838F;
-      font-family: Poppins;
-      font-weight: 600;
-      font-size: 19px;
-      line-height: 23px;
-      font-family: Poppins;
-      letter-spacing: 2%;
-      text-transform: uppercase;
-      text-align: left;
-      text-decoration: none;
-
-      :hover {
-        color: #455299;
-        text-decoration: underline;
-
-        ::after {
-          content: "";
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-bottom: 2px solid #455299;
-          border-left: 2px solid #455299;
-          margin: 0 0 2px 3px;
-          transform: rotate(-135deg);
-          -webkit-transform: rotate(-135deg);
-        }
-      }
-
-      ::after {
-        content: "";
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-bottom: 2px solid #00838F;
-        border-left: 2px solid #00838F;
-        margin: 0 0 2px 3px;
-        transform: rotate(-135deg);
-        -webkit-transform: rotate(-135deg);
-      }
-    }
-
-    .statsNoteContainer {
-      display: flex;
-      font-family: Inter;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 22px;
-      letter-spacing: 0.02em;
-      margin-bottom: 50px;
-      margin-left: calc(50vw - 320px);
-    }
-
-    .statsNoteIcon {
-      font-family: Poppins;
-      font-size: 25px;
-      font-weight: 600;
-      line-height: 30px;
-      letter-spacing: 0.02em;
-      text-align: left;
-      color: #00838F;
-      margin-right: 5px;
-    }
-
-    @media (min-width: 1420px) {
-      width: 1420px;
-
-      .statsNoteContainer {
-        margin-left: 400px;
-      }
-    }
-
-    @media (max-width: 1199px) {
-      .borderTop {
-        display: none;
-      }
-
-      .borderBottom {
-        display: none;
-      }
-
-      .statGlance {
-        padding: 12px 0;
-        text-align: left;
-        font-weight: 600;
-        font-size: 25px;
-        line-height: 20px;
-        letter-spacing: 0.02em;
-        color: #298085;
-        margin-left: calc(50vw - 405px);
-      }
-
-      .statList {
-        display: grid;
-        grid-column-gap: 75px;
-        grid-template-columns: 143px 143px 143px 143px;
-        // margin: 0 calc(50vw - 405px);
-        padding-bottom: 30px;
-      }
-
-      .statItem {
-        padding: 0;
-        width: 140px;
-      }
-
-      .statNum {
-        font-family: Inter;
-        font-weight: 800;
-        font-size: 22px;
-        line-height: 40px;
-      }
-
-      .statTitle {
-        color: #00838F;
-        font-size: 14px;
-        line-height: 13px;
-      }
-
-      .statDetail {
-        color: #00838F;
-        font-family: Poppins;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 13px;
-        letter-spacing: 2%;
-
-        ::after {
-          content: "";
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-bottom: 2px solid #0095A2;
-          border-left: 2px solid #0095A2;
-          margin: 0 0 1px 3px;
-          transform: rotate(-135deg);
-          -webkit-transform: rotate(-135deg);
-        }
-
-        :hover {
-          color: #455299;
-          text-decoration: underline;
-          cursor: pointer;
-
-          ::after {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-bottom: 2px solid #455299;
-            border-left: 2px solid #455299;
-            margin: 0 0 1px 3px;
-            transform: rotate(-135deg);
-            -webkit-transform: rotate(-135deg);
-          }
-        }
-      }
-      .statsNoteContainer {
-        margin-left: calc(50vw - 405px);
-      }
-    }
-
-    @media (max-width: 872px) {
-      .statGlance {
-        margin-left: 30px;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 17px;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-      }
-
-      .statList {
-        display: grid;
-        grid-column-gap: 8%;
-        grid-template-columns: 19% 19% 19% 19%;
-        margin: 0 30px;
-      }
-
-      .statItem {
-        width: 140px;
-      }
-
-      .statsNoteContainer {
-        margin-left: 30px;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .statGlance {
-        font-family: Poppins;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 17px;
-        letter-spacing: 2%;
-        text-transform: uppercase;
-      }
-    }
-
-    @media (max-width: 699px) {
-      .statList {
-        display: grid;
-        grid-column-gap: 29px;
-        grid-row-gap: 10%;
-        grid-template-columns: 143px 143px;
-        margin: 0 30px;
-        justify-content: left;
-      }
-      .statItem {
-        width: 120px;
-      }
-      .statsNoteContainer {
-        margin: 30px 30px 50px 30px;
-      }
-    }
-`;
-
-const StatsBox = styled.div`
-    // margin: 0 55px;
-    position: relative;
-`;
-
-const ResourcesOverlayRight = styled.div`
-  position: absolute;
-  width: 50%;
-  height: 100px;
-  right: 60px;
-  top: -30px;
-
-  background: rgba(255, 255, 255, 0.85);
-  filter: blur(20px);
-  z-index: 5;
-`;
-
-const ResourcesOverlay = styled.div`
-  position: absolute;
-  width: calc(100% - 120px);
-  height: calc(100% - 40px);
-  left: 60px;
-  top: 0;
-
-  background: rgba(255, 255, 255, 0.85);
-  filter: blur(50px);
-  z-index: 5;
-`;
-
-const ResourcesContainer = styled.div`
-    margin: 0 auto;
-    z-index: 10;
-    position: relative;
-
-    .resourceTitle {
-      margin-top: 0;
-      margin-bottom: 0;
-      margin-left: 136px;
-      font-family: Poppins;
-      font-weight: 600;
-      font-size: 35px;
-      line-height: 38px;
-      letter-spacing: 0.02em;
-      color: #05555C;
-    }
-
-    .resourceItem {
-      padding-bottom: 70px;
-    }
-
-    .resourceSubtitle {
-      display: flex;
-    }
-
-    .resourceSubtitleText {
-      margin: 10px 0 10px 135px;
-      font-family: Poppins;
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 22px;
-      letter-spacing: 0.02em;
-      position: relative;
-      display: inline-block;
-      max-width: calc(75% - 145px);
-
-      ::after {
-        content: '';
-        position: absolute;
-        left: calc(100% + 10px);
-        bottom: 5px;
-        height: 3px;
-        width: 144px;
-        background: linear-gradient(
-          to right,
-          currentColor 0px,
-          currentColor 120px,
-          transparent 120px,
-          transparent 122px,
-          currentColor 122px,
-          currentColor 130px,
-          transparent 130px,
-          transparent 133px,
-          currentColor 133px,
-          currentColor 141px
-        );
-      }
-    }
-
-    .resourceListItem {
-      margin: 17px 0;
-      text-decoration: none;
-    }
-
-    .resourceListItem:focus-visible {
-      outline: none;
-    }
-
-    .resourceListItemLogo {
-      width: 133.37px;
-      height: 124px;
-      border-radius: 20px;
-      display: flex;
-      color: #FFFFFF;
-      font-family: Reem Kufi;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 25px;
-      line-height: 28px;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .resourceListItemTitle {
-      color: #000000;
-      font-family: Poppins;
-      font-weight: 400;
-      font-size: 20px;
-      margin-bottom: 4px;
-      line-height: 20px;
-    }
-
-    .resourceListItemTitleSmall {
-      font-family: Poppins;
-      font-weight: 400;
-      font-size: 14px;
-      padding-right: 23px;
-      background: url(${exportIcon}) right center no-repeat;
-    }
-
-    .noLinkIcon {
-      background: none;
-    }
-
-    .resourceListItemContext {
-      color: #000000;
-      font-family: Poppins;
-      font-weight: 500;
-      font-size: 16px;
-      letter-spacing: 0.02em;
-    }
-
-    @media (min-width: 1420px) {
-      width: 1420px;
-
-      .resourceListItem {
-        display: flex;
-        margin: 17px;
-        text-decoration: none;
-      }
-
-      .resourceList {
-        display: grid;
-        grid-column-gap: 40px;
-        grid-template-columns: 570px 570px;
-        justify-content: center;
-      }
-
-      .resourceListItemText {
-        margin: 5px 0 0 20px;
-        // width: 353px;
-        height: 125px;
-      }
-
-      .upper {
-        display: none;
-      }
-
-      .lower {
-        display: block;
-      }
-    }
-
-    @media (min-width: 1200px) and (max-width: 1419px) {
-      .resourceTitle {
-        margin-left: calc(50vw - 580px);
-      }
-
-      .resourceSubtitle {
-        margin: 0 calc(50vw - 715px);
-      }
-
-      .resourceListItem {
-        display: flex;
-        margin: 17px;
-        text-decoration: none;
-      }
-
-      .resourceList {
-        display: grid;
-        grid-column-gap: 40px;
-        grid-template-columns: 570px 570px;
-        justify-content: center;
-      }
-
-      .resourceListItemText {
-        margin: 5px 0 0 20px;
-        width: 353px;
-        height: 125px;
-      }
-
-      .upper {
-        display: none;
-      }
-
-      .lower {
-        display: block;
-      }
-    }
-
-    @media (max-width: 1199px) {
-      .resourceList {
-        display: grid;
-        grid-column-gap: 55px;
-        grid-template-columns: 371px 371px;
-        justify-content: center;
-      }
-
-      .resourceListItemLogo {
-        width: 78px;
-        height: 73px;
-        font-size: 18px;
-        line-height: 20px;
-      }
-
-      .upper {
-        display: block;
-      }
-
-      .resourceListItemTitleContainer {
-        display: flex;
-        align-items: center;
-      }
-
-      .resourceListItemTitle{
-        font-size: 18px;
-      }
-
-      .resourceSubtitleText {
-        margin: 10px 0 10px calc(50vw - 405px);
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 18px;
-        letter-spacing: 0.02em;
-      }
-
-      .resourceTitle {
-        margin-left: calc(50vw - 405px);
-        font-size: 25px;
-        line-height: 20px;
-        letter-spacing: 0.02em;
-      }
-
-      .resourceListItem {
-        margin: 12px 0;
-      }
-
-      .resourceListItemUpper {
-        display: grid;
-        grid-template-columns: 90px auto;
-      }
-
-      .resourceListItemContext {
-        margin-top: 10px;
-      }
-
-      .resourceItem {
-        padding-bottom: 40px;
-      }
-
-      .upper {
-        display: block;
-      }
-
-      .lower {
-        display: none;
-      }
-    }
-
-    @media (max-width: 872px) {
-      .resourceList {
-        display: grid;
-        grid-column-gap: 55px;
-        grid-template-columns: auto auto;
-        justify-content: center;
-        margin: 0 30px;
-      }
-
-      .resourceSubtitleText {
-        margin: 10px 0 10px 30px;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 17px;
-        letter-spacing: 0.02em;
-      }
-
-      .resourceTitle {
-        margin-left: 30px;
-        font-size: 14px;
-        line-height: 17px;
-        text-transform: uppercase;
-      }
-    }
-
-    @media (max-width: 699px) {
-      .resourceList {
-        display: grid;
-        grid-template-columns: 100%;
-        margin: 0 30px;
-      }
-
-      .resourceItem {
-        padding-bottom: 40px;
-      }
-
-      .resourceListItem {
-        max-width: 315px;
-        margin: 15px 0;
-      }
-    }
-`;
-
-const LandingView = ({
-  statsData,
-  newsData
-}) => {
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [])
-
-  return (
-    <LandingViewContainer>
-      <BackgroundFirst />
-      <BackgroundSecond />
-      <BackgroundThird />
-      <HeroSection>
-        <Banner />
-        <BannerDarker />
-        <FirstContainer>
-          <IntroContainer>
-            <IntroTextContainer>
-              <h1 className='introTextTitle1'>Discover<br/>CCDI<br/>Resources</h1>
-              <div className='introTextTitle2'>
-                <div>Explore the CCDI Hub, its applications,</div>
-                <div>and analytic tools by selecting an</div>
-                <div>available resource</div>
-              </div>
-              <IntroAboutButtonContainer>
-                <div><a className='introAboutButton' href="/about">{introData.introTitle3}</a></div>
-                <div><a className='introAboutButton' href="https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative" target="_blank" rel="noopener noreferrer">{introData.introButtonTitle}</a></div>
-              </IntroAboutButtonContainer>
-            </IntroTextContainer>
-          </IntroContainer>
-          <ListContainer>
-            <Carousel />
-          </ListContainer>
-        </FirstContainer>
-      </HeroSection>
-      <HeroMobile />
-      <StatsSection>
-        <StatsContainer>
-          <StatsBox>
-            <div className='leftbox' />
-            <div className='rightbox' />
-            <div className='borderTop' />
-            <h2 className='statGlance'>CCDI Stats At a Glance</h2>
-            <div className='statList'>
-            {
-              statsData.map((statItem, statidx) => {
-                const statkey = `stat_${statidx}`;
-                return (
-                  <div className='statItem' key={statkey}>
-                    <h5 className='statNum'>
-                      <div>{statItem.num.toLocaleString('en-US')}</div>
-                      {statItem.title.includes("Participants") && <div className='statNumIcon'>*</div>}
-                    </h5>
-                    <div className='statTitle'>{ReactHtmlParser(statItem.title)}</div>
-                    {
-                      statItem.link.includes('http') ?
-                      <a className='statDetail' href={statItem.link} target="_blank" rel="noopener noreferrer">{statItem.detail}</a>
-                      :
-                      <NavLink className='statDetail' to={statItem.link}>{statItem.detail}</NavLink>
-                    }
+import React from 'react';
+import {
+  Grid,
+  withStyles,
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { landingPageData } from '../../bento/landingPageData';
+import icon from '../../assets/landing/LP_ReadMore.svg';
+import iconAbout from '../../assets/landing/LP_About_Fullarticle.Arrow.svg';
+
+// Layout constants
+const TILE_IMAGE_HEIGHT = '249px';
+const LAYOUT_GAP = '18px';
+const CONTENT_LEFT_WIDTH = '300px';
+const CONTENT_RIGHT_WIDTH = '604px';
+const CONTAINER_PADDING = '20px';
+
+const LandingView = ({ classes, statsData }) => (
+  <div className={classes.page}>
+    <div className={classes.container}>
+      <div className={classes.hero}>
+        <Grid container spacing={16} direction="row">
+          <div className={classes.heroImage}>
+            <div className={classes.heroFrame}>
+              <div className={classes.heroTextContainer}>
+                <div className={classes.heroTextWrapper}>
+                  <h1 className={classes.headerTitle}>
+                    { landingPageData.callToActionTitle }
+                  </h1>
+                  <h2 className={classes.headerContent}>
+                    { landingPageData.callToActionDescription}
+                  </h2>
+                  <div className={classes.statsBubbleContainer}>
+                    <div className={classes.statsBubbleDiagnoses}>
+                      <div className={classes.statsBubbleDiagnosesCount}>
+                        <div className={classes.statsBubbleDiagnosesNumber}>
+                          {statsData.numberOfDiseases.num}
+                        </div>
+                        <div className={classes.statsBubbleDiagnosesMagnitude}>
+                          {statsData.numberOfDiseases.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                      Diagnoses
+                      </div>
+                      <div className={classes.statsBubbleDiagnosesIcon}>
+                        <img 
+                          src={landingPageData.landingPageStatsIcons.diagnosesIcon} 
+                          alt={landingPageData.landingPageStatsIcons.diagnosesIconAlt} 
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.statsBubbleParticipants}>
+                      <div className={classes.statsBubbleParticipantsCount}> 
+                        <div className={classes.statsBubbleParticipantsNumber}>
+                          {statsData.numberOfParticipants.num}
+                        </div>
+                        <div className={classes.statsBubbleParticipantsMagnitude}>
+                          {statsData.numberOfParticipants.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                        Participants
+                      </div>
+                      <div className={classes.statsBubbleParticipantsIcon}>
+                        <img
+                          src={landingPageData.landingPageStatsIcons.participantsIcon}
+                          alt={landingPageData.landingPageStatsIcons.participantsIconAlt}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.statsBubbleStudies}>
+                      <div className={classes.statsBubbleStudiesCount}>
+                        <div className={classes.statsBubbleStudiesNumber}>
+                          {statsData.numberOfStudies.num}
+                        </div>
+                        <div className={classes.statsBubbleStudiesMagnitude}>
+                          {statsData.numberOfStudies.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                        Studies
+                      </div>
+                      <div className={classes.statsBubbleStudiesIcon}>
+                        <img
+                          src={landingPageData.landingPageStatsIcons.studiesIcon}
+                          alt={landingPageData.landingPageStatsIcons.studiesIconAlt}
+                        />
+                      </div>
+                    </div>
                   </div>
-                )
-              })
-            }
+                  {/* <div className={classes.headerButtonSection}>
+                    <Link to={landingPageData.callToActionLink} className={classes.headerLink}>
+                      <Button className={classes.buttonText} bgColor="neonBlue" color="white">
+                        {landingPageData.callToActionButtonText}
+                      </Button>
+                    </Link>
+                  </div> */}
+                </div>
+              </div>
             </div>
-            <div className='borderBottom' />
-            <div className='statsNoteContainer'>
-              <div className='statsNoteIcon'>*</div>
-              <div>{statsNote}</div>
-            </div>
-          </StatsBox>
-        </StatsContainer>
-      </StatsSection>
-      <LatestUpdate newsList={newsData.newsList} srcList={newsData.newsImgUrlList} releaseNotesList={newsData.releaseNotesList} altList={newsData.altList} />
-      {/* <LatestUpdate /> */}
-      <ResourcesSection>
-        <ResourcesOverlayRight />
-        <ResourcesOverlay />
-        <ResourcesContainer>
-          <h2 className='resourceTitle'>{titleData.resourceTitle}</h2>
-          <div className='resourceItem'>
-            <div className='resourceSubtitle' style={{color: '#00838F'}}>
-              <h3 className='resourceSubtitleText'>{titleData.applicationsTitle}</h3>
-            </div>
-            <div className='resourceList'>
-              {
-                resourcesAppliationsListData.sort((a, b) => a.title.localeCompare(b.title)).map((appItem, appidx) => {
-                  const appkey = `app_${appidx}`;
-                  if (!appItem.link.includes('http')) {
-                    return (
-                      <NavLink id={appItem.id} key={appkey}  className='resourceListItem' to={appItem.link}>
-                        <div className='resourceListItemUpper'>
-                          <div className='resourceListItemLogo' style={{background: `url(${appItem.img})`, backgroundSize: 'cover'}} />
-                          <div className='resourceListItemTitleContainer'>
-                            <div className='resourceListItemTitle upper'>{appItem.title}
-                              {appItem.subtitle && appItem.subtitle.contains ? <span className='resourceListItemTitleSmall noLinkIcon'>{'  (' + appItem.subtitle + ')'}</span> : <span className='resourceListItemTitleSmall noLinkIcon'></span>}
-                            </div>
-                          </div>
-                        </div>
-                        <div className='resourceListItemText'>
-                          <div className='resourceListItemTitle lower'>{appItem.title}
-                            {appItem.subtitle ? <span className='resourceListItemTitleSmall noLinkIcon'>{'  (' + appItem.subtitle + ')'}</span> : <span className='resourceListItemTitleSmall noLinkIcon'></span>}
-                          </div>
-                          <div className='resourceListItemContext'>{appItem.content}</div>
-                        </div>
-                      </NavLink>
-                    );
-                  }
-                  return (
-                    <a id={appItem.id} className='resourceListItem' key={appkey} href={appItem.link} target={appItem.link.includes('http') ? "_blank" : ""} rel="noopener noreferrer">
-                      <div className='resourceListItemUpper'>
-                        <div className='resourceListItemLogo' style={{background: `url(${appItem.img})`, backgroundSize: 'cover'}} />
-                        <div className='resourceListItemTitleContainer'>
-                          <div className='resourceListItemTitle upper'>{appItem.title}
-                            {appItem.subtitle ? <span className='resourceListItemTitleSmall'>{'  (' + appItem.subtitle + ')'}</span> : <span className='resourceListItemTitleSmall'></span>}
-                          </div>
-                        </div>
-                      </div>
-                      <div className='resourceListItemText'>
-                        <div className='resourceListItemTitle lower'>{appItem.title}
-                          {appItem.subtitle ? <span className='resourceListItemTitleSmall'>{'  (' + appItem.subtitle + ')'}</span> : <span className='resourceListItemTitleSmall'></span>}
-                        </div>
-                        <div className='resourceListItemContext'>{appItem.content}</div>
-                      </div>
-                    </a>
-                  )
-                })
-              }
+            <div className={classes.heartbeartAnimation}>
+              <div className={classes.heartbeatPulse}>
+                  <img
+                    src={landingPageData.heartbeatAnimation.heartlineFull}
+                    className={classes.heartbeatPulseImage}
+                    alt={landingPageData.heartbeatAnimation.lineAlt}
+                    />
+              </div>
+              <div className={classes.heartlineTracker}>
+                  <img
+                    src={landingPageData.heartbeatAnimation.tracker}
+                    className={classes.heartlineTrackerImage}
+                    alt={landingPageData.heartbeatAnimation.trackerAlt}
+                    />
+              </div>
             </div>
           </div>
-          <div className='resourceItem'>
-            <div className='resourceSubtitle' style={{color: '#5666BD'}}>
-              <h3 className='resourceSubtitleText'>{titleData.cloudResourcesTitle}</h3>
+        </Grid>
+      </div>
+    </div>
+    <div className={classes.whiteSection} />
+    {/* <StatsView stats={landingPageData.landingPageStatsBar} statsData={statsData} /> */}
+    <div className={classes.container}>
+      <div className={classes.texture}>
+        <Grid container spacing={16} direction="row" className={classes.landingContainer}>
+          <div className={classes.landingContainerInner}>
+            <div className={classes.contentLeft}>
+              <div className={classes.about}>
+                <div className={classes.aboutImageSection}>
+                  <img
+                    src={landingPageData.tile1.img}
+                    className={classes.aboutImage}
+                    alt={landingPageData.tile1.alt}
+                    id="tile1_image"
+                  />
+                </div>
+                <h3 className={classes.DCWords} id="tile1_title">
+                {landingPageData.tile1.titleText}
+                  {/* {landingPageData.tile1.titleText.match(/\b(\w+)\b/g).map((word) => (
+                    <>
+                      {word} 
+                    </>
+                  ))} */}
+                </h3>
+                <div className={classes.aboutContent} id="tile1_description">
+                  {landingPageData.tile1.descriptionText}
+                </div>
+                <div className={classes.aboutButtonSection}>
+                  <div className={classes.aboutButtonLeft}>
+                    <img src={iconAbout} className={classes.iconAbout} alt="CTDC about icon" />
+                  </div>
+                  <div className={classes.aboutButtonRight} id="tile1_button">
+                    <Link
+                      to={landingPageData.tile1.callToActionLink}
+                      className={classes.aboutButton}
+                      reloadDocument={true}
+                    >
+                      {landingPageData.tile1.callToActionText}
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='resourceList'>
-              {
-                resourcesCloudListData.map((cloudItem, cloudidx) => {
-                  const cloudkey = `cloud_${cloudidx}`;
-                  return (
-                    <a id={cloudItem.id} className='resourceListItem' key={cloudkey} href={cloudItem.link} target="_blank" rel="noopener noreferrer">
-                      <div className='resourceListItemUpper'>
-                        <div className='resourceListItemLogo' style={{background: `url(${cloudItem.img})`, backgroundSize: 'cover'}} />
-                        <div className='resourceListItemTitleContainer'>
-                          <div className='resourceListItemTitle upper'>{cloudItem.title}<span className='resourceListItemTitleSmall'>{'  (' + cloudItem.subtitle + ')'}</span></div>
-                        </div>
-                      </div>
-                      <div className='resourceListItemText'>
-                        <div className='resourceListItemTitle lower'>{cloudItem.title}<span className='resourceListItemTitleSmall'>{'  (' + cloudItem.subtitle + ')'}</span></div>
-                        <div className='resourceListItemContext'>{cloudItem.content}</div>
-                      </div>
-                    </a>
-                  )
-                })
-              }
-            </div>
-          </div>
-        </ResourcesContainer>
-      </ResourcesSection>
-    </LandingViewContainer>
-  )
-};
+            <div className={classes.contentRight}>
+              <div className={classes.contentRightTop}>
+                <div className={classes.study}>
+                  <div className={classes.studyImg}>
+                    <img
+                      className={classes.image}
+                      src={landingPageData.tile2.img}
+                      alt={landingPageData.tile2.alt}
+                      id="tile2_image"
+                    />
+                  </div>
+                  <div className={classes.content}>
+                    <h3 className={classes.contentHeader} id="tile2_title">
+                      {landingPageData.tile2.titleText}
+                    </h3>
+                    <div className={classes.contentContainer} id="tile2_description">
+                      {landingPageData.tile2.descriptionText}
+                    </div>
 
-export default LandingView;
+                  </div>
+                  <div className={classes.blueButton}>
+                    <div className={classes.blueButtonLeft}>
+                      <img className={classes.icon} src={icon} alt="CTDC about " />
+                      {' '}
+                    </div>
+                    <div className={classes.blueButtonRight} id="tile2_button">
+                      <Link
+                        to={landingPageData.tile2.callToActionLink}
+                        className={classes.blueButton}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        {landingPageData.tile2.callToActionText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                <div className={classes.studies}>
+                  <div className={classes.studyImg}>
+                    <img
+                      className={classes.image}
+                      src={landingPageData.tile3.img}
+                      alt={landingPageData.tile3.alt}
+                      id="tile3_image"
+                    />
+                  </div>
+                  <div className={classes.tile3Content}>
+                    <h3 className={classes.contentHeader} id="tile3_title">
+                      {landingPageData.tile3.titleText}
+                    </h3>
+                    <div className={classes.contentContainer} id="tile3_description">
+                      {landingPageData.tile3.descriptionText}
+                    </div>
+
+                  </div>
+                  <div className={classes.blueButton}>
+                    <div className={classes.blueButtonLeft}>
+                      <img className={classes.icon} src={icon} alt="CTDC about " />
+                      {' '}
+                    </div>
+                    <div className={classes.blueButtonRight} id="tile3_button">
+                      <Link
+                        to={landingPageData.tile3.callToActionLink}
+                        className={classes.blueButton}
+                        reloadDocument={true}
+                      >
+                        {landingPageData.tile3.callToActionText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className={classes.contentRightBottom}>
+                <div className={classes.cases} id="tile4_image">
+                  <h3 className={classes.mountainMeadowContentHeader} id="tile4_title">
+                    {landingPageData.tile4.titleText}
+                  </h3>
+                  <div className={classes.mountainMeadowContent} id="tile4_description">
+                    {landingPageData.tile4.descriptionText}
+                  </div>
+                  <div className={classes.mountainMeadowButtonSection}>
+                    <div className={classes.blueButtonLeft}>
+                      <img className={classes.mountainMeadowIcon} src={icon} alt="CTDC about " />
+                      {' '}
+                    </div>
+                    <div className={classes.blueButtonRight} id="tile4_button">
+                      <Link
+                        to={landingPageData.tile4.callToActionLink}
+                        className={classes.mountainMeadowButton}
+                        reloadDocument={true}
+                      >
+                        {landingPageData.tile4.callToActionText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Grid>
+      </div>
+
+    </div>
+  </div>
+);
+const styles = () => ({
+  "@keyframes heartbeatPulse": {
+    "0%": {
+      clipPath: "inset(0px 100% 0px 0px)" 
+    },
+    "32.33%": { //left
+      clipPath: "inset(0px 47.1% 0px 0px)" 
+    },
+    "39.67%": { //peak
+      clipPath: "inset(0px 45.2% 0px 0px)" 
+    },
+    "47%": { //drop -3
+      clipPath: "inset(0px 43% 0px 0px)" 
+    },
+    "51.56%": { //left -4
+      clipPath: "inset(0px 31.0% 0px 0px)" 
+    },
+    "58.89%": { //peak -5
+      clipPath: "inset(0px 29.0% 0px 0px)" 
+    },
+    "66.22%": { //drop -6
+      clipPath: "inset(0px 26.8% 0px 0px)" 
+    },
+    "70.78%": { //left -7
+      clipPath: "inset(0px 14.8% 0px 0px)" 
+    },
+    "78.11%": { //peak -8
+      clipPath: "inset(0px 12.9% 0px 0px)" 
+    },
+    "85.44%": { //drop -9 
+      clipPath: "inset(0px 10.7% 0px 0px)" 
+    },
+    "88%": {
+      clipPath: "inset(0px 1.7% 0px 0px)",
+      opacity: '1'
+    },
+    "100%": {
+      clipPath: "inset(0px 1.7% 0px 0px)",
+      opacity: '0'
+    },
+  },
+  heartbeatPulse:{
+    '--svg-width': '618px',
+    '--svg-height': '67px',
+    position: 'absolute',
+    left: '50%',
+    marginLeft: '-720px',
+    top: '515px',
+    animation: '6s $heartbeatPulse infinite linear',
+  },
+  "@keyframes heartlineTracking": {
+    "0%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "-726px", 
+    },
+    "32.33%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "47px",  
+    },
+    "39.67%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "77px", 
+    },
+    "47%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "107px",  
+    },
+    "51.56%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "284px",
+    },
+    "58.89%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "314px", 
+    },
+    "66.22%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "344px", 
+    },
+    "70.78%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "520px", 
+    },
+    "78.11%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "550px", 
+    },
+    "85.44%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "580px", 
+    },
+    "88%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "711px", 
+      opacity: '1'
+    },
+    "100%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "711px", 
+      opacity: '0'
+    },
+  },
+  heartlineTracker:{
+    position: 'absolute',
+    top: '570px',
+    left: '50%',
+    marginLeft: "-726px",
+    animation: '6s $heartlineTracking infinite linear'
+  },
+  page: {
+    marginTop: '0px',
+  },
+  heroImage: {
+    width: '100%',
+    maxWidth: '100%',
+    height: '670px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundImage: `url(${landingPageData.landingPageHero.img})`,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  heroFrame: {
+    height: '614px',
+    width: '1440px',
+    border: 'solid 3.25px #f7fbfd',
+    borderRadius: '12px'
+  },
+  texture: {
+    backgroundSize: 'cover',
+    padding: '50px 0 80px 0',
+    backgroundImage: `url(${landingPageData.landingTileBackground.img})`,
+  },
+  container: {
+    fontFamily: 'Raleway, sans-serif',
+    margin: '0 auto',
+
+  },
+  whiteSection: {
+    background: 'white',
+  },
+  redButton: {
+    height: '13px',
+    color: '#FFFFFF',
+    fontFamily: 'Raleway',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    lineHeight: '47px',
+    textAlign: 'center',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    letterSpacing: '0.8px',
+  },
+  headerTitle: {
+    fontFamily: 'Poppins, Inter, Raleway, sans-serif',
+    fontSize: '45px',
+    fontWeight: '600',
+    lineHeight: '45px',
+    color: '#009485',
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
+    margin: '0',
+  },
+  paddingLeft50: {
+    paddingLeft: '50px',
+  },
+  headerContent: {
+    color: '#0C534C',
+    fontFamily: 'Inter',
+    fontSize: '22px',
+    fontWeight: '500',
+    lineHeight: '28px',
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
+    paddingTop: '14px',
+    margin: '0',
+  },
+  headerLink: {
+    textDecoration: 'none',
+  },
+  statsBubbleContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '669px',
+    paddingTop: '33px',
+  },
+  statsBubbleText: {
+    fontFamily: 'Poppins',
+    fontWeight: '600',
+    fontSize: '15px',
+    lineHeight: '20px',
+    letterSpacing: '2%',
+    color: '#004358',
+    textTransform: 'uppercase',
+  },
+  "@keyframes diagnosesHighlight": {
+    "39.67%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "47%": {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "58.39%%": {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "58.89%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleDiagnoses: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    marginRight: '42px',
+    '&:hover': {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleDiagnosesCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    animation: '6s $diagnosesHighlight infinite cubic-bezier(0,1.12,0,.97)',
+  },
+  "@keyframes participantsHighlight": {
+    "58.89%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "66.22%": {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "77.61%": {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "78.11%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleParticipants: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    marginRight: '42px',
+    '&:hover': {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleParticipantsCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    animation: '6s $participantsHighlight infinite cubic-bezier(0,1.12,0,.97)', 
+  },
+  "@keyframes studiesHighlight": {
+    "78.11%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "95.44%": {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "96.83%": {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "97.33%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleStudies: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    '&:hover': {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleStudiesCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    animation: '6s $studiesHighlight infinite cubic-bezier(0,1.12,0,.97)',  
+  },
+  "@keyframes diagnosesNumberHighlight": {
+    "39.67%": {
+      visibility: 'hidden',
+    },
+    "47%": {
+      visibility: 'visible',
+    },
+    "58.89%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleDiagnosesCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#007dd9',
+    visibility: 'hidden',
+    animation: '6s $diagnosesNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  statsBubbleDiagnosesNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleDiagnosesMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  "@keyframes participantsNumberHighlight": {
+    "58.89%": {
+      visibility: 'hidden',
+    },
+    "66.22%": {
+      visibility: 'visible',
+    },
+    "78.11%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleParticipantsCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    fontSize: '28px',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#21aa79',
+    visibility: 'hidden',
+    animation: '6s $participantsNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+
+  },
+  statsBubbleParticipantsNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleParticipantsMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  "@keyframes studiesNumberHighlight": {
+    "78.11%": {
+      visibility: 'hidden',
+    },
+    "95.44%": {
+      visibility: 'visible',
+    },
+    "97.33%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleStudiesCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    fontSize: '28px',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#ffbe18',
+    visibility: 'hidden',
+    animation: '6s $studiesNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  statsBubbleStudiesNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleStudiesMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  statsBubbleDiagnosesIcon: {
+    width: '41px',
+    height: '41px',
+    marginTop: '13px',
+  },
+  statsBubbleParticipantsIcon: {
+    width: '34px',
+    height: '43px',
+    marginTop: '11px',
+  },
+  statsBubbleStudiesIcon: {
+    width: '36px',
+    height: '38px',
+    marginTop: '16px',
+  },
+  iconAbout: {
+    height: '17px',
+    width: '9px',
+    marginTop: '15px',
+    marginLeft: '20px',
+  },
+  icon: {
+    width: '20px',
+    marginTop: '13px',
+    marginLeft: '23px',
+  },
+
+  aboutImage: {
+    width: '100%',
+    height: TILE_IMAGE_HEIGHT,
+    objectFit: 'cover',
+  },
+  aboutImageSection: {
+    height: TILE_IMAGE_HEIGHT,
+    width: '100%',
+    overflow: 'hidden',
+  },
+  DCWords: {
+    height: '200px',
+    background: '#334a9b',
+    color: '#FFFFFF',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    lineHeight: '33px',
+    fontWeight: '500',    
+    padding: '20px 28px 28px 24px',
+    margin: '0',
+  },
+  landingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contentLeft: {
+    flex: `0 0 ${CONTENT_LEFT_WIDTH}`,
+    boxSizing: 'border-box',
+  },
+  contentRight: {
+    flex: `0 0 ${CONTENT_RIGHT_WIDTH}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: LAYOUT_GAP,
+    boxSizing: 'border-box',
+  },
+  about: {
+    width: CONTENT_LEFT_WIDTH,
+    height: '100%',
+    backgroundColor: 'white',
+    border: 'solid 2px #096761',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  image: {
+    width: '100%',
+    height: TILE_IMAGE_HEIGHT,
+    objectFit: 'cover',
+  },
+  aboutContent: {
+    background: 'white',
+    minHeight: '372px',
+    width: '296px',
+    padding: '25px 35px 0px 24px',
+    color: '#000000',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    fontWeight: '400',
+    lineHeight: '24px',
+    flex: 1,
+  },
+  aboutButtonSection: {
+    background: 'white',
+    marginBottom: LAYOUT_GAP,
+  },
+  imgIconAbout: {
+    width: '49px',
+  },
+  aboutButtonLeft: {
+    float: 'left',
+    background: '#AE5E1B',
+    height: '45px',
+    width: '48px',
+  },
+  aboutButtonRight: {
+    background: '#844715',
+    float: 'left',
+    height: '45px',
+    width: '132px',
+  },
+  aboutButton: {
+    color: '#ffffff',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    fontSize: '12px',
+    fontWeight: '600',
+    lineHeight: '45px',
+    paddingLeft: '20px',
+    boxShadow: 'none',
+    letterSpacing: '1px',
+  },
+
+  content: {
+    width: '100%',
+    height: '155px',
+    overflowY: 'auto',
+    background: '#fff',
+    paddingLeft: '30px',
+    paddingTop: '5px',
+    minHeight: '138px',
+  },
+  tile3Content: {
+    width: '100%',
+    height: '155px',
+    overflowY: 'auto',
+    background: '#fff',
+    paddingLeft: '30px',
+    paddingTop: '5px',
+    minHeight: '138px',
+  },
+  contentHeader: {
+    color: '#343434',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    fontWeight: '500',
+    lineHeight: '32px',
+    padding: '12px 0 6px 0',
+    margin: '0',
+  },
+  contentContainer: {
+    width: '245px',
+    color: '#000',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    fontWeight: '400',
+    lineHeight: '24px',
+  },
+
+  contentRightTop: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: LAYOUT_GAP,
+    boxSizing: 'border-box',
+  },
+  study: {
+    border: 'solid 2px #096761',
+    flex: 1,
+    boxSizing: 'border-box',
+  },
+  studyImg: {
+    background: '#fff',
+    height: TILE_IMAGE_HEIGHT,
+    width: '100%',
+    overflow: 'hidden',
+  },
+  studies: {
+    border: 'solid 2px #096761',
+    flex: 1,
+    boxSizing: 'border-box',
+  },
+
+  contentRightBottom: {
+    background: '#fff',
+    backgroundImage: `url(${landingPageData.tile4.img})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+  },
+  cases: {
+    height: '436px',
+    marginLeft: '395px',
+    marginTop: '70px',
+    background: '#0d4545'
+  },
+  mountainMeadowButtonSection: {
+    height: '44px',
+    width: '184px',
+    marginTop: '60px',
+    backgroundColor: 'transparent',
+    border: '1px white solid',
+  },
+  blueButton: {
+    height: '45px',
+    background: '#096761',
+    color: '#FFFFFF',
+    fontFamily: 'Raleway',
+    fontSize: '12px',
+    fontWeight: '600',
+    lineHeight: '25px',
+    paddingLeft: '8px',
+    textDecoration: 'none',
+    letterSpacing: '1px',
+  },
+  blueButtonLeft: {
+    float: 'left',
+  },
+  blueButtonRight: {
+    float: 'left',
+    lineHeight: '44px',
+    marginLeft: '8px',
+    fontFamily: 'Lato',
+    fontSize: '14px',
+    color: '#fff',
+    textTransform: 'uppercase'
+  },
+  mountainMeadowContentHeader: {
+    color: '#ffffff',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    fontWeight: '500',
+    lineHeight: '32px',
+    padding: '15px 0',
+    margin: '0',
+  },
+  mountainMeadowContent: {
+    width: '184px',
+    color: '#ffffff',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    lineHeight: '24px',
+  },
+  mountainMeadowIcon: {
+    width: '20px',
+    marginTop: '12px',
+    marginLeft: '28px',
+  },
+  mountainMeadowButton: {
+    padding: '15px 5px 0 0',
+    height: '9px',
+    width: '71px',
+    color: '#FFFFFF',
+    fontFamily: 'Raleway',
+    fontSize: '12px',
+    fontWeight: '600',
+    lineHeight: '19.31px',
+    textDecoration: 'none',
+    marginLeft: '8px',
+    letterSpacing: '1px',
+    '&:hover': {
+      color: '#ffffff',
+    },
+  },
+  paddingBottom50: {
+    paddingBottom: '50px',
+  },
+  paddingTop30: {
+    paddingTop: '30px',
+  },
+  animationContainer: {
+    position: 'relative',
+    left: '33%',
+  },
+
+  paddingLeft2: {
+    paddingLeft: '2px',
+  },
+  heroTextContainer: {
+    position: 'relative',
+    width: '669px',
+    margin: 'auto',
+    left: '321px',
+  },
+  heroTextWrapper: {
+    paddingTop: '68px',
+  },
+  buttonText: {
+    padding: '12px 30px',
+    height: '40px',
+  },
+  landingContainerInner: {
+    display: 'flex',
+    gap: LAYOUT_GAP,
+    background: '#e2fff6',
+    padding: CONTAINER_PADDING,
+    boxSizing: 'border-box',
+  },
+});
+export default withStyles(styles, { withTheme: true })(LandingView);

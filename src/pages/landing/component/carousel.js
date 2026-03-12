@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
 import usePageVisibility from "./PageVisibility";
 import styled from 'styled-components';
 import { carouselList } from '../../../bento/landingPageData'
@@ -194,15 +193,14 @@ const HeroList = styled.div`
     .listItemContent {
         color: rgba(0, 0, 0, 0.7);
         font-family: poppins;
-        font-weight: 400;
-        font-size: 22px;
+        font-weight: 600;
+        font-size: 18px;
         line-height: 25px;
-        letter-spacing: -1%;
         width: 300px;
         text-decoration: none;
         display: flex;
         align-items: center;
-        letter-spacing: -0.056px;
+        letter-spacing: -0.01em;
         margin-left: 41px;
         transition: 650ms;
     }
@@ -253,10 +251,6 @@ const HeroList = styled.div`
 
         .listItemContent {
             color: #01828C;
-            font-weight: 600;
-            font-size: 28px;
-            line-height: 30px;
-            letter-spacing: -0.2%;
             transform: translateX(10px) scale(1.05, 0.82);
         }
 
@@ -282,44 +276,8 @@ const HeroList = styled.div`
         visibility: visible;
     }
 
-    .carousel__item:nth-child(7) {
-        transform: translateY(360%) scale(1);
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .carousel__item:nth-child(8) {
-        transform: translateY(365%) scale(1);
-        opacity: 1;
-    }
-
-    .carousel__item:nth-child(9) {
-        transform: translateY(370%) scale(1);
-        opacity: 1;
-    }
-
-    .carousel__item:nth-child(10) {
-        transform: translateY(375%) scale(1);
-        opacity: 1;
-    }
-
-    .carousel__item:nth-child(11) {
-        transform: translateY(380%) scale(1);
-        opacity: 1;
-    }
-
-    .carousel__item:nth-child(12) {
-        transform: translateY(385%) scale(1);
-        opacity: 1;
-    }
-
-    // .carousel__item:nth-child(13) {
-    //     transform: translateY(390%) scale(1);
-    //     opacity: 1;
-    // }
-
     .carousel__item:last-child {
-        transform: translateY(395%) scale(1);
+        transform: translateY(365%) scale(1);
         opacity: 0;
         visibility: hidden;
     }
@@ -414,7 +372,7 @@ const Carousel = () => {
 
     useEffect(() => {
         if (rCarouselList.length === 0) {
-            setRCarouselList(getRandomList(carouselList.sort((a, b) => a.content.localeCompare(b.content))));
+            setRCarouselList(getRandomList(carouselList));
         }
         if (!isVisible) {
             clearInterval(timer);
@@ -446,20 +404,9 @@ const Carousel = () => {
                             {
                                 rCarouselList.map((item, idx) => {
                                     const key = `carousel_${idx}_last_clone`;
-                                    if (!item.link.includes('http')) {
-                                        return (
-                                            <div key={key} className='carousel__item'>
-                                                <div className='itemImgBox'><img className='itemImg' src={item.img} alt={item.content} width="243px" height="102px" /></div>
-                                                <NavLink className='listItemContent' to={item.link}>{item.content}</NavLink>
-                                                <NavLink className="exportContainer" to={item.link}>
-                                                    <img className='exportIcon' src={exportIcon} alt="exportIcon"/>
-                                                </NavLink>
-                                            </div>
-                                        )
-                                    }
                                     return (
                                         <div key={key} className='carousel__item'>
-                                            <div className='itemImgBox'><img className='itemImg' src={item.img} alt={item.content} width="243px" height="102px" /></div>
+                                            <div className='itemImgBox'><img className='itemImg' src={item.img} alt={key} width="243px" height="102px" /></div>
                                             <a className='listItemContent' href={item.link} target="_blank" rel="noopener noreferrer">{item.content}</a>
                                             <a className="exportContainer" href={item.link} target="_blank" rel="noopener noreferrer">
                                                 <img className='exportIcon' src={exportIcon} alt="exportIcon"/>

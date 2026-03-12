@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { FACET_NAMES, obtainColorFromSectionName } from '../../../bento/dashTemplate';
 
 const theme = {
   overrides: {
@@ -43,150 +44,87 @@ const theme = {
     },
     MuiListItem: {
       root: {
-        '&.diagnosisCheckedEven': {
-          backgroundColor: '#BBCFC840',
-        },
-        '&.diagnosisCheckedOdd': {
-          backgroundColor: '#E4ECE940',
-        },
-        '&.demographicsCheckedEven': {
-          backgroundColor: '#C8A4C840',
-        },
-        '&.demographicsCheckedOdd': {
-          backgroundColor: '#E1C9E140',
-        },
-        '&.treatmentCheckedEven': {
-          backgroundColor: '#D9DFFF40',
-        },
-        '&.treatmentCheckedOdd': {
-          backgroundColor: '#DCDEED40',
-        },
-        '&.treatmentresponseCheckedEven': {
-          backgroundColor: '#D9C5A040',
-        },
-        '&.treatmentresponseCheckedOdd': {
-          backgroundColor: '#F0DFBD40',
-        },
-        '&.survivalCheckedEven': {
-          backgroundColor: '#E1B4AD40',
-        },
-        '&.survivalCheckedOdd': {
-          backgroundColor: '#F8D7D240',
-        },
-        '&.samplesCheckedEven': {
-          backgroundColor: '#9FBCDD40',
-        },
-        '&.samplesCheckedOdd': {
-          backgroundColor: '#CEDEF040',
-        },
-        '&.datacategoryCheckedEven': {
-          backgroundColor: '#95C6B340',
-        },
-        '&.datacategoryCheckedOdd': {
-          backgroundColor: '#DDEAE540',
-        },
         '&.studyCheckedEven': {
-          backgroundColor: '#BBCFC840',
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.STUDY).zebraStripesColor1,
         },
         '&.studyCheckedOdd': {
-          backgroundColor: '#E4ECE940',
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.STUDY).zebraStripesColor2,
         },
-        '&.sequencinglibraryCheckedEven': {
-          backgroundColor: '#C8A4C840',
+        '&.demographicsCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.DEMOGRAPHICS).zebraStripesColor1,
         },
-        '&.sequencinglibraryCheckedOdd': {
-          backgroundColor: '#E1C9E140',
+        '&.demographicsCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.DEMOGRAPHICS).zebraStripesColor2,
+        },
+        '&.diagnosisCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.DIAGNOSIS).zebraStripesColor1,
+        },
+        '&.diagnosisCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.DIAGNOSIS).zebraStripesColor2,
+        },
+        '&.geneticanalysisCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.GENETICANALYSIS).zebraStripesColor1,
+        },
+        '&.geneticanalysisCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.GENETICANALYSIS).zebraStripesColor2,
+        },
+        '&.treatmentCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENT).zebraStripesColor1,
+        },
+        '&.treatmentCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENT).zebraStripesColor2,
+        },
+        '&.treatmentresponseCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENTRESPONSE).zebraStripesColor1,
+        },
+        '&.treatmentresponseCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENTRESPONSE).zebraStripesColor2,
+        },
+        '&.survivalCheckedEven': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.SURVIVAL).zebraStripesColor1,
+        },
+        '&.survivalCheckedOdd': {
+          backgroundColor: obtainColorFromSectionName(FACET_NAMES.SURVIVAL).zebraStripesColor2,
         },
       },
     },
-    MuiSvgIcon: {
+    MuiListItemText: {
       root: {
-        '&.demographicsCheckedIcon': {
-          color: '#6D5F5B',
-        },
-        '&.diagnosisCheckedIcon': {
-          color: '#6D5F5B',
-        },
-        '&.samplesCheckedIcon': {
-          color: '#6D5F5B',
-        },
-        '&.datacategoryCheckedIcon': {
-          color: '#6D5F5B',
-        },
-        '&.studyCheckedIcon': {
-          color: '#6D5F5B',
-        },
-        '&.sequencinglibraryCheckedIcon': {
-          color: '#6D5F5B',
-        },
+        flex: 'none',
+        //width: '3px',
+        paddingRight: '3px',
       },
     },
     MuiTypography: {
-      root: {
-        '&.diagnosisSubjects': {
-          color: '#357288',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.demographicsSubjects': {
-          color: '#7D267E',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.treatmentSubjects': {
-          color: '#1F6BBF',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.treatmentresponseSubjects': {
-          color: '#E9B34A',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.survivalSubjects': {
-          color: '#CD5C4E',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.samplesSubjects': {
-          color: '#1F6BBF',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.datacategorySubjects': {
-          color: '#60C4A1',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.studySubjects': {
-          color: '#357288',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
-        },
-        '&.sequencinglibrarySubjects': {
-          color: '#7D267E',
-          fontSize: '12px',
-          fontFamily: 'Nunito',
-          marginRight: '0px',
-          fontWeight: '600',
+      body1: {
+        color: '#000000',
+        fontFamily: 'Nunito',
+        fontWeight: '300',
+        fontSize: '14px !important',
+        lineHeight: '19.1px',
+      },
+    },
+    MuiSlider: {
+      thumb: {
+        height: 16,
+        width: 16,
+        "&.invalidThumb": {
+          height: "16px !important",
+          width: "16px !important",
         },
       },
+      track: {
+        borderRadius: 4,
+        height: 6,
+        "&.invalidTrack": {
+          borderRadius: "4px !important",
+          height: "6px !important",
+        },
+        '&~&': {
+          background: '#142D64',
+        },
+      },
+
     },
     MuiDivider: {
       middle: {
@@ -196,31 +134,25 @@ const theme = {
       root: {
         height: '8px',
         '&.divider0': {
-          backgroundColor: '#4D889E',
+          backgroundColor: '#006A8F',
         },
         '&.divider1': {
-          backgroundColor: '#974599',
+          backgroundColor: '#E39520',
         },
         '&.divider2': {
-          backgroundColor: '#4150A4',
+          backgroundColor: '#35B899',
         },
         '&.divider3': {
-          backgroundColor: '#E9B34A',
+          backgroundColor: '#268CEA',
         },
         '&.divider4': {
-          backgroundColor: '#CD5C4E',
+          backgroundColor: '#9664C7',
         },
         '&.divider5': {
-          backgroundColor: '#1F6BBF',
+          backgroundColor: '#006B57',
         },
         '&.divider6': {
-          backgroundColor: '#60C4A1',
-        },
-        '&.divider7': {
-          backgroundColor: '#357288',
-        },
-        '&.divider8': {
-          backgroundColor: '#974599',
+          backgroundColor: '#862405',
         },
       },
     },

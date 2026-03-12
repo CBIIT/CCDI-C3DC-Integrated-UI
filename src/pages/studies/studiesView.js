@@ -1,175 +1,168 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import headerImg from '../../assets/resources/Studies_Header.png';
+import React from 'react';
+import {
+  Grid,
+  withStyles,
+} from '@material-ui/core';
+import { 
+  TableContextProvider,
+  TableView,
+} from '@bento-core/paginated-table';
 import { table } from '../../bento/studiesData';
-import { TableView } from '@bento-core/paginated-table';
+import { configColumn } from '../inventory/tabs/tableConfig/Column';
+import Stats from '../../components/Stats/GlobalStatsController';
+import { Typography } from '../../components/Wrappers/Wrappers';
 import { themeConfig } from './tableConfig/Theme';
-import { configColumn } from './tableConfig/Column.js';
-import studyIcon from '../../assets/icons/Study_Icon.svg';
-import breadcrumbIcon from '../../assets/icons/Breadcrumb_Icon.svg';
-import { useApolloClient } from '@apollo/client';
-import { GET_NUMBER_OF_STUDIES } from '../../bento/studiesData';
+import studiesListingBackground from '../../assets/studies/studiesListingBackground.png';
 
-const StudiesContainer = styled.div`
-  .breadcrumb {
-    font-family: Public Sans;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 162%;
-    padding-left: 30px;
-    // margin-left: 50px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-  .breadcrumbIcon {
-    position: relative;
-    top: 4px;
-  }
-  .resourceHeader {
-    width: 100%;
-    background: #e6ebee;
-  }
 
-  .resourceHeaderBackground {
-    width: 100%;
-    height: 214px;
-    background-image: url(${headerImg});
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size: cover;
-  }
+const initTblState = (initailState) => ({
+  ...initailState,
+  title: table.name,
+  columns: configColumn(table.columns),
+  selectedRows: [],
+  hiddenSelectedRows: [],
+  tableMsg: table.tableMsg,
+  sortBy: table.defaultSortField,
+  sortOrder: table.defaultSortDirection,
+  rowsPerPage: 10,
+  dataKey: table.dataKey,
+  page: 0,
+  paginationCustomStyle : {
+    topPagination: {
 
-  .resourceHeaderText {
-    // width: 1420px;
-    margin: 0 auto;
-    padding: 150px 0 0 88px;
-    color: #19676D;
-    font-family: Poppins;
-    font-size: 40px;
-    font-weight: 400;
-  }
+    },
+    bottomPagination: {
+      borderTop: '3px solid #8A7F7C',
+    },
+  },
+  extendedViewConfig: {
+    pagination: true,
+  },
+});
 
-  .resourceTitleContainer {
-    background: #0E546E;
-  }
-
-  .resourceTitle {
-    // width: 1420px;
-    margin: 0 auto;
-    display: flex;
-    line-height: 38px;
-    background: #0E546E;
-    font-family: Poppins;
-    font-weight: 600;
-    color: #ffffff;
-    font-size: 35px;
-    padding: 13px 0 13px 88px;
-  }
-
-  .resourceBody {
-    margin-left: 45px;
-    margin-right: 45px;
-    padding-top: 45px;
-    padding-bottom: 45px;
-  }
-
-  .studyIcon{
-    margin-left: 30px;
-  }
-
-  @media (min-width: 1420px) {
-    .breadcrumb {
-        width: 1420px;
-        margin: 0 auto;
-    }
-  }
-`;
-
-const StudiesView = () => {
-
-  const client = useApolloClient();
-
-  const [studies, setNumStudies] = useState(0);
-  const [studiesData, setStudiesData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  const initTblState = (initialState) => ({
-    ...initialState,
-    title: 'Studies Table',
-    query: table.api,
-    paginationAPIField: table.paginationAPIField,
-    dataKey: table.dataKey,
-    columns: configColumn(table.columns),
-    sortBy: table.defaultSortField,
-    sortOrder: table.defaultSortDirection,
-    extendedViewConfig: table.extendedViewConfig,
-    selectedRows: [],
-    rowsPerPageOptions: [50, 100],
-    rowsPerPage: 50,
-    page: 0,
-  });
-
-  async function fetchAllStudies() {
-    try {
-      setLoading(true);
-      const [studiesResult, countResult] = await Promise.all([
-        client.query({
-          query: table.api,
-          variables: {
-            first: 10000, // Fetch all studies
-            offset: 0,
-            order_by: table.defaultSortField,
-            sort_direction: table.defaultSortDirection,
-          },
-        }),
-        client.query({
-          query: GET_NUMBER_OF_STUDIES,
-          variables: {},
-        })
-      ]);
-      
-      setStudiesData(studiesResult.data[table.paginationAPIField] || []);
-      setNumStudies(countResult.data.numberOfStudies);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching studies:', error);
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchAllStudies();
-  }, [])
-
+const Studies = ({ classes, data }) => {
   return (
-    <StudiesContainer>
-      <div className='breadcrumb'><a href='/'>Home</a>
-        <img src={breadcrumbIcon} alt="breadcrumb icon" className='breadcrumbIcon'/>
-      Studies
-      </div>
-      <div className='resourceHeader'>
-        <div className='resourceHeaderBackground'>
-          <div className='resourceHeaderText'>CCDI Hub</div>
-        </div>
-      </div>
-      <div className='resourceTitleContainer'>
-        <div className='resourceTitle'>Studies<img src={studyIcon} alt="study icon" className='studyIcon'/></div>
-      </div>
-      <div className='resourceBody'>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '50px' }}>Loading studies...</div>
-        ) : (
-          <TableView
-            initState={initTblState}
-            themeConfig={themeConfig}
-            server={false}
-            tblRows={studiesData}
-            totalRowCount={studies}
-          />
-        )}
-      </div>
-    </StudiesContainer>
-  );
-}
+    <>
+      {
+        <Stats />
+        }
+      <div className={classes.tableContainer}>
+        <div className={classes.container}>
+          <div className={classes.header}>
+            <div className={classes.headerTitle}>
+                <span>
+                  <Typography>
+                    <span className={classes.headerMainTitle}>{table.title}</span>
+                  </Typography>
+                </span>
+            </div>
+          </div>
 
-export default StudiesView;
+          { table.display ? (
+            <div id="table_studies" className={classes.tableDiv}>
+              <TableContextProvider>
+                  <Grid container>
+                    <Grid item xs={12} id={table.tableID}>
+                      <TableView
+                        initState={initTblState}
+                        server={false}
+                        themeConfig={themeConfig}
+                        tblRows={data[table.dataField]}
+                        totalRowCount={data[table.dataField].length}
+                        activeTab={true}
+                      />
+                    </Grid>
+                  </Grid>
+              </TableContextProvider>
+            </div>
+            
+          ) : ''}
+        </div>
+
+      </div>
+    </>
+  );
+};
+
+const styles = (theme) => ({
+
+  link: {
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    color: theme.palette.text.link,
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  card: {
+    minHeight: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  container: {
+    margin: 'auto',
+    maxWidth: '1440px',
+    padding: '10px 94px 10px 94px',
+  },
+  paper: {
+    textAlign: 'center',
+  },
+  fakeToolbar: {
+    ...theme.mixins.toolbar,
+  },
+  root: {
+    fontFamily: '"Lato Regular","Open Sans", sans-serif',
+    fontSize: '9pt',
+    letterSpacing: '0.025em',
+    color: '#000',
+    background: '#eee',
+  },
+  header: {
+    paddingTop: '50px',
+    paddingBottom: '38px',
+    display: 'flex',
+  },
+  headerMainTitle: {
+    fontFamily: 'Poppins',
+    fontWeight: '500',
+    color: '#FFFFFF',
+    fontSize: '35px',
+    lineHeight: '45px',
+    background: '#52979d',
+  },
+  headerTitle: {
+    maxWidth: '1440px',
+    margin: 'auto',
+  },
+  logo: {
+    position: 'absolute',
+    float: 'left',
+    marginLeft: '-17px',
+    width: '100px',
+    filter: 'drop-shadow(-3px 2px 6px rgba(27,28,28,0.29))',
+  },
+  tableContainer: {
+    backgroundImage: `url(${studiesListingBackground})`,
+    backgroundSize: 'cover',
+    width: '100%',
+    minHeight: '600px',  
+    paddingBottom: '50px',
+  },
+  tableDiv: {
+    padding: '25px 40px',
+    background: 'white',
+    borderRadius: '20px',
+    border: '2.5px solid #9FBEB5',
+  },
+  externalLinkIcon: {
+    width: '14.5px',
+    verticalAlign: 'sub',
+    marginLeft: '4px',
+    paddingBottom: '2px',
+  },
+  linkSpan: {
+    display: '-webkit-box',
+  },
+});
+
+export default withStyles(styles, { withTheme: true })(Studies);

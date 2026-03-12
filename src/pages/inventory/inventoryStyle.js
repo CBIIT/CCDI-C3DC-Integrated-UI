@@ -1,21 +1,26 @@
+import { obtainColorFromFacetIndex } from "../../bento/dashTemplate";
 
 export default () => ({
-  customButton: {
-    borderRadius: '9px',
-    maxWidth: '30px',
-    maxHeight: '30px',
-    minWidth: '30px',
-    minHeight: '30px',
-    marginTop: '0px',
-    fontSize: 9,
-    textTransform: 'none',
-    color: '#3d4241',
-    marginLeft: '0px',
-    border: '1px solid #ffffff',
-    '&:hover': {
+    customButton: {
+      borderRadius: '9px',
+      maxWidth: '30px',
+      maxHeight: '30px',
+      minWidth: '30px',
+      minHeight: '30px',
+      marginTop: '0px',
+      fontSize: 9,
+      textTransform: 'none',
+      color: '#3d4241',
+      marginLeft: '0px',
+      border: '1px solid #063134 !important',
       backgroundColor: '#ffffff',
-      color: '#337478',
-    },
+      '&:hover': {
+        backgroundColor: '#063134',
+        border: '1px solid #063134',
+      },
+      '&:disabled': {
+        border: '1px solid #AEBDBE !important',
+      },
   },
   divider: {
     marginLeft: '0px',
@@ -23,50 +28,48 @@ export default () => ({
     height: '8px',
     // backgroundColor: '#4D889E',
     '&.divider0': {
-      backgroundColor: '#4D889E',
+      backgroundColor: obtainColorFromFacetIndex(0).facetCategoryColor,
     },
     '&.divider1': {
-      backgroundColor: '#974599',
+      backgroundColor: obtainColorFromFacetIndex(1).facetCategoryColor,
     },
     '&.divider2': {
-      backgroundColor: '#4150A4',
+      backgroundColor: obtainColorFromFacetIndex(2).facetCategoryColor,
     },
     '&.divider3': {
-      backgroundColor: '#E9B34A',
+      backgroundColor: obtainColorFromFacetIndex(3).facetCategoryColor,
     },
     '&.divider4': {
-      backgroundColor: '#CD5C4E',
+      backgroundColor: obtainColorFromFacetIndex(4).facetCategoryColor,
     },
     '&.divider5': {
-      backgroundColor: '#1F6BBF',
+      backgroundColor: obtainColorFromFacetIndex(5).facetCategoryColor,
     },
     '&.divider6': {
-      backgroundColor: '#60C4A1',
-    },
-    '&.divider7': {
-      backgroundColor: '#357288',
-    },
-    '&.divider8': {
-      backgroundColor: '#974599',
+      backgroundColor: obtainColorFromFacetIndex(6).facetCategoryColor,
     },
   },
   floatRight: {
     display: 'flex',
-    backgroundColor: '#337478',
-    padding: '7px 0px 10px 6px',
+    backgroundColor: '#DBF0F3',
+    padding: '8px 0px 8px 12.5px',
   },
   resetText: {
     marginTop: '0px',
     marginLeft: '8px',
-    color: '#ffffff',
+    color: '#415153',
     fontSize: 14,
+    fontFamily: 'Nunito Sans',
+    fontWeight: 600,
     lineHeight: '30px',
   },
   resetTextDisabled: {
     marginTop: '0px',
     marginLeft: '8px',
-    color: '#ffffff',
+    color: '#AEBDBE',
     fontSize: 14,
+    fontFamily: 'Nunito Sans',
+    fontWeight: 600,
     lineHeight: '30px',
   },
   backdrop: {
@@ -79,36 +82,48 @@ export default () => ({
   },
   contentBox: {
     paddingTop: '0px',
+    borderTop: '1px solid #B0B0B0',
   },
   content: {
     display: 'flex',
     maxWidth: '1800px',
     margin: 'auto',
-    borderLeft: 'thin solid #8A7F7C',
+  },
+  activeFiltersCountContainer: {
+    borderBottom: '#000000 1px solid',
   },
   activeFiltersCount: {
-    color: '#ffffff',
+    color: '#415153',
+    fontFamily: 'Open Sans',
+    fontWeight: 400,
+    fontSize: 14,
     textAlign: 'center',
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '8px 0',
-    margin: '0 8px',
+    padding: '8px 16px 8px 4px',
+    margin: '0 12.5px',
     borderTop: '#ADADAD 0.5px solid',
     '& span': {
-      color: '#ffffff',
+      color: '#415153',
+      fontFamily: 'Nunito',
       fontSize: '11px',
-      border: '0.5px solid #ffffff',
+      fontWeight: 600,
+      border: '0.5px solid #415153',
       padding: '0 4px',
     }
   },
   activeFilterLegend: {
-    color: '#9CE1E5',
+    color: '#312E2E',
+    fontFamily: 'Open Sans',
+    fontWeight: 400,
+    fontSize: 14,
+    letterSpacing: '0%',
     margin: '0 16px',
     padding: '16px 0',
     fontStyle: 'italic',
     '& svg': {
-      marginRight: '8px',
+      marginLeft: '10px',
     }
   },
   sideBarCover: {
@@ -120,14 +135,18 @@ export default () => ({
   sideBar: {
     width: '262px',
     overflowX: 'hidden',
-    borderBottom: 'thin solid #8A7F7C',
+    borderLeft: 'thin solid #8A7F7C',
+    borderRight: 'thin solid #8A7F7C',
     overflow: 'auto',
     zIndex: '99',
     position: 'relative',
-    backgroundColor: '#337478',
+    backgroundColor: '#FFFFFF',
+    display: 'flex',
+    flexDirection: 'column',
   },
   sideBarMenuSider: {
     width: '262px',
+    backgroundColor: '#DBF0F3',
   },
   siderContent: {
     listStyle: 'none',
@@ -171,7 +190,10 @@ export default () => ({
   },
   categoryTitle: {
     color: '#000000',
+    display: 'flex',
+    zIndex: 2,
     fontSize: '18.5px',
+    alignItems: 'center',
     fontFamily: 'Poppins',
     fontWeight: 500,
     marginLeft: '3px',
@@ -191,6 +213,7 @@ export default () => ({
     height: '22px',
     cursor: 'pointer',
     marginRight: '10px',
+    marginTop: '1.5px',
     '& a': {
       width: '16px',
       '& svg': {
@@ -200,14 +223,13 @@ export default () => ({
     }
   },
   contentPanelBody: {
-    marginTop: '20px',
-    backgroundColor: '#ffffff',
+    paddingTop: '0px',
   },
   rightContent: {
     width: 'calc(100% - 540px)',
     position: 'relative',
-    borderRight: 'thin solid #8A7F7C',
-    borderLeft: 'thin solid #8A7F7C',
+    borderRight: 'thin solid #B1B1B1',
+    borderLeft: 'thin solid #B1B1B1',
   },
   goToCartLink: {
     fontFamily: 'Lato',

@@ -1,36 +1,22 @@
 import React, { useState, useEffect, useRef }from 'react';
 import {
-  withStyles, ClickAwayListener
+  withStyles,
 } from '@material-ui/core';
 // import { useNavigate } from 'react-router-dom';
 import ReactHtmlParser from 'html-react-parser';
 import Pagination from '@material-ui/lab/Pagination';
-import { Button } from '@material-ui/core';
 import styled from 'styled-components';
 import exportIcon from '../../assets/about/Export_Icon.svg';
 import newsImg from '../../assets/news/News_Header.jpg';
-import arrowDownIcon from '../../assets/about/arrowDownGreen.svg';
-import arrowUpIcon from '../../assets/about/arrowUpGreen.svg';
-import UploadIcon from '../../assets/about/Upload-Icon.svg';
-// import { altList, srcList, newsList, releaseNotesList } from '../../bento/newsData'
+import { newsList } from '../../bento/newsData'
 
 const NewsContainer = styled.div`
   width: 100%;
   margin: 0 auto;
 
-  .numResults {
-    margin: 0 auto 10px auto;
-    padding-left: 50px;
-    width: 1047px;
-    color: #13666A;
-    font-family: 'Poppins';
-    font-weight: 500;
-    font-size: 18px;
-  }
-
   .newsHeader {
     width: 1142px;
-    height: 140px;
+    height: 214px;
     margin: 0 auto;
     background-image: url(${newsImg});
     background-repeat: no-repeat;
@@ -39,7 +25,7 @@ const NewsContainer = styled.div`
     font-family: 'Poppins';
     font-weight: 600;
     font-size: 35px;
-    line-height: 140px;
+    line-height: 214px;
     text-align: center;
     letter-spacing: 0.02em;
     color: #FFFFFF;
@@ -47,8 +33,7 @@ const NewsContainer = styled.div`
 
   .tabList {
     display: flex;
-    justify-content: center;
-    margin: 20px 0 35px 0;
+    margin: 20px 0 35px calc(45% - 490px);;
   }
 
   .tabListItem {
@@ -57,8 +42,7 @@ const NewsContainer = styled.div`
     font-size: 16px;
     line-height: 16px;
     color: #298085;
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-left: 60px;
   }
 
   .tabListItemActive {
@@ -67,8 +51,7 @@ const NewsContainer = styled.div`
     font-size: 16px;
     line-height: 16px;
     color: #0A5E63;
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-left: 60px;
     padding-bottom: 5px;
     border-bottom: 3px solid #0A5E63;
   }
@@ -85,47 +68,8 @@ const NewsContainer = styled.div`
     cursor: pointer;
   }
 
-  .tabDropdown {
-    display: none;
-  }
-
-  .tabDropdown {
-    padding: 0;
-    margin: 25px auto 25px auto;
-    width: calc(100vw - 45px);;
-    border: 2px solid #08838D;
-    background: white;
-    border-radius: 4px;
-  }
-
-  .tabDropdownItem {
-    color: #0A5E63;
-    height: 45px;
-    padding: 15.5px 10px;
-    list-style-type: none;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 14px; /* 70% */
-    text-transform: capitalize;
-  }
-
-  .tabDropdownItem:hover {
-    cursor: pointer;
-  }
-
-  .tabDropdownItem:nth-child(odd) {
-    background: #F4F5F5;
-  }
-
-  .tabDropIcon {
-    float: right;
-  }
-
   .UpperContainer {
     display: flex;
-    position: relative;
   }
 
   .newsList {
@@ -135,96 +79,22 @@ const NewsContainer = styled.div`
 
   .newsItem {
     width: 1047px;
-    height: 230px;
+    min-height: 248px;
     border: 1.5px solid transparent;
     border-radius: 0px 20px;
     margin: 0 auto;
     margin-bottom: 29px;
     padding: 23px 32px 0 38px;
-    padding-right: 0px;
     box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.25);
     text-decoration: none;
   }
 
-  .releaseNewsItem {
-    width: 1047px;
-    height: 350px;
-    border: 1.5px solid transparent;
-    border-radius: 0px 20px;
-    margin: 0 auto;
-    margin-bottom: 29px;
-    padding: 23px 32px 0 38px;
-    padding-right: 0px;
-    box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.25);
-    text-decoration: none;
-  }
-
-  .downloadPDF {
-    width: 167px;
-    height: 41px;
-    border-radius: 5px;
-    border: 1.25px #05555C solid;
-    background-color: #05555C;
-    font-family: 'Poppins';
-    font-weight: 600;
-    font-size: 12px;
-    color: white;
-    margin-left: 48px;
-    margin-top: 12.5px;
-    text-align: left;
-    padding-left: 45px;
-
-    img {
-      position: absolute;
-      margin-left: 10px;
-    }
-  }
-  .downloadPDF:hover {
-    background-color: #05555C;
-  }
-
-  .readMore {
-    display: block;
-    width: 167px;
-    height: 41px;
-    border-radius: 5px;
-    border: 1.25px #455299 solid;
-    font-family: 'Poppins';
-    font-weight: 600;
-    font-size: 12px;
-    color: #455299;
-    margin-left: 48px;
-    margin-top: 12.5px;
-    text-align: left;
-    padding-left: 40px;
-
-    img {
-      position: absolute;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
-  }
-  .Desktop {
-    display: block;
-  }
-  .Tablet {
-    display: none;
-  }
-  .notMobile {
-    display: block;
-  }
-  .Mobile {
-    display: none;
-  }
+  // .newsItem:hover {
+  //   border: 1.5px solid #00BDCD;
+  // }
 
   .newsItemTextContainer {
-    position: absolute;
-    width: 75%;
-    background-color: white;
-  }
-
-  .newsSubtitle {
-    display: flex;
+    width: 76%;
   }
 
   .newsItemTitle {
@@ -234,10 +104,6 @@ const NewsContainer = styled.div`
     line-height: 22px;
     color: #00838F;
     margin-bottom: 8px;
-  }
-
-  .newsItemTitleInner{
-    margin-bottom: 40px;
   }
 
   .newsItemDate {
@@ -250,96 +116,20 @@ const NewsContainer = styled.div`
     margin-bottom: 8px;
   }
 
-  .newsCategory {
-    font-family: 'Poppins';
-    font-weight: 400;
-    font-size: 12px;
-    height: 24px;
-    line-height: 20px;
-    color: #05555C
-    margin-left: 20px;
-    border: 1.25px #78AC81 solid;
-    border-radius: 20px;
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
   .newsItemContent {
     font-family: 'Inter';
-    padding-right: 25%;
-    margin-top: 13px;
-    height: 175px;
-    overflow-y: auto;
-    font-weight: 500;
+    font-weight: 300;
     font-size: 16px;
     line-height: 24px;
     color: #000000;
+    margin-bottom: 48px;
     a {
       color: #455299;
       font-family: 'Inter';
-      font-weight: 700;
+      font-weight: 600;
       padding-right: 20px;
       background: url(${exportIcon}) right center no-repeat;
     }
-    &::-webkit-scrollbar {
-      width: 7px;
-      background-color: #E2E2E2;
-      border-left: 0.5px solid #1E1E1E;
-    }
-    &::-webkit-scrollbar-track {
-      background-color: #F1F1F1;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #82BBE8;
-    }
-  }
-
-  .releaseNewsItemContent {
-    font-family: 'Inter';
-    padding-right: 25%;
-    margin-top: 13px;
-    height: 300px;
-    overflow-y: auto;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-    color: #000000;
-    margin-bottom: 24px;
-    a {
-      color: #455299;
-      font-family: 'Inter';
-      font-weight: 700;
-      padding-right: 20px;
-      background: url(${exportIcon}) right center no-repeat;
-    }
-    &::-webkit-scrollbar {
-      width: 7px;
-      background-color: #E2E2E2;
-      border-left: 0.5px solid #1E1E1E;
-    }
-    &::-webkit-scrollbar-track {
-      background-color: #F1F1F1;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #82BBE8;
-    }
-  }
-
-  .newsItemBottom {
-    position: absolute;
-    top: 190px;
-    height: 15px;
-    background-color: white;
-    display: block;
-    width: 75%;
-  }
-
-  .imgContainer {
-    display: grid;
-    position: absolute;
-    top: 0;
-    right: 25px;
-    // width: calc(25% - 30px);
   }
 
   .newsItemImgContainer {
@@ -350,13 +140,16 @@ const NewsContainer = styled.div`
     height: 172px;
   }
 
+  .Lower {
+    display: none;
+  }
+
   @media (min-width: 1420px) {
     width: 1420px;
   }
 
   @media (max-width: 1186px) {
     .newsHeader {
-      height: 140px;
       width: auto;
       margin: 0 16px;
     }
@@ -371,28 +164,17 @@ const NewsContainer = styled.div`
     .newsItem {
       width: auto;
     }
-    .releaseNewsItem {
-      width: auto;
-    }
   }
 
   @media (max-width: 1023px) {
-    .Desktop {
-      display: none;
-    }
-    .Tablet {
-      display: block;
-    }
-    .newsHeader {
-      height: 140px;
-      width: auto;
-      margin: 0 16px;
+    p {
+      margin-top: 5px;
     }
 
     .newsHeaderText {
       line-height: 30px;
       width: 250px;
-      padding-top: 40px;
+      padding-top: 70px;
       margin: 0 auto;
     }
 
@@ -403,103 +185,54 @@ const NewsContainer = styled.div`
       margin-left: auto;
     }
     .newsItemImgContainer {
-      width: 115px;
-      height: 100px;
-      margin-top: 5px;
+      width: 99px;
+      height: 86px;
+      margin-top: 0;
     }
-    .downloadPDF {
-      width: 115px;
-      margin-left: 33px;
-      padding-left: 35px;
+    .Upper {
+      display: none;
     }
-    .readMore {
-      width: 115px;
-      margin-left: 33px;
-      padding-left: 10px;
+    .Lower {
+      display: block;
+      margin-bottom: 25px;
+    }
+    .newsItem {
+      padding: 18px 18px 0 18px;
+    }
+    .newsItemTitle {
+      min-height: 50px;
+    }
+    .tabListItem {
+      font-size: 12px;
+      margin-left: 0;
+    }
+    .tabListItemActive {
+      font-size: 12px;
+      margin-left: 0;
+    }
+    .tabList {
+      display: grid;
+      grid-column-gap: 4%;
+      grid-template-columns: auto auto auto auto auto;
+      justify-content: center;
+      margin: 20px auto 25px auto;
     }
   }
 
   @media (max-width: 767px) {
-    .newsHeader {
-      height: 165px;
-    }
-
-    .newsHeaderText {
-      padding-top: 50px;
+    .newsItemTitle {
+      font-size: 18px;
     }
   }
 
-  @media (max-width: 649px) {
-    .newsItemTextContainer {
-      width: 100%;
-      position: relative;
-      .titleImgContainer {
-        display: flex;
-      }
-      .newsSubtitle {
-        margin-top: 8px;
-      }
-      .newsItemDate {
-        margin-bottom: 0;
-      }
-      .imgContainer {
-        position: relative;
-      }
-      .newsItemImgContainer {
-        width: 100px;
-        height: 85px;
-        margin-top: 0px;
-      }
-    }
-    .newsItemTitle {
-      font-size: 18px;
-      min-height: 50px;
-    }
+  @media (max-width: 530px) {
     .tabList {
-      display: none;
-    }
-
-    .tabDropdown {
-      display: block;
-    }
-    .notMobile {
-      display: none;
-    }
-    .Mobile {
-      display: block;
-    }
-    .newsItem {
-      width: auto;
-      height: 300px;
-      overflow: hidden;
-    }
-    .releaseNewsItem {
-      width: auto;
-      height: 550px;
-      overflow: hidden;
-    }
-    .newsItemContent {
-      padding-right: 20px;
-      margin-top: 0;
-      height: 130px;
-    }
-    .releaseNewsItemContent {
-      padding-right: 20px;
-      margin-top: 0;
-      height: 280px;
-      margin-bottom: 10px;
-    }
-    .downloadPDF {
-      display: block;
-      width: 167px;
-      margin-left: 0px;
-      padding-left: 20px;
-    }
-    .readMore {
-      display: block;
-      width: 167px;
-      margin-left: 0px;
-      padding-left: 35px;
+      display: grid;
+      grid-column-gap: 2%;
+      grid-template-columns: auto auto 50px 72px auto;
+      justify-content: center;
+      margin-left: 16px;
+      margin-right: 12px;
     }
   }
 `;
@@ -522,35 +255,13 @@ const useOutsideAlerter = (ref) => {
   }, [ref]);
 };
 
-const NewsView = ({classes, srcList,newsList, altList, releaseNotesList}) => {
-  // const getPageResults = (selectedTab, pageInfo) => {
-  //   const resultList = getResultList(selectedTab);
-  //   const allids = [];
-  //   const indexStart = pageInfo.pageSize*(pageInfo.page-1);
-  //   const indexEnd = pageInfo.pageSize*pageInfo.page < pageInfo.pageTotal ? pageInfo.pageSize*pageInfo.page - 1 : pageInfo.pageTotal - 1;
-  //   for (let i = indexStart; i<= indexEnd; i++) {
-  //     allids.push(resultList[i]);
-  //   }
-  //   return allids;
-  // }
-
-  const fullList = (newsList.concat(releaseNotesList)).sort((a,b) => {
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
-  }).reverse();
-
 const getResultList = (tabName) => {
   if (tabName === "All") {
-    return fullList;
-  } else if(tabName === "Release Notes"){
-    return releaseNotesList;
+    return newsList;
   } else {
     return newsList.filter(item => item.type === tabName);
   }
 };
-
-const handleViewPDF = () => {
-        window.open('/CCDI_Hub_Release_Notes.pdf', '_blank');
-    };
 
 const getPageResults = (selectedTab, pageInfo) => {
   const resultList = getResultList(selectedTab);
@@ -563,8 +274,10 @@ const getPageResults = (selectedTab, pageInfo) => {
   return allids;
 }
 
+const NewsView = ({classes}) => {
+  // const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("All");
-  const newsTabList = ['All', 'News', 'CCDI Application Updates', 'Release Notes'];
+  const newsTabList = ['All', 'Announcements', 'News & Other', 'Application Updates', 'Site Updates'];
   const sizelist = [10,20,50,100];
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(sizelist[0]);
@@ -572,8 +285,6 @@ const getPageResults = (selectedTab, pageInfo) => {
   const [data, setdata] = useState(getPageResults(selectedTab, {page: page, pageTotal: pageTotal, pageSize: pageSize}));
   const [pageListVisible, setPageListVisible] = useState(0);
   const perPageSelection = useRef(null);
-  const anchorRef = useRef(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   // const announcementsArray = newsList.filter(item => item.type === 'Announcements');
   useOutsideAlerter(perPageSelection);
 
@@ -629,39 +340,11 @@ const getPageResults = (selectedTab, pageInfo) => {
     setPageTotal(total);
   };
 
-  const onClickDropdownItem = (newsTabItem) => {
-    setSelectedTab(newsTabItem);
-    setDropdownOpen(false)
-    const resultList = getResultList(newsTabItem);
-    const total = resultList.length;
-    const allids = [];
-    const indexStart = 0;
-    const indexEnd = pageSize < total ? pageSize - 1 : total - 1;
-    for (let i = indexStart; i<= indexEnd; i++) {
-      allids.push(resultList[i]);
-    }
-    setdata(allids);
-    setPage(1);
-    setPageTotal(total);
-  };
-
   // const gotoNewsDetail = (e, newsID) => {
   //   if (e.target.tagName !== 'A') {
   //     navigate(`/newsdetail/${newsID.trim()}`);
   //   }
   // };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-        return;
-    }
-    setDropdownOpen(false);
-  };
-
-  const handleReadMore = (id) => { 
-    const newWindow = window.open(`/release-notes#${id}`, '_blank')
-    if (newWindow) newWindow.opener = null
-  }
 
   return (
     <NewsContainer>
@@ -676,109 +359,23 @@ const getPageResults = (selectedTab, pageInfo) => {
           })
         }
       </div>
-      <ul className='tabDropdown'>
-        <div
-          className='tabDropdownItem first'
-          ref={anchorRef}
-          style={dropdownOpen? {fontSize: '16px', background: '#FFFFFF'} : {background: '#FFFFFF'}}
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          {dropdownOpen ? "Select a category" : selectedTab}
-          <img className='tabDropIcon' src={dropdownOpen? arrowUpIcon : arrowDownIcon} alt='arrow img' />
-        </div>
-        <ClickAwayListener onClickAway={handleClose}>
-          <div>
-          {
-            dropdownOpen && newsTabList.map((newsTabItem, idx) => {
-              const tabkey = `tabkey_${idx}`;
-              return (
-                <li key={tabkey} className='tabDropdownItem' onClick={() => onClickDropdownItem(newsTabItem)}>{newsTabItem}</li>
-              )
-            })
-          }
-          </div>
-        </ClickAwayListener>
-      </ul>
-      <div className='numResults'><b>{getResultList(selectedTab).length}</b> results</div>
       <div className='newsList'>
         {
           data.length > 0 ? data.map((newsItem, idx) => {
             const newskey = `news_${idx}`;
-             return (
-              newsItem.type !== 'Release Notes' ? <div id={newsItem.id} key={newskey} className='newsItem'>
-                <div className="UpperContainer notMobile">
+            return (
+              <div id={newsItem.id} key={newskey} className='newsItem'>
+                <div className="UpperContainer">
                   <div className='newsItemTextContainer'>
                     <div className='newsItemTitle'>{newsItem.title}</div>
-                    <div className='newsSubtitle'>
-                      <div className='newsItemDate'>{newsItem.date}</div>
-                      <div className='newsCategory'>{newsItem.type}</div>
-                    </div>
-                  </div>
-                  <div className='newsItemContent'>
-                    <div className='newsItemTitle newsItemTitleInner'>{newsItem.title}</div>
-                    {ReactHtmlParser(newsItem.highlight)}
-                  </div>
-                  {newsItem.img && <div className='imgContainer'><img className='newsItemImgContainer' src={srcList[newsItem.img]} alt={altList[newsItem.img]}/></div>}
-                </div>
-                <div className="UpperContainer Mobile">
-                  <div className='newsItemTextContainer'>
-                    <div className="titleImgContainer">
-                      <div className='newsItemTitle'>{newsItem.title}</div>
-                      {newsItem.img && <div className='imgContainer'><img className='newsItemImgContainer' src={srcList[newsItem.img]} alt={altList[newsItem.img]}/></div>}
-                    </div>
-                    <div className='newsSubtitle'>
-                      <div className='newsItemDate'>{newsItem.date}</div>
-                      <div className='newsCategory'>{newsItem.type}</div>
-                    </div>
-                  </div>
-                  <div className='newsItemContent'>
-                    {ReactHtmlParser(newsItem.highlight)}
-                  </div>
-                </div>
-              </div> :
-              <div id={`post${newsItem.id}`} key={newskey} className='releaseNewsItem'>
-              <div className="UpperContainer notMobile">
-                <div className='newsItemTextContainer'>
-                  <div id={`${newsItem.id}_title`} className='newsItemTitle'>{newsItem.title}</div>
-                  <div id={`${newsItem.id}_version`} style={{display: 'none'}}>{newsItem.version}</div>
-                  <div className='newsSubtitle'>
-                    <div id={`${newsItem.id}_date`} className='newsItemDate'>{newsItem.date}</div>
-                    <div className='newsCategory'>{newsItem.type}</div>
-                  </div>
-                </div>
-                <div id={`${newsItem.id}_desc`} className='releaseNewsItemContent'>
-                  <div className='newsItemTitle newsItemTitleInner'>{newsItem.title}</div>
-                  {ReactHtmlParser(newsItem.fullText)}
-                </div>
-                {newsItem.img && <div className='imgContainer'>
-                  <img className='newsItemImgContainer' src={srcList[newsItem.img]} alt={altList[newsItem.img]}/>
-                  <Button className='downloadPDF Desktop' onClick={handleViewPDF}>View PDF<img src={UploadIcon} alt="view pdf icon" /></Button>
-                  <Button className='downloadPDF Tablet' onClick={handleViewPDF}>PDF<img src={UploadIcon} alt="view pdf icon" /></Button>
-                  <Button className='readMore Desktop' onClick={() => handleReadMore(newsItem.id)}>Read More<img src={exportIcon} alt="outlink icon" /></Button>
-                  <Button className='readMore Tablet' onClick={() => handleReadMore(newsItem.id)}>Read More<img src={exportIcon} alt="outlink icon" /></Button>
-                </div>}
-              </div>
-              <div className="UpperContainer Mobile">
-                <div className='newsItemTextContainer'>
-                  <div className="titleImgContainer">
-                    <div className='newsItemTitle'>{newsItem.title}</div>
-                    {newsItem.img && <div className='imgContainer'>
-                      <img className='newsItemImgContainer' src={srcList[newsItem.img]} alt={altList[newsItem.img]}/>
-                      </div>}
-                  </div>
-                  <div className='newsSubtitle'>
                     <div className='newsItemDate'>{newsItem.date}</div>
-                    <div className='newsCategory'>{newsItem.type}</div>
+                    <div className='newsItemContent Upper'>{ReactHtmlParser(newsItem.highlight)}</div>
                   </div>
+                  {newsItem.img && <div className='imgContainer'><img className='newsItemImgContainer' src={newsItem.img} alt={newsItem.title}/></div>}
                 </div>
-                <div className='releaseNewsItemContent'>
-                  {ReactHtmlParser(newsItem.fullText)}
-                </div>
-                <Button className='downloadPDF' onClick={handleViewPDF}>View PDF<img src={UploadIcon} alt="view pdf icon" /></Button>
-                <Button className='readMore' onClick={() => handleReadMore(newsItem.id)}>Read More<img src={exportIcon} alt="outlink icon" /></Button>
+                <div className='newsItemContent Lower'>{ReactHtmlParser(newsItem.highlight)}</div>
               </div>
-            </div>
-              ) 
+            )
           }) :
           <div className={classes.noticeText}>Currently no {selectedTab}</div>
         }
@@ -927,10 +524,10 @@ const styles = {
     '& > *': {
       marginTop: '10px',
     },
-    // '@media (max-width: 500px)': {
-    //   justifyContent: 'left',
-    //   paddingLeft: '30px',
-    // }
+    '@media (max-width: 500px)': {
+      justifyContent: 'left',
+      paddingLeft: '30px',
+    }
   },
   perPageContainer: {
     fontFamily: 'Poppins',
@@ -940,9 +537,6 @@ const styles = {
     marginTop: '15px',
     '@media (min-width: 500px)': {
       display: 'flex',
-    },
-    '@media (max-width: 767px)': {
-      display: 'none',
     },
   },
   flexPageContainer: {
@@ -1020,7 +614,7 @@ const styles = {
     '& .MuiPaginationItem-root': {
       color: '#045B80',
       fontFamily: 'Poppins',
-      fontSize: '18px',
+      fontSize: '14px',
       fontWeight: '300',
       minWidth: '18px',
       margin: '0',
@@ -1127,10 +721,10 @@ const styles = {
     '&:hover': {
       cursor: 'pointer',
     },
-    // '@media (max-width: 499px)': {
-    //   marginTop: '56px',
-    //   marginLeft: '-68px',
-    // }
+    '@media (max-width: 499px)': {
+      marginTop: '56px',
+      marginLeft: '-68px',
+    }
   },
   noticeText: {
     fontFamily: 'Poppins',

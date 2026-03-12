@@ -1,33 +1,26 @@
 import React from "react";
 import { withStyles, CssBaseline } from '@material-ui/core';
-import { Route, Routes, } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Footer from '../ResponsiveFooter/';
 import Header from '../ResponsiveHeader/';
 import Home from '../../pages/landing/landingController';
-import About from '../../pages/about/AboutPage/AboutController';
-import DataUsagePoliciesView from '../../pages/about/DataUsagePoliciesPage/DataUsagePoliciesController';
-import PublicationsView from '../../pages/about/publications/publicationsController';
-import News from '../../pages/news/newsController';
-import DataModelNavigator from '../../pages/dmn/DataModelNavigator';
+import About from '../../pages/about/aboutView';
+import Resources from '../../pages/resources/resourcesView';
+//import News from '../../pages/news/newsView';
 import Error from '../../pages/error/Error';
-import Search from '../../pages/globalSearch/searchController';
+import Search from '../../pages/search/searchView';
 import Inventory from '../../pages/inventory/inventoryController';
-import Cart from '../../pages/cart/cartController';
+import Studies from '../../pages/studies/studiesController';
+//import Cart from '../../pages/cart/cartController';
 import ScrollButton from '../ScrollButton/ScrollButtonView';
-import MCIResourceView from '../../pages/resource/MCIResourcePage/MCIResourceController'
-import PMTLResourceView from '../../pages/resource/PMTLResourcePage/PMTLResourceController';
-import FederationResourceView from "../../pages/resource/FederationResourcePage/FederationResourceController";
-import FederationDataModelNavigator from "../../pages/resource/FederationDMN/FederationDMN";
-import CPIResourceView from "../../pages/resource/CPIResourcePage/CPIResourceController";
-// import CBioPortalResourceView from "../../pages/resource/cBioPortalResourcePage/cBioPortalResourceController";
-import ReleaseNotesPageView from '../../pages/releaseNotePage/releaseNotePageController';
-import StudiesView from '../../pages/studies/studiesView';
-import StudiesDetail from "../../pages/studyDetail/studyDetailController";
-import OverlayWindow from '../OverlayWindow/OverlayWindow';
-import CohortAnalyzerController  from "../../pages/CohortAnalyzer/CohortAnalyzerController";
-import ToolsResourceView from "../../pages/resource/ToolsResourcePage/ToolsResourceController";
-import CCDIEventAnnouncementsResourceView from "../../pages/resource/CCDIEventAnnouncementsResourcePage/CCDIEventAnnouncementsResourceController";
-import RareCancerResourceView from "../../pages/resource/RareCancerResourcePage/RareCancerResourceController";
+import PdfReader from "../../pages/pdfReader/pdfReader";
+import StudyDetail from "../../pages/studyDetail/studyDetailController";
+import OverlayWindow from "../OverlayWindow/OverlayWindow";
+import AnnouncementPage from "../../pages/announcement/announcementPage";
+import CohortManager from "../../pages/CohortManager/CohortManagerController";
+import ReleaseNoteController from "../../pages/releaseNote/releaseNoteController";
+import  CohortAnalyzerController  from "../../pages/CohortAnalyzer/CohortAnalyzerController";
+import DataModelNavigator from '../../pages/dmn';
 // import NewsDetail from '../../pages/news/newsDetailView';
 
 const Layout = () => {
@@ -39,28 +32,21 @@ const Layout = () => {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/studies"  >
+            <Route index={true} element={<Studies />}></Route>
+            <Route path=":studyId" element={<StudyDetail />} />          
+          </ Route>
+          <Route path="/resources" element={<Resources />} />
           <Route path="/about" element={<About />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/data-model" element={<DataModelNavigator />} />
+          <Route path="/announcements" element={<AnnouncementPage />} />
           <Route path="/sitesearch" element={<Search />} />
           <Route path="/explore" element={<Inventory />} />
-          <Route path="/fileCentricCart" element={<Cart />} />
-          <Route path="/MCI" element={<MCIResourceView />} />
-          <Route path="/pmtl" element={<PMTLResourceView />} />
-          <Route path="/data-federation-resource" element={<FederationResourceView/>} />
-          <Route path="/data-federation-data-model" element={<FederationDataModelNavigator />} />
-          <Route path="/data-usage-policies" element={<DataUsagePoliciesView />} />
-          <Route path="/ccdi-participant-index" element={<CPIResourceView />} />
-          <Route path="/publications" element={<PublicationsView />} />
-          <Route path="/tools" element={<ToolsResourceView />} />
-          <Route path="/ccdi-events-announcements" element={<CCDIEventAnnouncementsResourceView />} />
-          <Route path="/pediatric-adolescent-and-young-adult-rare-cancer-study" element={<RareCancerResourceView/>} />
-          <Route path="/release-notes" element={<ReleaseNotesPageView />} />
+          <Route path="/user_guide" element={<PdfReader />} />
+          <Route path="/data_model" element={<DataModelNavigator />} />
+          <Route path="/release_notes" element={<ReleaseNoteController />} />
+          <Route path="/release_notes_pdf" element={<PdfReader />} />
+          <Route path="/cohort_Manager" element={<CohortManager />} />
           <Route path="/cohortAnalyzer" element={<CohortAnalyzerController />} />
-          <Route path="/studies" >
-            <Route index={true} element={<StudiesView />}></Route>
-            <Route path=":studyId" element={<StudiesDetail />} />
-          </Route>
           <Route path="*" element={<Error />} />
         </Routes>
         <Footer />

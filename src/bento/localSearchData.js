@@ -12,16 +12,22 @@ export const GET_ALL_IDS = gql`{
   `;
 
 export const GET_PARTICIPANT_IDS = gql`
-  query search ($participant_ids: [String]){
-    findParticipantIdsInList (participant_id: $participant_ids) {
-        participant_id
-    }
+query search($participant_id: [String]) {
+  findParticipantIdsInList(participant_id: $participant_id) {
+    participant_id
+    study_id
+    __typename
+  }
 }
 `;
 
-export const GET_IDS_BY_TYPE = (type) => gql`{
+export const GET_IDS_BY_TYPE = () => gql`{
   idsLists {
-    ${type}
+    participantIds
+    associatedIds {
+      associated_id
+      participant_id
+    }
   }
 }
 `;

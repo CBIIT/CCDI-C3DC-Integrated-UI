@@ -1,0 +1,194 @@
+/**
+ * Generate the default styling for the component
+ */
+import { FACET_NAMES, obtainColorFromSectionName } from '../../../bento/dashTemplate';
+export  const customStyles = {
+    queryWrapper: {
+      //height: '120px',
+      paddingBottom: '12px',
+      backgroundColor: '#FFFFFF',
+      borderBottom: '1px solid #B0B0B0',
+      padding: '14px 14px 0px 25px',
+      overflowY: 'auto',
+    },
+    queryContainer: {
+      marginLeft: 5,
+      position: 'relative',
+      lineHeight: '2.4em',
+      fontFamily: 'Nunito',
+      fontSize: '12px',
+      color: '#000000',
+    },
+    filterName: {
+      textTransform: 'uppercase',
+      padding: '3px 6px 3px 6px',
+      borderRadius: 4,
+      fontSize: 12,
+      fontWeight: 600,
+      cursor: 'pointer',
+      backgroundColor: '#E6FFF9',
+    },
+    filterCheckboxes: {
+      padding: '3px 6px 3px 6px',
+      borderRadius: 5,
+      fontSize: 12,
+      fontWeight: 600,
+      border: '0.5px solid #646464',
+      width: 'fit-content',
+      backgroundColor: '#fff',
+      cursor: 'pointer',
+      color: '#008566',
+    },
+    bracketsOpen: {
+      fontSize: 20,
+      fontFamily: 'Nunito',
+      color: '#646464',
+      marginRight: 3,
+      fontWeight: 600,
+    },
+    bracketsClose: {
+      fontSize: 20,
+      fontFamily: 'Nunito',
+      color: '#646464',
+      marginLeft: 3,
+      fontWeight: 600,
+    },
+    ellipsis: {
+      fontFamily: 'Nunito',
+      fontWeight: 600,
+      fontSize: 10,
+      marginLeft: 3,
+    },
+    operators: {
+      color: '#646464',
+      marginLeft: '3px',
+      marginRight: '3px',
+      borderBottom: 'none',
+      textDecoration: 'none',
+      fontSize: 10,
+      fontWeight: 'bold',
+    },
+    clearQueryButton: {
+      margin: '1px',
+      //marginLeft: -6,
+      fontWeight: 600,
+      fontSize: '12px',
+      color: '#fff',
+      borderRadius: '5px',
+      fontFamily: 'Nunito',
+      boxSizing: 'border-box',
+      backgroundColor: '#646464',
+      textTransform: 'capitalize',
+      border: '1px solid #B4B4B4',
+      padding: '1px 5px 0px 6px',
+      '&:hover': {
+        backgroundColor: '#646464',
+      },
+    },
+    divider: {
+      padding: '0 0 3px 0',
+      fontSize: '23px',
+      borderRight: '1px solid #969696',
+      marginLeft: 7,
+    },
+    /* Custom Styling by Project */
+    localFind: {
+      color: '#7AA6B6',
+    },
+    localFindBackground: {
+      backgroundColor: '#E4ECE9',
+    },
+    /*
+    facetSectionCases: {
+      color: '#7AA6B6',
+    },
+    facetSectionCasesBackground: {
+      backgroundColor: '#E4ECE9',
+    },
+    facetSectionFiles: {
+      color: '#E636E4',
+    },
+    facetSectionFilesBackground: {
+      backgroundColor: '#F5C3F1',
+    },*/
+    facetSectionStudy: {
+      color: obtainColorFromSectionName(FACET_NAMES.STUDY).queryBarAttrbTextColor,
+    },
+    facetSectionStudyBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.STUDY).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionDemographics: {
+      color: obtainColorFromSectionName(FACET_NAMES.DEMOGRAPHICS).queryBarAttrbTextColor,
+    },
+    facetSectionDemographicsBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.DEMOGRAPHICS).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionDiagnosis: {
+      color: obtainColorFromSectionName(FACET_NAMES.DIAGNOSIS).queryBarAttrbTextColor,
+    },
+    facetSectionDiagnosisBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.DIAGNOSIS).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionGeneticanalysis: {
+      color: obtainColorFromSectionName(FACET_NAMES.GENETICANALYSIS).queryBarAttrbTextColor,
+    },
+    facetSectionGeneticanalysisBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.GENETICANALYSIS).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionTreatment: {
+      color: obtainColorFromSectionName(FACET_NAMES.TREATMENT).queryBarAttrbTextColor,
+    },
+    facetSectionTreatmentBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENT).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionTreatmentresponse: {
+      color: obtainColorFromSectionName(FACET_NAMES.TREATMENTRESPONSE).queryBarAttrbTextColor,
+    },
+    facetSectionTreatmentresponseBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.TREATMENTRESPONSE).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    facetSectionSurvival: {
+      color: obtainColorFromSectionName(FACET_NAMES.SURVIVAL).queryBarAttrbTextColor,
+    },
+    facetSectionSurvivalBackground: {
+      backgroundColor: obtainColorFromSectionName(FACET_NAMES.SURVIVAL).queryBarNameBkgdColor,
+      border: '2px solid #646464',
+    },
+    localFindAssociatedIdsBackground: {
+      backgroundColor: '#F6A700',
+    },
+    localFindAssociatedIdsText: {
+      color: '#B36B00',
+    },
+
+    /*
+    facetSectionSamples: {
+      color: '#907642',
+    },
+    facetSectionSamplesBackground: {
+      backgroundColor: '#F0DFBD40',
+      border: '1px solid #646464',
+    },
+    facetSectionDatacategory: {
+      color: '#A85348',
+    },
+    facetSectionDatacategoryBackground: {
+      backgroundColor: '#F8D7D240',
+      border: '1px solid #646464',
+    },
+
+    facetSectionLibrary: {
+      color: '#14A773',
+    },
+    facetSectionLibraryBackground: {
+      backgroundColor: '#DDEAE540',
+      border: '1px solid #646464',
+    },*/
+  }
+  

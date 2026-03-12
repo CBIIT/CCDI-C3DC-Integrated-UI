@@ -1,4 +1,4 @@
-import React, { useRef, useEffect} from 'react';
+import React, { useRef} from 'react';
 import styled from 'styled-components';
 import {
   useLocation, useNavigate
@@ -12,11 +12,10 @@ import {
 } from './store/sitesearchReducer';
 
 import PublicTabView from './components/tabs/publicTabView';
-import searchImg from '../../assets/search/Search_Img.png';
-import searchIcon from '../../assets/header/Search_Small_Icon.svg';
+import searchImg from '../../assets/search/Search_Img.png'
 
 const SearchViewContainer = styled.div`
-  width: 100%;
+  width: 1440px;
   margin: 0 auto;
   position: relative;
 
@@ -27,56 +26,29 @@ const SearchViewContainer = styled.div`
     height: 356px;
     width: 604px;
   }
-
-  @media (min-width: 1420px) {
-    width: 1420px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 1023px) {
-    .backgroundImg {
-      display: none;
-    }
-  }
 `;
 
 const SearchbarContainer = styled.div`
   position: relative;
-  width: 889px;
-  height: 179px;
-  margin: 80px 0 42px 8%;
+  margin: 80px 402px 42px 149px;
   background: #00838F;
   border-radius: 0px 20px;
-  padding: 32px 0 38px 0;
+  padding: 32px 158px 38px 69px;
 
   .searchResultTitle {
     font-family: poppins;
     font-weight: 600;
-    font-size: 50px;
+    font-size: 35px;
     line-height: 45px;
-    letter-spacing: 1px;
+    letter-spacing: 0.02em;
     color: #FFFFFF;
     margin-bottom: 15px;
-    margin-left: 69px;
-  }
-
-  @media (max-width: 1023px) {
-    width: auto;
-    margin: 0 15px 35px 15px;
-    border-radius: 0 0 20px 20px;
-
-    .searchResultTitle {
-      font-size: 35px;
-      line-height: 30px;
-      text-align: center;
-      margin-left: 0;
-    }
   }
 `;
 
 const SearchBar = styled.div`
   display: flex;
-  margin-left: 69px;
+  margin: 0 auto;
   width: 662px;
   height: 53px;
   // border: 2px solid #616161;
@@ -89,6 +61,7 @@ const SearchBar = styled.div`
     font-weight: 600;
     font-size: 16px;
     line-height: 16px;
+    margin-left: auto;
     padding: 16px 20px;
     background: #05555C;
     color: #FFFFFF;
@@ -102,7 +75,7 @@ const SearchBar = styled.div`
 
   .deleteIcon {
     height: 18px;
-    min-width: 15px;
+    width: 18px;
     padding-top: 19px;
     margin-right: 13px;
   }
@@ -110,33 +83,10 @@ const SearchBar = styled.div`
   .deleteIconImg:hover {
     cursor: pointer;
   }
-
-  .searchButtonIcon {
-    display: none;
-  }
-
-  @media (max-width: 1023px) {
-    margin: 0 auto;
-    maxWidth: 662px;
-  }
-
-  @media (max-width: 767px) {
-    .searchButtonText {
-      display: none;
-    }
-    .searchButtonIcon {
-      display: block;
-    }
-  }
-
-  @media (max-width: 732px) {
-    margin: 0 15px;
-    width: auto;
-  }
 `;
 
 const SearchInput = styled.input`
-  margin: 0 20px;
+  margin-left: 20px;
   border: none;
   font-family: 'Open Sans';
   font-weight: 400;
@@ -144,7 +94,6 @@ const SearchInput = styled.input`
   line-height: 53px;
   color: #000000;
   width: 650px;
-  min-width: 0;
   background: transparent;
 
   ::placeholder {
@@ -171,7 +120,6 @@ function searchComponent({
   const [searchText, setSearchText] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [deleteIconShow, setDeleteIconShow] = React.useState('none');
-  // const [isScreenDestop, setIsScreenDestop] = React.useState(true);
 
   const getAuthorizedResultQuery = (strValue) => {
     return getPublicSearchPageResults(strValue);
@@ -215,21 +163,7 @@ function searchComponent({
     }
   };
 
-  // const resizeHandler = () => {
-  //   if (window.innerWidth < 1024) {
-  //     setIsScreenDestop(false);
-  //   } else {
-  //     setIsScreenDestop(true);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   window.addEventListener('resize', resizeHandler);
-  //   resizeHandler();
-  //   return () => window.removeEventListener('resize', resizeHandler);
-  // }, []);
-
-  useEffect(() => {
+  React.useEffect(() => {
     getAutoCompleteRes(searchparam);
     onChange(searchparam);
   }, [open]);
@@ -238,19 +172,14 @@ function searchComponent({
     <SearchViewContainer>
       <img className='backgroundImg' src={searchImg} alt="" />
       <SearchbarContainer>
-      <label htmlFor='global_search_bar'>
         <div className='searchResultTitle'>Search Results</div>
         <SearchBar onMouseOver={() => setDeleteIconShow('block')} onMouseOut={() => setDeleteIconShow('none')}>
-          <SearchInput id='global_search_bar' ref={inputRef} type="text" value={inputValue} onChange={handleTextInputChange} onKeyPress={handleKeyPress} />
+          <SearchInput ref={inputRef} type="text" value={inputValue} onChange={handleTextInputChange} onKeyPress={handleKeyPress} />
           <div className='deleteIcon' onClick={handleClear} >
               <img className="deleteIconImg" style={{display:deleteIconShow}} src='https://raw.githubusercontent.com/CBIIT/datacommons-assets/main/bento/images/icons/svgs/globalSearchDelete.svg' alt='clear icon' />
           </div>
-          <div className='searchButton' onClick={() => onChange(inputValue)}>
-            <div className='searchButtonText'>Search</div>
-            <img className='searchButtonIcon' src={searchIcon} alt="searchIcon" />
-          </div>
+          <div className='searchButton' onClick={() => onChange(inputValue)}>Search</div>
         </SearchBar>
-      </label>
       </SearchbarContainer>
       <div className={classes.bodyContainer}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -258,7 +187,6 @@ function searchComponent({
             options={{ searchResults }}
             classes={classes}
             searchText={searchText}
-            // isDesktop={isScreenDestop}
           />
         </Box>
       </div>

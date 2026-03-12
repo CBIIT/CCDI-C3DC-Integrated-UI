@@ -35,7 +35,7 @@ export default {
     fontFamily: 'Lato,"Open Sans", sans-serif',
     fontFamilyRaleway: "'Raleway', sans-serif",
     drawerWidth: '240px',
-    widgetDivider: '#E2E7EC',
+    widgetDivider: 'transparent',
   },
   palette: {
     primary: {
@@ -465,7 +465,7 @@ export default {
     },
     MuiIconButton: {
       root: {
-        padding: '0px',
+        padding: '5px',
       },
     },
     MuiTablePagination: {

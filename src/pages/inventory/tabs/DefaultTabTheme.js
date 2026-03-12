@@ -1,3 +1,5 @@
+const tabColor = "#006A8F";
+
 export const customTheme = {
   MuiTabs: {
     root: {
@@ -15,58 +17,63 @@ export const customTheme = {
       borderLeft: '1px solid #8B8B8B',
       borderRight: '1px solid #8B8B8B',
       fontWeight: '400',
-      lineHeight: '19px',
+      lineHeight: '16px',
       letterSpacing: '0.25px',
       marginRight: '10px',
-      fontSize: '18px',
+      fontSize: '17px',
       width: '203px',
-      textTransform: 'none',
+      textTransform: 'uppercase',
       fontFamily: 'Poppins',
       '& span': {
         color: '#000000',
       },
       '&.Mui-selected': {
         fontWeight: '500',
+        '&.studies': {
+          background: '#FFFFFF',
+          color: '#000000',
+          borderTop: `6px solid ${tabColor}`,
+        },
         '&.participants': {
-          background: '#B3D6EA',
+          background: '#FFFFFF',
           color: '#000000',
-          borderTop: '6px solid #07679C',
-        },
-        '&.samples': {
-          background: '#B3D6EA',
-          color: '#000000',
-          borderTop: '6px solid #07679C',
-        },
-        '&.files': {
-          background: '#B3D6EA',
-          color: '#000000',
-          borderTop: '6px solid #07679C',
+          borderTop: `6px solid ${tabColor}`,
         },
         '&.diagnosis': {
-          background: '#B3D6EA',
+          background: '#FFFFFF',
           color: '#000000',
-          borderTop: '6px solid #07679C',
+          borderTop: `6px solid ${tabColor}`,
         },
-        '&.studies': {
-          background: '#B3D6EA',
+        '&.treatment': {
+          background: '#FFFFFF',
           color: '#000000',
-          borderTop: '6px solid #07679C',
+          borderTop: `6px solid ${tabColor}`,
+        },
+        '&.treatment_response': {
+          background: '#FFFFFF',
+          color: '#000000',
+          borderTop: `6px solid ${tabColor}`,
+        },
+        '&.survival': {
+          background: '#FFFFFF',
+          color: '#000000',
+          borderTop: `6px solid ${tabColor}`,
+        },
+        '&.genetic_analysis': {
+          background: '#FFFFFF',
+          color: '#000000',
+          borderTop: `6px solid ${tabColor}`,
         },
         '&.MuiTypography-body1': {
           color: 'red',
         },
       },
+      '& span.studies_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
       '& span.participants_count': {
-        marginLeft: '5px',
-        fontSize: '16px',
-        fontWeight: '300',
-      },
-      '& span.samples_count': {
-        marginLeft: '5px',
-        fontSize: '16px',
-        fontWeight: '300',
-      },
-      '& span.files_count': {
         marginLeft: '5px',
         fontSize: '16px',
         fontWeight: '300',
@@ -76,10 +83,98 @@ export const customTheme = {
         fontSize: '16px',
         fontWeight: '300',
       },
-      '& span.studies_count': {
+      '& span.treatment_count': {
         marginLeft: '5px',
         fontSize: '16px',
         fontWeight: '300',
+      },
+      '& span.treatment_response_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.survival_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.genetic_analysis_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+    },
+  },
+  MuiList: {
+    root: {
+      '&.popover-list': {
+        padding: 0,
+      },
+    },
+  },
+  MuiListItem: {
+    root: {
+      '&.popover-list-item': {
+        minWidth: '200px',
+        padding: '7.5px 16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        '&:first-child': {
+          paddingTop: '10px',
+        },
+        '&:last-child': {
+          paddingBottom: '10px',
+        },
+        '& .popover-tab-name': {
+          fontFamily: 'Poppins',
+          fontWeight: 300,
+          fontSize: '14px',
+          color: 'black',
+          lineHeight: '107%',
+          textTransform: 'capitalize',
+          flex: 1,
+          textAlign: 'left',
+        },
+        '& .popover-tab-count': {
+          fontFamily: 'Poppins',
+          fontWeight: 300,
+          fontSize: '14px',
+          color: 'black',
+          lineHeight: '107%',
+          textAlign: 'right',
+          marginLeft: '16px',
+        },
+      },
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.more-button': {
+        width: '125px',
+        height: '45px',
+        marginTop: '40px',
+        marginRight: '10px',
+        fontFamily: 'Poppins',
+        fontWeight: 300,
+        fontSize: '14px',
+        lineHeight: '107%',
+        letterSpacing: '-2%',
+        textTransform: 'capitalize',
+        color: 'black',
+        background: 'transparent',
+        border: 'none',
+        '&:hover': {
+          background: 'transparent',
+        },
+        '& span': {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        },
+        '& img': {
+          height: '15px',
+        },
       },
     },
   },

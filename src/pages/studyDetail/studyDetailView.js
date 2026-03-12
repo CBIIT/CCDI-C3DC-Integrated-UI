@@ -1,262 +1,771 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import headerImg from '../../assets/studies/studyDetailBackground.png';
-import breadcrumbIcon from '../../assets/icons/Breadcrumb_Icon.svg';
-import bookIcon from '../../assets/studies/bookIcon.svg';
-import OverviewView from './overview/overviewView';
-import SupportingDataView from './supportingData/supportingDataView';
-const StudiesDetailContainer = styled.div`
-    .breadcrumb {
-        font-family: Public Sans;
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 162%;
-        padding-left: 30px;
-        padding-top: 8px;
-        padding-bottom: 8px;
+import {
 
-        a {
-            color: #005EA2;
-        }
+  Grid,
+  withStyles,
+} from '@material-ui/core';
+import { Link, useNavigate } from 'react-router-dom';
+import openBook from "../../assets/resources/openBook.svg";
+import next from "../../assets/resources/next.svg";
+import Stats from '../../components/Stats/StatsView';
+import CloudDownload from "../../assets/studies/cloud_download.svg";
+import { rightPanel } from '../../bento/studyDetailData';
+import { toggleCheckBox } from '@bento-core/facet-filter';
+import "./scrollBarConfig.css";
+import { useDispatch } from 'react-redux';
+import Alert from '@material-ui/lab/Alert';
+import { openDoubleLink } from './utils';
 
-        span {
-            color: #1B1B1B;
-        }
-    }
-    .breadcrumbIcon {
-        position: relative;
-        top: 4px;
-    }
+const StudyDetailView = ({ classes, data, manifestData, theme }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [error,setError] = useState(false);
+  const [errorMessage,setErrorMessage] = useState("Something Went Wrong");
+  const studyData = data;
+  const statsData = {
+    numberOfDiseases: data.studyDetails.num_diseases,
+    numberOfParticipants: data.studyDetails.num_participants,
+    numberOfStudies: 1,
+  };
 
-    .resourceHeader {
-        width: 100%;
-    }
+  const updatedAttributesData = [
+    {
+      label: "Study Description",
+      internalLink: false,
+      actualLink: "/link/",
+      actualLinkId: 0,
+      dataField: "study_description"
+    },
+  ];
 
-    .resourceHeaderBackground {
-        width: 100%;
-        background-image: url(${headerImg});
-        background-repeat:no-repeat;
-        background-position:center; 
-    }
-
-    .resourceHeaderText {
-        width: 1420px;
-        margin: 0 auto;
-        padding: 34px 0 10px 36px;
-        color: #0E546E;
-        font-family: Poppins;
-        font-size: 40px;
-        font-weight: 400;
-        line-height: 45px;
-        letter-spacing: 0.8px;
-    }
-
-    .resourceTitleContainer {
-        background: #0E546E;
-    }
-
-    .resourceTitle {
-        // width: 1420px;
-        margin: 0 auto;
-        display: flex;
-        color: #FFF;
-        font-family: Poppins;
-        font-size: 35px;
-        font-weight: 300;
-        line-height: 38px;
-        letter-spacing: 0.7px;
-        padding: 13px 0 13px 36px;
-    }
-
-    .studyIdText {
-        margin: 0 20px;
-        color: #FFFFFF;
-        font-family: Poppins;
-        font-size: 35px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 38px;
-        letter-spacing: 0.7px;
-        text-decoration-line: underline;
-        text-decoration-style: solid;
-        text-decoration-thickness: 2px;
-    }
-
-    .participantContaniner {
-        display: flex;
-        margin-left: auto;
-        padding: 0 25px;
-        padding-top: 10px;
-        color: #60D0F9;
-        font-family: Poppins;
-        font-size: 19px;
-        font-weight: 400;
-        line-height: 21px;
-        letter-spacing: 0.38px;
-    }
-
-    .subjectNumber {
-        margin-left: 8px;
-        color: #FFFFFF;
-        font-family: Poppins;
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 21px; /* 110.526% */
-        letter-spacing: 0.38px;
-        text-decoration-line: underline;
-        text-decoration-style: solid;
-        text-decoration-thickness: 1px;
-    }
-
-    @media (min-width: 1420px) {
-        .breadcrumb {
-            width: 1420px;
-            margin: 0 auto;
-        }
-        .resourceTitle {
-            width: 1420px;
-        }
-
-        .resourceHeaderText {
-            width: 1420px;
-        }
-
-        .resourceBreadcrumbContainer {
-            width: 1420px;
-        }
-    }
-`;
-
-const TabsContainer = styled.div`
-    width: 100%;
-    border-bottom: 1px solid #939393;
-    
-    @media (min-width: 1420px) {
-        .tabsWrapper {
-            width: 1420px;
-            margin: 0 auto;
-        }
-    }
-`;
-
-const TabsList = styled.div`
-    display: flex;
-    padding: 0 40px;
-    gap: 40px;
-    padding-bottom: 1px;
-`;
-
-const Tab = styled.button`
-    background: none;
-    border: none;
-    padding: 16px 0;
-    font-family: Poppins;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.36px;
-    cursor: pointer;
-    position: relative;
-    color: ${props => props.active ? '#0E546E' : '#757575'};
-    transition: color 0.3s ease;
-
-    &:hover {
-        color: #0E546E;
-    }
-
-    ${props => props.active && `
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background-color: #0E546E;
-        }
-    `}
-`;
-
-const StudiesDetailBodyContainer = styled.div`
-    // width: 1420px;
-    // margin: 0 auto;
-    display: grid;
-    grid-template-columns: 50% 50%;
-
-     @media (min-width: 1420px) {
-        width: 1420px;
-        margin: 0 auto;
-    }
-`;
+  const externalLinkIcon = {
+    src: "external-link-icon.png",
+    alt: "External Link Icon"
+  };
 
 
-const TAB_LABELS = {
-    OVERVIEW: 'Overview',
-    SUPPORTING_DATA: 'Supporting Data',
+  return (
+    <>
+      <Stats data={statsData} />
+
+      <div className={classes.whiteSpaceTop}>
+
+      </div>
+      <div className={classes.headerNavText}>
+        <Link className={classes.navLink} to="/home">Home</Link>
+        <img src={next} width={25} height={43} alt='greater than symbol' />
+        <Link className={classes.navLink} to="/studies">Studies</Link>
+        <img src={next} width={25} height={43} alt='greater than symbol' />
+        <p className={classes.navInfo}>{`Study Code ${studyData.studyDetails.dbgap_accession} `}</p>
+      </div>
+
+      <div className={classes.container}>
+        <h1 className={classes.headerTitleStyle}>C3DC Studies</h1>
+
+        <div className={classes.header}>
+
+          <div className={classes.headerTitle}>
+            <div className={classes.headerMainTitle}>
+
+              <span className={classes.headerSubStyle}>
+                {'DBGAP ACCESSION: '}
+                <span>
+                  <a className={classes.studyIdUrl} href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${studyData.studyDetails.dbgap_accession}`} target='_blank' rel="noreferrer">
+                    {studyData.studyDetails.dbgap_accession}
+                  </a>
+
+                </span>
+
+              </span>
+              <img src={openBook} style={{ width: 41, height: 29, color: 'white', margin: 20, marginTop: 15, }} alt='open book icon' />
+
+            </div>
+
+          </div>
+
+          <div className={classes.headerTitle}>
+            <div className={classes.headerMainTitle} >
+              <span style={{ color: '#71DBEA', alignSelf: 'center', position: 'absolute', right: 60, fontWeight: "normal", fontSize: 19, marginTop: 10 }}>
+                {'Participants in this Study: '}
+                <span className={classes.linkOut} onClick={() => {
+
+                  const toggleCheckBoxItem = {
+                    name: studyData.studyDetails.dbgap_accession,
+                    datafield: 'dbgap_accession',
+                    isChecked: true,
+                  }
+                  dispatch(toggleCheckBox(toggleCheckBoxItem));
+                  navigate('/explore')
+
+                }} style={{ fontWeight: 'bold', color: "white", fontFamily: 'Poppins' }}>
+                  {studyData.studyDetails.num_participants.toLocaleString()}
+                </span>
+
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className={classes.detailContainer}>
+
+          <Grid container spacing={5} >
+            <Grid item lg={7} sm={6} xs={12} container>
+              <Grid container spacing={4} direction="row" className={"detailContainerLeft"}>
+
+                {updatedAttributesData.slice(0, 6).map((attribute, index) => (
+                  <Grid item xs={12}>
+                    {
+                      index === 0 &&
+                      <>
+                        <span className={classes.contentTitle}>Overview</span>
+                        <div className={classes.descriptionGap}>
+                        </div>
+                      </>
+                    }
+                    <div>
+                      {
+                        attribute.internalLink
+                          ? (
+                            <div>
+                              <span className={classes.detailContainerHeader}>{attribute.label}</span>
+                              <div>
+                                <span className={classes.content}>
+                                  {' '}
+                                  <Link
+                                    className={classes.link}
+                                    to={`${attribute.actualLink}${studyData[updatedAttributesData[attribute.actualLinkId].dataField]}`}
+                                  >
+                                    {studyData[attribute.dataField]}
+                                  </Link>
+                                  {' '}
+                                </span>
+                              </div>
+                            </div>
+                          )
+                          : attribute.externalLink
+                            ? (
+                              <div>
+                                <span
+                                  className={classes.detailContainerHeader}
+                                >
+                                  {attribute.label}
+                                </span>
+                                <div>
+                                  <span className={classes.content}>
+                                    {' '}
+                                    <a
+                                      href={`${attribute.actualLink}${studyData[updatedAttributesData[attribute.actualLinkId].dataField]}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={classes.link}
+                                    >
+                                      {studyData[attribute.dataField]}
+                                    </a>
+                                    <img
+                                      src={externalLinkIcon.src}
+                                      alt={externalLinkIcon.alt}
+                                      className={classes.externalLinkIcon}
+                                    />
+                                    {' '}
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                            : attribute.internalLinkToLabel
+                              ? (
+                                <div>
+                                  <span
+                                    className={classes.detailContainerHeaderLink}
+                                  >
+                                    <a href={`${studyData[attribute.dataField]}`} rel="noopener noreferrer">{attribute.label}</a>
+                                  </span>
+                                </div>
+                              )
+                              : attribute.externalLinkToLabel
+                                ? (
+                                  <div>
+                                    <span
+                                      className={classes.detailContainerHeaderLink}
+                                    >
+                                      <a href={`${studyData[attribute.dataField]}`} target="_blank" rel="noopener noreferrer">{attribute.label}</a>
+                                      <img
+                                        src={externalLinkIcon.src}
+                                        alt={externalLinkIcon.alt}
+                                        className={classes.externalLinkIcon}
+                                      />
+                                    </span>
+                                  </div>
+                                )
+                                : (
+                                  <div>
+                                    <span
+                                      className={classes.detailContainerHeader}
+
+                                    >
+                                      {attribute.label}
+                                    </span>
+                                    <div className={classes.studyGap}>
+                                    </div>
+                                    <div>
+                                      <span className={classes.studyDescriptionClass}
+                                        dangerouslySetInnerHTML={{
+                                          __html:
+                                            studyData.studyDetails[attribute.dataField]
+                                        }}>
+                                      </span>
+                                    </div>
+                                  </div>
+                                )
+                      }
+                    </div>
+                  </Grid>
+                ))}
+
+                {manifestData.networkError && !manifestData[studyData.studyDetails.dbgap_accession] &&
+                  <div className={classes.downloadSection}>
+                  <p style={{ fontWeight: 'bold', margin: 0, marginRight: 15 }}> 
+                    {manifestData.networkError}
+                  </p>
+                  </div>
+                }
+
+                {manifestData[studyData.studyDetails.dbgap_accession] &&
+                  <div className={classes.downloadSection}>
+                    <p style={{ fontWeight: 'bold', margin: 0, marginRight: 15 }}> 
+                      {manifestData[studyData.studyDetails.dbgap_accession].isTarget === true ? "Source Files:" : "Manifest Files:"}
+                    </p>
+                    <div className={classes.downloadSectionLinks}>
+
+                      { Object.keys(manifestData[studyData.studyDetails.dbgap_accession]).filter((innerKey)=> innerKey !== "isTarget" ).map((innerKey) =>
+                        (
+                          <span  onClick={()=>{
+                            openDoubleLink(manifestData[studyData.studyDetails.dbgap_accession][innerKey],(errorMessage) => {
+                              setErrorMessage(errorMessage);
+                              setError(true); 
+                            }, innerKey)
+                          }} className={classes.LinkStyle} >
+                            {innerKey}
+                          </span>
+                        )
+                        )
+                      }
+
+                    </div>
+                  </div>
+                }
+              </Grid>
+            </Grid>
+
+            <Grid
+              item
+              lg={5}
+              sm={6}
+              xs={12}
+            >
+              <div className={classes.detailContainerRight}>
+
+
+                {rightPanel.files.map((panel) => (
+                  <Grid item xs={12} style={{ height: 65, margin: 5, gap: 35 }}>
+                    <div className={classes.fileContainer}>
+                      <span
+                        className={classes.detailContainerHeader}
+                      >
+                        {panel.label}
+                      </span>
+
+                      <div className={classes.studyDescriptionClass} >
+                        {studyData.studyDetails[panel.dataField].toLocaleString()}
+
+                      </div>
+                    </div>
+                  </Grid>
+                ))}
+              </div>
+            </Grid>
+
+          </Grid>
+        </div>
+      </div>
+      <div className={classes.whiteSpace}>
+
+      </div>
+      {error &&
+      <Alert severity="error">{errorMessage}</Alert>
+      }
+    </>
+  );
 };
 
-const StudiesDetail = ({data}) => {
-    const [activeTab, setActiveTab] = useState(TAB_LABELS.OVERVIEW);
+const styles = (theme) => ({
+  firstColumn: {
+    maxWidth: '45%',
+  },
+  headerSubStyle: {
+    color: 'white',
+    alignSelf: 'center',
+    fontWeight: 'normal',
+    marginTop: 10,
+    marginLeft: 0
+  },
+  secondColumn: {
+    maxWidth: '30%',
+  },
+  thirdColumn: {
+    maxWidth: '25%',
+  },
+  widgetTitle: {
+    color: '#0095A2',
+    textTransform: 'uppercase',
+    fontFamily: 'Lato !important',
+    fontWeight: '500 !important',
+    fontSize: '17px !important',
+    letterSpacing: '0.025em',
+  },
+  borderLeft: {
+    borderLeft: '#81A6BA 1px solid',
+    paddingLeft: '25px !important',
+  },
+  link: {
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    color: theme.palette.text.link,
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  paddingLeft8: {
+    paddingLeft: '8px',
+  },
+  paddingBottm17: {
+    paddingBottm: '17px',
+  },
+  container: {
+    paddingTop: '10px',
+    fontFamily: theme.custom.fontFamily,
+    height: "400px",
+    background: '#fff',
+    width: '120%',
+    margin: 0,
+    paddingBottom: '16px',
+  },
+  contentTitle: {
+    color: '#0B536A',
+    fontSize: 28,
+    fontWeight: 500,
+    fontFamily: 'Poppins',
+  },
+  content: {
+    fontSize: '15px',
+    fontFamily: theme.custom.fontFamily,
+    lineHeight: '14px',
+    color: 'black'
+  },
+  warning: {
+    color: theme.palette.warning.main,
+  },
+  paper: {
+    textAlign: 'center',
+  },
+  fakeToolbar: {
+    ...theme.mixins.toolbar,
+  },
+  root: {
+    fontFamily: theme.custom.fontFamily,
+    fontSize: '9px',
+    letterSpacing: '0.025em',
+    color: '#000',
+    background: '#f3f3f3',
+  },
+  headerNavText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    height: 50,
+    width: 500,
+    marginLeft: 40
+  },
+  studyIdUrl: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  navLink: {
+    fontSize: 16,
+    fontFamily: 'Public Sans',
+    fontWeight: 400,
+    color: '#005EA2',
+    textDecoration: 'underline',
+    margin: 5
+  },
+  studyDescriptionClass: {
+    color: "#343434",
+    fontWeight: 400,
+    fontSize: 16,
+    overFlowY: 'scroll',
+    fontFamily: "inter",
+  },
+  studyGap: {
+    height: 7
+  },
+  descriptionGap: {
+    height: 20
+  },
+  LinkStyle: {
+    color: "#3156a0",
+    fontFamily: "Inter",
+    cursor: 'pointer',
+    fontWeight: 400,
+    paddingRight: 30,
+    background: `url(${CloudDownload}) right center no-repeat`
+  },
+  downloadSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    margin: 20,
+    alignItems: 'flex-start'
+  },
+  downloadSectionLinks: {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    textDecoration: 'underline',
+  },
+  navInfo: {
+    fontSize: 16,
+    fontFamily: 'Public Sans',
+    fontWeight: 400,
+    color: '#000',
+    margin: 6
+  },
+  headerTitleStyle: {
+    margin: 0,
+    color: '#0D3A3F',
+    marginLeft: '2.5rem',
+    marginTop: 10,
+    fontWeight: 400,
+    fontFamily: 'Poppins',
+    fontSize: 35
+  },
+  header: {
+    paddingLeft: '21px',
+    paddingRight: '35px',
+    height: '64px',
+    backgroundColor: '#0D3A3F',
+    width: '100%',
+    margin: '0',
+    display: 'flex',
+    flexDirection: 'row',
+    justifycontent: 'space-between',
+    alignItem: 'center'
 
-    // Check if supporting_data exists and has items
-    const hasSupportingData = data.supporting_data && Array.isArray(data.supporting_data) && data.supporting_data.length > 0;
+  },
+  headerTitle: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItem: 'space-between',
+    background: 'transparent',
+    width: '100%',
+    margin: 0
 
-    return(
-        <StudiesDetailContainer>
-            <div className='breadcrumb'>
-                <a href='/'>Home</a>
-                <img src={breadcrumbIcon} className='breadcrumbIcon' alt="breadcrumb icon" />
-                <a href='/studies'>Studies</a>
-                <img src={breadcrumbIcon} className='breadcrumbIcon' alt="breadcrumb icon" />
-                <span>Study Code {data.study_id}</span>
-            </div>
-            <div className='resourceHeader'><div className='resourceHeaderBackground'><div className='resourceHeaderText'>CCDI Hub Studies</div></div></div>
-            <div className='resourceTitleContainer'>
-                <div className='resourceTitle'>
-                    <div>Study Code:<a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.study_id}`} className='studyIdText' target="_blank" rel="noopener noreferrer">{data.study_id}</a><img src={bookIcon} alt="bookIcon" /></div>
-                    <div className='participantContaniner'>Participants in this Study: <a href={`/explore?dbgap_accession=${data.study_id}`} className='subjectNumber'>{data.num_of_participants.toLocaleString('en-US')}</a></div>
-                </div>
-            </div>
-        
-            <TabsContainer>
-                <div className='tabsWrapper'>
-                    <TabsList>
-                        {/* OVERVIEW Tab */}
-                        <Tab 
-                            active={activeTab === TAB_LABELS.OVERVIEW}
-                            onClick={() => setActiveTab(TAB_LABELS.OVERVIEW)}
-                        >
-                            {TAB_LABELS.OVERVIEW}
-                        </Tab>
-                        {/* SUPPORTING DATA Tab render only if supporting data exists */}
-                        {hasSupportingData && (
-                        <Tab 
-                            active={activeTab === TAB_LABELS.SUPPORTING_DATA}
-                            onClick={() => setActiveTab(TAB_LABELS.SUPPORTING_DATA)}
-                        >
-                            {TAB_LABELS.SUPPORTING_DATA}
-                        </Tab>
-                        )}
-                    </TabsList>
-                </div>
-            </TabsContainer>
+  },
+  headerMainTitle: {
+    '& > span': {
+      fontWeight: '300',
+      letterSpacing: '0.017em',
+    },
 
-            {/* Studies Detail Body Container */}
-            <StudiesDetailBodyContainer>
+    '& > span > span': {
+      fontWeight: 'bold',
+      letterSpacing: '0.025em',
+    },
+    fontFamily: 'Lato',
+    letterSpacing: '0.025em',
+    color: '#274FA5 ',
+    fontSize: '35px',
+    lineHeight: '24px',
+    paddingLeft: '0px',
+    textAlign: 'center',
+    alignItem: 'space-between',
+    justifyContent: 'space-between',
+    maxHeight: 50,
+    display: 'flex',
+    flexDirection: 'row',
 
-                {/* show tab content based on active tab default */}
-                {activeTab === TAB_LABELS.OVERVIEW && (
-                    <OverviewView data={data} />
-                )}
+    marginLeft: '1.4rem',
+  },
+  headerSubTitleCate: {
+    color: '#00B0BD',
+    fontWeight: '300',
+    fontFamily: 'Poppins',
+    textTransform: 'uppercase',
+    letterSpacing: '0.023em',
+    fontSize: '15px',
+    overflow: 'hidden',
+    lineHeight: '24px',
+    paddingLeft: '2px',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    paddingRight: '200px',
+  },
+  whiteSpace: {
+    height: '180px',
+    backgroundColor: 'white'
+  },
+  whiteSpaceTop: {
+    height: '5px',
+  },
+  headerSubTitleContent: {
+    color: '#000000',
+    fontWeight: 'bold',
+    fontFamily: theme.custom.fontFamilyRaleway,
+    textTransform: 'uppercase',
+    letterSpacing: '0.023em',
+    fontSize: '14px',
 
-                {/* If supporting data exists, show tab content based on active tab */}
-                {hasSupportingData && activeTab === TAB_LABELS.SUPPORTING_DATA && (
-                    <SupportingDataView data={data} />
-                )}
-            </StudiesDetailBodyContainer>
-        
-        </StudiesDetailContainer>
-    )
-}
+  },
+  headerMSubTitle: {
+    paddingTop: '3px',
 
-export default StudiesDetail;
+  },
+  breadCrumb: {
+    color: '#00B0BD',
+  },
+  headerButton: {
+    fontFamily: theme.custom.fontFamily,
+    float: 'right',
+    marginTop: '15px',
+    width: '104px',
+    height: '33px',
+    background: '#F6F4F4',
+    textAlign: 'center',
+    marginRight: '-20px',
+
+  },
+  headerButtonLinkSpan: {
+    fontFamily: theme.custom.fontFamily,
+    height: '50px',
+    background: '#F5F3EE',
+    width: '200px',
+    fontSize: '8pt',
+  },
+  headerButtonLinkText: {
+    fontFamily: theme.custom.fontFamily,
+    color: theme.palette.text.link,
+    fontSize: '8pt',
+    textTransform: 'uppercase',
+  },
+  headerButtonColumn: {
+    color: '#000000',
+  },
+  headerButtonLinkNumber: {
+    color: '#000000',
+    fontFamily: theme.custom.fontFamily,
+    borderBottom: 'solid #6690AC',
+    lineHeight: '30px',
+    paddingBottom: '3px',
+    margin: '0 4px',
+    fontSize: '8pt',
+  },
+  logo: {
+    position: 'absolute',
+    float: 'left',
+    marginLeft: '-23px',
+    marginTop: '-21px',
+    width: '107px',
+    filter: 'drop-shadow(-3px 2px 6px rgba(27,28,28,0.29))',
+  },
+  detailContainer: {
+    //maxWidth: '1340px',
+    margin: 'auto',
+    marginBlockEnd: '24px',
+    paddingTop: '24px',
+    paddingLeft: '5px',
+    fontFamily: theme.custom.fontFamily,
+    letterSpacing: '0.014em',
+    color: '#000000',
+    size: '12px',
+    lineHeight: '23px',
+    height: '1825px'
+  },
+  detailContainerHeader: {
+    textTransform: 'uppercase',
+    fontFamily: 'poppins',
+    fontSize: '17px',
+    fontWeight: '500',
+    letterSpacing: '0.025em',
+    color: '#0095A2',
+  },
+  detailContainerHeaderLink: {
+    fontFamily: 'Raleway',
+    fontSize: '14px',
+    letterSpacing: '0.025em',
+    color: '#0077E3',
+  },
+  detailContainerBottom: {
+    borderTop: '#81a6b9 1px solid',
+    marginTop: '13px',
+    padding: ' 35px 0 63px 2px !important',
+  },
+  detailContainerLeft: {
+    display: 'block',
+    padding: '5px  20px 105px 0px !important',
+    minHeight: '500px',
+    maxHeight: '400px',
+    overflowX: 'hidden',
+    width: '103.9%',
+    margin: '20px',
+    overflowY: 'scroll',
+    borderRight: '#81A6BA 1px solid',
+
+  },
+
+  borderRight: {
+    borderRight: '#81a6b9 1px solid',
+  },
+  detailContainerRight: {
+    padding: '5px 0 5px 36px !important',
+    minHeight: '350px',
+    maxHeight: '350px',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    height: '350px',
+    width: '105%',
+    borderRight: '1px solid #81A6BA',
+    marginLeft: '-26px',
+    marginTop: '70px',
+  },
+
+  tableContainer: {
+    background: '#f3f3f3',
+  },
+  tableHeader: {
+    paddingLeft: '30px',
+  },
+  paddingTop12: {
+    paddingTop: '12px',
+  },
+  tableDiv: {
+    maxWidth: '1340px',
+    margin: 'auto',
+    paddingTop: '50px',
+    paddingLeft: '0px',
+  },
+
+  headerButtonLink: {
+    textDecoration: 'none',
+    lineHeight: '14px',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    color: '#c32c2e',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  button: {
+    borderRadius: '22px',
+    padding: '0 22px',
+    width: '150px',
+    height: '35px',
+    lineHeight: '14px',
+    fontSize: '10px',
+    color: '#ffffff',
+    textTransform: 'uppercase',
+    backgroundColor: '#ff8a00',
+    fontFamily: theme.custom.fontFamily,
+    '&:hover': {
+      backgroundColor: '#ff8a00',
+    },
+  },
+  detailContainerItems: {
+    paddingTop: '7px',
+    paddingLeft: '7px',
+  },
+  detailContainerItem: {
+    paddingTop: '15px !important',
+  },
+  title: {
+    color: '#0095A2',
+    fontFamily: theme.custom.fontFamily,
+    fontSize: '12px',
+    letterSpacing: '0.017em',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  tableTitle: {
+    textTransform: 'uppercase',
+    fontFamily: 'Lato',
+    fontSize: '17px',
+    letterSpacing: '0.025em',
+    color: '#0095A2',
+    paddingBottom: '20px',
+  },
+  fileContainer: {
+    paddingTop: '0px',
+  },
+  fileContent: {
+    backgroundColor: '#F3F3F3',
+    borderRadius: '50%',
+    height: '162px',
+    width: '162px',
+    paddingLeft: '48px',
+    marginLeft: '36%',
+    marginTop: '25px',
+  },
+  linkOut: {
+    textDecoration: 'underline',
+    borderBottom: 1,
+    borderBottomColor: 'white',
+    cursor: 'pointer'
+  },
+  fileIcon: {
+    '& img': {
+      width: '163%',
+      padding: '21px 120px 0px 0px',
+    },
+  },
+  fileCount: {
+    lineHeight: '31.7px',
+    fontSize: '30px',
+    color: '#7A297D',
+    fontWeight: '600',
+    borderBottom: '#7A297D solid 5px',
+    fontFamily: 'Oswald',
+    width: 'max-content',
+    padding: '15px 0px 12px 0px',
+  },
+  paddingTop32: {
+    paddingTop: '36px !important',
+  },
+  marginTopN37: {
+    marginTop: '15px',
+  },
+  tableCell1: {
+    paddingLeft: '25px',
+    width: '200px',
+  },
+  tableCell2: {
+    width: '370px',
+  },
+  tableCell3: {
+    width: '370px',
+  },
+  tableCell4: {
+    width: '160px',
+  },
+  tableCell5: {
+    width: '160px',
+  },
+  externalLinkIcon: {
+    width: '10px',
+    verticalAlign: 'center',
+    marginLeft: '4px',
+    marginTop: '20px',
+    alignSelf: 'center',
+    backgroundColor: '#71DBEA'
+  },
+});
+
+export default withStyles(styles, { withTheme: true })(StudyDetailView);

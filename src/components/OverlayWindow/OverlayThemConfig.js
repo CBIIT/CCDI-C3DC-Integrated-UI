@@ -131,6 +131,8 @@ export default ({
   const computedTheme = createTheme({ ...themes.light, ...overrides, ...style });
 
   return (
-    <ThemeProvider theme={computedTheme}>{children}</ThemeProvider>
+    <ThemeProvider theme={computedTheme}>
+      {children}
+    </ThemeProvider>
   );
 };

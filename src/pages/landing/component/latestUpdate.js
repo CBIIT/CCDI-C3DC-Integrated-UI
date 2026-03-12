@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactHtmlParser from 'html-react-parser';
 import usePageVisibility from "./PageVisibility";
-// import { altList, srcList, newsList, releaseNotesList } from '../../../bento/newsData';
+import { newsList } from '../../../bento/newsData';
 import { titleData } from '../../../bento/landingPageData';
 import exportIconText from '../../../assets/landing/Export_Icon_White.svg';
-import startIcon from '../../../assets/icons/Start_Icon.svg';
-import pauseIcon from '../../../assets/icons/Pause_Icon.svg';
 
 let timer = null;
 
@@ -114,10 +112,6 @@ const LatestUpdatesContainer = styled.div`
       display: none;
     }
 
-    .buttonContainer {
-      display: none;
-    }
-
     @media (min-width: 1200px) {
         .hoverTextContent {
             display: none;
@@ -148,7 +142,7 @@ const LatestUpdatesContainer = styled.div`
         }
 
         .latestUpdatesListItem:nth-child(1) {
-            transform: translateX(-132%);
+            transform: translateX(-115%);
             display: block;
             visibility: hidden;
           }
@@ -158,21 +152,21 @@ const LatestUpdatesContainer = styled.div`
           }
     
           .latestUpdatesListItem:nth-child(3) {
-            transform: translateX(133%);
+            transform: translateX(115%);
           }
     
           .latestUpdatesListItem:nth-child(4) {
-            transform: translateX(266%);
+            transform: translateX(230%);
           }
 
           .latestUpdatesListItem:nth-child(5) {
-            transform: translateX(399%);
+            transform: translateX(345%);
             display: block;
             visibility: hidden;
           }
 
           .latestUpdatesListItem:nth-child(6) {
-            transform: translateX(399%);
+            transform: translateX(345%);
             display: block;
             visibility: hidden;
           }
@@ -186,8 +180,6 @@ const LatestUpdatesContainer = styled.div`
           .latestUpdatesListTitle {
             padding: 6px 14px;
             font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 600
           }
     
           .latestUpdatesListContent {
@@ -224,94 +216,6 @@ const LatestUpdatesContainer = styled.div`
     @media (max-width: 700px) {
       .latestUpdatesListItem {
         transition: 650ms;
-      }
-
-      .buttonContainer {
-        position: absolute;
-        top: 380px;
-        right: 16px;
-        display: flex;
-      }
-
-      .pauseButtonContainer {
-        display: flex;
-        justify-content: center;
-        align-items: center
-        background: #FFFFFF;
-        height: 39px;
-        width: 39px;
-        border-radius: 50%;
-        border: 0.6px solid #4BBFC6;
-        box-shadow: 0px 2.49px 9.32px 0px #00000073;
-        margin: 0 15px;
-      }
-
-      .pauseButtonContainer:hover {
-        cursor: pointer;
-        border: 1px solid #4BBFC6;
-      }
-
-      .pauseButtonIcon {
-        height: 22px;
-        width: 22px;
-      }
-
-      .arrowButtonContainer {
-        background: #FFFFFF;
-        height: 39px;
-        width: 39px;
-        border-radius: 50%;
-        border: 0.6px solid #4BBFC6;
-      }
-
-      .arrowButtonContainer:hover {
-        cursor: pointer;
-        border: 1px solid #4BBFC6;
-          .arrowLeft {
-            border-bottom: 11px solid #8D9096;
-          }
-          .arrowRight {
-            border-top: 11px solid #8D9096;
-          }
-      }
-
-      .arrowLeft {
-        margin: 14px 0 0 9px;
-        width: 0; 
-        height: 0; 
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-bottom: 11px solid #C9C9C9;
-        transform: rotate(-90deg);
-        }
-
-      .arrowRight {
-          margin: 13px 0 0 13px;
-          width: 0; 
-          height: 0; 
-          border-left: 8px solid transparent;
-          border-right: 8px solid transparent;
-          border-top: 11px solid #C9C9C9;
-          transform: rotate(-90deg);
-      }
-      
-      .latestUpdatesListItem:nth-child(1) {
-        transform: translateX(-115%);
-      }
-      .latestUpdatesListItem:nth-child(2) {
-        transform: translateX(0);
-      }
-      .latestUpdatesListItem:nth-child(3) {
-        transform: translateX(115%);
-      }
-      .latestUpdatesListItem:nth-child(4) {
-        transform: translateX(230%);
-      }
-      .latestUpdatesListItem:nth-child(5) {
-        transform: translateX(345%);
-      }
-      .latestUpdatesListItem:nth-child(6) {
-        transform: translateX(345%);
       }
     }
 
@@ -362,10 +266,8 @@ const TitleContainer = styled.div`
       font-family: Poppins;
       font-weight: 600;
       font-size: 35px;
-      text-transform: capitalize;
+      text-transform: uppercase;
       margin: 0;
-      line-height: 38px;
-      letter-spacing: 0.02em;
     }
 
     @media (max-width: 1199px) {
@@ -377,37 +279,27 @@ const TitleContainer = styled.div`
       }
 
       .titleText {
-        font-size: 25px;
-        line-height: 20px;
+        font-size: 14px;
+        font-line: 17px;
       }
     }
 
     @media (max-width: 872px) {
       margin: 0 0 20px 30px;
-
-      .titleText {
-        font-size: 14px;
-        line-height: 17px;
-        text-transform: uppercase;
-      }
     }
 `;
 
-const LatestUpdate = ({newsList, srcList, releaseNotesList, altList}) => {
+const LatestUpdate = () => {
     const [hoverItem, setHoverItem] = useState("");
     const [pause, setPause] = useState(true);
     const [rLatestlList, setRLatestlList] = useState([]);
     const isVisible = usePageVisibility();
 
     const getFirstList = () => {
-      const fullList = (newsList.concat(releaseNotesList)).sort((a,b) => {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      }).reverse();
-      const latestUpdateList = fullList.filter((item) => item.latestUpdate);
-      let newItemList = [latestUpdateList[2]]
-      newItemList = newItemList.concat(latestUpdateList.slice(0,3));
-      newItemList = newItemList.concat(latestUpdateList.slice(0,2));
-      return newItemList;
+        let newItemList = [newsList[2]]
+        newItemList = newItemList.concat(newsList.slice(0,3));
+        newItemList = newItemList.concat(newsList.slice(0,2));
+        return newItemList;
     }
 
     const mouseIn = (key) => {
@@ -429,42 +321,10 @@ const LatestUpdate = ({newsList, srcList, releaseNotesList, altList}) => {
 
     const nextItem = () => {
         const list = document.getElementById("latestList");
-        if (!list || !list.firstChild) return;
         const firstitem = list.firstChild;
         list.removeChild(firstitem);
         list.appendChild(firstitem);
     };
-
-    const nextSlide = () => {
-      if (!pause) {
-          resetTimer();
-      }
-      nextItem();
-    };
-
-    const prevItem = () => {
-      const list = document.getElementById("latestList");
-      if (!list || !list.lastChild) return;
-      const lastitem = list.lastChild;
-      list.removeChild(lastitem);
-      list.insertBefore(lastitem, list.firstChild);
-    };
-
-    const prevSlide = () => {
-        if (!pause) {
-            resetTimer();
-        }
-        prevItem();
-    };
-
-    const clickPause = () => {
-      if (pause) {
-          resetTimer();
-      } else {
-          clearInterval(timer);
-      }
-      setPause(!pause);
-    }
 
     const startTimer = () => {
         timer = setInterval(() => {
@@ -489,16 +349,11 @@ const LatestUpdate = ({newsList, srcList, releaseNotesList, altList}) => {
             resetTimer();
             setPause(false);
         }
+        if (rLatestlList.length === 0) {
+            setRLatestlList(getFirstList());
+        }
         return () => clearInterval(timer);
     }, []);
-
-    useEffect(() => {
-      if (rLatestlList.length === 0 && newsList) {
-        if (newsList.length > 0) {
-          setRLatestlList(getFirstList());
-        }
-      }
-    }, [newsList]);
 
     useEffect(() => {
         if (!isVisible || pause) {
@@ -528,7 +383,7 @@ const LatestUpdate = ({newsList, srcList, releaseNotesList, altList}) => {
                         const updatekey = `update_${updateidx}`;
                         return (
                         <div className='latestUpdatesListItem' key={updatekey} onMouseEnter={() => mouseIn(updatekey)} onMouseLeave={mouseOut}>
-                            <a href={`/news#${updateItem.id}`}><img className='latestUpdatesListItemPic' src={srcList[updateItem.img]} alt={altList ? altList[updateItem.img] : 'alt text'} aria-hidden='true' /><span style={{display:'none'}}>latestUpdates text</span></a>
+                            <a href={`/news#${updateItem.id}`}><img className='latestUpdatesListItemPic' src={updateItem.img} alt={updateItem.id} aria-hidden='true' /><span style={{display:'none'}}>latestUpdates text</span></a>
                             <a className='latestUpdatesListTitleContainer' href={`/news#${updateItem.id}`}><div className='latestUpdatesListTitle'>{updateItem.title}</div></a>
                             <div className='latestUpdatesListContent'>
                                 <span className='latestUpdatesTextContent'>{ReactHtmlParser(updateItem.slug)}</span>
@@ -546,17 +401,6 @@ const LatestUpdate = ({newsList, srcList, releaseNotesList, altList}) => {
                         )
                     })
                 }
-            </div>
-            <div className='buttonContainer'>
-              <div className='arrowButtonContainer' onClick={prevSlide}>
-                  <div className="arrowLeft"></div>
-              </div>
-              <div className='pauseButtonContainer' onClick={clickPause} style={pause ? {paddingLeft:'5px'} : null}>
-                  <img className='pauseButtonIcon' src={pause ? startIcon : pauseIcon} alt="pause button" style={pause ? null : {height:'18px', width:'18px'}}/>
-              </div>
-              <div className='arrowButtonContainer' onClick={nextSlide}>
-                <div className="arrowRight"></div>
-              </div>
             </div>
             </LatestUpdatesContainer>
         </LatestUpdatesSection>

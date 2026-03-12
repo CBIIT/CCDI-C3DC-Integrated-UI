@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import { useGlobal } from '../../../../components/Global/GlobalProvider';
 import { onCreateNewCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalContext } from '../../cohortModal/CohortModalContext';
+import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
 import { onRowSelectHidden } from '@bento-core/paginated-table/dist/table/state/Actions';
-import DeleteConfirmationModal from '../../cohortModal/components/deleteConfirmationModal';
 
 const ButtonContainer = styled.div`
   position: relative;
@@ -53,11 +52,10 @@ const ButtonStyled = styled.button`
 export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohortsAvailable, borderColor }) => {
 
   const tableContext = useContext(TableContext);
-  const { state, dispatch } = useContext(CohortStateContext);
-  const { setShowCohortModal} = useContext(CohortModalContext);
+  const { dispatch } = useContext(CohortStateContext);
+  const { setShowCohortModal, setWarningMessage, setCurrentCohortChanges} = useContext(CohortModalContext);
   const { Notification } = useGlobal();
   const [isActive, setIsActive] = useState(false);
-  const [showPopupMessage, setShowPopupMessage] = useState("");
 
   const triggerNotification = (count) => {
     if (count > 1) {
@@ -91,94 +89,50 @@ export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohorts
     dispatch(onRowSelectHidden([]));
   }
 
-  // Checks if the created cohorts exceed the 20 cohort limit
-  const exceedLimitCreatedCohost = (hiddenCohortState) => {
-    let cohortStateCount = 0;
-
-    // Count the number of cohost
-    if (hiddenCohortState && typeof hiddenCohortState === 'object') {
-        cohortStateCount = Object.keys(hiddenCohortState).length;
-    }
-
-    // Return true if the cohort total would exceed 4, otherwise false
-    if (cohortStateCount >=  20) {
-        return true;
-    }
-
-    return false;
-  }
-
-  // Checks if the selected participants for the new cohort exceed the 4000 participant limit
-  const exceedLimitSelectedParticipant = (hiddenSelectedRows) => {
-    let selectedRowsCount = 0;
-
-    // Count the number of selected participants
-    if (hiddenSelectedRows && Array.isArray(hiddenSelectedRows)) {
-      selectedRowsCount = hiddenSelectedRows.length;
-    }
-
-    // Return true if the total would exceed 4000, otherwise false
-    if (selectedRowsCount > 4000) {
-      return true;
-    }
-
-    return false;
-  }
+  const buildCohortFormat = (jsonArray) => {
+    return jsonArray.map(item => ({
+      ...item,
+      participant_id: typeof item.participant === 'object' ? item.participant.participant_id : item.participant_id,
+      participant_pk:  typeof item.participant === 'object' ? item.participant.id : item.id,
+    }));
+  };
 
   const handleClick = () => {
     if (isActive) {
       if (type === "VIEW") {
         setShowCohortModal(true);
+        setCurrentCohortChanges(null);
       } else {
         const { context } = tableContext;
         const {
           hiddenSelectedRows = []
         } = context;
-
-        // Check if the created cohorts exceed the 20 cohort limit
-        if (exceedLimitCreatedCohost(state)) {
-          // Show Popup notification if the cohort limit would be exceeded
-          setShowPopupMessage("You are not allowed to create more that 20 cohorts");
-          return;
-        }
-
-        // Check if the selected participants exceed the cohort limit
-        if (exceedLimitSelectedParticipant(hiddenSelectedRows)) {
-          // Show Popup notification if the participant limit would be exceeded
-          setShowPopupMessage("You are not allowed to create a new cohort with more than 4000 participants");
-          return;
-        }
-
         clearSelection();
+        setCurrentCohortChanges(null);
         dispatch(onCreateNewCohort(
           "",
           "",
-          hiddenSelectedRows,
+         buildCohortFormat(hiddenSelectedRows),
           (count) => { 
             triggerNotification(count);
             setShowCohortModal(true);
           },
-          (error) => alert(error)
+          (error) => {
+          
+          setWarningMessage(error.toString().replace("Error:",""));
+          }
         ));
       }
 
     }
   };
 
+
   return (
     <ButtonContainer>
       <ButtonStyled borderColor={borderColor} isActive={isActive} backgroundColor={backgroundColor} onClick={handleClick} hoverColor={hoverColor}>
         <span className="title">{label}</span>
       </ButtonStyled>
-      {/* Popup modal to show participant limit exceeded message */}
-      <DeleteConfirmationModal
-        classes={""}
-        open={showPopupMessage}
-        setOpen={() => { setShowPopupMessage("")  }}
-        handleDelete={() => { setShowPopupMessage("") }}
-        deletionType={false}
-        message={showPopupMessage}
-      />
     </ButtonContainer>
   );
 };

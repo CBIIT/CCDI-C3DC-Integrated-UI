@@ -1,47 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
-import errIcon from '../../assets/error/404_Icon.svg';
+import errImg from '../../assets/error/PageNotFound.png';
 import { errorData } from '../../bento/pageNotFoundData';
-import { NavLink } from 'react-router-dom';
 
 const ErrorContainer = styled.div`
-    background: #24415CE5;
+    width: 1440px;
+    margin: 0 auto;
+    display: flex;
 
-    .textContainer {
-      margin: 0 auto;
-      padding-top: 100px;
-      text-align: center;
+    .picContainer {
+      margin: 88px 99px 103px 0;
+      width: 676px;
+      height: 545px;
+      background-image: url(${errImg});
     }
 
-    .errIconContainer {
-      margin-bottom: 25px;
+    .textContainer {
+      margin-top: 203px;
+      text-align: center;
     }
 
     .titleFirst {
       font-family: poppins;
-      font-weight: 500;
-      font-size: 30px;
-      line-height: 65px;
-      color: #CCCED1;
+      font-weight: 700;
+      font-size: 40px;
+      color: #05555C;
+      margin-bottom: 28px;
     }
 
     .titleSecond {
-      font-family: Poppins;
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 25px;
-      letter-spacing: 0.02em;
-      text-align: center;
-      color: #FFFFFF;
-      margin-bottom: 15px;
-    }
-
-    .returnButtonContainer {
-      padding-bottom: 150px;
+      font-family: poppins;
+      font-weight: 500;
+      font-size: 20px;
+      color: #05555C;
     }
 
     .returnButton {
-      padding: 12px 30px;
+      display: block;
+      margin: 50px auto 0 auto;
       width: 176px;
       height: 57px;
       font-family: poppins;
@@ -50,43 +46,24 @@ const ErrorContainer = styled.div`
       line-height: 57px;
       text-transform: uppercase;
       color: #FFFFFF;
-      background: #4D889E;
+      background: #05555C;
       border-radius: 5px;
       text-align: center;
       text-decoration: none;
-    }
-
-    @media (min-width: 1440px) {
-      .textContainer {
-        width: 1440px;
-      }
-    }
-    @media (max-width: 767px) {
-      .titleSecond {
-        width: 200px;
-        margin: 0 auto;
-        line-height: 20px;
-        margin-bottom: 15px;
-      }
-
-      .errImg {
-        width: 204px;
-        height: 204px;
-      }
     }
 `;
 
 const Error = () => {
   return (
     <ErrorContainer>
+      <div className='picContainer'></div>
       <div className='textContainer'>
-        <div className='errIconContainer'><img className='errImg' src={errIcon} alt='404 Error Icon' /></div>
         <div className='titleFirst'>{errorData.titleFirst}</div>
         <div className='titleSecond'>
           <div>{errorData.titleSecond}</div>
         </div>
-        <div className='returnButtonContainer'>
-           <NavLink className='returnButton' to='/'>{errorData.buttonTitle}</NavLink>
+        <div>
+           <a className='returnButton' href='/'>{errorData.buttonTitle}</a>
         </div>
       </div>
     </ErrorContainer>
