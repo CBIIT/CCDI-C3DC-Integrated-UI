@@ -77,13 +77,13 @@ export const navbarSublists = {
     },
     {
       name: 'Release Notes',
-      link: '/release_notes_pdf',
+      link: '/release-notes-pdf',
       className: 'navMobileSubItem',
       externalLink: true,
     },
     {
       name: 'User Guide',
-      link: '/user_guide',
+      link: '/user-guide',
       className: 'navMobileSubItem',
     },
   ],

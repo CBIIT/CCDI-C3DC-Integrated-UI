@@ -114,6 +114,6 @@ export const aboutData = {
 
 
 export const pdfList = {
-  release_notes_pdf: latestRelease,
-  user_guide: userGuide
+  "release-notes-pdf": latestRelease,
+  "user-guide": userGuide
 }
