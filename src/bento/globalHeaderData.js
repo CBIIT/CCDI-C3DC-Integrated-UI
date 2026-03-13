@@ -31,24 +31,19 @@ export const navMobileList = [
     className: 'navMobileItem',
   },
   {
-    name: 'Studies',
-    link: '/studies',
-    className: 'navMobileItem',
-  },
-  {
     name: 'Cohort Analyzer',
     link: '/cohortAnalyzer',
     className: 'navMobileItem',
   },
   {
-      name: 'Resources',
-      link: '',
-      className: 'navMobileItem clickable',
+    name: 'Studies',
+    link: '/studies',
+    className: 'navMobileItem',
   },
   {
-      name: 'News',
-      link: '/news',
-      className: 'navMobileItem',
+    name: 'Data Model',
+    link: '/data_model',
+    className: 'navMobileItem',
   },
   {
       name: 'About',
@@ -56,134 +51,39 @@ export const navMobileList = [
       className: 'navMobileItem clickable',
   },
   {
+    name:'CCDI Hub',
+    link: 'https://ccdi.cancer.gov/',
+    className: 'navMobileItem',
+    externalLink: true,
+  },
+  {
     name: 'My File',
     link: '/fileCentricCart',
     className: 'cart',
-},
+  },
 ];
 
 export const navbarSublists = {
-  Resources: [
-  {
-    name: 'Childhood Cancer Clinical Data Commons',
-    link: 'https://clinicalcommons.ccdi.cancer.gov/',
-    className: 'navMobileSubItem'
-  },
-  {
-    name:'Childhood Cancer Data Catalog',
-    link: 'https://datacatalog.ccdi.cancer.gov',
-    className: 'navMobileSubItem',
-  },
-  {
-    name: 'Molecular Characterization Initiative',
-    link: '/MCI',
-    className: 'navMobileSubItem',
-  },
-  {
-    name: 'Molecular Targets Platform',
-    link: 'https://moleculartargets.ccdi.cancer.gov',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'National Childhood Cancer Registry Explorer',
-    link: 'https://nccrexplorer.ccdi.cancer.gov',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'CCDI Data Federation Resource',
-    link: '/data-federation-resource',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'CCDI Participant Index',
-    link: '/ccdi-participant-index',
-    className: 'navMobileSubItem',
-  },
-  {
-    name: 'CCDI cBioPortal',
-    link: 'https://cbioportal.ccdi.cancer.gov',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'NCCR Data Platform',
-    link: 'https://nccrdataplatform.ccdi.cancer.gov/home',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'Pediatric Molecular Target Lists',
-    link: '/pmtl',
-    className: 'navMobileSubItem',
-  },
-  // {
-  //   name:'Cancer Genomics Cloud',
-  //   link: 'https://www.cancergenomicscloud.org',
-  //   className: 'navMobileSubItem',
-  // }, 
-  // {
-  //   name:'Database of Genotypes and Phenotypes',
-  //   link: 'https://www.ncbi.nlm.nih.gov/gap',
-  //   className: 'navMobileSubItem',
-  // },
-  {
-    name:'Tools',
-    link: '/tools',
-    className: 'navMobileSubItem',
-  },
-  {
-    name:'CCDI Pediatric, Adolescent, and Young Adult Rare Cancer Study',
-    link: '/pediatric-adolescent-and-young-adult-rare-cancer-study',
-    className: 'navMobileSubItem',
-  },
-  ],
   "About": [
     {
-      name: 'About CCDI Hub',
+      name: 'About',
       link: '/about',
       className: 'navMobileSubItem',
     },
     {
-      name: 'CCDI Data Ecosystem and AI Readiness (PDF)',
-      link: '/Ecosystem_AI_Readiness.pdf',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'CCDI Data Submission Guide (PDF)',
-      link: '/Submission_Guide.pdf',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'CCDI Data Model',
-      link: '/data-model',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'CCDI Data Usage Policies & Terms',
-      link: '/data-usage-policies',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'CCDI-Supported Publications',
-      link: '/publications',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'Hub Explore Dashboard Tutorial Video',
-      link: 'https://www.youtube.com/watch?v=Eu8y1GDTszU',
+      name: 'Announcements',
+      link: '/announcements',
       className: 'navMobileSubItem',
     },
     {
       name: 'Release Notes',
-      link: '/release-notes',
+      link: '/release_notes_pdf',
       className: 'navMobileSubItem',
+      externalLink: true,
     },
     {
       name: 'User Guide',
-      link: '/user-guide.pdf',
-      className: 'navMobileSubItem',
-    },
-    {
-      name: 'CCDI Events Announcements',
-      link: '/ccdi-events-announcements',
+      link: '/user_guide',
       className: 'navMobileSubItem',
     },
   ],

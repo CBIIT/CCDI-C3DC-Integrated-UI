@@ -26,3 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/bento-core
+
+/src_c3dc
