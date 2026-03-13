@@ -1,7 +1,8 @@
 import React, { useState , useMemo } from 'react';
 import {
+  NavLink,
   useLocation,
-  //useNavigate,
+  useNavigate,
 } from "react-router-dom";
 import { 
   Button,
@@ -14,24 +15,19 @@ import store from '../../store';
 import {
   resetAllData,
 } from '@bento-core/local-find';
-//import { generateQueryStr } from '@bento-core/util';
-import { 
-  resetIcon, 
-  facetsConfig,
-  //queryParams, 
-  sectionLabel, 
-  obtainColorFromFacetIndex,
-} from '../../bento/dashTemplate';
+import { generateQueryStr } from '@bento-core/util';
+import { resetIcon, queryParams, facetsConfig, sectionLabel } from '../../bento/dashTemplate';
 import styles from './inventoryStyle';
 import NewBentoFacetFilter from './sideBar/NewBentoFacetFilter';
 import WidgetView from './widget/WidgetView';
 import StatsView from '../../components/Stats/StatsView';
 import TabsView from './tabs/TabsView';
 import QueryBarView from './filterQueryBar/QueryBarView';
-import UserGuideButton from './sideBar/ExploreUserGuide';
+import UseGuideButton from './sideBar/UserGuideButton.js';
 import { CircularProgress } from '@material-ui/core';
 import vectorIcon from '../../assets/icons/Vector_icon.svg';
 import closeIcon from '../../assets/icons/Window_Close_Icon.svg';
+import UserNotesButton from './sideBar/UserNotesButton.js';
 
 const ULSection = styled.ul`
   li {
@@ -58,10 +54,10 @@ const ULSection = styled.ul`
 const SideBarContentPanel = styled.div`
   width: ${(props) => (props.selected === -1 ? '262px' : '270px')};
   margin-left: ${(props) => (props.selected === -1 ? '-262px' : '0px')};
-  padding: 10px 0 0 0;
+  padding: 16px 0 0 0;
   background-color: transparent;
   transition: all .5s;
-  background-color: #FFFFFF;
+  background-color: #DDEDEE;
 `;
 
 const RightContentPanel = styled.div`
@@ -71,6 +67,21 @@ const RightContentPanel = styled.div`
   border-left: thin solid #8A7F7C;
   transition: all .5s;
 `;
+
+const getDividerColor = (index) => {
+  const colors = [
+    '#4D889E', // divider0
+    '#974599', // divider1
+    '#4150A4', // divider2
+    '#E9B34A', // divider3
+    '#CD5C4E', // divider4
+    '#1F6BBF', // divider5
+    '#60C4A1', // divider6
+    '#357288', // divider7
+    '#974599', // divider8
+  ];
+  return colors[index % colors.length]; // Use modulo to cycle through colors if needed
+};
 
 const Inventory = ({
   classes,
@@ -136,11 +147,6 @@ const Inventory = ({
     
     // Count filters, but handle age-related facets specially to avoid double counting
     Object.keys(activeFilters || {}).forEach(key => {
-      // Skip unknownAges keys as they are counted with their parent age field
-      if (key.endsWith('_unknownAges')) {
-        return;
-      }
-
       if (ageRelatedParams.includes(key)) {
         // For age-related facets, only count once regardless of slider or unknownAges
         const hasSliderFilter = activeFilters[key] && activeFilters[key].length > 0;
@@ -191,8 +197,8 @@ const Inventory = ({
   */
   const CustomClearAllFiltersBtn = ({ onClearAllFilters, disable }) => {
     const [isHover, setIsHover] = useState(false);
-    //const query = new URLSearchParams(useLocation().search);
-    //const navigate = useNavigate();
+    const query = new URLSearchParams(useLocation().search);
+    const navigate = useNavigate();
     return (
       <div className={classes.floatRight}>
         <Button
@@ -200,20 +206,31 @@ const Inventory = ({
           variant="outlined"
           disabled={disable}
           onClick={() => {
-            /*
             const paramValue = {
               'p_id': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
-              'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_basis': '', 'disease_phase': '',
+              'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_basis': '', 'diagnosis_category': '', 'disease_phase': '',
               'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'response_category': '', 'age_at_response': '', 'age_at_response_unknownAges': '',
               'age_at_last_known_survival_status': '', 'age_at_last_known_survival_status_unknownAges': '', 'first_event': '', 'last_known_survival_status': '',
               'participant_age_at_collection': '', 'participant_age_at_collection_unknownAges': '', 'sample_anatomic_site': '', 'sample_tumor_status': '', 'tumor_classification': '',
-              'data_category': '', 'file_type': '', 'dbgap_accession': '', 'study_name': '', 'study_status': '',
+              'data_category': '', 'file_type': '', 'file_mapping_level': '', 'dbgap_accession': '', 'study_name': '', 'study_status': '',
               'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
             };
             const queryStr = generateQueryStr(query, queryParams, paramValue);
-            navigate(`/explore${queryStr}`);*/
+            navigate(`/explore${queryStr}`);
             onClearAllFilters();
             store.dispatch(resetAllData());
+            
+            // Reset unknownAges state to default values
+            const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+            ageRelatedParams.forEach(param => {
+              store.dispatch({
+                type: 'UNKNOWN_AGES_CHANGED',
+                payload: {
+                  datafield: param,
+                  unknownAges: 'include',
+                },
+              });
+            });
           }}
           className={classes.customButton}
           onMouseEnter={() => setIsHover(true)}
@@ -221,7 +238,7 @@ const Inventory = ({
           style={disable ? { border: '1px solid #ffffff' } : {}}
         >
           <img
-            src={ disable ? resetIcon.src : ( isHover ? resetIcon.srcHover : resetIcon.srcActive ) }
+            src={disable ? resetIcon.src : (isHover ? resetIcon.srcActiveHover : resetIcon.srcActive)}
             height={resetIcon.size}
             width={resetIcon.size}
             alt={resetIcon.alt}
@@ -262,24 +279,24 @@ const Inventory = ({
             <div className={classes.sideBarCover} />
             <label htmlFor="local_find_input" style={{ display: 'none' }}>Participant ID Text Search box</label>
             <div className={classes.sideBarMenuSider}>
-              <UserGuideButton />
+              <UseGuideButton />
+              <UserNotesButton />
               <ClearAllFiltersBtn
                 Component={CustomClearAllFiltersBtn}
                 activeFilters={activeFilters}
               />
-              <div className={classes.activeFiltersCountContainer}>
-                <div className={classes.activeFiltersCount}>
-                  Total Filters Selected:
-                  <span>
-                    {activeFiltersCount}
-                  </span>
-                </div>
+              <div className={classes.activeFiltersCount}>
+                Total Filters Selected:
+                <span>
+                  {activeFiltersCount}
+                </span>
               </div>
               <ULSection className={classes.siderContent}>
                 {
                   sectionList.map((category, idx) => {
                     return (
                       <React.Fragment key={category}>
+                        <Divider className={`${classes.divider} divider${idx}`}/>
                         <li onClick={() => handleCategoryClick(idx)}>
                           <div className={classes.categoryContainer}>
                             <div className={classes.categoryTitleContainer}>
@@ -287,7 +304,7 @@ const Inventory = ({
                               <span className={classes.categoryCount}>
                                 {sectionCount[category] !== 0 ? (
                                   <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="4.5" cy="4.5" r="4.5" fill={obtainColorFromFacetIndex(idx).facetCategoryColor} />
+                                    <circle cx="4.5" cy="4.5" r="4.5" fill={getDividerColor(idx)} />
                                   </svg>
                                 ) : ''}
                               </span>
@@ -295,17 +312,16 @@ const Inventory = ({
                             {selectedSection === idx && <img src={vectorIcon} alt="vector" className={classes.categoryIcon} />}
                           </div>
                         </li>
-                        <Divider className={`${classes.divider} divider${idx}`}/>
                       </React.Fragment>
                     );
                   })
                 }
               </ULSection>
               <div className={classes.activeFilterLegend}>
-                <span>Facets(s) selected denoted with</span>
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="4.5" cy="4.5" r="4.5" fill="#616161" />
+                  <circle cx="4.5" cy="4.5" r="4.5" fill="#9CE1E5" />
                 </svg>
+                <span>denotes facet(s) selected</span>
               </div>
             </div>
           </div>
@@ -338,7 +354,9 @@ const Inventory = ({
               <TabsView
                 dashboardStats={dashData}
                 activeFilters={activeFilters}
+                unknownAgesState={unknownAgesState}
               />
+              <div className={classes.goToCartLink}><NavLink to='/fileCentricCart'>Go to cart &#62;</NavLink></div>
             </div>
           </RightContentPanel>
         </div>

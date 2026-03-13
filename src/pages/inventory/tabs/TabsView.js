@@ -1,20 +1,39 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext }  from 'react';
+import { connect, useDispatch } from 'react-redux';
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { generateQueryStr } from '@bento-core/util';
+import {
+  changeTab,
+} from '../../../components/Inventory/InventoryState';
+import { queryParams } from '../../../bento/dashTemplate';
 import TabPanel from './TabPanel';
-import { tabContainers, tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
+import { tabContainers } from '../../../bento/dashboardTabData';
 import { Tabs as BentoTabs }  from '@bento-core/tab';
 import { customTheme } from './DefaultTabTheme';
-import CohortModal from '../../../components/CohortModal/CohortModal';
-import { CohortModalContext } from '../../../components/CohortModal/CohortModalContext';
-import DeleteConfirmationModal from '../../../components/CohortModal/components/shared/DeleteConfirmationModal';
-
+import CohortModalGenerator from '../cohortModal/cohortModalGenerator';
+import { CohortModalContext } from '../cohortModal/CohortModalContext';
 
 const Tabs = (props) => {
-  const [currentTab, setCurrentTab] = tabContainers.length > 0 ? useState(1) : useState(0);
-  const handleTabChange = (_, value) => {
-    setCurrentTab(value);
+   
+  const { currentTab } = props;
+  const { showCohortModal, setShowCohortModal} = useContext(CohortModalContext);
+  const dispatch = useDispatch();
+  const query = new URLSearchParams(useLocation().search);
+  const navigate = useNavigate();
+
+  const handleTabChange = (event, value) => {
+    let paramValue = {};
+    paramValue.tab = value;
+    const queryStr = generateQueryStr(query, queryParams, paramValue);
+    navigate(`/explore${queryStr}`, { replace: false });
+    dispatch(changeTab(value, 'not-facet'));
   };
 
-  const { showCohortModal, setShowCohortModal , setWarningMessage, warningMessage } = useContext(CohortModalContext);
+  const { CohortModal } = CohortModalGenerator();
+
 
   /**
   * 1. change <name> to <display> as array item
@@ -23,43 +42,27 @@ const Tabs = (props) => {
   const getTabs = (tabs) => tabs.map((tab) => ({
     ...tab,
     name: tab.name,
-    hasToolTip: true,
-    toolTipText: tab.toolTipText,
-    count: tab.count !== "none" ? `(${props.dashboardStats[tab.count].toLocaleString()})` : "(NA)",
-    display: tab.count !== "none" ?  [tab.name, props.dashboardStats[tab.count].toLocaleString()] :"NA",
-    clsName:  `${tab.name}`.toLowerCase().replace(' ', '_') ,
-    tooltipStyles: {border: '1px solid #2D5380', arrowBorder: '1px solid #598AC5'}
+    count: `(${props.dashboardStats[tab.count].toLocaleString()})`,
+    display: [tab.name, props.dashboardStats[tab.count]],
+    clsName: `${tab.name}`.toLowerCase().replace(' ', '_'),
   }));
-
 
   return (
     <>
       <CohortModal
         open={showCohortModal}
         onCloseModal={() => setShowCohortModal(false)}
-        />
-
-      <DeleteConfirmationModal
-           classes={""}
-           open={warningMessage}
-           setOpen={() => { setWarningMessage("") }}
-           handleDelete={() => { setWarningMessage("") }}
-           deletionType={false}
-           message={warningMessage}
-       />
-       
+      />
       <BentoTabs
         tabItems={getTabs(tabContainers)}
         currentTab={currentTab}
         handleTabChange={handleTabChange}
         customTheme={customTheme}
-        enableGrouping={true}
-        responsiveBreakpoints={tabResponsiveBreakpoints}
       />
       {
         tabContainers.map((tab, index) => (
           <>
-            <div hidden={currentTab !== index}>           
+            <div hidden={currentTab !== index}>
               <TabPanel
                 {...props}
                 tab={tab}
@@ -74,4 +77,7 @@ const Tabs = (props) => {
   );
 };
 
-export default Tabs;
+const mapStateToProps = (state) => ({
+  currentTab: state.inventoryReducer.tab
+});
+export default connect(mapStateToProps, null)(Tabs);

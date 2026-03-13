@@ -12,7 +12,7 @@ export const tblHeader = {
   },
   MuiTableSortLabel: {
     root: {
-      color: '#0F253A !important',
+      color: '#0F253A',
       position: 'relative',
       fontSize: '15px',
       fontFamily: 'Open Sans',
@@ -35,21 +35,10 @@ export const tblHeader = {
 };
 
 const tblBody = {
-  MuiTableRow: {
-    root: {
-      height: '40px',
-      '&:nth-child(odd)': {
-        background: '#FFFFFF',
-      },
-      '&:nth-child(even)': {
-        background: '#F4F4F4',
-      },
-    },
-  },
   MuiTableCell: {
     root: {
       minHeight: '45px',
-      padding: '0px 5px 0px 20px',
+      padding: '5px 5px 5px 20px',
       color: '#004C73',
       borderBottom: 'none',
     },
@@ -60,7 +49,7 @@ const tblBody = {
     body: {
       fontFamily: 'Open Sans',
       fontSize: '14px',
-      color: '#343434',
+      color: '#24415C',
       '& p': {
         fontFamily: 'Open Sans',
         fontSize: '14px',
@@ -78,6 +67,12 @@ const tblBody = {
         },
       },
       '&.study_id': {
+        minWidth: '150px',
+        '& p': {
+          lineBreak: 'anywhere',
+        },
+      },
+      '&.sex_at_birth': {
         minWidth: '150px',
         '& p': {
           lineBreak: 'anywhere',
@@ -151,21 +146,20 @@ export const extendedView = {
     MuiTablePagination: {
       root: {
         paddingRight: '50px',
-        width: '100%',
+        // borderTop: '1px solid #8A7F7C',
+        marginLeft: 'auto',
       },
       caption: {
-        textTransform: 'uppercase',
+        textTransform: 'none',
         fontFamily: 'Open Sans',
-        fontSize: '12px',
+        fontSize: '14px',
       },
       select: {
         fontFamily: 'Open Sans',
-        fontSize: '12px',
+        fontSize: '14px',
       },
       toolbar: {
-        minHeight: '45px',
-        display: 'flex',
-        alignItems: 'center',
+        minHeight: '40px',
       },
     },
     MuiSelect: {
@@ -215,22 +209,16 @@ export const extendedView = {
 
 export const toolbar = {
   MuiToolbar: {
-    root: { 
-      '&.downloadColumnView': {
-        maxHeight: '10px'
-      },
-      height: '10px',
+    root: {
       borderTop: '1px solid #8A7F7C',
       '& div' :{
         fontFamily: 'Open Sans',
         fontSize: '14px',
-        maxHeight: '15px',
       }
     },
     regular: {
-      maxHeight: '15px',
       '@media (min-width: 600px)': {
-        maxHeight: '25px',
+        minHeight: '35px',
       },
     },
   },
@@ -240,21 +228,23 @@ export const tblPgn = {
   MuiTablePagination: {
     root: {
       paddingRight: '50px',
-      width: '100%',
+      marginLeft: 'auto',
+      // borderBottom: '1px solid #8A7F7C',
+      '&:last-child': {
+        paddingRight: '50px',
+      }
     },
     toolbar: {
-      minHeight: '45px',
-      display: 'flex',
-      alignItems: 'center',
+      minHeight: '40px',
     },
     caption: {
-      textTransform: 'uppercase',
+      textTransform: 'none',
       fontFamily: 'Open Sans',
-      fontSize: '12px',
+      fontSize: '14px',
     },
     select: {
       fontFamily: 'Open Sans',
-      fontSize: '12px',
+      fontSize: '14px',
     },
   },
   MuiSelect: {

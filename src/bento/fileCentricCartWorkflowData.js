@@ -1,10 +1,14 @@
+import React from "react";
 import gql from 'graphql-tag';
 import { cellTypes, dataFormatTypes } from '@bento-core/table';
-import { types, btnTypes } from '@bento-core/paginated-table';
+// import { types, btnTypes } from '@bento-core/paginated-table';
+import { types } from '@bento-core/paginated-table';
 import { customMyFilesTabDownloadCSV } from './tableDownloadCSV';
 import cartLogo from '../assets/header/Cart_Logo.svg';
 import cartPageLogo from '../assets/cart/Cart_Page_Icon.svg';
 import cartQuestionIcon from '../assets/cart/Question_Icon.svg';
+import ExportButton from "../pages/cart/customComponent/exportButton/exportButtonController";
+import LinkButton from "../pages/cart/customComponent/userGuideButton/linkButton";
 
 export const navBarCartData = {
   cartLabel: 'Cart',
@@ -14,8 +18,8 @@ export const navBarCartData = {
 };
 
 // --------------- Files limit configuration --------------
-export const alertMessage = 'The cart is limited to 6000 files. Please narrow the search criteria or remove some files from the cart to add more.';
-export const maximumNumberOfFilesAllowedInTheCart = 6000;
+export const alertMessage = 'The cart is limited to 200,000 files. Please narrow the search criteria or remove some files from the cart to add more.';
+export const maximumNumberOfFilesAllowedInTheCart = 200000;
 
 // --------------- Tooltip configuration --------------
 export const tooltipContent = {
@@ -31,7 +35,7 @@ export const tooltipContent = {
 
 //BENTO-2455 Configuration set for Bento 4.0.
 export const myFilesPageData = {
-  manifestFileName: 'CCDI Inventory File Manifest',
+  manifestFileName: 'CCDI Hub File Manifest',
   tooltipIcon: 'https://raw.githubusercontent.com/google/material-design-icons/master/src/action/help/materialicons/24px.svg',
   tooltipAlt: 'tooltip icon',
   tooltipMessage: 'To access and analyze files: select and remove unwanted files, click the "Download Manifest" button, and upload the resulting manifest file to your Cancer Genomics Cloud (CGC) account.',
@@ -66,13 +70,22 @@ export const myFilesPageData = {
     clsName: 'container_header',
     items: [
       {
-        title: 'DOWNLOAD MANIFEST',
-        clsName: 'download_manifest',
-        type: types.BUTTON,
-        role: btnTypes.DOWNLOAD_MANIFEST,
-        btnType: btnTypes.DOWNLOAD_MANIFEST,
-        tooltipCofig: tooltipContent,
-      }],
+        type: types.CUSTOM_ELEM,
+        customViewElem: (props) => <LinkButton {...props}/>
+      },
+      {
+        type: types.CUSTOM_ELEM,
+        customViewElem: (props) => <ExportButton {...props}/>
+      },
+      // {
+      //   title: 'DOWNLOAD MANIFEST',
+      //   clsName: 'download_manifest',
+      //   type: types.BUTTON,
+      //   role: btnTypes.DOWNLOAD_MANIFEST,
+      //   btnType: btnTypes.DOWNLOAD_MANIFEST,
+      //   tooltipCofig: tooltipContent,
+      // }
+    ],
   },
   {
     container: 'paginatedTable',
@@ -127,6 +140,9 @@ export const table = {
   defaultSortDirection: 'asc',
   paginationAPIField: 'filesInList',
   tableDownloadCSV: customMyFilesTabDownloadCSV,
+  extendedViewConfig: {
+    manageViewColumns: false
+  },
   columns: [
     {
       dataField: 'file_name',
@@ -142,7 +158,7 @@ export const table = {
     },
     {
       dataField: 'dbgap_accession',
-      header: 'dbGaP ACCESSION',
+      header: 'Study Accession',
       display: true,
       tooltipText: 'sort',
     },
@@ -151,12 +167,14 @@ export const table = {
       header: 'Participant ID',
       display: true,
       tooltipText: 'sort',
+      cellType: cellTypes.CUSTOM_ELEM,
     },
     {
       dataField: 'sample_id',
       header: 'Sample ID',
       display: true,
       tooltipText: 'sort',
+      cellType: cellTypes.CUSTOM_ELEM,
     },
     {
       dataField: 'file_type',

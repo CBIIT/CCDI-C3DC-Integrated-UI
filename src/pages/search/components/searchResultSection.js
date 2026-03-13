@@ -8,6 +8,11 @@ import Components from './component';
 import client from '../../../utils/graphqlClient';
 import {
   SEARCH_PAGE_RESULT_ABOUT_PUBLIC,
+  SEARCH_PAGE_RESULT_PARTICIPANTS,
+  SEARCH_PAGE_RESULT_STUDIES,
+  SEARCH_PAGE_RESULT_SAMPLES,
+  SEARCH_PAGE_RESULT_FILES,
+  SEARCH_PAGE_RESULT_MODEL
 } from '../../../bento/sitesearch';
 
 const useOutsideAlerter = (ref) => {
@@ -42,10 +47,20 @@ function SearchPagination({
 
   function getPublicQuery(field) {
     switch (field) {
+      case 'all':
+        return SEARCH_PAGE_RESULT_PARTICIPANTS;
+      case 'studies':
+        return SEARCH_PAGE_RESULT_STUDIES
+      case 'samples':
+        return SEARCH_PAGE_RESULT_SAMPLES;
+      case 'files':
+        return SEARCH_PAGE_RESULT_FILES;
+      case 'model':
+        return SEARCH_PAGE_RESULT_MODEL;
       case 'about_page':
-        return { QUERY: SEARCH_PAGE_RESULT_ABOUT_PUBLIC, field: 'about_page' };
+        return SEARCH_PAGE_RESULT_ABOUT_PUBLIC;
       default:
-        return { QUERY: SEARCH_PAGE_RESULT_ABOUT_PUBLIC, field: 'about_page' };
+        return SEARCH_PAGE_RESULT_PARTICIPANTS;
     }
   }
 
@@ -298,6 +313,9 @@ const styles = {
     fontSize: '14px',
     color: '#045B80',
     marginTop: '15px',
+    '@media (max-width: 767px)': {
+      display: 'none',
+    },
   },
   pageSizeContainer: {
     marginLeft: '10px',
@@ -412,7 +430,12 @@ const styles = {
     fontSize: '12px',
   },
   subsectionBody: {
-    margin: '0 180px 0 219px',
+    maxWidth: '1070px',
+    margin: '0 auto',
+    '@media (max-width: 1120px)': {
+      width: 'auto',
+      margin: '0 15px',
+    }
   },
   subsection: {
     '&:last-child $subsectionBody': {
@@ -430,13 +453,23 @@ const styles = {
     },
   },
   totalResults: {
-    maxWidth: '900px',
+    maxWidth: '1040px',
     fontFamily: 'Poppins',
     color: '#13666A',
-    fontSize: '20px',
+    fontSize: '18px',
+    lineHeight: '16px',
     fontWeight: '500',
-    margin: '0 0 71px 220px',
+    margin: '0 auto',
+    marginBottom: '60px',
     paddingLeft: '-50px',
+    '@media (max-width: 1120px)': {
+      width: 'auto',
+      margin: '0 30px',
+      marginBottom: '60px',
+    },
+    '@media (max-width: 1023px)': {
+      marginBottom: '30px',
+    },
   },
   totalCount: {
     fontFamily: 'Poppins',

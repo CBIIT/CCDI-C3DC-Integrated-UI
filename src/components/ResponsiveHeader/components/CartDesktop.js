@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import {
-  //Tooltip,
+  Tooltip,
   Box,
 } from '@material-ui/core';
 import styled from 'styled-components';
@@ -11,7 +12,7 @@ const CartContainer = styled.div`
   position: absolute;
   top: 12px;
   right: calc(50% - 710px);
-  z-index: 9999;
+  z-index: 1200;
 
   @media (max-width: 1430px) {
     right: 0;
@@ -69,7 +70,7 @@ const CartContainer = styled.div`
 
   .cartCounter2Wrapper {
     margin-top: 6px;
-    margin-left: 3px;
+    margin-left: 12px;
   }
 
   .cartCounter2 {
@@ -97,7 +98,7 @@ const CartContainer = styled.div`
 `;
 
 const Cart = (props) => {
-  //const { length: numberOfCases } = props.filesId;
+  const { length: numberOfCases } = props.filesId;
   
   useEffect(() => {
   }, []);
@@ -107,7 +108,38 @@ const Cart = (props) => {
       {
         navBarCartData && (
           <Box id="button_navbar_mycases" className="logotype">
-           
+              <NavLink
+                className="cartLabelText"
+                to={navBarCartData.cartLink}
+              >
+                {navBarCartData.cartLabel}
+                <Tooltip title="Files" placement="bottom-end">
+                  <span className="badge">
+                    <div className='myFilesText'>MY FILES</div>
+                    <img
+                      className="cartIcon"
+                      src={navBarCartData.cartIcon}
+                      alt={navBarCartData.cartIconAlt}
+                    />
+                    {navBarCartData.cartLabelType === "labelUnderCount" ? (
+                      <div className="cartCounter2Wrapper">
+                        <div className="cartCounter2">
+                          {numberOfCases.toLocaleString()}
+                        </div>
+                        <div className="cartLabel">
+                          Files
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="badge">
+                        <span className="cartCounter">
+                          {numberOfCases.toLocaleString()}
+                        </span>
+                      </span>
+                    )}
+                  </span>
+                </Tooltip>
+              </NavLink>
           </Box>
         )
       }

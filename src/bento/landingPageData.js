@@ -1,106 +1,322 @@
 import gql from 'graphql-tag';
-// import Test from '../assets/header/CTDC_Logo.svg';
-import landingPageHeroImage from '../assets/landing/Landingpage_Image.png'
-// TODO: Mmove it to Data common asstes folder later on.
-// Titles
-import landingTile1 from '../assets/landing/landingTile1.png'
-import landingTile2 from '../assets/landing/landingTile2.png'
-import landingTile3 from '../assets/landing/landingTile3.png'
-import landingTile4 from '../assets/landing/landingTile4.png'
-import landingTileBackground from '../assets/landing/LandingTileBackground.png'
-import heartlineTracker from '../assets/landing/animation/heartlineTracker.svg'
-import heartlineFull from '../assets/landing/animation/heartline_full.svg'
-import diagnosesIcon from '../assets/landing/DiagnosesIcon.svg'
-import participantsIcon from '../assets/landing/ParticipantsIcon.svg'
-import studiesIcon from '../assets/landing/StudiesIcon.svg'
-// The ideal image size of landingPageHero 1400x600px
-// Tile1 Tile2 Tile3 images 293x349 px
-// Tile4 image optimum size 600x 436 px
-export const landingPageData = {
-  callToActionTitle: 'Access and Visualize\nData Sets within the\nC3DC Community',
-  callToActionDescription: 'Get to know C3DC\nby selecting available Information below',
-  callToActionButtonText: 'EXPLORE THE SITE',
-  callToActionLink: '/explore',
-  landingPageHero: {
-    alt: 'Alt tag1',
-    img: landingPageHeroImage,
+import landingImg from '../assets/landing/Hero_1.png'
+import aboutImg from '../assets/landing/About_1.png';
+import wheel1 from '../assets/landing/ccdc_carousel.svg';
+import wheel2 from '../assets/landing/civic_carousel.svg';
+import wheel3 from '../assets/landing/mci_carousel.svg';
+import wheel4 from '../assets/landing/mtp_carousel.svg';
+import wheel5 from '../assets/landing/nccr_carousel.svg';
+import wheel6 from '../assets/landing/cgc_carousel.svg';
+import wheel7 from '../assets/landing/dbgap_carousel.svg';
+import wheel8 from '../assets/landing/federation_carousel.png';
+import wheel9 from '../assets/landing/cpi_carousel.png';
+import wheel10 from '../assets/landing/nccrdata_carousel.png';
+import wheel11 from '../assets/landing/c3dc_carousel.png';
+import wheel12 from '../assets/landing/ecDNA_carousel.png';
+import wheel13 from '../assets/landing/cBioPortal_carousel.png';
+// import wheel14 from '../assets/landing/CCDI_Rare_Cancer_Initiative_carousel.png';
+import c3dcLogo from '../assets/landing/c3dc_logo.svg';
+import ccdcMobile from '../assets/landing/ccdc_mobile.png';
+import civicMobile from '../assets/landing/civic_mobile.png';
+import mciMobile from '../assets/landing/mci_mobile.png';
+import mtpMobile from '../assets/landing/mtp_mobile.png';
+import nccrMobile from '../assets/landing/nccr_mobile.png';
+import cgcMobile from '../assets/landing/cgc_mobile.png';
+import dbgapMobile from '../assets/landing/dbgap_mobile.png';
+import federationMobile from '../assets/landing/federation_mobile.png';
+import cpiMobile from '../assets/landing/cpi_mobile.png';
+import nccrdataMobile from '../assets/landing/nccrdata_mobile.png';
+import c3dcMobile from '../assets/landing/c3dc_mobile.png';
+import ecDNAMobile from '../assets/landing/ecDNA_mobile.png';
+import cBioPortalMobile from '../assets/landing/cBioPortal_mobile.png';
+// import rareCancerMobile from '../assets/landing/CCDI_Rare_Cancer_Initiative_mobile.png';
+import ccdcLogo from '../assets/landing/ccdc_logo.svg';
+import civicLogo from '../assets/landing/civic_logo.svg';
+import mciLogo from '../assets/landing/mci_logo.svg';
+import mtpLogo from '../assets/landing/mtp_logo.svg';
+import nccrLogo from '../assets/landing/nccr_logo.svg';
+import cgcLogo from '../assets/landing/cgc_logo.svg';
+import dbgapLogo from '../assets/landing/dbgap_logo.svg';
+import federationLogo from '../assets/landing/federation_logo.svg';
+import cpiLogo from '../assets/landing/cpi_logo.svg';
+import nccrdataLogo from '../assets/landing/nccrdata_logo.svg';
+import ecDNALogo from '../assets/landing/ecDNA_logo.svg';
+import cBioPortalLogo from '../assets/landing/cBioPortal_logo.svg';
+import rareCancerLogo from '../assets/landing/CCDI_Rare_Cancer_Initiative_logo.svg';
+import pmtlLogo from '../assets/landing/pmtl_logo.png';
+
+export const introData = {
+  landingIntroPic: landingImg,
+  introTitle1: 'Discover CCDI applications, data, resources, and other tools',
+  introTitle2: 'Explore the CCDI Hub by selecting an available resource on the Hub Wheel',
+  introTitle3: 'ABOUT CCDI HUB',
+  introButtonTitle: 'ABOUT CCDI',
+};
+
+export const titleData = {
+  latestUpdatesTitle: 'Latest Updates',
+  resourceTitle: 'Resources',
+  applicationsTitle: 'CCDI-SUPPORTED RESOURCES',
+  cloudResourcesTitle: 'OTHER RESOURCES',
+  aboutTitle: 'About the CCDI Community',
+};
+
+export const statsData = [
+  {
+    num: '',
+    title: 'Cataloged Datasets',
+    detail: 'Childhood Cancer Data Catalog',
+    link: 'https://datacatalog.ccdi.cancer.gov',
   },
-  heartbeatAnimation: {
-    heartlineFull: heartlineFull,
-    tracker: heartlineTracker,
-    lineAlt: 'Heartbeat Line Animation',
-    trackerAlt: 'Heartbeat Tracker Animation',
+  {
+    num: '',
+    title: 'Participants with Available Genomic and Clinical Data',
+    detail: 'Molecular Characterization Initiative',
+    link: '/MCI',
   },
-  landingPageStatsIcons: {
-    diagnosesIcon: diagnosesIcon,
-    diagnosesIconAlt: 'Diagnoses Icon',
-    participantsIcon: participantsIcon,
-    participantsIconAlt: 'Participants Icon',
-    studiesIcon: studiesIcon,
-    studiesIconAlt: 'Studies Icon',
+  {
+    num: 58867,
+    title: 'Potential Pediatric Molecular Targets',
+    detail: 'Molecular Targets Platform',
+    link: 'https://moleculartargets.ccdi.cancer.gov',
   },
-  landingPageStatsBar: [
-    {
-      statTitle: 'Programs',
-      statAPI: 'numberOfPrograms',
-    },
-    {
-      statTitle: 'Arms',
-      statAPI: 'numberOfStudies',
-    },
-    {
-      statTitle: 'Cases',
-      statAPI: 'numberOfSubjects',
-    },
-    {
-      statTitle: 'samples',
-      statAPI: 'numberOfSamples',
-    },
-    {
-      statTitle: 'files',
-      statAPI: 'numberOfFiles',
-    },
-  ],
-  landingTileBackground: {
-    img: landingTileBackground,
+  {
+    num: 1700440,
+    title: 'Reported Cases Under Age 40<br>(1995-2020)',
+    detail: 'National Childhood Cancer Registry Explorer',
+    link: 'https://nccrexplorer.ccdi.cancer.gov',
   },
-  tile1: {
-    alt: '',
-    img: landingTile1,
-    titleText: 'About the Childhood Cancer Clinical Data Commons',
-    descriptionText: 'The Childhood Cancer Clinical Data Commons (C3DC) is a database that houses childhood cancer demographics and phenotypic clinical data. These data have been harmonized to a standard set of common data elements (CDEs). C3DC empowers researchers to search for participant-level data to create synthetic cohorts and export data for analysis.',
-    callToActionText: 'READ MORE',
-    callToActionLink: '/about', // This links to the "About" static page.
+];
+
+export const statsNote = 'Counts for MCI participants in CCDI Hub and total MCI participants consented may differ.';
+
+export const resourcesAppliationsListData = [
+  {
+    id: 'c3dc',
+    title: 'Childhood Cancer Clinical Data Commons',
+    subtitle: 'C3DC',
+    content: 'A database that houses childhood cancer demographics and phenotypic clinical data.',
+    link: 'https://clinicalcommons.ccdi.cancer.gov/',
+    img: c3dcLogo,
   },
-  tile2: {
-    alt: '',
-    img: landingTile2,
-    titleText: 'Data Model',
-    descriptionText: 'Review components to gain a deeper understanding of the specifics of harmonization.',
-    callToActionText: 'Explore Data Model',
-    callToActionLink: 'https://github.com/CBIIT/c3dc-model', // This links to the Data Model GitHub Page.
+  {
+    id: 'ccdc',
+    title: 'Childhood Cancer Data Catalog',
+    subtitle: 'CCDC',
+    content: 'A searchable inventory of childhood cancer resources.',
+    link: 'https://datacatalog.ccdi.cancer.gov',
+    img: ccdcLogo,
   },
-  tile3: {
-    alt: '',
-    img: landingTile3,
-    titleText: 'Announcements',
-    descriptionText: 'The latest updates for both datasets and the application are now available.',
-    callToActionText: 'EXPLORE ANNOUNCEMENTS',
-    callToActionLink: '/announcements', //Link to the "Announcement" Static Page
+  {
+    id: 'civic',
+    title: 'Clinical Interpretation of Variants in Cancer',
+    subtitle: 'CIViC',
+    content: 'An open access, open source, community-driven web resource for clinical interpretations of mutations related to cancer.',
+    link: 'https://civicdb.org',
+    img: civicLogo,
   },
-  tile4: {
-    alt: '',
-    img: landingTile4,
-    titleText: 'C3DC Data',
-    descriptionText: 'Explore and export C3DC data for analysis alongside other data types.',
-    callToActionText: 'Explore Data',
-    callToActionLink: '/explore', // This links to the explore dashboard.
+  {
+    id: 'mci',
+    title: 'Molecular Characterization Initiative',
+    subtitle: 'MCI',
+    content: 'A program providing molecular testing for children, adolescents, and young adults with certain cancer types.',
+    link: '/MCI',
+    img: mciLogo,
+    noLink: true,
+  },
+  {
+    id: 'mtp',
+    title: 'Molecular Targets Platform',
+    subtitle: 'MTP',
+    content: 'An instance of the Open Targets Platform with a focus on childhood cancer data that allows users to browse and identify associations between molecular targets, diseases, and drugs.',
+    link: 'https://moleculartargets.ccdi.cancer.gov',
+    img: mtpLogo,
+  },
+  {
+    id: 'nccrexplorer',
+    title: 'National Childhood Cancer Registry Explorer',
+    subtitle: 'NCCR Explorer',
+    content: 'A tool to browse demographic, incidence, and survival statistics for cancers in children, adolescent, and young adults.',
+    link: 'https://nccrexplorer.ccdi.cancer.gov',
+    img: nccrLogo,
+  },
+  {
+    id: 'federation',
+    title: 'CCDI Data Federation Resource',
+    content: 'The CCDI Data Federation Resource provides harmonized metadata accessible via an API that facilitates the search across multiple resources. ',
+    link: '/data-federation-resource',
+    img: federationLogo,
+    noLink: true
+  },
+  {
+    id: 'cpi',
+    title: 'CCDI Participant Index',
+    subtitle: 'CPI',
+    content: 'CCDI’s Participant Index (CPI) API maps participant IDs across studies, empowering researchers to explore complex questions and advance pediatric cancer research.',
+    link: '/ccdi-participant-index',
+    img: cpiLogo,
+    noLink: true
+  },
+  {
+    id: 'nccr',
+    title: 'National Childhood Cancer Registry (NCCR) Data Platform',
+    content: 'The NCCR Data Platform is a cloud-based repository offering comprehensive data on cancer patients aged 0-39.',
+    link: 'https://nccrdataplatform.ccdi.cancer.gov/home',
+    img: nccrdataLogo,
+  },
+  {
+    id: 'ecDNA',
+    title: 'CCDI Extrachromosomal DNA',
+    subtitle: 'ecDNA',
+    content: 'A catalog of circular extrachromosomal DNA (ecDNA) associated with childhood cancers, facilitating research and clinical insights.',
+    link: 'https://ccdi-ecdna.org',
+    img: ecDNALogo,
+  },
+  {
+    id: 'cBioPortal',
+    title: 'cBioPortal Cancer Data Explorer',
+    content: 'CCDI’s customized cBioPortal instance allows users to explore and visualize complex genomic and clinical data without the need to download large datasets.',
+    link: 'https://cbioportal.ccdi.cancer.gov',
+    img: cBioPortalLogo,
+  },
+  {
+    id: 'CCDIRareCancerInitiative',
+    title: 'CCDI Pediatric, AYA Rare Cancer Study',
+    content: 'This initiative advances understanding of very rare childhood cancers through standardized data collection and collaboration to improve outcomes for young patients.',
+    link: '/pediatric-adolescent-and-young-adult-rare-cancer-study',
+    img: rareCancerLogo,
+  },
+  {
+    id: 'PediatricMolecularTargetLists',
+    title: 'Pediatric Molecular Target Lists',
+    content: 'FDA’s Pediatric Molecular Target Lists (PMTL) identify gene targets relevant to pediatric cancers to guide oncology drug development and regulatory decisions.',
+    link: '/pmtl',
+    img: pmtlLogo,
+  },
+];
+
+export const resourcesCloudListData = [
+  {
+    id: 'cgc',
+    title: 'Cancer Genomics Cloud',
+    subtitle: 'CGC',
+    content: 'A cloud-based platform to access and analyze cancer research data.',
+    link: 'https://www.cancergenomicscloud.org',
+    img: cgcLogo,
+  },
+  {
+    id: 'dbgap',
+    title: 'Database of Genotypes and Phenotypes',
+    subtitle: 'dbGaP',
+    content: 'A database to store and distribute data and results from studies examining the interaction of genotypes and phenotypes.',
+    link: 'https://www.ncbi.nlm.nih.gov/gap',
+    img: dbgapLogo,
+  },
+];
+
+export const aboutContainerData = {
+  img: aboutImg,
+  aboutButtonlist: ['CCDI HUB', 'CCDI', 'MCI'],
+  aboutList: {
+      'CCDI HUB': 'CCDI HUB',
+      'CCDI': 'HELL0',
+      'MCI': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.',
   },
 };
-// --------------- GraphQL query - Retrieve Landing page data --------------
+
+export const carouselList = [
+  {
+    img: wheel6,
+    mobile: cgcMobile,
+    content: 'Cancer Genomics Cloud',
+    link: 'https://www.cancergenomicscloud.org',
+  },
+  {
+    img: wheel1,
+    mobile: ccdcMobile,
+    content: 'Childhood Cancer Data Catalog',
+    link: 'https://datacatalog.ccdi.cancer.gov',
+  },
+  {
+    img: wheel2,
+    mobile: civicMobile,
+    content: 'Clinical Interpretation of Variants in Cancer',
+    link: 'https://civicdb.org',
+  },
+  {
+    img: wheel7,
+    mobile: dbgapMobile,
+    content: 'Database of Genotypes and Phenotypes',
+    link: 'https://www.ncbi.nlm.nih.gov/gap'
+  },
+  {
+    img: wheel3,
+    mobile: mciMobile,
+    content: 'Molecular Characterization Initiative',
+    link: '/MCI',
+  },
+  {
+    img: wheel4,
+    mobile: mtpMobile,
+    content: 'Molecular Targets Platform',
+    link: 'https://moleculartargets.ccdi.cancer.gov',
+  },
+  {
+    img: wheel5,
+    mobile: nccrMobile,
+    content: 'National Childhood Cancer Registry Explorer',
+    link: 'https://nccrexplorer.ccdi.cancer.gov',
+  },
+  {
+    img: wheel8,
+    mobile: federationMobile,
+    content: 'CCDI Data Federation Resource',
+    link: '/data-federation-resource',
+  },
+  {
+    img: wheel9,
+    mobile: cpiMobile,
+    content: 'CCDI Participant Index',
+    link: '/ccdi-participant-index',
+  },
+  {
+    img: wheel10,
+    mobile: nccrdataMobile,
+    content: 'NCCR Data Platform',
+    link: 'https://nccrdataplatform.ccdi.cancer.gov/home',
+  },
+  {
+    img: wheel11,
+    mobile: c3dcMobile,
+    content: 'Childhood Cancer Clinical Data Commons',
+    link: 'https://clinicalcommons.ccdi.cancer.gov',
+  },
+  {
+    img: wheel12,
+    mobile: ecDNAMobile,
+    content: 'CCDI Extrachromosomal DNA (ecDNA)',
+    link: 'https://ccdi-ecdna.org',
+  },
+  {
+    img: wheel13,
+    mobile: cBioPortalMobile,
+    content: 'CCDI cBioPortal',
+    link: 'https://cbioportal.ccdi.cancer.gov',
+  },
+  // {
+  //   img: wheel14,
+  //   mobile: rareCancerMobile,
+  //   content: 'CCDI Pediatric, Adolescent, and Young Adult Rare Cancer Study',
+  //   link: '/pediatric-adolescent-and-young-adult-rare-cancer-study',
+  // },
+];
+
+export const LANDING_DATA_QUERY = gql`{
+    numberOfMCICount
+  }
+`;
+
 export const GLOBAL_STATS_BAR_QUERY = gql`{
-  numberOfDiseases,
   numberOfParticipants,
-  numberOfStudies
   }
   `;

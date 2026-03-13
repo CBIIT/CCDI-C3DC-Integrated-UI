@@ -4,9 +4,9 @@ export const initialState = {
 };
 
 const participantObjectTemplate = {
+  id: '',
   participant_id: '',
-  dbgap_accession: '',
-  participant_pk: '',
+  study_id: '',
 };
 
 const cohortObjectTemplate = {
@@ -38,55 +38,49 @@ const isValidCohort = (cohort) => {
   ) {
     return false;
   }
-
+  
   // eslint-disable-next-line no-unused-vars
   for (const participant of cohort.participants) {
     if (!isValidParticipant(participant)) {
       return false;
     }
   }
-
   return true;
 };
 
 const createNewCohort = (state, payload) => {
   let { cohortId, cohortName, participants, cohortDescription = '' } = payload;
 
-  if(Object.keys(state).length >= 20){
-    throw new Error(`You cannot create more than 20 cohorts`)
-  }
-
   // If no cohortId is provided, default to "New Cohort"
-  let normalizedCohortId;
   if (!cohortId) {
     cohortId = "New Cohort";
     let counter = 1;
-    normalizedCohortId = cohortId.trim().toLowerCase();
+
     // Increment the cohort name if it already exists
-    while (state[normalizedCohortId]) {
+    while (state[cohortId]) {
       cohortId = `New Cohort ${counter}`;
-      normalizedCohortId = cohortId.trim().toLowerCase();
       counter++;
     }
   }
-  normalizedCohortId = cohortId.trim().toLowerCase();
 
   if (!cohortName) {
     cohortName = cohortId;
   }
 
-  if (state[normalizedCohortId]) {
-    throw new Error(`Cohort with ID ${cohortName} already exists`);
+  if (state[cohortId]) {
+    throw new Error(`Cohort with ID ${cohortId} already exists`);
   }
 
   const newCohort = {
     ..._.cloneDeep(cohortObjectTemplate),
-    cohortId: normalizedCohortId,
+    cohortId,
     cohortName,
     participants,
     cohortDescription,
     lastUpdated: new Date().toISOString(),
   };
+
+
 
   if (!isValidCohort(newCohort)) {
     throw new Error('Invalid cohort data');
@@ -94,7 +88,7 @@ const createNewCohort = (state, payload) => {
 
   const newState = {
     ...state,
-    [normalizedCohortId]: newCohort,
+    [cohortId]: newCohort,
   };
 
   return {newState, count: participants.length};
@@ -102,16 +96,15 @@ const createNewCohort = (state, payload) => {
 
 const addParticipantsToCohort = (state, payload, ) => {
   const { cohortId, participants } = payload;
-
   if (!state[cohortId]) {
     throw new Error(`Cohort with ID ${cohortId} does not exist`);
   }
 
   // Get existing participant PKs
-  const existingParticipantPks = new Set(state[cohortId].participants.map(p => p.participant_pk));
+  const existingParticipantIDs = new Set(state[cohortId].participants.map(p => p.id));
 
   // Filter out participants with duplicate PKs
-  const newParticipants = participants.filter(p => !existingParticipantPks.has(p.participant_pk));
+  const newParticipants = participants.filter(p => !existingParticipantIDs.has(p.id));
 
   const updatedParticipants = [
     ...state[cohortId].participants,
@@ -158,16 +151,13 @@ const mutateSingleCohort = (state, payload) => {
   let newState = { ...state };
 
   // Check if cohortName is different from cohortId
-  //normalize the name as an ID by removing trailing and leading spaces and case sensitivity.
-  const normalizedCohortId = cohortName.trim().toLowerCase();
-
-  if (normalizedCohortId && normalizedCohortId !== cohortId) {
+  if (cohortName && cohortName !== cohortId) {
     // Create a new entry with the new cohort ID
-    if (state[normalizedCohortId]) {
+    if (state[cohortName]) {
       throw new Error(`Cohort with Name ${cohortName} already exists, please choose a different name`);
     }
-    newCohort.cohortId = normalizedCohortId;
-    newState[normalizedCohortId] = newCohort;
+    newCohort.cohortId = cohortName;
+    newState[cohortName] = newCohort;
     // Delete the old entry
     delete newState[cohortId];
   } else {
@@ -218,22 +208,7 @@ export const reducer = (state, action) => {
         return state;
     }
 
-    try {
-      localStorage.setItem('cohortState', JSON.stringify(newState));
-    } catch (storageError) {
-      // Check if it's a quota exceeded error
-      const isQuotaExceeded = storageError && (
-        storageError.name === 'QuotaExceededError' ||
-        storageError.code === 22 ||
-        storageError.code === 1014 ||
-        storageError.message.toLowerCase().includes('quota')
-      );
-
-      if (isQuotaExceeded) {
-        throw new Error('Cannot save cohort: Storage limit reached. Please delete cohorts or participants and try again.');
-      }
-      throw storageError;
-    }
+    localStorage.setItem('cohortState', JSON.stringify(newState));
 
     if (payload.success) {
       payload.success(count);

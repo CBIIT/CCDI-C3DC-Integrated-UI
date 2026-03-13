@@ -4,7 +4,6 @@ const styles = (theme) => ({
   },
   dashboardDivider: {
     height: 16,
-    marginTop: '32px',
     backgroundColor: '#E2E7EC',
   },
   dashboardDividerTop: {
@@ -23,14 +22,6 @@ const styles = (theme) => ({
   },
   widgetsContainer: {
     background: theme.palette.widgetBackground.main,
-  },
-  widgetTitle: {
-    fontSize: '19px !important',
-    fontWeight: '500',
-    fontFamily: 'Lato',
-    color: theme.palette.text.primary,
-    textAlign: "start",
-    width: "100%",
   },
   contentShift: {
     width: `calc(100vw - ${theme.custom.drawerWidth})`,
@@ -56,20 +47,15 @@ const styles = (theme) => ({
   },
   widgetInner: {
     marginTop: '-8px',
-   // borderBottom: '6px solid red',
+    borderBottom: '6px solid #E2E7EC',
   },
   widgetsCollapse: {
     background: theme.palette.widgetBackground.main,
-    position: 'relative',
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
-  floatRight: {
-    top: '-1px',
-    right: '80px',
-    position: 'absolute',
-    zIndex: 1,
-  },
-  floatLeft: {
-    float: 'left',
+  buttonCollapseContainer: {
+    paddingRight: '80px',
   },
   customSwitch: {
     marginTop: '-6px',
@@ -77,10 +63,10 @@ const styles = (theme) => ({
   customButton: {
     borderRadius: '0 0 18px 18px',
     minHeight: '20px',
-    fontSize: 12,
+    fontSize: 8,
     color: '#ffffff',
-    textTransform: 'capitalize',
-    backgroundColor: '#686F7F',
+    textTransform: 'none',
+    backgroundColor: '#566672',
     marginRight: '4px',
     fontFamily: theme.custom.fontFamilySans,
     // marginTop: '-4px',
@@ -90,6 +76,8 @@ const styles = (theme) => ({
   },
   backgroundWidgets: {
     background: theme.palette.widgetBackground.main,
+    paddingLeft: '30px',
+    paddingRight: '60px',
   },
   sideBar: {
     width: '250px',
@@ -103,19 +91,23 @@ const styles = (theme) => ({
   statsBar: {
     position: 'fixed',
   },
-  padding:{
-    padding: '30px',
+  switchBase: {
+    color: theme.palette.widgetBackground.contrastText,
+    '&$checked': {
+      color: theme.palette.widgetBackground.contrastSwicthColor,
+    },
+    '&$checked + $track': {
+      backgroundColor: theme.palette.widgetBackground.contrastText,
+    },
   },
+  checked: {},
+  track: {},
   widgetBox: {
-   transition: 'box-shadow .3s',
-   borderRadius: '20px', 
+    transition: 'box-shadow .3s',
+    borderRadius: '20px', 
     '&:hover': {
       boxShadow: '0 0 11px rgba(33,33,33,.3)',
     },
-  },
-  widgetTotalTooltipIcon: {
-    width: '10px',
-    transform: 'translateY(-10px) translateX(1px)',
   },
 });
 

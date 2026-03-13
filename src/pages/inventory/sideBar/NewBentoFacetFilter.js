@@ -1,11 +1,19 @@
-import React from 'react';
-/*
+/* eslint-disable block-scoped-var */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-unused-vars */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable arrow-body-style */
+import React, { useState } from 'react';
 import {
   useLocation,
   useNavigate,
-} from "react-router-dom";*/
+} from "react-router-dom";
 import {
   AccordionSummary,
+  Button,
   withStyles,
 } from '@material-ui/core';
 import {
@@ -13,13 +21,14 @@ import {
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import {
-  chunkSplit,
+  resetAllData, chunkSplit,
   SearchView, SearchBoxGenerator, UploadModalGenerator,
 } from '@bento-core/local-find';
+import store from '../../../store';
 import styles from './BentoFacetFilterStyle';
 import { NewFacetFilter } from '@bento-core/facet-filter';
-// import { generateQueryStr } from '@bento-core/util';
-import { facetsConfig, facetSectionVariables, queryParams } from '../../../bento/dashTemplate';
+import { generateQueryStr } from '@bento-core/util';
+import { facetsConfig, facetSectionVariables, resetIcon, sectionLabel, queryParams } from '../../../bento/dashTemplate';
 import FacetFilterThemeProvider from './NewFilterThemeConfig';
 import {
   getAllParticipantIds, getAllIds,
@@ -51,30 +60,22 @@ const { SearchBox } = SearchBoxGenerator({
   config: {
     inputPlaceholder: 'Participant ID Search',
     noOptionsText: 'No matching items found',
-    searchType: ['participantIds', 'associatedIds'],
+    searchType: 'participantIds',
   },
   functions: {
     updateBrowserUrl: (query, navigate, newUniqueValue) => {
-      /*
       const paramValue = {
         'p_id': newUniqueValue.map((data) => data.title).join('|')
       };
       const queryStr = generateQueryStr(query, queryParams, paramValue);
-      navigate(`/explore${queryStr}`);*/
+      navigate(`/explore${queryStr}`);
     },
     getSuggestions: async (searchType) => {
       try {
         const response = await getAllIds(searchType).catch(() => []);
-
-        const participantSuggestions = response && response[searchType[0]] instanceof Array 
-          ? response[searchType[0]].map((id) => ({ type: searchType[0], title: id }))
+        return response && response[searchType] instanceof Array
+          ? response[searchType].map((id) => ({ type: searchType, title: id }))
           : [];
-
-        const associatedIdsSuggestions = response && response[searchType[1]] instanceof Object 
-          ? response[searchType[1]].map((item) => ({ type: searchType[1], title: item.participant_id, synonym: item.associated_id }))
-          : [];
-
-        return [...participantSuggestions, ...associatedIdsSuggestions];
       } catch (e) {
         return [];
       }
@@ -86,7 +87,6 @@ const { SearchBox } = SearchBoxGenerator({
 const { UploadModal } = UploadModalGenerator({
   functions: {
     updateBrowserUrl: (query, navigate, filename, fileContent, matchIds, unmatchedIds) => {
-      /*
       const fc = fileContent
         .split(/[,\n]/g)
         .map((e) => e.trim().replace(/\r/g, '').toUpperCase())
@@ -96,9 +96,8 @@ const { UploadModal } = UploadModalGenerator({
         'u_fc': fc.join('|'),
         'u_um': unmatchedIds.join('|'),
       };
-      /*const queryStr = generateQueryStr(query, queryParams, paramValue);
+      const queryStr = generateQueryStr(query, queryParams, paramValue);
       navigate(`/explore${queryStr}`);
-      */
     },
     searchMatches: async (inputArray) => {
       try {
@@ -120,18 +119,17 @@ const { UploadModal } = UploadModalGenerator({
   },
   config: {
     title: 'Upload Participants Set',
-    inputPlaceholder: 'e.g. C3DC-PARTICIPANT-101025, C3DC-PARTICIPANT-101026, C3DC-PARTICIPANT-101027',
+    inputPlaceholder: 'e.g. PARTICIPANT-101025, PARTICIPANT-101026, PARTICIPANT-101027',
     inputTooltip: 'Enter valid Participant IDs.',
     uploadTooltip: 'Select a file from your computer.',
     accept: '.csv,.txt',
-    maxSearchTerms: 1000,
-    mappedLabel: 'Participant record(s)',
+    maxSearchTerms: 5000,
     matchedId: 'participant_id',
-    matchedLabel : 'Participant ID',
-    associateId: 'study_id',
-    associateLabel: 'Study ID',
-    projectName: 'C3DC',
-    caseIds: 'Participant ID(s)',
+    matchedLabel: 'Submitted Participant ID',
+    associateId: 'dbgap_accession',
+    associateLabel: '',
+    projectName: 'CCDI Hub',
+    caseIds: 'Participant IDs',
   },
 });
 
@@ -153,7 +151,6 @@ const NewBentoFacetFilter = ({
 
     let searchConfig = {
       title: 'Participants',
-      searchLabel: 'Demographics',
     }
 
     return (
@@ -177,7 +174,7 @@ const NewBentoFacetFilter = ({
   * 1. Config local search input for Case
   * 2. Facet Section Name
   */
-  const CustomFacetView = ({ facet, facetClasses, expanded }) => {
+  const CustomFacetView = ({ facet, facetClasses }) => {
     return (
       <>
         <CustomExpansionPanelSummary
@@ -188,7 +185,8 @@ const NewBentoFacetFilter = ({
             />
           )}
           id={facet.label}
-          className={(facet.slider || facet.search) && expanded ? classes.customExpansionPanelSummaryRootSpecial : classes.customExpansionPanelSummaryRoot}      >
+          className={classes.customExpansionPanelSummaryRoot}
+        >
           <div
             id={facet.label}
             className={
@@ -217,7 +215,6 @@ const NewBentoFacetFilter = ({
               CustomFacetView={CustomFacetView}
               queryParams={queryParams}
               unknownAgesState={unknownAgesState}
-              searchFacetClasses={classes}
             />
           </FacetFilterThemeProvider>
         )

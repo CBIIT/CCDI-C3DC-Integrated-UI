@@ -2,7 +2,7 @@ import Logo from '../assets/header/Portal_Logo.svg';
 import LogoSmall from '../assets/header/Portal_Logo_Small.svg';
 import searchbarIcon from '../assets/header/Search_Icon.svg';
 import cartLogo from '../assets/header/Cart_Logo.svg';
-import usFlagSmall from '../assets/header/us_flag_small.png';
+import usFlagSmall from "../assets/header/us_flag_small.png";
 
 // globalHeaderLogo image 468x100
 // globalHeaderImage: image 2200x100
@@ -30,149 +30,163 @@ export const navMobileList = [
     link: '/explore',
     className: 'navMobileItem',
   },
-  // {
-  //     name: 'Applications',
-  //     link: '',
-  //     className: 'navMobileItem clickable',
-  // },
-  // {
-  //     name: 'Other Resources',
-  //     link: '',
-  //     className: 'navMobileItem clickable',
-  // },
-  {
-    name: 'Cohort Analyzer',
-    link: '/cohortAnalyzer',
-    className: 'navMobileItem',
-  },
   {
     name: 'Studies',
     link: '/studies',
     className: 'navMobileItem',
   },
   {
-    name: 'Data Model',
-    link: '/data_model',
+    name: 'Cohort Analyzer',
+    link: '/cohortAnalyzer',
     className: 'navMobileItem',
-},
-  // {
-  //     name: 'News',
-  //     link: '/news',
-  //     className: 'navMobileItem',
-  // },
- 
-  {
-    name: 'Resources',
-    link: '',
-    className: 'navMobileItem clickable',
   },
   {
-       name: 'About',
-       link: '',
-       className: 'navMobileItem clickable',
-  },/*
+      name: 'Resources',
+      link: '',
+      className: 'navMobileItem clickable',
+  },
+  {
+      name: 'News',
+      link: '/news',
+      className: 'navMobileItem',
+  },
+  {
+      name: 'About',
+      link: '/about',
+      className: 'navMobileItem clickable',
+  },
   {
     name: 'My File',
     link: '/fileCentricCart',
     className: 'cart',
-  },*/
+},
 ];
 
 export const navbarSublists = {
-  Applications: [
+  Resources: [
+  {
+    name: 'Childhood Cancer Clinical Data Commons',
+    link: 'https://clinicalcommons.ccdi.cancer.gov/',
+    className: 'navMobileSubItem'
+  },
+  {
+    name:'Childhood Cancer Data Catalog',
+    link: 'https://datacatalog.ccdi.cancer.gov',
+    className: 'navMobileSubItem',
+  },
+  {
+    name: 'Molecular Characterization Initiative',
+    link: '/MCI',
+    className: 'navMobileSubItem',
+  },
+  {
+    name: 'Molecular Targets Platform',
+    link: 'https://moleculartargets.ccdi.cancer.gov',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'National Childhood Cancer Registry Explorer',
+    link: 'https://nccrexplorer.ccdi.cancer.gov',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'CCDI Data Federation Resource',
+    link: '/data-federation-resource',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'CCDI Participant Index',
+    link: '/ccdi-participant-index',
+    className: 'navMobileSubItem',
+  },
+  {
+    name: 'CCDI cBioPortal',
+    link: 'https://cbioportal.ccdi.cancer.gov',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'NCCR Data Platform',
+    link: 'https://nccrdataplatform.ccdi.cancer.gov/home',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'Pediatric Molecular Target Lists',
+    link: '/pmtl',
+    className: 'navMobileSubItem',
+  },
+  // {
+  //   name:'Cancer Genomics Cloud',
+  //   link: 'https://www.cancergenomicscloud.org',
+  //   className: 'navMobileSubItem',
+  // }, 
+  // {
+  //   name:'Database of Genotypes and Phenotypes',
+  //   link: 'https://www.ncbi.nlm.nih.gov/gap',
+  //   className: 'navMobileSubItem',
+  // },
+  {
+    name:'Tools',
+    link: '/tools',
+    className: 'navMobileSubItem',
+  },
+  {
+    name:'CCDI Pediatric, Adolescent, and Young Adult Rare Cancer Study',
+    link: '/pediatric-adolescent-and-young-adult-rare-cancer-study',
+    className: 'navMobileSubItem',
+  },
+  ],
+  "About": [
     {
-      name:'Applications',
-      link: '',
-      className: 'navMobileSubTitle',
-    },
-    {
-      name:'Childhood Cancer Data Catalog',
-      link: '/#ccdc',
+      name: 'About CCDI Hub',
+      link: '/about',
       className: 'navMobileSubItem',
     },
     {
-      name:'Clinical Interpretation of Variants in Cancer',
-      link: '/#civic',
+      name: 'CCDI Data Ecosystem and AI Readiness (PDF)',
+      link: '/Ecosystem_AI_Readiness.pdf',
       className: 'navMobileSubItem',
     },
     {
-      name: 'Molecular Characterization Initiative for Childhood Cancers',
-      link: '/#mci',
+      name: 'CCDI Data Submission Guide (PDF)',
+      link: '/Submission_Guide.pdf',
       className: 'navMobileSubItem',
     },
     {
-      name: 'Molecular Targets Platform',
-      link: '/#mtp',
+      name: 'CCDI Data Model',
+      link: '/data-model',
       className: 'navMobileSubItem',
     },
     {
-      name:'National Childhood Cancer Registry Explorer',
-      link: '/#nccr',
+      name: 'CCDI Data Usage Policies & Terms',
+      link: '/data-usage-policies',
       className: 'navMobileSubItem',
-    }],
-    Resources: 
-    [
-      {
-        name:'Resources',
-        link: '/resources',
-        className: 'navMobileSubItem',
-      },
-      {
-        name:'C3DC Data Model',
-        link: 'https://github.com/CBIIT/c3dc-model',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      }, 
-      {
-        name:'GitHub Harmonization Repository',
-        link: 'https://github.com/chicagopcdc/c3dc_etl',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      },
-      {
-        name:'The Childhood Cancer Data Initiative (CCDI Hub)',
-        link: 'https://ccdi.cancer.gov/',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      }, 
-      {
-        name:'The GDC Data Portal',
-        link: 'https://portal.gdc.cancer.gov/',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      },
-      {
-        name:'The Cancer Data Standards Repository',
-        link: 'https://cadsr.cancer.gov/onedata/Home.jsp',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      },
-    ],
-    About:
-    [
-      {
-        name: 'About',
-        link: '/about',
-        className: 'navMobileSubItem',
-      },
-      {
-        name: 'Announcements',
-        link: '/announcements',
-        className: 'navMobileSubItem',
-      },
-      {
-        name: 'Release Notes',
-        link: '/release_notes_pdf',
-        className: 'navMobileSubItem',
-        externalLink: true,
-      },
-      {
-        name: 'User Guide',
-        link: '/user_guide',
-        className: 'navMobileSubItem',
-      },
-   
-    ]
+    },
+    {
+      name: 'CCDI-Supported Publications',
+      link: '/publications',
+      className: 'navMobileSubItem',
+    },
+    {
+      name: 'Hub Explore Dashboard Tutorial Video',
+      link: 'https://www.youtube.com/watch?v=Eu8y1GDTszU',
+      className: 'navMobileSubItem',
+    },
+    {
+      name: 'Release Notes',
+      link: '/release-notes',
+      className: 'navMobileSubItem',
+    },
+    {
+      name: 'User Guide',
+      link: '/user-guide.pdf',
+      className: 'navMobileSubItem',
+    },
+    {
+      name: 'CCDI Events Announcements',
+      link: '/ccdi-events-announcements',
+      className: 'navMobileSubItem',
+    },
+  ],
 };
 
 export const navBarCartData = {

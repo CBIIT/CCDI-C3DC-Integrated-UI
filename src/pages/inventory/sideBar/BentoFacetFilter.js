@@ -6,7 +6,11 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable arrow-body-style */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import {
   AccordionSummary,
   Button,
@@ -21,22 +25,21 @@ import {
   SearchView, SearchBoxGenerator, UploadModalGenerator,
 } from '@bento-core/local-find';
 import store from '../../../store';
-import styles, { uploadModalStyles } from './BentoFacetFilterStyle';
+import styles from './BentoFacetFilterStyle';
 import { FacetFilter, ClearAllFiltersBtn } from '@bento-core/facet-filter';
-import { facetsConfig, facetSectionVariables, resetIcon, sectionLabel } from '../../../bento/dashTemplate';
+import { generateQueryStr } from '@bento-core/util';
+import { facetsConfig, facetSectionVariables, resetIcon, sectionLabel, queryParams } from '../../../bento/dashTemplate';
 import FacetFilterThemeProvider from './FilterThemeConfig';
 import {
   getAllParticipantIds, getAllIds,
 } from './BentoFilterUtils';
-import { toUpper } from 'lodash';
 
 const CustomExpansionPanelSummary = withStyles({
   root: {
     marginBottom: -1,
-    paddingTop: (props) => (props.hasSearch ? 12 : 18),
+    paddingTop: 6,
     paddingLeft: 14,
     paddingRight: 14,
-    paddingBottom: 15,
     minHeight: 48,
     '&$expanded': {
       minHeight: 48,
@@ -45,7 +48,6 @@ const CustomExpansionPanelSummary = withStyles({
   content: {
     display: 'block',
     textTransform: 'uppercase',
-    margin: "0px !important"
     // '&$expanded': {
     //   margin: '4px 0px 15px 0px',
     // },
@@ -58,23 +60,22 @@ const { SearchBox } = SearchBoxGenerator({
   config: {
     inputPlaceholder: 'Participant ID Search',
     noOptionsText: 'No matching items found',
-    searchType: ['participantIds', 'associatedIds'],
+    searchType: 'participantIds',
   },
   functions: {
+    updateBrowserUrl: (query, navigate, newUniqueValue) => {
+      const paramValue = {
+        'p_id': newUniqueValue.map((data) => data.title).join('|')
+      };
+      const queryStr = generateQueryStr(query, queryParams, paramValue);
+      navigate(`/explore${queryStr}`);
+    },
     getSuggestions: async (searchType) => {
       try {
         const response = await getAllIds(searchType).catch(() => []);
-        // console.log(response)
-
-        const participantSuggestions = response && response[searchType[0]] instanceof Array 
-          ? response[searchType[0]].map((id) => ({ type: searchType[0], title: id }))
+        return response && response[searchType] instanceof Array
+          ? response[searchType].map((id) => ({ type: searchType, title: id }))
           : [];
-
-        const associatedIdsSuggestions = response && response[searchType[1]] instanceof Object 
-          ? response[searchType[1]].map((item) => ({ type: searchType[1], title: item.participant_id, synonym: item.associated_id }))
-          : [];
-
-        return [...participantSuggestions, ...associatedIdsSuggestions];
       } catch (e) {
         return [];
       }
@@ -85,30 +86,32 @@ const { SearchBox } = SearchBoxGenerator({
 // Generate UploadModal Component
 const { UploadModal } = UploadModalGenerator({
   functions: {
+    updateBrowserUrl: (query, navigate, filename, fileContent, matchIds, unmatchedIds) => {
+      const fc = fileContent
+        .split(/[,\n]/g)
+        .map((e) => e.trim().replace('\r', '').toUpperCase())
+        .filter((e) => e && e.length > 1);
+      const paramValue = {
+        'u': matchIds.map((data) => data.participant_id).join('|'),
+        'u_fc': fc.join('|'),
+        'u_um': unmatchedIds.join('|'),
+      };
+      const queryStr = generateQueryStr(query, queryParams, paramValue);
+      navigate(`/explore${queryStr}`);
+    },
     searchMatches: async (inputArray) => {
       try {
-        // Create a map of uppercase -> original case for lookup
-        const caseMap = new Map();
-        inputArray.forEach((item) => {
-          caseMap.set(item.toUpperCase(), item);
-        });
-
-        // Split the search terms into chunks of 500 (using uppercase for API call)
-        const upperCaseArray = Array.from(caseMap.keys());
-        const caseChunks = chunkSplit(upperCaseArray, 500);
+        // Split the search terms into chunks of 500
+        const caseChunks = chunkSplit(inputArray, 500);
         const matched = (await Promise.allSettled(caseChunks.map((chunk) => getAllParticipantIds(chunk))))
           .filter((result) => result.status === 'fulfilled')
           .map((result) => result.value || [])
           .flat(1);
 
-        // Start with all uppercase keys for matching
-        const unmatchedUppercase = new Set(upperCaseArray);
-        matched.forEach((obj) => unmatchedUppercase.delete(obj.participant_id.toUpperCase()));
-
-        // Convert back to original case for display
-        const unmatched = [...unmatchedUppercase].map((upper) => caseMap.get(upper));
-
-        return { matched, unmatched };
+        // Combine the results and remove duplicates
+        const unmatched = new Set(inputArray);
+        matched.forEach((obj) => unmatched.delete(obj.participant_id.toUpperCase()));
+        return { matched, unmatched: [...unmatched] };
       } catch (e) {
         return { matched: [], unmatched: [] };
       }
@@ -116,27 +119,25 @@ const { UploadModal } = UploadModalGenerator({
   },
   config: {
     title: 'Upload Participants Set',
-    inputPlaceholder: 'e.g. C3DC-PARTICIPANT-101025, C3DC-PARTICIPANT-101026, C3DC-PARTICIPANT-101027',
+    inputPlaceholder: 'e.g. PARTICIPANT-101025, PARTICIPANT-101026, PARTICIPANT-101027',
     inputTooltip: 'Enter valid Participant IDs.',
     uploadTooltip: 'Select a file from your computer.',
     accept: '.csv,.txt',
-    maxSearchTerms: 1000,
-    mappedLabel: 'Participant record(s)',
+    maxSearchTerms: 5000,
     matchedId: 'participant_id',
-    matchedLabel : 'Participant ID',
-    associateId: 'study_id',
-    associateLabel: 'Study ID',
-    projectName: 'C3DC',
-    caseIds: 'Participant ID(s)',
+    matchedLabel: 'Submitted Participant ID',
+    associateId: 'dbgap_accession',
+    associateLabel: '',
+    projectName: 'CCDI Hub',
+    caseIds: 'Participant IDs',
   },
-
-  customStyles : uploadModalStyles,
 });
 
 const BentoFacetFilter = ({
   classes,
   searchData,
   activeFilters,
+  unknownAgesState,
 }) => {
   /**
   * Clear All Filter Button
@@ -147,24 +148,49 @@ const BentoFacetFilter = ({
   */
   const CustomClearAllFiltersBtn = ({ onClearAllFilters, disable }) => {
     const [isHover, setIsHover] = useState(false);
+    const query = new URLSearchParams(useLocation().search);
+    const navigate = useNavigate();
     return (
-      <div className={classes.floatRight}>
+      <div className={classes.buttonContainer}>
         <Button
           id="button_sidebar_clear_all_filters"
           variant="outlined"
           disabled={disable}
           onClick={() => {
+            const paramValue = {
+              'import_from': '', 'p_id': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
+              'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_category': '', 'diagnosis_basis': '', 'disease_phase': '',
+              'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'response_category': '', 'age_at_response': '', 'age_at_response_unknownAges': '',
+              'age_at_last_known_survival_status': '', 'age_at_last_known_survival_status_unknownAges': '', 'first_event': '', 'last_known_survival_status': '', 
+              'participant_age_at_collection': '', 'participant_age_at_collection_unknownAges': '', 'sample_anatomic_site': '', 'sample_tumor_status': '', 'tumor_classification': '', 
+              'data_category': '', 'file_type': '', 'file_mapping_level': '', 'dbgap_accession': '', 'study_name': '', 'study_status': '',
+              'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
+            };
+            const queryStr = generateQueryStr(query, queryParams, paramValue);
+            navigate(`/explore${queryStr}`);
             onClearAllFilters();
             store.dispatch(resetAllData());
+            
+            // Reset unknownAges state to default values
+            const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+            ageRelatedParams.forEach(param => {
+              store.dispatch({
+                type: 'UNKNOWN_AGES_CHANGED',
+                payload: {
+                  datafield: param,
+                  unknownAges: 'include',
+                },
+              });
+            });
           }}
           className={classes.customButton}
           classes={{ root: classes.clearAllButtonRoot }}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
-          style= { disable ? { border: '1px solid #AEBDBE' } : {}}
+          style={disable ? { border: '1px solid #627B7A' } : {}}
         >
           <img
-            src={ disable ? resetIcon.src : ( isHover ? resetIcon.srcActiveHover : resetIcon.srcActive ) }
+            src={disable ? resetIcon.src : (isHover ? resetIcon.srcActiveHover : resetIcon.srcActive)}
             height={resetIcon.size}
             width={resetIcon.size}
             alt={resetIcon.alt}
@@ -184,21 +210,9 @@ const BentoFacetFilter = ({
   * 1. Config local search input for Case
   * 2. Facet Section Name
   */
-  const CustomFacetSection = ({ section }) => {
-    const { name, expandSection } = section;
+  const CustomFacetSection = ({ section, expanded }) => {
+    const { name } = section;
     const { hasSearch = false } = facetSectionVariables[name];
-
-    const [expanded, setExpanded] = useState(expandSection);
-    const [showSearch, setShowSearch] = useState(true);
-
-    const toggleSearch = (e) => {
-      e.stopPropagation();
-      setShowSearch(!showSearch);
-    };
-
-    const collapseHandler = () => {
-      setExpanded(!expanded);
-    };
 
     let searchConfig = {
       title: 'Participants',
@@ -206,25 +220,21 @@ const BentoFacetFilter = ({
 
     return (
       <>
-        <CustomExpansionPanelSummary onClick={collapseHandler} id={section.name} hasSearch={hasSearch}>
+        <CustomExpansionPanelSummary id={section}>
           <div className={classes.sectionSummaryTextContainer}>
             {sectionLabel[name] !== undefined ? sectionLabel[name] : name}
-            {hasSearch && (
-              <div className={classes.findCaseButton} onClick={toggleSearch}>
-                <img src="https://raw.githubusercontent.com/CBIIT/datacommons-assets/main/c3dc/images/icons/svgs/C3DCFacetLocalFindSearchIcon.svg" className={classes.findCaseIcon} alt="search" />
-              </div>
-            )}
           </div>
-          {hasSearch && (
-            <SearchView
-              classes={classes}
-              SearchBox={SearchBox}
-              UploadModal={UploadModal}
-              hidden={!expanded || !showSearch}
-              config = {searchConfig}
-            />
-          )}
         </CustomExpansionPanelSummary>
+        {hasSearch && (
+          <SearchView
+            classes={classes}
+            SearchBox={SearchBox}
+            UploadModal={UploadModal}
+            hidden={!expanded}
+            config={searchConfig}
+            queryParams={queryParams}
+          />
+        )}
       </>
     );
   };
@@ -245,9 +255,7 @@ const BentoFacetFilter = ({
             />
           )}
           id={facet.label}
-          className={
-            facet.slider ? classes.customExpansionPanelSummaryRootSlider : classes.customExpansionPanelSummaryRoot
-          }
+          className={classes.customExpansionPanelSummaryRoot}
         >
           <div
             id={facet.label}
@@ -262,32 +270,6 @@ const BentoFacetFilter = ({
     );
   };
 
-  if (activeFilters['dbgap_accession']) {
-    facetSectionVariables['Study'].isExpanded = true;
-  }
-  
-  function updateSubjects(obj) {
-    if (Array.isArray(obj)) {
-      
-        return obj.map(item => updateSubjects(item));
-    } else if (typeof obj === 'object' && obj !== null) {
-        let newObj = {};
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (key === 'subjects') {
-                    
-                    newObj[key] = obj[key].toLocaleString();
-                } else {
-                    
-                    newObj[key] = updateSubjects(obj[key]);
-
-                }
-            }
-        }
-        return newObj;
-    }
-    return obj;
-}
   return (
     <div>
       <FacetFilterThemeProvider>
@@ -296,11 +278,14 @@ const BentoFacetFilter = ({
           activeFilters={activeFilters}
         />
         <FacetFilter
-          data={updateSubjects(searchData)}
+          data={searchData}
+          activeFilters={activeFilters}
           facetSectionConfig={facetSectionVariables}
           facetsConfig={facetsConfig}
           CustomFacetSection={CustomFacetSection}
           CustomFacetView={CustomFacetView}
+          queryParams={queryParams}
+          unknownAgesState={unknownAgesState}
         />
       </FacetFilterThemeProvider>
     </div>

@@ -53,8 +53,8 @@ const LiSection = styled.li`
     display: block;
     color: #585C65;
     font-family: poppins;
-    font-size: 16.64px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
     line-height: 40px;
     letter-spacing: normal;
     text-decoration: none;
@@ -99,6 +99,23 @@ const LiSection = styled.li`
     margin: 0 0 4px 8px;
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
+  }
+
+  .isAboutSection {
+    color: #3A75BD;
+    border-bottom: 4px solid #3A75BD;
+
+    ::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-bottom: 1px solid #3A75BD;
+      border-left: 1px solid #3A75BD;
+      margin: 0 0 4px 8px;
+      transform: rotate(-45deg);
+      -webkit-transform: rotate(-45deg);
+    }
   }
 
   .clicked {
@@ -180,21 +197,21 @@ const DropdownContainer = styled.div`
     .dropdownList {
       background: #1F4671;
       display: grid;
-      grid-column-gap: 2%;
-      grid-template-columns: 24.25% 24.25% 24.25% 24.25%;
-      padding: 32px 140px 0 20px;
+      grid-template-columns: 25% 25% 25% 25%;
+      padding: 32px 16px 0 16px;
     }
 
     .dropdownItem {
-      // border: 1px solid rgba(0, 0, 0, 0.8);
-      padding: 0 10px 32px 10px;
+      padding: 0 16px 32px 16px;
       font-size: 30px;
+      text-align: left;
       font-family: poppins;
       font-weight: 600;
       font-size: 20px;
       line-height: 110%;
       color: #FFFFFF;
       text-decoration: none;
+      max-width: 344px;
   }
 
   .dropdownItem:hover {
@@ -233,6 +250,7 @@ const useOutsideAlerter = (ref) => {
 
 const NavBar = () => {
   const path = useLocation().pathname;
+  const isAbout = navbarSublists["About"].some((navItem)=>navItem.link === path);
   const [clickedTitle, setClickedTitle] = useState("");
   const dropdownSelection = useRef(null);
   const clickableObject = navMobileList.filter(item => item.className === 'navMobileItem clickable');
@@ -272,7 +290,7 @@ const NavBar = () => {
                   &&
                   <LiSection key={navkey}>
                     <div className='navTitle directLink'>
-                      <NavLink to={navMobileItem.link}>
+                      <NavLink to={navMobileItem.link} state={{ navigationType: 'main_menu' }}>
                         <div
                           className='navText directLink'
                           onKeyDown={onKeyPressHandler}
@@ -292,7 +310,7 @@ const NavBar = () => {
                   <LiSection key={navkey}>
                     <div className={clickedTitle === navMobileItem.name ? 'navTitleClicked' : 'navTitle'}>
                       <div
-                        className={clickedTitle === navMobileItem.name ? 'navText clicked' : 'navText'}
+                        className={clickedTitle === navMobileItem.name ? 'navText clicked' : isAbout && navMobileItem.name === 'About' ? 'navText isAboutSection' :  'navText'}
                         onClick={handleMenuClick}
                         onKeyDown={onKeyPressHandler}
                         role="button"
@@ -311,25 +329,23 @@ const NavBar = () => {
       </NavContainer>
       <Dropdown ref={dropdownSelection} style={clickedTitle === '' ? dropdownInvisibleStyle : null}>
         <DropdownContainer>
-          <div className="dropdownList">
-            {clickedTitle !== "" ? navbarSublists[clickedTitle].map((dropItem, idx) => {
-              const dropkey = `drop_${idx}`;
-              return (
-                dropItem.link && (
-                  <a
-                    href={dropItem.link}
-                    className="dropdownItem"
-                    key={dropkey}
-                    onClick={() => setClickedTitle("")}
-                    target={dropItem.externalLink ? "_blank" : "_self"} // Set target attribute based on externalLink
-                    rel='noopener noreferrer'
-                  >
-                    {dropItem.name}
-                  </a>
-                )
-              );
-            }) : null}
-          </div>
+            <div className="dropdownList">
+              {
+                clickedTitle !== "" ? navbarSublists[clickedTitle].sort((a, b) => a.name.localeCompare(b.name)).map((dropItem, idx) => {
+                  const dropkey = `drop_${idx}`;
+                  return (
+                    <>
+                      {dropItem.link
+                      ? dropItem.link.includes("http") || dropItem.link.includes("pdf") || dropItem.link.includes("release-notes")
+                      ? <a href={dropItem.link} className="dropdownItem" target="_blank" rel="noopener noreferrer" key={dropkey} onClick={() => setClickedTitle("")}>{dropItem.name}</a>
+                      : <NavLink to={dropItem.link} className="dropdownItem" key={dropkey} onClick={() => setClickedTitle("")}>{dropItem.name}</NavLink>
+                      : null}
+                    </>
+                  )
+                })
+                :null
+              }
+            </div>
         </DropdownContainer>
       </Dropdown>
     </Nav>

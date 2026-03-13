@@ -7,7 +7,7 @@ const StatsView = ({ data }) => {
   // Incorporate data into the stats array
   const stats = globalStatsData.map((e) => ({
     name: e.statTitle,
-    val: data[e.statAPI].toLocaleString(),
+    val: data[e.statAPI],
     statIconSrc: e.statIconSrc,
     statIconAlt: e.statIconAlt,
   }));
