@@ -22,7 +22,7 @@ export default {
       title: 'About',
       items: [
         {
-          text: 'About CCDI Hub',
+          text: 'About C3DC',
           link: '/about',
         },
         {
@@ -35,8 +35,26 @@ export default {
         },
         {
           text: 'Release Notes',
-          link: '/release-notes',
+          link: '/release_notes_pdf',
+          openNewTab: 'true',
         }
+      ],
+    },
+    {
+      title: 'Resources',
+      items: [
+        {
+          text: 'C3DC Data Model',
+          link: 'https://github.com/CBIIT/c3dc-model',
+        },/*
+        {
+          text: 'GraphQL',
+          link: '/',
+        },*/
+        {
+          text: 'Bento',
+          link: 'https://cbiit.github.io/bento-docs/master/index.html',
+        },
       ],
     },
     {
