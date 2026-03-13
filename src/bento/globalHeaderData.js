@@ -42,7 +42,7 @@ export const navMobileList = [
   },
   {
     name: 'Data Model',
-    link: '/data_model',
+    link: '/data-model',
     className: 'navMobileItem',
   },
   {
