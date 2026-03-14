@@ -28,7 +28,7 @@ const Tabs = (props) => {
     let paramValue = {};
     paramValue.tab = value;
     const queryStr = generateQueryStr(query, queryParams, paramValue);
-    navigate(`/explore${queryStr}`, { replace: false });
+    navigate(`/exploreParticipants${queryStr}`, { replace: false });
     dispatch(changeTab(value, 'not-facet'));
   };
 

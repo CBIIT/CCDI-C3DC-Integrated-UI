@@ -100,7 +100,7 @@ const ExportButtonView = (props,) => {
         return '';
       case false:
         return (
-          <div>Please visit the <a style={{color: '#165F83'}} href='/explore'>Explore page</a> and add some files to the cart to get started.</div>
+          <div>Please visit the <a style={{color: '#165F83'}} href='/exploreParticipants'>Explore Participants page</a> and add some files to the cart to get started.</div>
         );
       default:
         return '';

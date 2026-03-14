@@ -673,7 +673,7 @@ const CPIModal = ({
           <Button
             style={viewInExploreButton}
             onClick={() => {
-              navigation(`/explore?p_id=${participantId}&dbgap_accession=${studyId}`);
+              navigation(`/exploreParticipants?p_id=${participantId}&dbgap_accession=${studyId}`);
             }}
             disableRipple
           >

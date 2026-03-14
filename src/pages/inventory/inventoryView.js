@@ -216,7 +216,7 @@ const Inventory = ({
               'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
             };
             const queryStr = generateQueryStr(query, queryParams, paramValue);
-            navigate(`/explore${queryStr}`);
+            navigate(`/exploreParticipants${queryStr}`);
             onClearAllFilters();
             store.dispatch(resetAllData());
             

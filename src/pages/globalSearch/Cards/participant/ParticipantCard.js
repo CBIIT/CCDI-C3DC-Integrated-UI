@@ -157,7 +157,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
   };
 
   const handleExploreDashboard = () => {
-    navigation(`/explore?p_id=${participant_id}`);
+    navigation(`/exploreParticipants?p_id=${participant_id}`);
   };
 
   const handleAddToCart = () => {

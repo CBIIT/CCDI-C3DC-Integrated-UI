@@ -214,7 +214,7 @@ const StudiesDetail = ({data}) => {
             <div className='resourceTitleContainer'>
                 <div className='resourceTitle'>
                     <div>Study Code:<a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.study_id}`} className='studyIdText' target="_blank" rel="noopener noreferrer">{data.study_id}</a><img src={bookIcon} alt="bookIcon" /></div>
-                    <div className='participantContaniner'>Participants in this Study: <a href={`/explore?dbgap_accession=${data.study_id}`} className='subjectNumber'>{data.num_of_participants.toLocaleString('en-US')}</a></div>
+                    <div className='participantContaniner'>Participants in this Study: <a href={`/exploreParticipants?dbgap_accession=${data.study_id}`} className='subjectNumber'>{data.num_of_participants.toLocaleString('en-US')}</a></div>
                 </div>
             </div>
         

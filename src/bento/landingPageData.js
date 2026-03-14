@@ -20,7 +20,7 @@ export const landingPageData = {
   callToActionTitle: 'Access and Visualize\nData Sets within the\nC3DC Community',
   callToActionDescription: 'Get to know C3DC\nby selecting available Information below',
   callToActionButtonText: 'EXPLORE THE SITE',
-  callToActionLink: '/explore',
+  callToActionLink: '/exploreParticipants',
   landingPageHero: {
     alt: 'Alt tag1',
     img: landingPageHeroImage,
@@ -94,7 +94,7 @@ export const landingPageData = {
     titleText: 'C3DC Data',
     descriptionText: 'Explore and export C3DC data for analysis alongside other data types.',
     callToActionText: 'Explore Data',
-    callToActionLink: '/explore', // This links to the explore dashboard.
+    callToActionLink: '/exploreParticipants', // This links to the explore dashboard.
   },
 };
 // --------------- GraphQL query - Retrieve Landing page data --------------

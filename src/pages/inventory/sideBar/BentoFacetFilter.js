@@ -68,7 +68,7 @@ const { SearchBox } = SearchBoxGenerator({
         'p_id': newUniqueValue.map((data) => data.title).join('|')
       };
       const queryStr = generateQueryStr(query, queryParams, paramValue);
-      navigate(`/explore${queryStr}`);
+      navigate(`/exploreParticipants${queryStr}`);
     },
     getSuggestions: async (searchType) => {
       try {
@@ -97,7 +97,7 @@ const { UploadModal } = UploadModalGenerator({
         'u_um': unmatchedIds.join('|'),
       };
       const queryStr = generateQueryStr(query, queryParams, paramValue);
-      navigate(`/explore${queryStr}`);
+      navigate(`/exploreParticipants${queryStr}`);
     },
     searchMatches: async (inputArray) => {
       try {
@@ -167,7 +167,7 @@ const BentoFacetFilter = ({
               'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
             };
             const queryStr = generateQueryStr(query, queryParams, paramValue);
-            navigate(`/explore${queryStr}`);
+            navigate(`/exploreParticipants${queryStr}`);
             onClearAllFilters();
             store.dispatch(resetAllData());
             

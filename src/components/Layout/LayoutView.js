@@ -33,7 +33,8 @@ const Layout = () => {
           <Route path="/release-notes-pdf" element={<PdfReader />} />
           <Route path="/user-guide" element={<PdfReader />} />
           <Route path="/sitesearch" element={<Search />} />
-          <Route path="/explore" element={<Inventory />} />
+          <Route path="/exploreParticipants" element={<Inventory />} />
+          <Route path="/exploreFiles" element={<Inventory />} />
           <Route path="/fileCentricCart" element={<Cart />} />
           <Route path="/cohortAnalyzer" element={<CohortAnalyzerController />} />
           <Route path="/studies" >

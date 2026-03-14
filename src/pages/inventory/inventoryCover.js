@@ -105,13 +105,13 @@ const InventoryCover = ({
 
         // If there are no query parameters and the user is returning to a page,
         if (query.size === 0 && return_2_page === true) {
-            navigate(`/explore${return_query_url}`);
+            navigate(`/exploreParticipants${return_query_url}`);
             return;
         }
 
         //Check if the user is returning to the same page from the main menu
         if (query.size === 0 && return_2_page === false && return_query_url !== '' && navigationType === 'main_menu') {
-            navigate(`/explore${return_query_url}`);
+            navigate(`/exploreParticipants${return_query_url}`);
             return;
         }
         
@@ -261,7 +261,7 @@ const InventoryCover = ({
             
             // Update URL if there are changes
             if (hasChanges) {
-                const newUrl = `/explore${query.toString() ? '?' + query.toString() : ''}`;
+                const newUrl = `/exploreParticipants${query.toString() ? '?' + query.toString() : ''}`;
                 navigate(newUrl, { replace: true });
             }
             

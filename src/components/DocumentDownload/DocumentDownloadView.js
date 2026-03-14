@@ -104,7 +104,7 @@ const DocumentDownload = ({
           <ToolTip classes={{ tooltip: classes.customTooltip, arrow: classes.customArrow }} title={toolTipTextUnauthenticated} arrow placement="bottom">
             <div
               style={{ textAlign: 'center' }}
-              onClick={() => navigate('/login?redirect=/explore')}
+              onClick={() => navigate('/login?redirect=/exploreParticipants')}
             >
               <CustomIcon imgSrc={iconUnauthenticated} />
             </div>

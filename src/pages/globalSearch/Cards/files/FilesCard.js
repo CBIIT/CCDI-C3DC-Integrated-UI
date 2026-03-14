@@ -356,12 +356,12 @@ const FilesCard = ({ data = {}, index, addFiles, cartFiles = [] }) => {
                     }}
                     arrow
                   >
-                    <Button component={Link} to={`/explore?p_id=${formattedParticipantId}`} className={classes.titleLink}>
+                    <Button component={Link} to={`/exploreParticipants?p_id=${formattedParticipantId}`} className={classes.titleLink}>
                       {truncated}
                     </Button>
                   </Tooltip>
                 ) : (
-                  <Button component={Link} to={`/explore?p_id=${formattedParticipantId}`} className={classes.titleLink}>
+                  <Button component={Link} to={`/exploreParticipants?p_id=${formattedParticipantId}`} className={classes.titleLink}>
                     {file_name}
                   </Button>
                 );
