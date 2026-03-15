@@ -100,6 +100,21 @@ export const externalLinkIcon = {
   alt: 'External link icon',
 };
 
+// --------------- Responsive Tab Breakpoint Configuration --------------
+// These breakpoints are calculated by multiplying the width of each tab
+// including the padding/margin (203px)
+// and counting the more button as a tab (203px)
+// We will have enough space for tabs + more button + empty tab space
+// e.g. 2 tabs: (203 * 2) + 203 + 203 = 812px
+export const tabResponsiveBreakpoints = {
+  breakpoints: [
+    { maxWidth: 812, tabLimit: 2 },
+    { maxWidth: 1015, tabLimit: 3 },
+    { maxWidth: 1281, tabLimit: 4 },
+    { maxWidth: 1421, tabLimit: 5 },
+  ],
+  defaultTabLimit: 6,
+};
 
 // --------------- Tabs Header Data configuration --------------
 export const tabs = [
@@ -171,15 +186,27 @@ query search (
     $diagnosis_classification_system: [String] ,
     $diagnosis_category: [String],
     $diagnosis_basis: [String] ,
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
     $last_known_survival_status: [String] ,
     $age_at_last_known_survival_status: [Int],
     $age_at_last_known_survival_status_unknownAges: [String],
     $first_event: [String],
+    $cause_of_death: [String],
     $treatment_type: [String],
     $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $response: [String],
     $response_category: [String] ,
+    $response_system: [String],
     $age_at_response: [Int] ,
     $age_at_response_unknownAges: [String],
     $sample_anatomic_site: [String] ,
@@ -189,6 +216,7 @@ query search (
     $tumor_classification: [String] ,
     $data_category: [String],
     $file_type: [String],
+    $file_mapping_level: [String],
     $dbgap_accession: [String],
     $study_name: [String],
     $study_status: [String],
@@ -196,7 +224,6 @@ query search (
     $library_source_material: [String],
     $library_source_molecule: [String],
     $library_strategy: [String],
-    $file_mapping_level: [String],
 ){
     searchParticipants (
         import_data: $import_data,          
@@ -211,15 +238,27 @@ query search (
         diagnosis_classification_system: $diagnosis_classification_system,
         diagnosis_category: $diagnosis_category,
         diagnosis_basis: $diagnosis_basis,
+        alteration: $alteration,
+        alteration_type: $alteration_type,
+        fusion_partner_gene: $fusion_partner_gene,
+        gene_symbol: $gene_symbol,
+        reported_significance: $reported_significance,
+        reported_significance_system: $reported_significance_system,
+        status: $status,
         last_known_survival_status: $last_known_survival_status,
         age_at_last_known_survival_status: $age_at_last_known_survival_status,
         age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
         first_event: $first_event,
+        cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
         treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+        age_at_treatment_end: $age_at_treatment_end,
+        age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+        response: $response,
         response_category: $response_category,
+        response_system: $response_system,
         age_at_response: $age_at_response,
         age_at_response_unknownAges: $age_at_response_unknownAges,
         sample_anatomic_site: $sample_anatomic_site,
@@ -229,6 +268,7 @@ query search (
         tumor_classification: $tumor_classification,
         data_category: $data_category,
         file_type: $file_type,
+        file_mapping_level: $file_mapping_level,
         dbgap_accession: $dbgap_accession,       
         study_name: $study_name,
         study_status: $study_status,
@@ -236,18 +276,19 @@ query search (
         library_source_material: $library_source_material,
         library_source_molecule: $library_source_molecule,
         library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level,
     ) {
         numberOfDiagnosis
+        numberOfGeneticAnalyses
         numberOfFiles
         numberOfParticipants
         numberOfSamples
         numberOfStudies
+        numberOfSurvivals
+        numberOfTreatments
+        numberOfTreatmentResponses
         participantsFileCount
-        diagnosisFileCount
-        samplesFileCount
-        studiesFileCount
-        filesFileCount
+        
+        # Widget counts
         participantCountByDiagnosis {
             group
             subjects
@@ -272,10 +313,8 @@ query search (
             group
             subjects
         }
-        filterParticipantCountByDataCategory{
-            group
-            subjects
-        }
+
+        # Diagnosis filter counts
         filterParticipantCountByDiagnosisAnatomicSite{
             group
             subjects
@@ -284,23 +323,16 @@ query search (
             group
             subjects
         }
-        filterParticipantCountByFileType{
-            group
-            subjects
-        }
-        filterParticipantCountBySexAtBirth{
-            group
-            subjects
-        }
         filterParticipantCountByDiagnosis{
             group
             subjects
         }
-        filterParticipantCountByDiagnosisClassificationSystem{
-            group
+        filterParticipantCountByDiagnosisAge{
+            lowerBound
+            upperBound
             subjects
         }
-        filterParticipantCountByDiagnosisVerificationStatus{
+        filterParticipantCountByDiagnosisClassificationSystem{
             group
             subjects
         }
@@ -312,15 +344,145 @@ query search (
           group
           subjects
         }
+        # Demographic filter counts
+        filterParticipantCountBySexAtBirth{
+            group
+            subjects
+        }
+        filterParticipantCountByRace{
+          group
+          subjects
+        }
+        # Genetic Analysis filter counts
+        filterParticipantCountByAlteration {
+          group
+          subjects
+        }
+        filterParticipantCountByAlterationType {
+          group
+          subjects
+        }
+        filterParticipantCountByFusionPartnerGene {
+          group
+          subjects
+        }
+        filterParticipantCountByGeneSymbol {
+          group
+          subjects
+        }
+        filterParticipantCountByReportedSignificance {
+          group
+          subjects
+        }
+        filterParticipantCountByReportedSignificanceSystem {
+          group
+          subjects
+        }
+        filterParticipantCountByStatus {
+          group
+          subjects
+        }
+        # Survival filter counts
+        filterParticipantCountBySurvivalStatus{
+          group
+          subjects
+        } 
+        filterParticipantCountByFirstEvent{
+          group
+          subjects
+        }
+        filterParticipantCountByCauseOfDeath{
+          group
+          subjects
+        }
+        filterParticipantCountByAgeAtLastKnownSurvivalStatus{
+          lowerBound
+          upperBound
+          subjects
+        }
+        # Treatment filter counts
+        filterParticipantCountByTreatmentType{
+          group
+          subjects
+        }
+        filterParticipantCountByTreatmentAgent{
+          group
+          subjects
+        }
+        filterParticipantCountByAgeAtTreatmentStart {
+          lowerBound
+          upperBound
+          subjects
+        }
+        filterParticipantCountByAgeAtTreatmentEnd {
+          lowerBound
+          upperBound
+          subjects
+        }
+        # Treatment Response filter counts
+        filterParticipantCountByResponse{
+          group
+          subjects
+        }
+        filterParticipantCountByResponseCategory{
+          group
+          subjects
+        }
+        filterParticipantCountByResponseSystem{
+          group
+          subjects
+        }
+        filterParticipantCountByAgeAtResponse{
+          lowerBound
+          upperBound
+          subjects
+        }
+        # Sample filter counts
+        filterParticipantCountBySampleAnatomicSite{
+          group
+          subjects
+        }
+        filterParticipantCountBySampleAge{
+          lowerBound
+          upperBound
+          subjects
+        }
+        filterParticipantCountByTumorClassification{
+          group
+          subjects
+        }
+        filterParticipantCountByTumorStatus{
+          group
+          subjects
+        }
+        # Data Category filter counts
+        filterParticipantCountByDataCategory{
+            group
+            subjects
+        }
+        filterParticipantCountByFileType{
+            group
+            subjects
+        }
+        filterParticipantCountByFileMappingLevel{
+            group
+            subjects
+        }
+        # Study filter counts
+        filterParticipantCountByDBGAPAccession{
+            group
+            subjects
+        }
+        filterParticipantCountByStudyTitle{
+          group
+          subjects
+        }
+        filterParticipantCountByStudyStatus{
+          group
+          subjects
+        }
+        # Sequencing Library filter counts
         filterParticipantCountByLibrarySelection{
-            group
-            subjects
-        }
-        filterParticipantCountByTumorGradeSource{
-            group
-            subjects
-        }
-        filterParticipantCountByTumorStageSource{
             group
             subjects
         }
@@ -336,83 +498,6 @@ query search (
             group
             subjects
         }
-        filterParticipantCountByFileMappingLevel{
-            group
-            subjects
-        }
-        filterParticipantCountByDBGAPAccession{
-            group
-            subjects
-        }
-        filterParticipantCountByRace{
-          group
-          subjects
-        }
-        filterParticipantCountBySampleAnatomicSite{
-          group
-          subjects
-        }
-        filterParticipantCountByStudyTitle{
-          group
-          subjects
-        }
-        filterParticipantCountByStudyStatus{
-          group
-          subjects
-        }
-        filterParticipantCountByTumorClassification{
-          group
-          subjects
-        }
-        filterParticipantCountByTumorStatus{
-          group
-          subjects
-        }
-        filterParticipantCountBySurvivalStatus{
-          group
-          subjects
-        } 
-        filterParticipantCountByFirstEvent{
-          group
-          subjects
-        }
-        filterParticipantCountByTreatmentType{
-          group
-          subjects
-        }
-        filterParticipantCountByTreatmentAgent{
-          group
-          subjects
-        }
-        filterParticipantCountByResponseCategory{
-          group
-          subjects
-        }
-        filterParticipantCountByAgeAtResponse{
-          lowerBound
-          upperBound
-          subjects
-        }
-        filterParticipantCountByDiagnosisAge{
-            lowerBound
-            upperBound
-            subjects
-        }
-        filterParticipantCountBySampleAge{
-          lowerBound
-          upperBound
-          subjects
-      }
-      filterParticipantCountByAgeAtLastKnownSurvivalStatus{
-          lowerBound
-          upperBound
-          subjects
-      }
-      filterParticipantCountByAgeAtTreatmentStart {
-          lowerBound
-          upperBound
-          subjects
-      }
     }
 }
 `;
