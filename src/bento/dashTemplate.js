@@ -2,6 +2,7 @@ import { sortType, InputTypes } from '@bento-core/facet-filter';
 import clearButton from '../assets/icons/Clear_Icon.svg';
 import clearButtonActive from '../assets/icons/Clear_Icon_White.svg';
 import clearButtonActiveHover from '../assets/icons/Clear_Icon_Active.svg';
+import questionIcon from '../assets/icons/Question_Icon.svg';
 
 const DEMOGRAPHICS = 'Demographics';
 const SURVIVAL = 'Survival';
@@ -1408,12 +1409,20 @@ export const widgetConfig = [
     title: 'Study',
     dataName: 'participantCountByStudy',
     sliceTitle: 'Participants',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
   },
   {
     type: 'donut',
     title: 'Diagnosis',
     dataName: 'participantCountByDiagnosis',
     sliceTitle: 'Participants',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
   },
   {
     type: 'bar',
@@ -1421,27 +1430,93 @@ export const widgetConfig = [
     dataName: 'participantCountByDiagnosisAge',
     width: '100%',
     height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'continuous',
   },
   {
     type: 'donut',
     title: 'Sex at Birth',
     dataName: 'participantCountBySexAtBirth',
     sliceTitle: 'Participants',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
   },
   {
     type: 'donut',
     title: 'Race',
     dataName: 'participantCountByRace',
     sliceTitle: 'Participants',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
   },
   {
     type: 'donut',
     title: 'Data Category',
     dataName: 'participantCountByDataCategory',
     sliceTitle: 'Participants',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
   },
 ];
 
+export const WIDGET_DATASET_LIMIT = 20;
+
+export const widgetToolTipConfig = {
+  Study: {
+    icon: questionIcon,
+    alt: 'study tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'studies',
+  },
+  Diagnosis: {
+    icon: questionIcon,
+    alt: 'diagnosis tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'diagnoses',
+  },
+  'Age at Diagnosis (years)': {
+    icon: questionIcon,
+    alt: 'age at diagnosis tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'age groups',
+  },
+  'Sex at Birth': {
+    icon: questionIcon,
+    alt: 'sex tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'sexes',
+  },
+  Race: {
+    icon: questionIcon,
+    alt: 'race tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'races',
+  },
+  'Data Category': {
+    icon: questionIcon,
+    alt: 'data category tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'data categories',
+  },
+};
 
 // --------------- query url configuration --------------
 // Facets, tab, pagination paramters

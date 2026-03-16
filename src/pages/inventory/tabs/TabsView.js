@@ -42,9 +42,12 @@ const Tabs = (props) => {
   const getTabs = (tabs) => tabs.map((tab) => ({
     ...tab,
     name: tab.name,
-    count: `(${props.dashboardStats[tab.count].toLocaleString()})`,
-    display: [tab.name, props.dashboardStats[tab.count]],
-    clsName: `${tab.name}`.toLowerCase().replace(' ', '_'),
+    hasToolTip: true,
+    toolTipText: tab.toolTipText,
+    count: tab.count !== "none" ? `(${props.dashboardStats[tab.count].toLocaleString()})` : "(NA)",
+    display: tab.count !== "none" ?  [tab.name, props.dashboardStats[tab.count].toLocaleString()] :"NA",
+    clsName:  `${tab.name}`.toLowerCase().replace(' ', '_') ,
+    tooltipStyles: {border: '1px solid #2D5380', arrowBorder: '1px solid #598AC5'}
   }));
 
   return (
