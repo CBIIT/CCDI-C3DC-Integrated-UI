@@ -108,6 +108,101 @@ export const customStudyTabDownloadCSV = {
   defaultFullTableDownload: false,
 };
 
+export const GET_DIAGNOSIS_TAB = gql`
+query diagnosisOverview($diagnosis_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  diagnosisOverview(diagnosis_id: $diagnosis_id, offset: $offset,first: $first, order_by: $order_by) {
+    diagnosis_id
+    participant_id
+    study_id
+  }
+}
+`;
+
+export const customDiagnosisTabDownloadCSV = {
+  keysToInclude: ['diagnosis_id', 'participant_id', 'study_id', 'diagnosis', 'diagnosis_classification_system', 'diagnosis_basis', 'disease_phase', 'age_at_diagnosis'],
+  header: ['Diagnosis ID', 'Participant ID', 'Study ID', 'Diagnosis', 'Diagnosis Classification System', 'Diagnosis Basis', 'Disease Phase', 'Age at Diagnosis'],
+  query: GET_DIAGNOSIS_TAB,
+  apiVariable: 'diagnosisOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
+export const GET_GENETIC_ANALYSIS_TAB = gql`
+query geneticAnalysisOverview($genetic_analysis_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  geneticAnalysisOverview(genetic_analysis_id: $genetic_analysis_id, offset: $offset,first: $first, order_by: $order_by) {
+    genetic_analysis_id
+    participant_id
+    study_id
+  }
+}
+`;
+
+export const customGeneticAnalysisTabDownloadCSV = {
+  keysToInclude: ['genetic_analysis_id', 'participant_id', 'study_id', 'genetic_analysis', 'genetic_analysis_classification_system', 'genetic_analysis_basis', 'disease_phase', 'age_at_genetic_analysis'],
+  header: ['Genetic Analysis ID', 'Participant ID', 'Study ID', 'Genetic Analysis', 'Genetic Analysis Classification System', 'Genetic Analysis Basis', 'Disease Phase', 'Age at Genetic Analysis'],
+  query: GET_GENETIC_ANALYSIS_TAB,
+  apiVariable: 'geneticAnalysisOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
+export const GET_TREATMENT_TAB = gql`
+query treatmentOverview($treatment_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  treatmentOverview(treatment_id: $treatment_id, offset: $offset,first: $first, order_by: $order_by) {
+    treatment_id
+    participant_id
+    study_id
+  }
+}
+`;
+
+export const customTreatmentTabDownloadCSV = {
+  keysToInclude: ['treatment_id', 'participant_id', 'study_id', 'treatment', 'treatment_classification_system', 'treatment_basis', 'disease_phase', 'age_at_treatment'],
+  header: ['Treatment ID', 'Participant ID', 'Study ID', 'Treatment', 'Treatment Classification System', 'Treatment Basis', 'Disease Phase', 'Age at Treatment'],
+  query: GET_TREATMENT_TAB,
+  apiVariable: 'treatmentOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
+export const GET_TREATMENT_RESPONSE_TAB = gql`
+query treatmentResponseOverview($treatment_response_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  treatmentResponseOverview(treatment_response_id: $treatment_response_id, offset: $offset,first: $first, order_by: $order_by) {
+    treatment_response_id
+    participant_id
+    study_id
+  }
+}
+`;
+
+export const customTreatmentResponseTabDownloadCSV = {
+  keysToInclude: ['treatment_response_id', 'participant_id', 'study_id', 'treatment_response', 'treatment_response_classification_system', 'treatment_response_basis', 'disease_phase', 'age_at_treatment_response'],
+  header: ['Treatment Response ID', 'Participant ID', 'Study ID', 'Treatment Response', 'Treatment Response Classification System', 'Treatment Response Basis', 'Disease Phase', 'Age at Treatment Response'],
+  query: GET_TREATMENT_RESPONSE_TAB,
+  apiVariable: 'treatmentResponseOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
+export const GET_SURVIVAL_TAB = gql`
+query survivalOverview($survival_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  survivalOverview(survival_id: $survival_id, offset: $offset,first: $first, order_by: $order_by) {
+    survival_id
+    participant_id
+    study_id
+  }
+}
+`;
+
+export const customSurvivalTabDownloadCSV = {
+  keysToInclude: ['survival_id', 'participant_id', 'study_id', 'survival', 'survival_classification_system', 'survival_basis', 'disease_phase', 'age_at_survival'],
+  header: ['Survival ID', 'Participant ID', 'Study ID', 'Survival', 'Survival Classification System', 'Survival Basis', 'Disease Phase', 'Age at Survival'],
+  query: GET_SURVIVAL_TAB,
+  apiVariable: 'survivalOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
 export const MY_CART = gql`
 query filesManifestInList($file_ids: [String], $offset: Int = 0, $first: Int = 200000, $order_by:String ="file_name", $sort_direction:String="asc") {
     filesManifestInList(id: $file_ids, offset: $offset,first: $first, order_by: $order_by, sort_direction: $sort_direction) {
