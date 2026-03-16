@@ -83,4 +83,77 @@ export const customTheme = {
       },
     },
   },
+  MuiList: {
+    root: {
+      '&.popover-list': {
+        padding: 0,
+      },
+    },
+  },
+  MuiListItem: {
+    root: {
+      '&.popover-list-item': {
+        minWidth: '200px',
+        padding: '7.5px 16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        '&:first-child': {
+          paddingTop: '10px',
+        },
+        '&:last-child': {
+          paddingBottom: '10px',
+        },
+        '& .popover-tab-name': {
+          fontFamily: 'Poppins',
+          fontWeight: 300,
+          fontSize: '14px',
+          color: 'black',
+          lineHeight: '107%',
+          textTransform: 'capitalize',
+          flex: 1,
+          textAlign: 'left',
+        },
+        '& .popover-tab-count': {
+          fontFamily: 'Poppins',
+          fontWeight: 300,
+          fontSize: '14px',
+          color: 'black',
+          lineHeight: '107%',
+          textAlign: 'right',
+          marginLeft: '16px',
+        },
+      },
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.more-button': {
+        width: '125px',
+        height: '45px',
+        marginTop: '40px',
+        marginRight: '10px',
+        fontFamily: 'Poppins',
+        fontWeight: 300,
+        fontSize: '14px',
+        lineHeight: '107%',
+        letterSpacing: '-2%',
+        textTransform: 'capitalize',
+        color: 'black',
+        background: 'transparent',
+        border: 'none',
+        '&:hover': {
+          background: 'transparent',
+        },
+        '& span': {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        },
+        '& img': {
+          height: '15px',
+        },
+      },
+    },
+  },
 };

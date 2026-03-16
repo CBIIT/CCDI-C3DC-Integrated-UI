@@ -10,7 +10,7 @@ import {
 } from '../../../components/Inventory/InventoryState';
 import { queryParams } from '../../../bento/dashTemplate';
 import TabPanel from './TabPanel';
-import { tabContainers } from '../../../bento/dashboardTabData';
+import { tabContainers, tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
 import { Tabs as BentoTabs }  from '@bento-core/tab';
 import { customTheme } from './DefaultTabTheme';
 import CohortModalGenerator from '../cohortModal/cohortModalGenerator';
@@ -61,6 +61,8 @@ const Tabs = (props) => {
         currentTab={currentTab}
         handleTabChange={handleTabChange}
         customTheme={customTheme}
+        enableGrouping={true}
+        responsiveBreakpoints={tabResponsiveBreakpoints}
       />
       {
         tabContainers.map((tab, index) => (
