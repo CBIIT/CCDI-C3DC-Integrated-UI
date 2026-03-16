@@ -52,6 +52,26 @@ export const customTheme = {
           color: '#000000',
           borderTop: '6px solid #07679C',
         },
+        '&.genetic_analyses': {
+          background: '#B3D6EA',
+          color: '#000000',
+          borderTop: '6px solid #07679C',
+        },
+        '&.treatments': {
+          background: '#B3D6EA',
+          color: '#000000',
+          borderTop: '6px solid #07679C',
+        },
+        '&.treatment_responses': {
+          background: '#B3D6EA',
+          color: '#000000',
+          borderTop: '6px solid #07679C',
+        },
+        '&.survival': {
+          background: '#B3D6EA',
+          color: '#000000',
+          borderTop: '6px solid #07679C',
+        },
         '&.MuiTypography-body1': {
           color: 'red',
         },
@@ -77,6 +97,26 @@ export const customTheme = {
         fontWeight: '300',
       },
       '& span.studies_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.genetic_analyses_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.treatments_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.treatment_responses_count': {
+        marginLeft: '5px',
+        fontSize: '16px',
+        fontWeight: '300',
+      },
+      '& span.survival_count': {
         marginLeft: '5px',
         fontSize: '16px',
         fontWeight: '300',
