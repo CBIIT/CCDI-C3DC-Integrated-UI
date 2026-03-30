@@ -3496,6 +3496,9 @@ export const tabContainers = [
       noMatch: 'No Matching Records Found',
     },
   },
+];
+
+export const exploreFilesTabs = [
   {
     name: 'Files',
     dataField: 'dataFile',
@@ -3681,4 +3684,3 @@ export const tabContainers = [
     addSelectedFilesQuery: GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL,
   },
 ];
-

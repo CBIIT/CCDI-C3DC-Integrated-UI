@@ -11,6 +11,7 @@ import DataModelNavigator from '../../pages/dmn/DataModelNavigator';
 import Error from '../../pages/error/Error';
 import Search from '../../pages/globalSearch/searchController';
 import Inventory from '../../pages/inventory/inventoryController';
+import ExploreFiles from '../../pages/explore/inventoryController';
 import Cart from '../../pages/cart/cartController';
 import ScrollButton from '../ScrollButton/ScrollButtonView';
 import StudiesView from '../../pages/studies/studiesView';
@@ -34,7 +35,7 @@ const Layout = () => {
           <Route path="/user-guide" element={<PdfReader />} />
           <Route path="/sitesearch" element={<Search />} />
           <Route path="/exploreParticipants" element={<Inventory />} />
-          <Route path="/exploreFiles" element={<Inventory />} />
+          <Route path="/exploreFiles" element={<ExploreFiles />} />
           <Route path="/fileCentricCart" element={<Cart />} />
           <Route path="/cohortAnalyzer" element={<CohortAnalyzerController />} />
           <Route path="/studies" >

@@ -57,10 +57,13 @@ export const facetSectionVariables = {
   Samples: {
     isExpanded: false,
   },
-  Datacategory: {
+  Study: {
     isExpanded: false,
   },
-  Study: {
+};
+
+export const facetSectionVariablesExploreFiles = {
+  Datacategory: {
     isExpanded: false,
   },
   Sequencinglibrary: {
@@ -1253,39 +1256,6 @@ export const facetsConfig = [
     show: true,
   },
   {
-    section: DATACATEGORY,
-    label: 'Data Category',
-    apiPath: 'ParticipantCountByDataCategory',
-    apiForFiltering: 'filterParticipantCountByDataCategory',
-    datafield: 'data_category',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
-    section: DATACATEGORY,
-    label: 'File Type',
-    apiPath: 'participantCountByFileType',
-    apiForFiltering: 'filterParticipantCountByFileType',
-    datafield: 'file_type',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
-    section: DATACATEGORY,
-    label: 'File Mapping',
-    apiPath: 'participantCountByFileMappingLevel',
-    apiForFiltering: 'filterParticipantCountByFileMappingLevel',
-    datafield: 'file_mapping_level',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
     section: STUDY,
     label: 'dbGaP accession',
     apiPath: 'participantCountByDBGAPAccession',
@@ -1313,6 +1283,43 @@ export const facetsConfig = [
     apiPath: 'participantCountByStudyStatus',
     apiForFiltering: 'filterParticipantCountByStudyStatus',
     datafield: 'study_status',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+];
+
+
+export const facetsExploreFilesConfig = [
+  {
+    section: DATACATEGORY,
+    label: 'Data Category',
+    apiPath: 'ParticipantCountByDataCategory',
+    apiForFiltering: 'filterParticipantCountByDataCategory',
+    datafield: 'data_category',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+  {
+    section: DATACATEGORY,
+    label: 'File Type',
+    apiPath: 'participantCountByFileType',
+    apiForFiltering: 'filterParticipantCountByFileType',
+    datafield: 'file_type',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+  {
+    section: DATACATEGORY,
+    label: 'File Mapping',
+    apiPath: 'participantCountByFileMappingLevel',
+    apiForFiltering: 'filterParticipantCountByFileMappingLevel',
+    datafield: 'file_mapping_level',
     field: GROUP,
     type: InputTypes.CHECKBOX,
     sort_type: sortType.ALPHABET,

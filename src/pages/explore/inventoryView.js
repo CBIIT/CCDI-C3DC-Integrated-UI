@@ -16,10 +16,10 @@ import {
   resetAllData,
 } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
-import { resetIcon, queryParams, facetsConfig, sectionLabel } from '../../bento/dashTemplate';
+import { resetIcon, queryParams, facetsExploreFilesConfig as facetsConfig, sectionLabel } from '../../bento/dashTemplate';
 import styles from './inventoryStyle';
 import NewBentoFacetFilter from './sideBar/NewBentoFacetFilter';
-import WidgetView from './widget/WidgetView';
+// import WidgetView from './widget/WidgetView';
 import StatsView from '../../components/Stats/StatsView';
 import TabsView from './tabs/TabsView';
 import QueryBarView from './filterQueryBar/QueryBarView';
@@ -349,10 +349,10 @@ const Inventory = ({
           <RightContentPanel selected={selectedSection}>
             <div className={classes.widgetsContainer}>
               <QueryBarView data={dashData} unknownAgesState={unknownAgesState} />
-              <WidgetView
+              {/* <WidgetView
                 data={dashData}
                 activeFilters={activeFilters}
-              />
+              /> */}
               <TabsView
                 dashboardStats={dashData}
                 activeFilters={activeFilters}
