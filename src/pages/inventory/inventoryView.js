@@ -16,7 +16,8 @@ import {
   resetAllData,
 } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
-import { resetIcon, queryParams, facetsConfig, sectionLabel } from '../../bento/dashTemplate';
+import { resetIcon, queryParams, sectionLabel } from '../../bento/dashTemplate';
+import { useInventoryTemplate } from './InventoryTemplateContext';
 import styles from './inventoryStyle';
 import NewBentoFacetFilter from './sideBar/NewBentoFacetFilter';
 import WidgetView from './widget/WidgetView';
@@ -90,6 +91,7 @@ const Inventory = ({
   activeFilters,
   unknownAgesState,
 }) => {
+  const { facetsConfig, basePath } = useInventoryTemplate();
   const [selectedSection, setSelectedSection] = useState(-1);
 
   // Calculate filter-related counts and lists using memoization for performance
@@ -187,7 +189,7 @@ const Inventory = ({
     }, {});
   
     return { activeFiltersCount, sectionList, sectionCount };
-  }, [facetsConfig, activeFilters, unknownAgesState, useLocation().search]); // Only recalculate when these dependencies change
+  }, [facetsConfig, activeFilters, unknownAgesState, useLocation().search]);
 
   /**
     * Clear All Filter Button
@@ -217,7 +219,7 @@ const Inventory = ({
               'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
             };
             const queryStr = generateQueryStr(query, queryParams, paramValue);
-            navigate(`/exploreParticipants${queryStr}`);
+            navigate(`${basePath}${queryStr}`);
             onClearAllFilters();
             store.dispatch(resetAllData());
             

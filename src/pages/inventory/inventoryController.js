@@ -4,6 +4,7 @@ import InventoryCover from './inventoryCover';
 import InventoryView from './inventoryView';
 import { CohortStateProvider } from '../../components/CohortSelectorState/CohortStateContext';
 import { CohortModalProvider } from './cohortModal/CohortModalContext';
+import { InventoryTemplateProvider } from './InventoryTemplateContext';
 
 const InventoryController = (() => {
 
@@ -15,8 +16,10 @@ const InventoryController = (() => {
     <>
       <CohortStateProvider>
         <CohortModalProvider>
-          <InventoryCover />
-          <InventoryView dashData={dashData} activeFilters={activeFilters} unknownAgesState={unknownAgesState} />
+          <InventoryTemplateProvider>
+            <InventoryCover />
+            <InventoryView dashData={dashData} activeFilters={activeFilters} unknownAgesState={unknownAgesState} />
+          </InventoryTemplateProvider>
         </CohortModalProvider>
       </CohortStateProvider>
     </>

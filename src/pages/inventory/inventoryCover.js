@@ -16,10 +16,14 @@ import {
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
+import { useInventoryTemplate, getFacetDatafields } from './InventoryTemplateContext';
+
+const SPECIAL_QUERY_KEYS = new Set(['import_from', 'p_id', 'u', 'u_fc', 'u_um', 'tab']);
 
 const InventoryCover = ({
   classes,
 }) => {
+    const { basePath, facetsConfig, tabItems } = useInventoryTemplate();
     const [searchParams] = useSearchParams();
     // const filterState = useSelector((state) => state.statusReducer.filterState);
     // const localFindAutocomplete = useSelector((state) => state.localFind.autocomplete);
@@ -39,6 +43,38 @@ const InventoryCover = ({
     const navigationType = location.state && location.state.navigationType;
 
     const navigate = useNavigate();
+
+    // Drop facet query params that do not apply to the current explore template; clamp tab index.
+    useEffect(() => {
+        const allowedFacetDatafields = getFacetDatafields(facetsConfig);
+        const q = new URLSearchParams(location.search);
+        let changed = false;
+        [...q.keys()].forEach((key) => {
+            if (SPECIAL_QUERY_KEYS.has(key)) return;
+            if (key.endsWith('_unknownAges')) {
+                const base = key.replace(/_unknownAges$/, '');
+                if (!allowedFacetDatafields.has(base)) {
+                    q.delete(key);
+                    changed = true;
+                }
+                return;
+            }
+            if (!allowedFacetDatafields.has(key)) {
+                q.delete(key);
+                changed = true;
+            }
+        });
+        const tabIdx = parseInt(q.get('tab') || '0', 10);
+        if (!Number.isNaN(tabIdx) && tabIdx >= tabItems.length) {
+            q.set('tab', '0');
+            changed = true;
+            store.dispatch(changeTab(0, 'facet'));
+        }
+        if (changed) {
+            const qs = q.toString();
+            navigate(`${basePath}${qs ? `?${qs}` : ''}`, { replace: true });
+        }
+    }, [location.pathname, location.search, basePath, facetsConfig, tabItems.length, navigate]);
 
     async function getData(filters) {
         let result = await client.query({
@@ -105,13 +141,13 @@ const InventoryCover = ({
 
         // If there are no query parameters and the user is returning to a page,
         if (query.size === 0 && return_2_page === true) {
-            navigate(`/exploreParticipants${return_query_url}`);
+            navigate(`${basePath}${return_query_url}`);
             return;
         }
 
         //Check if the user is returning to the same page from the main menu
         if (query.size === 0 && return_2_page === false && return_query_url !== '' && navigationType === 'main_menu') {
-            navigate(`/exploreParticipants${return_query_url}`);
+            navigate(`${basePath}${return_query_url}`);
             return;
         }
         
@@ -233,7 +269,7 @@ const InventoryCover = ({
             store.dispatch(updateImportfrom(null, []));
             continueWithFilters();
         }
-    }, [searchParams, navigationType]);
+    }, [searchParams, navigationType, location.pathname, basePath]);
 
     // Listen for unknownAgesState changes and update URL
     const unknownAgesState = useSelector((state) => state.statusReducer.unknownAgesState);
@@ -261,13 +297,13 @@ const InventoryCover = ({
             
             // Update URL if there are changes
             if (hasChanges) {
-                const newUrl = `/exploreParticipants${query.toString() ? '?' + query.toString() : ''}`;
+                const newUrl = `${basePath}${query.toString() ? '?' + query.toString() : ''}`;
                 navigate(newUrl, { replace: true });
             }
             
             setPreviousUnknownAgesState(unknownAgesState);
         }
-    }, [unknownAgesState, navigate, previousUnknownAgesState]);
+    }, [unknownAgesState, navigate, previousUnknownAgesState, basePath]);
 
     useEffect(() => {
         return () => {

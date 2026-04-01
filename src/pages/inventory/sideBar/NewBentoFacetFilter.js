@@ -6,7 +6,7 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable arrow-body-style */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   useLocation,
   useNavigate,
@@ -28,7 +28,8 @@ import store from '../../../store';
 import styles from './BentoFacetFilterStyle';
 import { NewFacetFilter } from '@bento-core/facet-filter';
 import { generateQueryStr } from '@bento-core/util';
-import { facetsConfig, facetSectionVariables, resetIcon, sectionLabel, queryParams } from '../../../bento/dashTemplate';
+import { resetIcon, sectionLabel } from '../../../bento/dashTemplate';
+import { useInventoryTemplate } from '../InventoryTemplateContext';
 import FacetFilterThemeProvider from './NewFilterThemeConfig';
 import {
   getAllParticipantIds, getAllIds,
@@ -55,84 +56,6 @@ const CustomExpansionPanelSummary = withStyles({
   expanded: {},
 })(AccordionSummary);
 
-// Generate SearchBox Component
-const { SearchBox } = SearchBoxGenerator({
-  config: {
-    inputPlaceholder: 'Participant ID Search',
-    noOptionsText: 'No matching items found',
-    searchType: 'participantIds',
-  },
-  functions: {
-    updateBrowserUrl: (query, navigate, newUniqueValue) => {
-      const paramValue = {
-        'p_id': newUniqueValue.map((data) => data.title).join('|')
-      };
-      const queryStr = generateQueryStr(query, queryParams, paramValue);
-      navigate(`/exploreParticipants${queryStr}`);
-    },
-    getSuggestions: async (searchType) => {
-      try {
-        const response = await getAllIds(searchType).catch(() => []);
-        return response && response[searchType] instanceof Array
-          ? response[searchType].map((id) => ({ type: searchType, title: id }))
-          : [];
-      } catch (e) {
-        return [];
-      }
-    },
-  },
-});
-
-// Generate UploadModal Component
-const { UploadModal } = UploadModalGenerator({
-  functions: {
-    updateBrowserUrl: (query, navigate, filename, fileContent, matchIds, unmatchedIds) => {
-      const fc = fileContent
-        .split(/[,\n]/g)
-        .map((e) => e.trim().replace(/\r/g, '').toUpperCase())
-        .filter((e) => e && e.length > 1);
-      const paramValue = {
-        'u': matchIds.map((data) => data.participant_id).join('|'),
-        'u_fc': fc.join('|'),
-        'u_um': unmatchedIds.join('|'),
-      };
-      const queryStr = generateQueryStr(query, queryParams, paramValue);
-      navigate(`/exploreParticipants${queryStr}`);
-    },
-    searchMatches: async (inputArray) => {
-      try {
-        // Split the search terms into chunks of 500
-        const caseChunks = chunkSplit(inputArray, 500);
-        const matched = (await Promise.allSettled(caseChunks.map((chunk) => getAllParticipantIds(chunk))))
-          .filter((result) => result.status === 'fulfilled')
-          .map((result) => result.value || [])
-          .flat(1);
-
-        // Combine the results and remove duplicates
-        const unmatched = new Set(inputArray);
-        matched.forEach((obj) => unmatched.delete(obj.participant_id.toUpperCase()));
-        return { matched, unmatched: [...unmatched] };
-      } catch (e) {
-        return { matched: [], unmatched: [] };
-      }
-    },
-  },
-  config: {
-    title: 'Upload Participants Set',
-    inputPlaceholder: 'e.g. PARTICIPANT-101025, PARTICIPANT-101026, PARTICIPANT-101027',
-    inputTooltip: 'Enter valid Participant IDs.',
-    uploadTooltip: 'Select a file from your computer.',
-    accept: '.csv,.txt',
-    maxSearchTerms: 5000,
-    matchedId: 'participant_id',
-    matchedLabel: 'Submitted Participant ID',
-    associateId: 'dbgap_accession',
-    associateLabel: '',
-    projectName: 'CCDI Hub',
-    caseIds: 'Participant IDs',
-  },
-});
-
 const NewBentoFacetFilter = ({
   classes,
   searchData,
@@ -140,6 +63,91 @@ const NewBentoFacetFilter = ({
   selectedSection,
   unknownAgesState,
 }) => {
+  const {
+    facetsConfig,
+    facetSectionVariables,
+    queryParams,
+    basePath,
+  } = useInventoryTemplate();
+
+  const { SearchBox, UploadModal } = useMemo(() => {
+    const { SearchBox: SB } = SearchBoxGenerator({
+      config: {
+        inputPlaceholder: 'Participant ID Search',
+        noOptionsText: 'No matching items found',
+        searchType: 'participantIds',
+      },
+      functions: {
+        updateBrowserUrl: (query, navigateTo, newUniqueValue) => {
+          const paramValue = {
+            p_id: newUniqueValue.map((data) => data.title).join('|'),
+          };
+          const queryStr = generateQueryStr(query, queryParams, paramValue);
+          navigateTo(`${basePath}${queryStr}`);
+        },
+        getSuggestions: async (searchType) => {
+          try {
+            const response = await getAllIds(searchType).catch(() => []);
+            return response && response[searchType] instanceof Array
+              ? response[searchType].map((id) => ({ type: searchType, title: id }))
+              : [];
+          } catch (e) {
+            return [];
+          }
+        },
+      },
+    });
+
+    const { UploadModal: UM } = UploadModalGenerator({
+      functions: {
+        updateBrowserUrl: (query, navigateTo, filename, fileContent, matchIds, unmatchedIds) => {
+          const fc = fileContent
+            .split(/[,\n]/g)
+            .map((e) => e.trim().replace(/\r/g, '').toUpperCase())
+            .filter((e) => e && e.length > 1);
+          const paramValue = {
+            u: matchIds.map((data) => data.participant_id).join('|'),
+            u_fc: fc.join('|'),
+            u_um: unmatchedIds.join('|'),
+          };
+          const queryStr = generateQueryStr(query, queryParams, paramValue);
+          navigateTo(`${basePath}${queryStr}`);
+        },
+        searchMatches: async (inputArray) => {
+          try {
+            const caseChunks = chunkSplit(inputArray, 500);
+            const matched = (await Promise.allSettled(caseChunks.map((chunk) => getAllParticipantIds(chunk))))
+              .filter((result) => result.status === 'fulfilled')
+              .map((result) => result.value || [])
+              .flat(1);
+
+            const unmatched = new Set(inputArray);
+            matched.forEach((obj) => unmatched.delete(obj.participant_id.toUpperCase()));
+            return { matched, unmatched: [...unmatched] };
+          } catch (e) {
+            return { matched: [], unmatched: [] };
+          }
+        },
+      },
+      config: {
+        title: 'Upload Participants Set',
+        inputPlaceholder: 'e.g. PARTICIPANT-101025, PARTICIPANT-101026, PARTICIPANT-101027',
+        inputTooltip: 'Enter valid Participant IDs.',
+        uploadTooltip: 'Select a file from your computer.',
+        accept: '.csv,.txt',
+        maxSearchTerms: 5000,
+        matchedId: 'participant_id',
+        matchedLabel: 'Submitted Participant ID',
+        associateId: 'dbgap_accession',
+        associateLabel: '',
+        projectName: 'CCDI Hub',
+        caseIds: 'Participant IDs',
+      },
+    });
+
+    return { SearchBox: SB, UploadModal: UM };
+  }, [basePath, queryParams]);
+
   /** Note:
   * Generate Custom facet Section Component
   * 1. Config local search input for Case
