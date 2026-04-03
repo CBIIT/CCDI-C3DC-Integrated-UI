@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { navMobileList, navbarSublists } from '../../../bento/globalHeaderData';
+import { exploreNavTo } from '../../../utils/exploreNavUtils';
 
 const Nav = styled.div`
     top: 0;
@@ -232,7 +233,8 @@ const useOutsideAlerter = (ref) => {
 
 
 const NavBar = () => {
-  const path = useLocation().pathname;
+  const location = useLocation();
+  const path = location.pathname;
   const [clickedTitle, setClickedTitle] = useState("");
   const dropdownSelection = useRef(null);
   const clickableObject = navMobileList.filter(item => item.className === 'navMobileItem clickable');
@@ -272,7 +274,7 @@ const NavBar = () => {
                   &&
                   <LiSection key={navkey}>
                     <div className='navTitle directLink'>
-                      <NavLink to={navMobileItem.link}
+                      <NavLink to={exploreNavTo(navMobileItem.link, location)}
                                target={navMobileItem.externalLink ? "_blank" : "_self"}
                                rel='noopener noreferrer'>
                         <div

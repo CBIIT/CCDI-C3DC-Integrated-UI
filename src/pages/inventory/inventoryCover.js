@@ -11,19 +11,15 @@ import { updateUploadData, updateAutocompleteData, updateUploadMetadata, resetUp
 import store from '../../store';
 import { withStyles, CircularProgress, Backdrop } from '@material-ui/core';
 import {
-    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, getFacetDatafields, exploreBasePathFromPathname,
+    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, exploreBasePathFromPathname,
 } from '../../components/Inventory/InventoryState';
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
-import { useInventoryTemplate } from './useInventoryTemplate';
-
-const SPECIAL_QUERY_KEYS = new Set(['import_from', 'p_id', 'u', 'u_fc', 'u_um', 'tab']);
 
 const InventoryCover = ({
   classes,
 }) => {
-    const { facetsConfig, tabItems } = useInventoryTemplate();
     const [searchParams] = useSearchParams();
     // const filterState = useSelector((state) => state.statusReducer.filterState);
     // const localFindAutocomplete = useSelector((state) => state.localFind.autocomplete);
@@ -46,42 +42,6 @@ const InventoryCover = ({
 
     // Must match the URL, not Redux exploreMode (avoids one-frame lag and navigate loops).
     const navigateBasePath = exploreBasePathFromPathname(location.pathname);
-
-    // Drop facet query params that do not apply to the current explore template; clamp tab index.
-    useEffect(() => {
-        const allowedFacetDatafields = getFacetDatafields(facetsConfig);
-        const q = new URLSearchParams(location.search);
-        let changed = false;
-        [...q.keys()].forEach((key) => {
-            if (SPECIAL_QUERY_KEYS.has(key)) return;
-            if (key.endsWith('_unknownAges')) {
-                const base = key.replace(/_unknownAges$/, '');
-                if (!allowedFacetDatafields.has(base)) {
-                    q.delete(key);
-                    changed = true;
-                }
-                return;
-            }
-            if (!allowedFacetDatafields.has(key)) {
-                q.delete(key);
-                changed = true;
-            }
-        });
-        const tabIdx = parseInt(q.get('tab') || '0', 10);
-        if (!Number.isNaN(tabIdx) && tabIdx >= tabItems.length) {
-            q.set('tab', '0');
-            changed = true;
-            store.dispatch(changeTab(0, 'facet'));
-        }
-        if (changed) {
-            const qs = q.toString();
-            const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
-            const current = `${location.pathname}${location.search}`;
-            if (next !== current) {
-                navigate(next, { replace: true });
-            }
-        }
-    }, [location.pathname, location.search, navigateBasePath, facetsConfig, tabItems.length, navigate]);
 
     async function getData(filters) {
         let result = await client.query({

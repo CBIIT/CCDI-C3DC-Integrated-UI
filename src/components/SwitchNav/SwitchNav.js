@@ -1,6 +1,11 @@
 import React, { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import {
+  exploreNavTo,
+  EXPLORE_FILES_PATH,
+  EXPLORE_PARTICIPANTS_PATH,
+} from '../../utils/exploreNavUtils';
 import ToolTip from '@bento-core/tool-tip';
 import helpIcon from '../../assets/icons/Question_icon_2.svg';
 
@@ -114,13 +119,14 @@ function SwitchNav() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isExploreFiles = location.pathname === '/exploreFiles';
+  const isExploreFiles = location.pathname === EXPLORE_FILES_PATH;
 
   const goTo = useCallback(
     (files) => {
-      navigate(files ? '/exploreFiles' : '/exploreParticipants');
+      const path = files ? EXPLORE_FILES_PATH : EXPLORE_PARTICIPANTS_PATH;
+      navigate(exploreNavTo(path, location));
     },
-    [navigate],
+    [navigate, location],
   );
 
   const onTrackActivate = useCallback(() => {
