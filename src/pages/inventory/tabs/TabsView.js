@@ -9,7 +9,7 @@ import {
   changeTab,
 } from '../../../components/Inventory/InventoryState';
 import { queryParams } from '../../../bento/dashTemplate';
-import { useInventoryTemplate } from '../InventoryTemplateContext';
+import { useInventoryTemplate } from '../useInventoryTemplate';
 import TabPanel from './TabPanel';
 import { tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
 import { Tabs as BentoTabs }  from '@bento-core/tab';

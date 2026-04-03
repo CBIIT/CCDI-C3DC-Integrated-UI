@@ -10,7 +10,7 @@ import store from '../../../store';
 import { resetAllData, resetUploadData, updateAutocompleteData } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
 import { QueryBarGenerator } from '@bento-core/query-bar';
-import { useInventoryTemplate } from '../InventoryTemplateContext';
+import { useInventoryTemplate } from '../useInventoryTemplate';
 
 /**
  * Generate the Explore Tab Query Bar

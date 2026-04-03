@@ -2429,7 +2429,7 @@ query getFilenames(
 `;
 
 // --------------- Tabs Table configuration --------------
-export const tabContainers = [
+export const exploreParticipantsTabs = [
   {
     name: 'Participants',
     dataField: 'dataParticipant',

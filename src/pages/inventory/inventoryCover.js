@@ -11,12 +11,12 @@ import { updateUploadData, updateAutocompleteData, updateUploadMetadata, resetUp
 import store from '../../store';
 import { withStyles, CircularProgress, Backdrop } from '@material-ui/core';
 import {
-    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType,
+    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, getFacetDatafields
 } from '../../components/Inventory/InventoryState';
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
-import { useInventoryTemplate, getFacetDatafields } from './InventoryTemplateContext';
+import { useInventoryTemplate } from './useInventoryTemplate';
 
 const SPECIAL_QUERY_KEYS = new Set(['import_from', 'p_id', 'u', 'u_fc', 'u_um', 'tab']);
 

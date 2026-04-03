@@ -17,7 +17,7 @@ import {
 } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
 import { resetIcon, queryParams, sectionLabel } from '../../bento/dashTemplate';
-import { useInventoryTemplate } from './InventoryTemplateContext';
+import { useInventoryTemplate } from './useInventoryTemplate';
 import styles from './inventoryStyle';
 import NewBentoFacetFilter from './sideBar/NewBentoFacetFilter';
 import WidgetView from './widget/WidgetView';
@@ -91,7 +91,7 @@ const Inventory = ({
   activeFilters,
   unknownAgesState,
 }) => {
-  const { facetsConfig, basePath } = useInventoryTemplate();
+  const { mode, facetsConfig, basePath } = useInventoryTemplate();
   const [selectedSection, setSelectedSection] = useState(-1);
 
   // Calculate filter-related counts and lists using memoization for performance
@@ -191,6 +191,7 @@ const Inventory = ({
     return { activeFiltersCount, sectionList, sectionCount };
   }, [facetsConfig, activeFilters, unknownAgesState, useLocation().search]);
 
+
   /**
     * Clear All Filter Button
     * Custom button component
@@ -280,7 +281,9 @@ const Inventory = ({
         <div className={classes.content}>
           <div className={classes.sideBar}>
             <div className={classes.sideBarCover} />
-            <label htmlFor="local_find_input" style={{ display: 'none' }}>Participant ID Text Search box</label>
+            <label htmlFor="local_find_input" style={{ display: "none" }}>
+              Participant ID Text Search box
+            </label>
             <div className={classes.sideBarMenuSider}>
               <SwitchNav />
               <UseGuideButton />
@@ -291,38 +294,63 @@ const Inventory = ({
               />
               <div className={classes.activeFiltersCount}>
                 Total Filters Selected:
-                <span>
-                  {activeFiltersCount}
-                </span>
+                <span>{activeFiltersCount}</span>
               </div>
               <ULSection className={classes.siderContent}>
-                {
-                  sectionList.map((category, idx) => {
-                    return (
-                      <React.Fragment key={category}>
-                        <Divider className={`${classes.divider} divider${idx}`}/>
-                        <li onClick={() => handleCategoryClick(idx)}>
-                          <div className={classes.categoryContainer}>
-                            <div className={classes.categoryTitleContainer}>
-                              <span className={classes.categoryTitle}>{sectionLabel[category] !== undefined ? sectionLabel[category] : category}</span>
-                              <span className={classes.categoryCount}>
-                                {sectionCount[category] !== 0 ? (
-                                  <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="4.5" cy="4.5" r="4.5" fill={getDividerColor(idx)} />
-                                  </svg>
-                                ) : ''}
-                              </span>
-                            </div>
-                            {selectedSection === idx && <img src={vectorIcon} alt="vector" className={classes.categoryIcon} />}
+                {sectionList.map((category, idx) => {
+                  return (
+                    <React.Fragment key={category}>
+                      <Divider className={`${classes.divider} divider${idx}`} />
+                      <li onClick={() => handleCategoryClick(idx)}>
+                        <div className={classes.categoryContainer}>
+                          <div className={classes.categoryTitleContainer}>
+                            <span className={classes.categoryTitle}>
+                              {sectionLabel[category] !== undefined
+                                ? sectionLabel[category]
+                                : category}
+                            </span>
+                            <span className={classes.categoryCount}>
+                              {sectionCount[category] !== 0 ? (
+                                <svg
+                                  width="9"
+                                  height="9"
+                                  viewBox="0 0 9 9"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <circle
+                                    cx="4.5"
+                                    cy="4.5"
+                                    r="4.5"
+                                    fill={getDividerColor(idx)}
+                                  />
+                                </svg>
+                              ) : (
+                                ""
+                              )}
+                            </span>
                           </div>
-                        </li>
-                      </React.Fragment>
-                    );
-                  })
-                }
+                          {selectedSection === idx && (
+                            <img
+                              src={vectorIcon}
+                              alt="vector"
+                              className={classes.categoryIcon}
+                            />
+                          )}
+                        </div>
+                      </li>
+                    </React.Fragment>
+                  );
+                })}
               </ULSection>
               <div className={classes.activeFilterLegend}>
-                <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 9 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <circle cx="4.5" cy="4.5" r="4.5" fill="#9CE1E5" />
                 </svg>
                 <span>denotes facet(s) selected</span>
@@ -332,8 +360,15 @@ const Inventory = ({
           {
             <SideBarContentPanel selected={selectedSection}>
               <div className={classes.contentPanelHeader}>
-                <a href='/#' onClick={(event) => handleCloseContentPanelClick(event)}>
-                  <img src={closeIcon} alt="close" className={classes.closeIcon} />
+                <a
+                  href="/#"
+                  onClick={(event) => handleCloseContentPanelClick(event)}
+                >
+                  <img
+                    src={closeIcon}
+                    alt="close"
+                    className={classes.closeIcon}
+                  />
                 </a>
               </div>
               <div className={classes.contentPanelBody}>
@@ -350,17 +385,23 @@ const Inventory = ({
           }
           <RightContentPanel selected={selectedSection}>
             <div className={classes.widgetsContainer}>
-              <QueryBarView data={dashData} unknownAgesState={unknownAgesState} />
-              <WidgetView
+              <QueryBarView
                 data={dashData}
-                activeFilters={activeFilters}
+                unknownAgesState={unknownAgesState}
               />
+
+              {mode === "participants" && (
+                <WidgetView data={dashData} activeFilters={activeFilters} />
+              )}
+
               <TabsView
                 dashboardStats={dashData}
                 activeFilters={activeFilters}
                 unknownAgesState={unknownAgesState}
               />
-              <div className={classes.goToCartLink}><NavLink to='/fileCentricCart'>Go to cart &#62;</NavLink></div>
+              <div className={classes.goToCartLink}>
+                <NavLink to="/fileCentricCart">Go to cart &#62;</NavLink>
+              </div>
             </div>
           </RightContentPanel>
         </div>

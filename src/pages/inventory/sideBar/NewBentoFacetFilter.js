@@ -29,7 +29,7 @@ import styles from './BentoFacetFilterStyle';
 import { NewFacetFilter } from '@bento-core/facet-filter';
 import { generateQueryStr } from '@bento-core/util';
 import { resetIcon, sectionLabel } from '../../../bento/dashTemplate';
-import { useInventoryTemplate } from '../InventoryTemplateContext';
+import { useInventoryTemplate } from '../useInventoryTemplate';
 import FacetFilterThemeProvider from './NewFilterThemeConfig';
 import {
   getAllParticipantIds, getAllIds,
@@ -223,6 +223,7 @@ const NewBentoFacetFilter = ({
               CustomFacetView={CustomFacetView}
               queryParams={queryParams}
               unknownAgesState={unknownAgesState}
+              basePath={basePath}
             />
           </FacetFilterThemeProvider>
         )
