@@ -10,6 +10,11 @@ import { exploreParticipantsTabs, exploreFilesTabs } from '../../bento/dashboard
 export const EXPLORE_PARTICIPANTS_PATH = '/exploreParticipants';
 export const EXPLORE_FILES_PATH = '/exploreFiles';
 
+/** Base explore path from the current URL — use for navigate() so it never lags Redux exploreMode. */
+export function exploreBasePathFromPathname(pathname) {
+  return pathname === EXPLORE_FILES_PATH ? EXPLORE_FILES_PATH : EXPLORE_PARTICIPANTS_PATH;
+}
+
 /** Datafield names allowed for the current explore template (facet filters). */
 export function getFacetDatafields(facetsConfig) {
   return new Set(facetsConfig.map((f) => f.datafield));

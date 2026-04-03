@@ -11,7 +11,7 @@ import { updateUploadData, updateAutocompleteData, updateUploadMetadata, resetUp
 import store from '../../store';
 import { withStyles, CircularProgress, Backdrop } from '@material-ui/core';
 import {
-    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, getFacetDatafields
+    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, getFacetDatafields, exploreBasePathFromPathname,
 } from '../../components/Inventory/InventoryState';
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
@@ -23,7 +23,7 @@ const SPECIAL_QUERY_KEYS = new Set(['import_from', 'p_id', 'u', 'u_fc', 'u_um', 
 const InventoryCover = ({
   classes,
 }) => {
-    const { basePath, facetsConfig, tabItems } = useInventoryTemplate();
+    const { facetsConfig, tabItems } = useInventoryTemplate();
     const [searchParams] = useSearchParams();
     // const filterState = useSelector((state) => state.statusReducer.filterState);
     // const localFindAutocomplete = useSelector((state) => state.localFind.autocomplete);
@@ -43,6 +43,9 @@ const InventoryCover = ({
     const navigationType = location.state && location.state.navigationType;
 
     const navigate = useNavigate();
+
+    // Must match the URL, not Redux exploreMode (avoids one-frame lag and navigate loops).
+    const navigateBasePath = exploreBasePathFromPathname(location.pathname);
 
     // Drop facet query params that do not apply to the current explore template; clamp tab index.
     useEffect(() => {
@@ -72,9 +75,13 @@ const InventoryCover = ({
         }
         if (changed) {
             const qs = q.toString();
-            navigate(`${basePath}${qs ? `?${qs}` : ''}`, { replace: true });
+            const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
+            const current = `${location.pathname}${location.search}`;
+            if (next !== current) {
+                navigate(next, { replace: true });
+            }
         }
-    }, [location.pathname, location.search, basePath, facetsConfig, tabItems.length, navigate]);
+    }, [location.pathname, location.search, navigateBasePath, facetsConfig, tabItems.length, navigate]);
 
     async function getData(filters) {
         let result = await client.query({
@@ -141,13 +148,13 @@ const InventoryCover = ({
 
         // If there are no query parameters and the user is returning to a page,
         if (query.size === 0 && return_2_page === true) {
-            navigate(`${basePath}${return_query_url}`);
+            navigate(`${navigateBasePath}${return_query_url}`);
             return;
         }
 
         //Check if the user is returning to the same page from the main menu
         if (query.size === 0 && return_2_page === false && return_query_url !== '' && navigationType === 'main_menu') {
-            navigate(`${basePath}${return_query_url}`);
+            navigate(`${navigateBasePath}${return_query_url}`);
             return;
         }
         
@@ -269,7 +276,7 @@ const InventoryCover = ({
             store.dispatch(updateImportfrom(null, []));
             continueWithFilters();
         }
-    }, [searchParams, navigationType, location.pathname, basePath]);
+    }, [searchParams, navigationType, location.pathname]);
 
     // Listen for unknownAgesState changes and update URL
     const unknownAgesState = useSelector((state) => state.statusReducer.unknownAgesState);
@@ -277,7 +284,7 @@ const InventoryCover = ({
     
     useEffect(() => {
         if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
-            const query = new URLSearchParams(window.location.search);
+            const q = new URLSearchParams(window.location.search);
             let hasChanges = false;
             
             // Update URL with unknownAges parameters
@@ -286,24 +293,27 @@ const InventoryCover = ({
                 const value = unknownAgesState[key];
                 // Only update URL if value is not "include" (default)
                 if (value && value !== 'include') {
-                    query.set(unknownAgesParam, value);
+                    q.set(unknownAgesParam, value);
                     hasChanges = true;
                 } else if (value === 'include') {
                     // Remove parameter if it's the default value
-                    query.delete(unknownAgesParam);
+                    q.delete(unknownAgesParam);
                     hasChanges = true;
                 }
             });
             
-            // Update URL if there are changes
             if (hasChanges) {
-                const newUrl = `${basePath}${query.toString() ? '?' + query.toString() : ''}`;
-                navigate(newUrl, { replace: true });
+                const qs = q.toString();
+                const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
+                const current = `${location.pathname}${location.search}`;
+                if (next !== current) {
+                    navigate(next, { replace: true });
+                }
             }
             
             setPreviousUnknownAgesState(unknownAgesState);
         }
-    }, [unknownAgesState, navigate, previousUnknownAgesState, basePath]);
+    }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath, location.pathname, location.search]);
 
     useEffect(() => {
         return () => {
