@@ -57,10 +57,13 @@ export const facetSectionVariables = {
   Samples: {
     isExpanded: false,
   },
-  Datacategory: {
+  Study: {
     isExpanded: false,
   },
-  Study: {
+};
+
+export const facetSectionVariablesExploreFiles = {
+  Datacategory: {
     isExpanded: false,
   },
   Sequencinglibrary: {
@@ -68,7 +71,7 @@ export const facetSectionVariables = {
   },
 };
 
-export const facetsConfig = [
+export const facetsParticipantsConfig = [
   {
     section: DIAGNOSIS,
     label: 'Diagnosis',
@@ -1253,39 +1256,6 @@ export const facetsConfig = [
     show: true,
   },
   {
-    section: DATACATEGORY,
-    label: 'Data Category',
-    apiPath: 'ParticipantCountByDataCategory',
-    apiForFiltering: 'filterParticipantCountByDataCategory',
-    datafield: 'data_category',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
-    section: DATACATEGORY,
-    label: 'File Type',
-    apiPath: 'participantCountByFileType',
-    apiForFiltering: 'filterParticipantCountByFileType',
-    datafield: 'file_type',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
-    section: DATACATEGORY,
-    label: 'File Mapping',
-    apiPath: 'participantCountByFileMappingLevel',
-    apiForFiltering: 'filterParticipantCountByFileMappingLevel',
-    datafield: 'file_mapping_level',
-    field: GROUP,
-    type: InputTypes.CHECKBOX,
-    sort_type: sortType.ALPHABET,
-    show: true,
-  },
-  {
     section: STUDY,
     label: 'dbGaP accession',
     apiPath: 'participantCountByDBGAPAccession',
@@ -1313,6 +1283,43 @@ export const facetsConfig = [
     apiPath: 'participantCountByStudyStatus',
     apiForFiltering: 'filterParticipantCountByStudyStatus',
     datafield: 'study_status',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+];
+
+
+export const facetsExploreFilesConfig = [
+  {
+    section: DATACATEGORY,
+    label: 'Data Category',
+    apiPath: 'ParticipantCountByDataCategory',
+    apiForFiltering: 'filterParticipantCountByDataCategory',
+    datafield: 'data_category',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+  {
+    section: DATACATEGORY,
+    label: 'File Type',
+    apiPath: 'participantCountByFileType',
+    apiForFiltering: 'filterParticipantCountByFileType',
+    datafield: 'file_type',
+    field: GROUP,
+    type: InputTypes.CHECKBOX,
+    sort_type: sortType.ALPHABET,
+    show: true,
+  },
+  {
+    section: DATACATEGORY,
+    label: 'File Mapping',
+    apiPath: 'participantCountByFileMappingLevel',
+    apiForFiltering: 'filterParticipantCountByFileMappingLevel',
+    datafield: 'file_mapping_level',
     field: GROUP,
     type: InputTypes.CHECKBOX,
     sort_type: sortType.ALPHABET,
@@ -1530,5 +1537,5 @@ export const queryParams = [
   'participant_age_at_collection', 'participant_age_at_collection_unknownAges', 'sample_anatomic_site', 'sample_tumor_status', 'tumor_classification', 
   'data_category', 'file_type', 'file_mapping_level', 'dbgap_accession', 'study_name', 'study_status',
   'library_selection', 'library_strategy', 'library_source_material', 'library_source_molecule',
-  'tab'
+  'tab_participants', 'tab_files',
 ];

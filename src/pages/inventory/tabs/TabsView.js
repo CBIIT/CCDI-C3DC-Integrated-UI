@@ -9,8 +9,9 @@ import {
   changeTab,
 } from '../../../components/Inventory/InventoryState';
 import { queryParams } from '../../../bento/dashTemplate';
+import { useInventoryTemplate } from '../useInventoryTemplate';
 import TabPanel from './TabPanel';
-import { tabContainers, tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
+import { tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
 import { Tabs as BentoTabs }  from '@bento-core/tab';
 import { customTheme } from './DefaultTabTheme';
 import CohortModalGenerator from '../cohortModal/cohortModalGenerator';
@@ -19,16 +20,22 @@ import { CohortModalContext } from '../cohortModal/CohortModalContext';
 const Tabs = (props) => {
    
   const { currentTab } = props;
+  const { mode, tabItems, basePath } = useInventoryTemplate();
   const { showCohortModal, setShowCohortModal} = useContext(CohortModalContext);
   const dispatch = useDispatch();
   const query = new URLSearchParams(useLocation().search);
   const navigate = useNavigate();
 
   const handleTabChange = (event, value) => {
-    let paramValue = {};
-    paramValue.tab = value;
+    event.preventDefault();
+    const paramValue = {};
+    if (mode === 'files') {
+      paramValue['tab_files'] = value;
+    } else {
+      paramValue['tab_participants'] = value;
+    }
     const queryStr = generateQueryStr(query, queryParams, paramValue);
-    navigate(`/exploreParticipants${queryStr}`, { replace: false });
+    navigate(`${basePath}${queryStr}`, { replace: false });
     dispatch(changeTab(value, 'not-facet'));
   };
 
@@ -57,7 +64,7 @@ const Tabs = (props) => {
         onCloseModal={() => setShowCohortModal(false)}
       />
       <BentoTabs
-        tabItems={getTabs(tabContainers)}
+        tabItems={getTabs(tabItems)}
         currentTab={currentTab}
         handleTabChange={handleTabChange}
         customTheme={customTheme}
@@ -65,8 +72,8 @@ const Tabs = (props) => {
         responsiveBreakpoints={tabResponsiveBreakpoints}
       />
       {
-        tabContainers.map((tab, index) => (
-          <>
+        tabItems.map((tab, index) => (
+          <React.Fragment key={tab.tableID || tab.name || index}>
             <div hidden={currentTab !== index}>
               <TabPanel
                 {...props}
@@ -75,7 +82,7 @@ const Tabs = (props) => {
                 activeTab={index === currentTab}
               />
             </div>
-          </>
+          </React.Fragment>
         ))
       }
     </>

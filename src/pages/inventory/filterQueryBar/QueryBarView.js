@@ -10,7 +10,8 @@ import store from '../../../store';
 import { resetAllData, resetUploadData, updateAutocompleteData } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
 import { QueryBarGenerator } from '@bento-core/query-bar';
-import { facetsConfig, queryParams } from '../../../bento/dashTemplate';
+import { useInventoryTemplate } from '../useInventoryTemplate';
+import { facetsExploreFilesConfig, facetsParticipantsConfig } from '../../../bento/dashTemplate';
 
 /**
  * Generate the Explore Tab Query Bar
@@ -22,15 +23,17 @@ import { facetsConfig, queryParams } from '../../../bento/dashTemplate';
  * @returns {JSX.Element}
  */
 const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAgesState }) => {
+  const { basePath, queryParams } = useInventoryTemplate();
+  const facetsConfigCoverage = facetsExploreFilesConfig.concat(facetsParticipantsConfig);
   const dispatch = useDispatch();
   const query = new URLSearchParams(useLocation().search);
   const navigate = useNavigate();
 
-  const sectionOrder = facetsConfig.map((v) => v.datafield);
+  const sectionOrder = facetsConfigCoverage.map((v) => v.datafield);
   
   // Create mapped filter state from regular facets
   const mappedFilterState = Object.keys(statusReducer || {}).map((facet) => {
-    const config = facetsConfig.find((config) => config.datafield === facet);
+    const config = facetsConfigCoverage.find((config) => config.datafield === facet);
     if (!config) {
       console.warn(`No configuration found for facet: ${facet}`);
       return null;
@@ -71,7 +74,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         mappedFilterState[existingEntryIndex].unknownAges = unknownAges;
       } else {
         // Create a new entry only if there's no range selected
-        const config = facetsConfig.find((config) => config.datafield === param);
+        const config = facetsConfigCoverage.find((config) => config.datafield === param);
         if (config) {
           const unknownAgesItem = {
             ...config,
@@ -104,7 +107,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
         };
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(resetAllData());
         dispatch(clearAllFilters());
         
@@ -125,7 +128,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           'import_from': '',
         };
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(updateImportfrom(null, []));
       },
       clearUpload: () => {
@@ -135,7 +138,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           'u_um': '',
         };
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(resetUploadData());
       },
       clearAutocomplete: () => {
@@ -143,7 +146,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           'p_id': ''
         };
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(updateAutocompleteData([]));
       },
       deleteAutocompleteItem: (title) => {
@@ -157,7 +160,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
             'p_id': newdata.map((dt) => dt.title).join('|')
           };
           const queryStr = generateQueryStr(query, queryParams, paramValue);
-          navigate(`/exploreParticipants${queryStr}`, { replace: true });
+          navigate(`${basePath}${queryStr}`, { replace: true });
           dispatch(updateAutocompleteData(newdata));
         }
       },
@@ -166,7 +169,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         let paramValue = {};
         paramValue[field] = '';
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(clearFacetSection(section));
       },
       resetFacetSlider: (section) => {
@@ -180,7 +183,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           paramValue[unknownAgesField] = '';
           
           const queryStr = generateQueryStr(query, queryParams, paramValue);
-          navigate(`/exploreParticipants${queryStr}`, { replace: true });
+          navigate(`${basePath}${queryStr}`, { replace: true });
           
           // Reset the unknownAges parameter in Redux state
           store.dispatch({
@@ -201,7 +204,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
           }
           
           const queryStr = generateQueryStr(query, queryParams, paramValue);
-          navigate(`/exploreParticipants${queryStr}`, { replace: true });
+          navigate(`${basePath}${queryStr}`, { replace: true });
           dispatch(clearSliderSection(section));
           
           // Reset the corresponding unknownAges parameter in Redux state
@@ -223,7 +226,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         paramValue[unknownAgesField] = '';
         
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         
         // Reset the corresponding unknownAges parameter in Redux state
         store.dispatch({
@@ -244,7 +247,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         let paramValue = {};
         paramValue[field] = items.length > 0 ? items.join('|') : '';
         const queryStr = generateQueryStr(query, queryParams, paramValue);
-        navigate(`/exploreParticipants${queryStr}`, { replace: true });
+        navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(toggleCheckBox({
           datafield: section.datafield,
           isChecked: false,

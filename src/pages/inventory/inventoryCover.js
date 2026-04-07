@@ -11,7 +11,7 @@ import { updateUploadData, updateAutocompleteData, updateUploadMetadata, resetUp
 import store from '../../store';
 import { withStyles, CircularProgress, Backdrop } from '@material-ui/core';
 import {
-    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType,
+    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, exploreBasePathFromPathname,
 } from '../../components/Inventory/InventoryState';
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
@@ -40,6 +40,9 @@ const InventoryCover = ({
 
     const navigate = useNavigate();
 
+    // Must match the URL, not Redux exploreMode (avoids one-frame lag and navigate loops).
+    const navigateBasePath = exploreBasePathFromPathname(location.pathname);
+
     async function getData(filters) {
         let result = await client.query({
         query: DASHBOARD_QUERY_NEW,
@@ -54,7 +57,8 @@ const InventoryCover = ({
         let unknownAgesState = {};
         
         queryParams.forEach((param) => {
-            if (param === 'import_from' || param === 'p_id' || param === 'u' || param === 'u_fc' || param === 'u_um' || param === 'tab') {
+            if (param === 'import_from' || param === 'p_id' || param === 'u' || param === 'u_fc' || param === 'u_um'
+                || param === 'tab_participants' || param === 'tab_files') {
                     return;
             }
             const paramValues = query.get(param);
@@ -105,13 +109,13 @@ const InventoryCover = ({
 
         // If there are no query parameters and the user is returning to a page,
         if (query.size === 0 && return_2_page === true) {
-            navigate(`/exploreParticipants${return_query_url}`);
+            navigate(`${navigateBasePath}${return_query_url}`);
             return;
         }
 
         //Check if the user is returning to the same page from the main menu
         if (query.size === 0 && return_2_page === false && return_query_url !== '' && navigationType === 'main_menu') {
-            navigate(`/exploreParticipants${return_query_url}`);
+            navigate(`${navigateBasePath}${return_query_url}`);
             return;
         }
         
@@ -122,7 +126,9 @@ const InventoryCover = ({
         const upload = query.get('u');
         const upload_filecontent = query.get('u_fc');
         const upload_unmatched = query.get('u_um');
-        const tab = query.get('tab');
+        const tab_participants = query.get('tab_participants');
+        const tab_files = query.get('tab_files');
+        const tab = tab_participants || tab_files || query.get('tab');
         // Helper to finish the rest of the logic after import_from is handled
         const continueWithFilters = (extraParticipantIds = []) => {
             filters.participant_ids = [];
@@ -188,12 +194,16 @@ const InventoryCover = ({
 
             store.dispatch(updateFilterState(newFilterState));
 
-            // Handle tab
-            if (tab) {
-                const tab_number = parseInt(tab, 10);
-                !isNaN(tab_number) && store.dispatch(changeTab(tab_number, 'facet'));
+            let tabNumber = 0;
+            if (navigateBasePath === '/exploreFiles') {
+                tabNumber = parseInt(tab_files || tab, 10);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
+            } else if (navigateBasePath === '/exploreParticipants') {
+                tabNumber = parseInt(tab_participants || tab);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
             } else {
-                store.dispatch(changeTab(0, 'facet'));
+                tabNumber = parseInt(tab);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
             }
 
             // Data loading logic
@@ -239,6 +249,40 @@ const InventoryCover = ({
     const unknownAgesState = useSelector((state) => state.statusReducer.unknownAgesState);
     const [previousUnknownAgesState, setPreviousUnknownAgesState] = useState(null);
     
+    // useEffect(() => {
+    //     if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
+    //         const q = new URLSearchParams(window.location.search);
+    //         let hasChanges = false;
+            
+    //         // Update URL with unknownAges parameters
+    //         Object.keys(unknownAgesState).forEach(key => {
+    //             const unknownAgesParam = `${key}_unknownAges`;
+    //             const value = unknownAgesState[key];
+    //             // Only update URL if value is not "include" (default)
+    //             if (value && value !== 'include') {
+    //                 q.set(unknownAgesParam, value);
+    //                 hasChanges = true;
+    //             } else if (value === 'include') {
+    //                 // Remove parameter if it's the default value
+    //                 q.delete(unknownAgesParam);
+    //                 hasChanges = true;
+    //             }
+    //         });
+            
+    //         if (hasChanges) {
+    //             const qs = q.toString();
+    //             const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
+    //             const current = `${location.pathname}${location.search}`;
+    //             if (next !== current) {
+    //                 navigate(next, { replace: true });
+    //             }
+    //         }
+            
+    //         setPreviousUnknownAgesState(unknownAgesState);
+    //     }
+    // }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath, location.pathname, location.search]);
+
+
     useEffect(() => {
         if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
             const query = new URLSearchParams(window.location.search);
@@ -261,13 +305,13 @@ const InventoryCover = ({
             
             // Update URL if there are changes
             if (hasChanges) {
-                const newUrl = `/exploreParticipants${query.toString() ? '?' + query.toString() : ''}`;
+                const newUrl = `${navigateBasePath}${query.toString() ? '?' + query.toString() : ''}`;
                 navigate(newUrl, { replace: true });
             }
             
             setPreviousUnknownAgesState(unknownAgesState);
         }
-    }, [unknownAgesState, navigate, previousUnknownAgesState]);
+    }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath]);
 
     useEffect(() => {
         return () => {

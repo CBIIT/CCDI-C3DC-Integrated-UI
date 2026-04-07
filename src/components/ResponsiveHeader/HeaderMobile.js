@@ -8,6 +8,7 @@ import rightArrowIcon from '../../assets/header/Right_Arrow.svg';
 import leftArrowIcon from '../../assets/header/Left_Arrow.svg';
 import { navMobileList, navbarSublists, navBarCartData } from '../../bento/globalHeaderData'
 import { USGovBannerData } from '../../bento/globalHeaderData';
+import { exploreNavTo } from '../../utils/exploreNavUtils';
 
 const HeaderBanner = styled.div`
   width: 100%;
@@ -214,7 +215,8 @@ const USGovBanner = styled.div`
 `;
 
 const Header = () => {
-  const path = useLocation().pathname;
+  const location = useLocation();
+  const path = location.pathname;
   const [clickTitle, setClickTitle] = useState('');
   const [navMobileDisplay, setNavMobileDisplay] = useState('none');
   const [navbarMobileList, setNavbarMobileList] = useState(navMobileList);
@@ -269,7 +271,7 @@ const Header = () => {
                             const mobilekey = `mobile_${idx}`;
                             return (
                                 <>
-                                    {navMobileItem.className === 'navMobileItem' && <NavLink to={navMobileItem.link} state={{ navigationType: 'main_menu' }} key={mobilekey} onClick={() => setNavMobileDisplay('none')}><div className='navMobileItem'>{navMobileItem.name}</div></NavLink>}
+                                    {navMobileItem.className === 'navMobileItem' && <NavLink to={exploreNavTo(navMobileItem.link, location)} state={{ navigationType: 'main_menu' }} key={mobilekey} onClick={() => setNavMobileDisplay('none')}><div className='navMobileItem'>{navMobileItem.name}</div></NavLink>}
                                     {navMobileItem.className === 'navMobileItem clickable' && <div key={mobilekey} className='navMobileItem clickable' onClick={clickNavItem}>{navMobileItem.name}</div>}
                                     {navMobileItem.className === 'navMobileSubItem' && <a href={navMobileItem.link} target={navMobileItem.link.includes("http") || navMobileItem.link.includes("pdf") || navMobileItem.link.includes("release-notes") ? "_blank" : ""} rel="noopener noreferrer"  key={mobilekey}><div className='navMobileItem SubItem' onClick={() => setNavMobileDisplay('none')}>{navMobileItem.name}</div></a>}
                                     {navMobileItem.className === 'cart' && <NavLink to={navBarCartData.cartLink} key='cart_key' onClick={() => setNavMobileDisplay('none')}><div className='navMobileItem' style={{fontWeight: '600'}}>MY FILES</div></NavLink>}

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import InventoryCover from './inventoryCover';
 import InventoryView from './inventoryView';
+import InventoryRouteSync from './InventoryRouteSync';
 import { CohortStateProvider } from '../../components/CohortSelectorState/CohortStateContext';
 import { CohortModalProvider } from './cohortModal/CohortModalContext';
 
@@ -15,6 +16,7 @@ const InventoryController = (() => {
     <>
       <CohortStateProvider>
         <CohortModalProvider>
+          <InventoryRouteSync />
           <InventoryCover />
           <InventoryView dashData={dashData} activeFilters={activeFilters} unknownAgesState={unknownAgesState} />
         </CohortModalProvider>
