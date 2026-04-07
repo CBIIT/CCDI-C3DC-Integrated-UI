@@ -20,15 +20,20 @@ import { CohortModalContext } from '../cohortModal/CohortModalContext';
 const Tabs = (props) => {
    
   const { currentTab } = props;
-  const { tabItems, basePath } = useInventoryTemplate();
+  const { mode, tabItems, basePath } = useInventoryTemplate();
   const { showCohortModal, setShowCohortModal} = useContext(CohortModalContext);
   const dispatch = useDispatch();
   const query = new URLSearchParams(useLocation().search);
   const navigate = useNavigate();
 
   const handleTabChange = (event, value) => {
-    let paramValue = {};
-    paramValue.tab = value;
+    event.preventDefault();
+    const paramValue = {};
+    if (mode === 'files') {
+      paramValue['tab_files'] = value;
+    } else {
+      paramValue['tab_participants'] = value;
+    }
     const queryStr = generateQueryStr(query, queryParams, paramValue);
     navigate(`${basePath}${queryStr}`, { replace: false });
     dispatch(changeTab(value, 'not-facet'));

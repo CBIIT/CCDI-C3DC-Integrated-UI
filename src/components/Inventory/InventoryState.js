@@ -1,5 +1,5 @@
 import {
-  facetsConfig as facetsConfigParticipants,
+  facetsParticipantsConfig,
   facetsExploreFilesConfig,
   facetSectionVariables as facetSectionVariablesParticipants,
   facetSectionVariablesExploreFiles,
@@ -124,7 +124,7 @@ export function selectInventoryExploreTemplate(state) {
   return {
     mode: exploreMode,
     basePath: isFiles ? EXPLORE_FILES_PATH : EXPLORE_PARTICIPANTS_PATH,
-    facetsConfig: isFiles ? facetsExploreFilesConfig : facetsConfigParticipants,
+    facetsConfig: isFiles ? facetsExploreFilesConfig : facetsParticipantsConfig,
     facetSectionVariables: isFiles ? facetSectionVariablesExploreFiles : facetSectionVariablesParticipants,
     tabItems: isFiles ? exploreFilesTabs : exploreParticipantsTabs,
     queryParams,

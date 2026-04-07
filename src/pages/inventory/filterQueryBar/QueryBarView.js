@@ -11,6 +11,7 @@ import { resetAllData, resetUploadData, updateAutocompleteData } from '@bento-co
 import { generateQueryStr } from '@bento-core/util';
 import { QueryBarGenerator } from '@bento-core/query-bar';
 import { useInventoryTemplate } from '../useInventoryTemplate';
+import { facetsExploreFilesConfig, facetsParticipantsConfig } from '../../../bento/dashTemplate';
 
 /**
  * Generate the Explore Tab Query Bar
@@ -22,16 +23,17 @@ import { useInventoryTemplate } from '../useInventoryTemplate';
  * @returns {JSX.Element}
  */
 const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAgesState }) => {
-  const { facetsConfig, basePath, queryParams } = useInventoryTemplate();
+  const { basePath, queryParams } = useInventoryTemplate();
+  const facetsConfigCoverage = facetsExploreFilesConfig.concat(facetsParticipantsConfig);
   const dispatch = useDispatch();
   const query = new URLSearchParams(useLocation().search);
   const navigate = useNavigate();
 
-  const sectionOrder = facetsConfig.map((v) => v.datafield);
+  const sectionOrder = facetsConfigCoverage.map((v) => v.datafield);
   
   // Create mapped filter state from regular facets
   const mappedFilterState = Object.keys(statusReducer || {}).map((facet) => {
-    const config = facetsConfig.find((config) => config.datafield === facet);
+    const config = facetsConfigCoverage.find((config) => config.datafield === facet);
     if (!config) {
       console.warn(`No configuration found for facet: ${facet}`);
       return null;
@@ -72,7 +74,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         mappedFilterState[existingEntryIndex].unknownAges = unknownAges;
       } else {
         // Create a new entry only if there's no range selected
-        const config = facetsConfig.find((config) => config.datafield === param);
+        const config = facetsConfigCoverage.find((config) => config.datafield === param);
         if (config) {
           const unknownAgesItem = {
             ...config,

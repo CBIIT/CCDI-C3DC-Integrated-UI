@@ -17,6 +17,41 @@ import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
 
+// /**
+//  * Tab index for the current explore route. Uses separate URL params for participants vs files;
+//  * falls back to legacy `tab` when the new params are absent.
+//  */
+// function tabIndexFromSearchParams(searchParams, pathname) {
+//     const tabParticipants = searchParams.get('tab_participants');
+//     const tabFiles = searchParams.get('tab_files');
+//     const legacyTab = searchParams.get('tab');
+//     const isFiles = pathname === '/exploreFiles';
+//     const parseIdx = (raw) => {
+//         const n = parseInt(raw, 10);
+//         return !Number.isNaN(n) ? n : null;
+//     };
+//     if (isFiles) {
+//         if (tabFiles != null && tabFiles !== '') {
+//             const n = parseIdx(tabFiles);
+//             if (n !== null) return n;
+//         }
+//         if (legacyTab != null && legacyTab !== '') {
+//             const n = parseIdx(legacyTab);
+//             if (n !== null) return n;
+//         }
+//         return 0;
+//     }
+//     if (tabParticipants != null && tabParticipants !== '') {
+//         const n = parseIdx(tabParticipants);
+//         if (n !== null) return n;
+//     }
+//     if (legacyTab != null && legacyTab !== '') {
+//         const n = parseIdx(legacyTab);
+//         if (n !== null) return n;
+//     }
+//     return 0;
+// }
+
 const InventoryCover = ({
   classes,
 }) => {
@@ -57,7 +92,8 @@ const InventoryCover = ({
         let unknownAgesState = {};
         
         queryParams.forEach((param) => {
-            if (param === 'import_from' || param === 'p_id' || param === 'u' || param === 'u_fc' || param === 'u_um' || param === 'tab') {
+            if (param === 'import_from' || param === 'p_id' || param === 'u' || param === 'u_fc' || param === 'u_um'
+                || param === 'tab_participants' || param === 'tab_files') {
                     return;
             }
             const paramValues = query.get(param);
@@ -125,7 +161,9 @@ const InventoryCover = ({
         const upload = query.get('u');
         const upload_filecontent = query.get('u_fc');
         const upload_unmatched = query.get('u_um');
-        const tab = query.get('tab');
+        const tab_participants = query.get('tab_participants');
+        const tab_files = query.get('tab_files');
+        const tab = tab_participants || tab_files || query.get('tab');
         // Helper to finish the rest of the logic after import_from is handled
         const continueWithFilters = (extraParticipantIds = []) => {
             filters.participant_ids = [];
@@ -191,12 +229,16 @@ const InventoryCover = ({
 
             store.dispatch(updateFilterState(newFilterState));
 
-            // Handle tab
-            if (tab) {
-                const tab_number = parseInt(tab, 10);
-                !isNaN(tab_number) && store.dispatch(changeTab(tab_number, 'facet'));
+            let tabNumber = 0;
+            if (navigateBasePath === '/exploreFiles') {
+                tabNumber = parseInt(tab_files || tab, 10);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
+            } else if (navigateBasePath === '/exploreParticipants') {
+                tabNumber = parseInt(tab_participants || tab);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
             } else {
-                store.dispatch(changeTab(0, 'facet'));
+                tabNumber = parseInt(tab);
+                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
             }
 
             // Data loading logic
