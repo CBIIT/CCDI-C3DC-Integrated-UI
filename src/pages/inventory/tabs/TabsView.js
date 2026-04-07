@@ -27,7 +27,6 @@ const Tabs = (props) => {
   const navigate = useNavigate();
 
   const handleTabChange = (event, value) => {
-    event.preventDefault();
     const paramValue = {};
     if (mode === 'files') {
       paramValue['tab_files'] = value;
