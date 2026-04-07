@@ -29,7 +29,7 @@ import { CircularProgress } from '@material-ui/core';
 import vectorIcon from '../../assets/icons/Vector_icon.svg';
 import closeIcon from '../../assets/icons/Window_Close_Icon.svg';
 import UserNotesButton from './sideBar/UserNotesButton.js';
-import SwitchNav from '../../components/SwitchNav/SwitchNav';
+import SwitchNav from './switchNav/switchNav.js';
 
 const ULSection = styled.ul`
   li {

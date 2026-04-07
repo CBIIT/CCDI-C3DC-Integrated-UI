@@ -46,22 +46,16 @@ const Tabs = (props) => {
   * 1. change <name> to <display> as array item
   * 2. <display> -> [tab.name, props.dashboardStats[tab.count]]
   */
-  const getTabs = (tabs) => tabs.map((tab) => {
-    const stat = tab.count !== 'none' && props.dashboardStats
-      ? props.dashboardStats[tab.count]
-      : undefined;
-    const countNum = typeof stat === 'number' ? stat : 0;
-    return {
-      ...tab,
-      name: tab.name,
-      hasToolTip: true,
-      toolTipText: tab.toolTipText,
-      count: tab.count !== 'none' ? `(${countNum.toLocaleString()})` : '(NA)',
-      display: tab.count !== 'none' ? [tab.name, countNum.toLocaleString()] : 'NA',
-      clsName: `${tab.name}`.toLowerCase().replace(' ', '_'),
-      tooltipStyles: { border: '1px solid #2D5380', arrowBorder: '1px solid #598AC5' },
-    };
-  });
+  const getTabs = (tabs) => tabs.map((tab) => ({
+    ...tab,
+    name: tab.name,
+    hasToolTip: true,
+    toolTipText: tab.toolTipText,
+    count: tab.count !== "none" ? `(${props.dashboardStats[tab.count].toLocaleString()})` : "(NA)",
+    display: tab.count !== "none" ?  [tab.name, props.dashboardStats[tab.count].toLocaleString()] :"NA",
+    clsName:  `${tab.name}`.toLowerCase().replace(' ', '_') ,
+    tooltipStyles: {border: '1px solid #2D5380', arrowBorder: '1px solid #598AC5'}
+  }));
 
   return (
     <>

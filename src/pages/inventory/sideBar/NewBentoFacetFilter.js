@@ -71,7 +71,7 @@ const NewBentoFacetFilter = ({
   } = useInventoryTemplate();
 
   const { SearchBox, UploadModal } = useMemo(() => {
-    const { SearchBox: SB } = SearchBoxGenerator({
+    const { SearchBox } = SearchBoxGenerator({
       config: {
         inputPlaceholder: 'Participant ID Search',
         noOptionsText: 'No matching items found',
@@ -98,7 +98,7 @@ const NewBentoFacetFilter = ({
       },
     });
 
-    const { UploadModal: UM } = UploadModalGenerator({
+    const { UploadModal } = UploadModalGenerator({
       functions: {
         updateBrowserUrl: (query, navigateTo, filename, fileContent, matchIds, unmatchedIds) => {
           const fc = fileContent
@@ -145,7 +145,7 @@ const NewBentoFacetFilter = ({
       },
     });
 
-    return { SearchBox: SB, UploadModal: UM };
+    return { SearchBox, UploadModal };
   }, [basePath, queryParams]);
 
   /** Note:

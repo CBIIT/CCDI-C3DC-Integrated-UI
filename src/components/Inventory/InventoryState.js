@@ -143,6 +143,7 @@ export default function InventoryReducer(state = initialState, { type, payload }
         ...state,
         isDataloading: payload.isDataloading,
       };
+    // Update importFromData with the fetched data
     case UPDATE_IMPORTFROM:
       return {
         ...state,

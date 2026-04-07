@@ -1536,5 +1536,6 @@ export const queryParams = [
   'age_at_last_known_survival_status', 'age_at_last_known_survival_status_unknownAges', 'cause_of_death', 'first_event', 'last_known_survival_status', 
   'participant_age_at_collection', 'participant_age_at_collection_unknownAges', 'sample_anatomic_site', 'sample_tumor_status', 'tumor_classification', 
   'data_category', 'file_type', 'file_mapping_level', 'dbgap_accession', 'study_name', 'study_status',
-  'library_selection', 'library_strategy', 'library_source_material', 'library_source_molecule','tab_participants', 'tab_files',
+  'library_selection', 'library_strategy', 'library_source_material', 'library_source_molecule',
+  'tab_participants', 'tab_files',
 ];

@@ -17,41 +17,6 @@ import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
 
-// /**
-//  * Tab index for the current explore route. Uses separate URL params for participants vs files;
-//  * falls back to legacy `tab` when the new params are absent.
-//  */
-// function tabIndexFromSearchParams(searchParams, pathname) {
-//     const tabParticipants = searchParams.get('tab_participants');
-//     const tabFiles = searchParams.get('tab_files');
-//     const legacyTab = searchParams.get('tab');
-//     const isFiles = pathname === '/exploreFiles';
-//     const parseIdx = (raw) => {
-//         const n = parseInt(raw, 10);
-//         return !Number.isNaN(n) ? n : null;
-//     };
-//     if (isFiles) {
-//         if (tabFiles != null && tabFiles !== '') {
-//             const n = parseIdx(tabFiles);
-//             if (n !== null) return n;
-//         }
-//         if (legacyTab != null && legacyTab !== '') {
-//             const n = parseIdx(legacyTab);
-//             if (n !== null) return n;
-//         }
-//         return 0;
-//     }
-//     if (tabParticipants != null && tabParticipants !== '') {
-//         const n = parseIdx(tabParticipants);
-//         if (n !== null) return n;
-//     }
-//     if (legacyTab != null && legacyTab !== '') {
-//         const n = parseIdx(legacyTab);
-//         if (n !== null) return n;
-//     }
-//     return 0;
-// }
-
 const InventoryCover = ({
   classes,
 }) => {
@@ -278,15 +243,49 @@ const InventoryCover = ({
             store.dispatch(updateImportfrom(null, []));
             continueWithFilters();
         }
-    }, [searchParams, navigationType, location.pathname]);
+    }, [searchParams, navigationType]);
 
     // Listen for unknownAgesState changes and update URL
     const unknownAgesState = useSelector((state) => state.statusReducer.unknownAgesState);
     const [previousUnknownAgesState, setPreviousUnknownAgesState] = useState(null);
     
+    // useEffect(() => {
+    //     if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
+    //         const q = new URLSearchParams(window.location.search);
+    //         let hasChanges = false;
+            
+    //         // Update URL with unknownAges parameters
+    //         Object.keys(unknownAgesState).forEach(key => {
+    //             const unknownAgesParam = `${key}_unknownAges`;
+    //             const value = unknownAgesState[key];
+    //             // Only update URL if value is not "include" (default)
+    //             if (value && value !== 'include') {
+    //                 q.set(unknownAgesParam, value);
+    //                 hasChanges = true;
+    //             } else if (value === 'include') {
+    //                 // Remove parameter if it's the default value
+    //                 q.delete(unknownAgesParam);
+    //                 hasChanges = true;
+    //             }
+    //         });
+            
+    //         if (hasChanges) {
+    //             const qs = q.toString();
+    //             const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
+    //             const current = `${location.pathname}${location.search}`;
+    //             if (next !== current) {
+    //                 navigate(next, { replace: true });
+    //             }
+    //         }
+            
+    //         setPreviousUnknownAgesState(unknownAgesState);
+    //     }
+    // }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath, location.pathname, location.search]);
+
+
     useEffect(() => {
         if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
-            const q = new URLSearchParams(window.location.search);
+            const query = new URLSearchParams(window.location.search);
             let hasChanges = false;
             
             // Update URL with unknownAges parameters
@@ -295,27 +294,24 @@ const InventoryCover = ({
                 const value = unknownAgesState[key];
                 // Only update URL if value is not "include" (default)
                 if (value && value !== 'include') {
-                    q.set(unknownAgesParam, value);
+                    query.set(unknownAgesParam, value);
                     hasChanges = true;
                 } else if (value === 'include') {
                     // Remove parameter if it's the default value
-                    q.delete(unknownAgesParam);
+                    query.delete(unknownAgesParam);
                     hasChanges = true;
                 }
             });
             
+            // Update URL if there are changes
             if (hasChanges) {
-                const qs = q.toString();
-                const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
-                const current = `${location.pathname}${location.search}`;
-                if (next !== current) {
-                    navigate(next, { replace: true });
-                }
+                const newUrl = `${navigateBasePath}${query.toString() ? '?' + query.toString() : ''}`;
+                navigate(newUrl, { replace: true });
             }
             
             setPreviousUnknownAgesState(unknownAgesState);
         }
-    }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath, location.pathname, location.search]);
+    }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath]);
 
     useEffect(() => {
         return () => {
