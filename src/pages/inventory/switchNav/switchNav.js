@@ -7,7 +7,7 @@ import {
   EXPLORE_PARTICIPANTS_PATH,
 } from '../../../utils/exploreNavUtils.js';
 import ToolTip from '@bento-core/tool-tip';
-import helpIcon from '../../../assets/icons/Question_icon_2.svg';
+import helpIcon from '../../../assets/icons/Question_icon_2_white.svg';
 
 const KNOB_TRAVEL_PX = 24;
 const TRACK_W = 48;
