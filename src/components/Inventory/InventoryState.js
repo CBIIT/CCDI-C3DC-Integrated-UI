@@ -29,7 +29,8 @@ export const initialState = {
   dashData: null,
   return_2_page: false,
   return_query_url: '',
-  tab: 0,
+  tabParticipants: 0,
+  tabFiles: 0,
   action_type: 'facet',
   exploreMode: 'participants',
 };
@@ -96,10 +97,11 @@ export const returnQueryUrl = (url) => ({
   },
 });
 
-export const changeTab = (idx, action_type) => ({
+export const changeTab = (idxParticipants, idxFiles, action_type) => ({
   type: CHANGE_TAB,
   payload: {
-    tab: idx,
+    tabParticipants: idxParticipants,
+    tabFiles: idxFiles,
     action_type: action_type,
   },
 });
@@ -172,11 +174,12 @@ export default function InventoryReducer(state = initialState, { type, payload }
         return_query_url: payload.return_query_url,
       };
     case CHANGE_TAB:
-      return {
-        ...state,
-        tab: payload.tab,
-        action_type: payload.action_type,
-      };
+    return {
+      ...state,
+      tabFiles: payload.tabFiles,
+      tabParticipants: payload.tabParticipants,
+      action_type: payload.action_type,
+    };
     case RESTORE_ACTION_TYPE:
       return {
         ...state,
