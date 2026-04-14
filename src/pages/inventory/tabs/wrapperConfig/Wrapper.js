@@ -134,22 +134,10 @@ export const wrapperConfig = [{
 },
 ];
 
-
-/**
-* 1. addFileQuery - query to addAll files or add selected files on cart
-* 2. responseKeys - provided respose key for addFileQuery
-*/
 export const configWrapper = (tab, configs) => {
-  const wrpConfig = configs.map((container) => ({
-    ...container,
-    items: (!container.paginatedTable) ? container.items.map((item) => ({
-      ...item,
-      addFileQuery: (item.role === btnTypes.ADD_ALL_FILES)
-        ? tab.addAllFileQuery : tab.addSelectedFilesQuery,
-      dataKey: tab.addFilesRequestVariableKey,
-      responseKeys: (item.role === btnTypes.ADD_ALL_FILES)
-        ? tab.addAllFilesResponseKeys : tab.addFilesResponseKeys,
-    })) : [],
-  }));
-  return wrpConfig;
+  // For non-Participants tab, filter out the header and footer button containers
+  if (tab.name !== "Participants") {
+    return configs.filter((container) => container.clsName !== 'container_header' && container.clsName !== 'container_footer');
+  }
+  return configs;
 };

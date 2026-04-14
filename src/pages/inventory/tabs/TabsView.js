@@ -27,7 +27,10 @@ const Tabs = (props) => {
   const navigate = useNavigate();
 
   const handleTabChange = (event, value) => {
-    const paramValue = {};
+    const paramValue = {
+      tab_participants: 0,
+      tab_files: 0,
+    };
     if (mode === 'files') {
       paramValue['tab_files'] = value;
     } else {
@@ -35,7 +38,7 @@ const Tabs = (props) => {
     }
     const queryStr = generateQueryStr(query, queryParams, paramValue);
     navigate(`${basePath}${queryStr}`, { replace: false });
-    dispatch(changeTab(value, 'not-facet'));
+    dispatch(changeTab(paramValue.tab_participants, paramValue.tab_files, 'not-facet'));
   };
 
   const { CohortModal } = CohortModalGenerator();
@@ -89,6 +92,6 @@ const Tabs = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  currentTab: state.inventoryReducer.tab
+  currentTab: state.inventoryReducer.exploreMode === 'files' ? state.inventoryReducer.tabFiles : state.inventoryReducer.tabParticipants,
 });
 export default connect(mapStateToProps, null)(Tabs);

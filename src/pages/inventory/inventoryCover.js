@@ -128,7 +128,7 @@ const InventoryCover = ({
         const upload_unmatched = query.get('u_um');
         const tab_participants = query.get('tab_participants');
         const tab_files = query.get('tab_files');
-        const tab = tab_participants || tab_files || query.get('tab');
+        const tab = query.get('tab');
         // Helper to finish the rest of the logic after import_from is handled
         const continueWithFilters = (extraParticipantIds = []) => {
             filters.participant_ids = [];
@@ -194,16 +194,10 @@ const InventoryCover = ({
 
             store.dispatch(updateFilterState(newFilterState));
 
-            let tabNumber = 0;
-            if (navigateBasePath === '/exploreFiles') {
-                tabNumber = parseInt(tab_files || tab, 10);
-                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
-            } else if (navigateBasePath === '/exploreParticipants') {
-                tabNumber = parseInt(tab_participants || tab);
-                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
-            } else {
-                tabNumber = parseInt(tab);
-                !isNaN(tabNumber) && store.dispatch(changeTab(tabNumber, 'facet'));
+            const tabParticipants = parseInt(tab_participants || tab, 10);
+            const tabFiles = parseInt(tab_files || tab, 10);
+            if (!isNaN(tabParticipants ) && !isNaN(tabFiles)) {
+                store.dispatch(changeTab(tabParticipants, tabFiles, 'facet'));
             }
 
             // Data loading logic

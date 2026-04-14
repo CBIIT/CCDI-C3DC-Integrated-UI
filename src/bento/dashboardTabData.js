@@ -2540,11 +2540,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'study_name',
         header: 'Study Name',
@@ -2699,11 +2699,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -2885,11 +2885,11 @@ export const exploreParticipantsTabs = [
     },
 
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'sample_id',
         header: 'Sample ID',
@@ -3000,11 +3000,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -3207,11 +3207,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -3305,11 +3305,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -3401,11 +3401,11 @@ export const exploreParticipantsTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -3518,11 +3518,11 @@ export const exploreFilesTabs = [
       },
     },
     columns: [
-      {
-        cellType: cellTypes.CHECKBOX,
-        display: true,
-        role: cellTypes.CHECKBOX,
-      },
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
       {
         dataField: 'file_name',
         header: 'File Name',

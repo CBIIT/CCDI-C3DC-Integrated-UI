@@ -1,4 +1,4 @@
-import React, { useState , useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   NavLink,
   useLocation,
@@ -93,6 +93,12 @@ const Inventory = ({
 }) => {
   const { mode, facetsConfig, basePath } = useInventoryTemplate();
   const [selectedSection, setSelectedSection] = useState(-1);
+  const location = useLocation();
+
+  // Reset selected section when pathname changes
+  useEffect(() => {
+    setSelectedSection(-1);
+  }, [location.pathname]);
 
   // Calculate filter-related counts and lists using memoization for performance
   const {
@@ -104,9 +110,8 @@ const Inventory = ({
     if (!facetsConfig || !facetsConfig.length) {
       return { activeFiltersCount: 0, sectionList: [], sectionCount: {} };
     }
-  
     // Get current URL parameters
-    const query = new URLSearchParams(useLocation().search);
+    const query = new URLSearchParams(location.search);
     
     // Create list of sections with their active filter counts
     const facetsConfigList = facetsConfig.map(item => {
@@ -189,7 +194,7 @@ const Inventory = ({
     }, {});
   
     return { activeFiltersCount, sectionList, sectionCount };
-  }, [facetsConfig, activeFilters, unknownAgesState, useLocation().search]);
+  }, [facetsConfig, activeFilters, unknownAgesState, location.search]);
 
 
   /**
@@ -201,7 +206,7 @@ const Inventory = ({
   */
   const CustomClearAllFiltersBtn = ({ onClearAllFilters, disable }) => {
     const [isHover, setIsHover] = useState(false);
-    const query = new URLSearchParams(useLocation().search);
+    const query = new URLSearchParams(location.search);
     const navigate = useNavigate();
     return (
       <div className={classes.floatRight}>
