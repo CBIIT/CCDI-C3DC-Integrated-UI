@@ -45,6 +45,12 @@ const theme = {
         '&.diagnosisCheckedOdd': {
           backgroundColor: '#EAFFFE',
         },
+        '&.geneticanalysisCheckedEven': {
+          backgroundColor: '#E4F6F5',
+        },
+        '&.geneticanalysisCheckedOdd': {
+          backgroundColor: '#EAFFFE',
+        },
         '&.demographicsCheckedEven': {
           backgroundColor: '#E4F6F5',
         },
@@ -128,6 +134,15 @@ const theme = {
           marginRight: '0px',
           fontWeight: '600',
 
+        },
+        '&.geneticanalysisSubjects': {
+          color: '#325A67',
+          backgroundColor: '#CEECEB',
+          padding: '1px 2px',
+          fontSize: '11px',
+          fontFamily: 'Nunito',
+          marginRight: '0px',
+          fontWeight: '600',
         },
         '&.demographicsSubjects': {
           color: '#325A67',
