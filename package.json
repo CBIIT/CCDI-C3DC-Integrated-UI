@@ -13,7 +13,7 @@
     "@bento-core/kmplot": "^0.1.2",
     "@bento-core/local-find": "1.0.1-ccdiintegrated.1",
     "@bento-core/paginated-table": "1.0.1-ccdiintegrated.1",
-    "@bento-core/query-bar": "1.0.1-ccdiintegrated.1",
+    "@bento-core/query-bar": "1.0.1-ccdiintegrated.2",
     "@bento-core/risk-table": "1.0.1-ccdiintegrated.1",
     "@bento-core/stats-bar": "1.0.1-ccdiintegrated.1",
     "@bento-core/tab": "1.0.1-ccdiintegrated.1",
