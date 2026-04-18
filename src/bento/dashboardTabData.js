@@ -456,15 +456,15 @@ query search (
           subjects
         }
         # Data Category filter counts
-        filterParticipantCountByDataCategory{
+        filterFileCountByDataCategory{
             group
             subjects
         }
-        filterParticipantCountByFileType{
+        filterFileCountByFileType{
             group
             subjects
         }
-        filterParticipantCountByFileMappingLevel{
+        filterFileCountByFileMappingLevel{
             group
             subjects
         }
@@ -482,19 +482,19 @@ query search (
           subjects
         }
         # Sequencing Library filter counts
-        filterParticipantCountByLibrarySelection{
+        filterFileCountByLibrarySelection{
             group
             subjects
         }
-        filterParticipantCountByLibrarySourceMaterial{
+        filterFileCountByLibrarySourceMaterial{
             group
             subjects
         }
-        filterParticipantCountByLibrarySourceMolecule{
+        filterFileCountByLibrarySourceMolecule{
             group
             subjects
         }
-        filterParticipantCountByLibraryStrategy{
+        filterFileCountByLibraryStrategy{
             group
             subjects
         }
