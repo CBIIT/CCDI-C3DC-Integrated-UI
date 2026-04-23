@@ -3518,11 +3518,11 @@ export const exploreFilesTabs = [
       },
     },
     columns: [
-      // {
-      //   cellType: cellTypes.CHECKBOX,
-      //   display: true,
-      //   role: cellTypes.CHECKBOX,
-      // },
+      {
+        cellType: cellTypes.CHECKBOX,
+        display: true,
+        role: cellTypes.CHECKBOX,
+      },
       {
         dataField: 'file_name',
         header: 'File Name',

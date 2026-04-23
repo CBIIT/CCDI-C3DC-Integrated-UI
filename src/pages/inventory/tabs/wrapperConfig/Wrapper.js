@@ -136,7 +136,7 @@ export const wrapperConfig = [{
 
 export const configWrapper = (tab, configs) => {
   // For non-Participants tab, filter out the header and footer button containers
-  if (tab.name !== "Participants") {
+  if (tab.name !== "Participants" && tab.name !== "Files") {
     return configs.filter((container) => container.clsName !== 'container_header' && container.clsName !== 'container_footer');
   }
   return configs;
