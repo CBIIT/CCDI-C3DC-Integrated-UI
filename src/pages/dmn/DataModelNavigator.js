@@ -4,7 +4,7 @@ import env from '../../utils/env';
 
 const DataModelNavigator = () => {
 
-  const dmnUrl = env.REACT_APP_DMN_URL || "https://cbiit.github.io/crdc-data-model-navigator/?config=https://raw.githubusercontent.com/CBIIT/ccdi-dcc-model/refs/heads/main/";
+  const dmnUrl = env.REACT_APP_DMN_URL || "https://cbiit.github.io/crdc-data-model-navigator/?config=https://raw.githubusercontent.com/CBIIT/ccdi-dcc-model/refs/tags/1.0.0/";
 
   return (
     <div style={{ width: '100%', height: '1000px' }}>
