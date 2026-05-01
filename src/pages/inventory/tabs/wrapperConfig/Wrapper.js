@@ -134,36 +134,55 @@ export const wrapperConfig = [{
 },
 ];
 
-
 /**
  * 1. addFileQuery - query to addAll files or add selected files on cart
  * 2. responseKeys - provided respose key for addFileQuery
  */
 export const configWrapper = (tab, configs) => {
-  if (tab.name !== "Participants" && tab.name !== "Files") {
-    configs = configs.filter(
-      (container) =>
-        container.clsName !== "container_header" &&
-        container.clsName !== "container_footer",
-    );
-  }
+  
+  // Constants for tabs that show header/footer and hide file cart actions.
+  const TABS_WITH_HEADER_FOOTER = ["Participants", "Files"];
+  const TABS_HIDING_FILE_CART_ACTIONS = ["Participants"];
 
-  const wrpConfig = configs.map((container) => ({
-    ...container,
-    items: !container.paginatedTable
-      ? container.items.map((item) => ({
-          ...item,
-          addFileQuery:
-            item.role === btnTypes.ADD_ALL_FILES
-              ? tab.addAllFileQuery
-              : tab.addSelectedFilesQuery,
-          dataKey: tab.addFilesRequestVariableKey,
-          responseKeys:
-            item.role === btnTypes.ADD_ALL_FILES
-              ? tab.addAllFilesResponseKeys
-              : tab.addFilesResponseKeys,
-        }))
-      : [],
-  }));
-  return wrpConfig;
+  // Determine if the tab shows header/footer and if the file cart actions are hidden.
+  const tabShowsHeaderFooter = TABS_WITH_HEADER_FOOTER.includes(tab.name);
+  const tabHidesFileCartActions = TABS_HIDING_FILE_CART_ACTIONS.includes(tab.name);
+
+  // Filter out header/footer containers if the tab does not show them.
+  const containers = tabShowsHeaderFooter
+    ? configs
+    : configs.filter(
+      (c) =>
+        c.clsName !== "container_header" && c.clsName !== "container_footer",
+    );
+
+  return containers.map((container) => {
+    // Paginated table slot has no configurable toolbar items here.
+    if (container.paginatedTable) {
+      return { ...container, items: [] };
+    }
+
+    // Participants: hide "add files to cart" actions; cohort controls stay.
+    const items = container.items
+      .filter((item) => {
+        const isFileCartBtn =
+          item.role === btnTypes.ADD_ALL_FILES ||
+          item.role === btnTypes.ADD_SELECTED_FILES;
+        return !tabHidesFileCartActions || !isFileCartBtn;
+      })
+      .map((item) => ({
+        ...item,
+        addFileQuery:
+          item.role === btnTypes.ADD_ALL_FILES
+            ? tab.addAllFileQuery
+            : tab.addSelectedFilesQuery,
+        dataKey: tab.addFilesRequestVariableKey,
+        responseKeys:
+          item.role === btnTypes.ADD_ALL_FILES
+            ? tab.addAllFilesResponseKeys
+            : tab.addFilesResponseKeys,
+      }));
+
+    return { ...container, items };
+  });
 };
