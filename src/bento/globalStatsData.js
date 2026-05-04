@@ -33,7 +33,7 @@ export const statsStyling = {
   statCount: {
     color: '#003D3D',
     fontFamily: 'Poppins',
-    fontSize: '22px',
+    fontSize: '20px',
     fontWeight: '275',
     lineHeight: '17px',
     letterSpacing: '0.02em',
