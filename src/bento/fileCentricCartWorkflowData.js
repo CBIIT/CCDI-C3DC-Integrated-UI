@@ -119,7 +119,7 @@ query filesInList($file_ids: [String], $offset: Int = 0, $first: Int = 10, $orde
         file_id
         file_name
         study_name
-        dbgap_accession
+        study_id
         participant_id
         sample_id
         file_type
@@ -157,8 +157,8 @@ export const table = {
       tooltipText: 'sort',
     },
     {
-      dataField: 'dbgap_accession',
-      header: 'Study Accession',
+      dataField: 'study_id',
+      header: 'Study ID',
       display: true,
       tooltipText: 'sort',
     },
