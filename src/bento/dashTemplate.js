@@ -99,7 +99,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: DIAGNOSIS,
-    label: 'Diagnosis Anatomic site',
+    label: 'Diagnosis Anatomic Site',
     apiPath: 'participantCountByAnatomicSite',
     apiForFiltering: 'filterParticipantCountByDiagnosisAnatomicSite',
     datafield: 'diagnosis_anatomic_site',
@@ -111,7 +111,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: DIAGNOSIS,
-    label: 'Age at diagnosis (days)',
+    label: 'Age at Diagnosis (days)',
     apiPath: 'filterParticipantCountByDiagnosisAge',
     apiForFiltering: 'filterParticipantCountByDiagnosisAge',
     datafield: 'age_at_diagnosis',
@@ -1079,7 +1079,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: SAMPLES,
-    label: 'Age at collection (days)',
+    label: 'Age at Collection (days)',
     apiPath: 'filterParticipantCountBySampleAge',
     apiForFiltering: 'filterParticipantCountBySampleAge',
     datafield: 'participant_age_at_collection',
@@ -1235,7 +1235,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: SAMPLES,
-    label: 'Sample tumor status',
+    label: 'Sample Tumor Status',
     apiPath: 'participantCountByTumorStatus',
     apiForFiltering: 'filterParticipantCountByTumorStatus',
     datafield: 'sample_tumor_status',
@@ -1246,7 +1246,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: SAMPLES,
-    label: 'Tumor classification',
+    label: 'Tumor Classification',
     apiPath: 'participantCountByTumorClassification',
     apiForFiltering: 'filterParticipantCountByTumorClassification',
     datafield: 'tumor_classification',
@@ -1257,7 +1257,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: STUDY,
-    label: 'dbGaP accession',
+    label: 'dbGaP Accession',
     apiPath: 'participantCountByDBGAPAccession',
     apiForFiltering: 'filterParticipantCountByDBGAPAccession',
     datafield: 'dbgap_accession',
@@ -1327,7 +1327,7 @@ export const facetsExploreFilesConfig = [
   },
   {
     section: SEQUENCINGLIBRARY,
-    label: 'Library selection',
+    label: 'Library Selection',
     apiPath: 'participantCountByLibrarySelection',
     apiForFiltering: 'filterFileCountByLibrarySelection',
     datafield: 'library_selection',
@@ -1338,7 +1338,7 @@ export const facetsExploreFilesConfig = [
   },
   {
     section: SEQUENCINGLIBRARY,
-    label: 'Library source material',
+    label: 'Library Source Material',
     apiPath: 'participantCountByLibrarySourceMaterial',
     apiForFiltering: 'filterFileCountByLibrarySourceMaterial',
     datafield: 'library_source_material',
@@ -1349,7 +1349,7 @@ export const facetsExploreFilesConfig = [
   },
   {
     section: SEQUENCINGLIBRARY,
-    label: 'Library strategy',
+    label: 'Library Strategy',
     apiPath: 'participantCountByLibraryStrategy',
     apiForFiltering: 'filterFileCountByLibraryStrategy',
     datafield: 'library_strategy',
@@ -1360,7 +1360,7 @@ export const facetsExploreFilesConfig = [
   },
   {
     section: SEQUENCINGLIBRARY,
-    label: 'Library source molecule',
+    label: 'Library Source Molecule',
     apiPath: 'participantCountByLibrarySourceMolecule',
     apiForFiltering: 'filterFileCountByLibrarySourceMolecule',
     datafield: 'library_source_molecule',
