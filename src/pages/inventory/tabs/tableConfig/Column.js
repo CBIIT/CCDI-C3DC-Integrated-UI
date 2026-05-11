@@ -3,7 +3,7 @@ import { cellTypes, headerTypes } from '@bento-core/table';
 import ReactHtmlParser from "html-react-parser";
 import { studyDownloadLinks, openDoubleLink } from '../../../../bento/studiesData';
 import { CloudDownload } from '@material-ui/icons';
-import { Tooltip, Modal, Box, IconButton, Typography } from '@material-ui/core';
+import { Tooltip, Modal, Box, IconButton, Typography, Link } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -258,6 +258,35 @@ export const CustomCellView = (props) => {
     cursor: 'pointer',
     height: '23px',
   };
+
+  if (props.linkAttr) {
+    const { rootPath, linkField } = props.linkAttr;
+    //If the link requires another field, provide it in the linkField otherwise will use current field (label)
+    if (rootPath.startsWith('http://') || rootPath.startsWith('https://')) {
+      return (
+        <Link
+          className={cellTypes.LINK}
+          href={`${rootPath}${linkField ? props[linkField] : label}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <Typography >{label}</Typography>
+        </Link>
+      );
+    }
+    else {
+      return (
+        <Link
+          className={cellTypes.LINK}
+          href={`${rootPath}${linkField ? props[linkField] : label}`}
+        >
+          <Typography >{label}</Typography>
+        </Link>
+      );
+    }
+  }
+
   if (cellStyle === 'TRANSFORM') {
     const content = dataFormatter(props[dataField]);
     return (<>{ReactHtmlParser(content)}</>);

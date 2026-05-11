@@ -1362,6 +1362,7 @@ export const GET_GENETIC_ANALYSIS_OVERVIEW_QUERY = gql`
       # Study
       dbgap_accession
       participant_id
+      study_id
 
       # Genetic Analysis
       id
@@ -2489,6 +2490,10 @@ export const exploreParticipantsTabs = [
         display: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: './studies/',
+        },
       },
       {
         dataField: 'sex_at_birth',
@@ -2560,7 +2565,9 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.DBGAP,
+        linkAttr: {
+          rootPath: './studies/',
+        },
       },
       {
         dataField: 'study_status',
@@ -2910,6 +2917,10 @@ export const exploreParticipantsTabs = [
         display: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: './studies/',
+        },
       },
       {
         dataField: 'anatomic_site',
@@ -3070,18 +3081,17 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
-      {
-        dataField: 'dbgap_accession',
-        header: 'dbGaP Accession',
+      { 
+        dataField: 'study_id',
+        header: 'Study ID',
         display: true,
         hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        linkAttr: {
-          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
-        },
         cellType: cellTypes.CUSTOM_ELEM,
-        doNotDownload: true,
+        linkAttr: {
+          rootPath: './studies/',
+        },
       },
       {
         dataField: 'hgvs_coding',
@@ -3592,6 +3602,10 @@ export const exploreFilesTabs = [
         display: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: './studies/',
+        },
       },
       {
         dataField: 'participant_id',

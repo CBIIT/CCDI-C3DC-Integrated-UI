@@ -16,6 +16,7 @@ const OverviewView = ({ data, classes }) => {
                 <div className={classes.studyItem}>
                     <div className={classes.studyItemTitle}>STUDY ID</div>
                     <div className={classes.studyItemContent}>
+                        <span>dbGaP Accession: </span>
                         <a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.study_id}`} target="_blank" rel="noopener noreferrer">
                             {data.study_id}
                             <img className={classes.exportIcon} src={exportIcon} alt="exportIcon" />
