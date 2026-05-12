@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useRef, useContext, useCallback, useMemo, memo } from 'react';
 import { withStyles } from '@material-ui/core';
+import ToolTip from '@bento-core/tool-tip';
 import { CohortModalContext } from '../../../../../CohortModalContext';
-import { deletionTypes } from '../../../../shared/DeleteConfirmationModal';
+import { confirmationTypes } from '../../../../shared/ConfirmationModal';
 import TrashCanIconBlue from '../../../../../../../assets/icons/Trash_Can_Icon_Blue.svg';
 import TrashCanIconRed from '../../../../../../../assets/icons/Trash_Can_Icon_Red.svg';
 import SortingIcon from '../../../../../../../assets/icons/Sorting_Icon.svg';
-import { SCROLLBAR_WIDTH } from '../../../../../../../bento/cohortModalData';
+import { SCROLLBAR_WIDTH, TOOLTIP_MESSAGES } from '../../../../../../../bento/cohortModalData';
 
 const ParticipantTable = (props) => {
-    const { 
-        classes, 
-        participants, 
-        onDeleteParticipant, 
-        onDeleteAllParticipants,
-        searchText 
+    const {
+        classes,
+        participants,
+        onDeleteParticipant,
+        onDeleteCohort,
+        searchText
     } = props;
 
-    const { 
-        setShowDeleteConfirmation,
-        setDeleteModalProps
+    const {
+        setShowConfirmation,
+        setConfirmModalProps
     } = useContext(CohortModalContext);
 
     const [selectedColumn, setSelectedColumn] = useState(['participant_id', 'ascending']);
@@ -55,19 +56,21 @@ const ParticipantTable = (props) => {
         }
     }, [selectedColumn]);
 
-    const handleDeleteParticipant = useCallback((participant_pk) => {
+    const handleDeleteParticipant = useCallback((participant_id) => {
         if (onDeleteParticipant) {
-            onDeleteParticipant(participant_pk);
+            onDeleteParticipant(participant_id);
         }
     }, [onDeleteParticipant]);
 
-    const handleDeleteAllParticipants = useCallback(() => {
-        setDeleteModalProps({
-            handleDelete: () => onDeleteAllParticipants(),
-            deletionType: deletionTypes.DELETE_ALL_PARTICIPANTS,
+    const handleDeleteCohort = useCallback(() => {
+        setConfirmModalProps({
+            handleConfirm: () => onDeleteCohort(),
+            deletionType: confirmationTypes.DELETE_SINGLE_COHORT,
         });
-        setShowDeleteConfirmation(true);
-    }, [onDeleteAllParticipants, setDeleteModalProps, setShowDeleteConfirmation]);
+        setShowConfirmation(true);
+    }, [onDeleteCohort, setConfirmModalProps, setShowConfirmation]);
+
+    const isDeleteParticipantDisabled = participants.length <= 1;
 
     // Sort participants (memoized for performance)
     const sortedParticipants = useMemo(() => {
@@ -118,14 +121,14 @@ const ParticipantTable = (props) => {
             onClick={() => handleSort(columnKey)}
             className={classes.headerColumn}
         >
-            <span>{label}</span>
+            <span className={classes.headerColumnText}>{label}</span>
             <img
                 src={SortingIcon}
                 alt={altText}
                 className={getSortingIconClasses(columnKey)}
             />
         </div>
-    ), [classes.headerColumn, handleSort, getSortingIconClasses]);
+    ), [classes.headerColumn, classes.headerColumnText, handleSort, getSortingIconClasses]);
 
     return (
         <div className={classes.participantTableSection}>
@@ -140,13 +143,15 @@ const ParticipantTable = (props) => {
                     label="dbGaP Accession" 
                     altText="sort by dbGaP accession icon" 
                 />
-                <div className={classes.removeHeader} onClick={handleDeleteAllParticipants}>
-                    <img
-                        src={TrashCanIconRed}
-                        alt="delete cohort icon"
-                        className={classes.redTrashCan}
-                    />
-                </div>
+                <ToolTip title={TOOLTIP_MESSAGES.removeCohort} placement="top-end" arrow>
+                    <div className={classes.removeHeader} onClick={handleDeleteCohort}>
+                        <img
+                            src={TrashCanIconRed}
+                            alt="delete cohort icon"
+                            className={classes.redTrashCan}
+                        />
+                    </div>
+                </ToolTip>
             </div>
             <div
                 className={classes.tableBody}
@@ -160,8 +165,8 @@ const ParticipantTable = (props) => {
                             <img
                                 src={TrashCanIconBlue}
                                 alt="delete participant icon"
-                                className={classes.blueTrashCan}
-                                onClick={() => handleDeleteParticipant(participant.participant_id)}
+                                className={isDeleteParticipantDisabled ? classes.blueTrashCanDisabled : classes.blueTrashCan}
+                                onClick={() => !isDeleteParticipantDisabled && handleDeleteParticipant(participant.participant_id)}
                             />
                         </div>
                     </div>
@@ -190,8 +195,17 @@ const styles = () => ({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'start',
-        paddingLeft: '25px',
+        paddingLeft: '19px',
         cursor: 'pointer',
+    },
+    headerColumnText: {
+        color: '#0F253A',
+        fontFamily: '"Open Sans"',
+        fontSize: '15px',
+        fontStyle: 'normal',
+        fontWeight: 700,
+        lineHeight: 'normal',
+        letterSpacing: '-0.3px',
     },
     sortingIcon: {
         height: '14px',
@@ -216,7 +230,6 @@ const styles = () => ({
         '&:hover': {
             cursor: 'pointer',
         },
-        paddingRight: '15px',
     },
     blueTrashCan: {
         height: '20px',
@@ -224,6 +237,12 @@ const styles = () => ({
         '&:hover': {
             cursor: 'pointer',
         },
+    },
+    blueTrashCanDisabled: {
+        height: '20px',
+        paddingTop: '2px',
+        opacity: 0.5,
+        cursor: 'not-allowed',
     },
     removeParticipant: {
         //right align the trash can icon
@@ -261,6 +280,7 @@ const styles = () => ({
         flex: '0 0 20px !important',
         cursor: 'pointer',
         paddingLeft: '0px !important',
+        marginRight: '15px',
     },
     tableBody: {
         overflowY: 'auto',
@@ -301,7 +321,14 @@ const styles = () => ({
             wordWrap: 'break-word',
             wordBreak: 'break-all',
             whiteSpace: 'normal',
-            paddingLeft: '25px',
+            paddingLeft: '20px',
+            color: '#343434',
+            fontFamily: '"Open Sans"',
+            fontSize: '16px',
+            fontStyle: 'normal',
+            fontWeight: 400,
+            lineHeight: '150%',
+            letterSpacing: '-0.32px',
         },
         '&:nth-child(odd)': {
             backgroundColor: '#D9DFE6',

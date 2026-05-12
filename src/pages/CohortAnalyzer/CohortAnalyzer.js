@@ -10,7 +10,7 @@ import { tableConfig, analyzer_query, analyzer_tables, responseKeys } from "../.
 import DownloadSelectedCohort from "./downloadCohort/DownloadSelectedCohorts";
 import client from "../../utils/graphqlClient";
 import ToolTip from "@bento-core/tool-tip/dist/ToolTip";
-import DeleteConfirmationModal from "../../components/CohortModal/components/shared/DeleteConfirmationModal";
+import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
 import sortIcon from "../../assets/icons/sort_icon.svg";
 import placeHolder from "../../assets/vennDigram/placeHolder.png";
 import ChartVenn from "./vennDiagram/ChartVenn";
@@ -503,10 +503,10 @@ export const CohortAnalyzer = () => {
 
     return (
         <>
-            <DeleteConfirmationModal
+            <ConfirmationModal
                 open={deleteInfo.showDeleteConfirmation}
                 setOpen={() => { handlePopup("", state, setDeleteInfo, deleteInfo) }}
-                handleDelete={() => {
+                handleConfirm={() => {
                     handleDelete(deleteInfo.cohortId,
                         setCohortList,
                         setSelectedCohorts,
@@ -519,10 +519,10 @@ export const CohortAnalyzer = () => {
                 deletionType={deleteInfo.deleteType}
             />
 
-            <DeleteConfirmationModal
+            <ConfirmationModal
                 open={warningMessage}
                 setOpen={() => { setWarningMessage("") }}
-                handleDelete={() => { setWarningMessage("") }}
+                handleConfirm={() => { setWarningMessage("") }}
                 deletionType={false}
                 message={warningMessage}
             />

@@ -13,7 +13,7 @@ export const CCDI_HUB_LEGACY_BASE_URL = "https://ccdi.cancer.gov/explore?p_id=";
 export const CCDI_HUB_DBGAP_PARAM = "&dbgap_accession=";
 
 // Confirmation Types Configuration
-export const deletionTypes = {
+export const confirmationTypes = {
     DELETE_ALL_COHORTS: 'delete all cohorts?',
     DELETE_SINGLE_COHORT: 'DELETE_SINGLE_COHORT',
     DELETE_ALL_PARTICIPANTS: 'delete all participants?',

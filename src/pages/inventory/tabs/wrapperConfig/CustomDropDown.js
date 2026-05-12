@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { onAddParticipantsToCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
 import { useGlobal } from '../../../../components/Global/GlobalProvider';
-import DeleteConfirmationModal from '../../../../components/CohortModal/components/shared/DeleteConfirmationModal';
+import ConfirmationModal from '../../../../components/CohortModal/components/shared/ConfirmationModal';
 
 const DropdownContainer = styled.div`
   position: relative;
@@ -238,7 +238,7 @@ export const CustomDropDown = ({ options, label, isHidden, backgroundColor, bord
           })}
         </DropdownList>
       )}
-      <DeleteConfirmationModal
+      <ConfirmationModal
         classes={""}
         open={showPopupMessage}
         setOpen={() => { setShowPopupMessage("")  }}
