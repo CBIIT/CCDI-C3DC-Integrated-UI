@@ -6,9 +6,11 @@ on:
     branches:
       - "*.*.*"
       - "main"
-      - "master"
+      - "proof-of-concept"
   pull_request:
-    branches: "*"
+    branches: 
+      - "CCDIDASH-*"
+      - "C3DC-*"
 
 permissions:
   contents: read
