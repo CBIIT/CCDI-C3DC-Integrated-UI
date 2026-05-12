@@ -1,12 +1,8 @@
 import React from 'react';
 import { Modal, withStyles } from '@material-ui/core';
+import { deletionTypes } from '../../../../bento/cohortModalData';
 
-export const deletionTypes = {
-    DELETE_ALL_COHORTS: 'delete all cohorts?',
-    DELETE_SINGLE_COHORT: 'delete this cohort?',
-    DELETE_ALL_PARTICIPANTS: 'delete all participants?',
-    CLEAR_UNSAVED_CHANGES: 'leave?'
-};
+export { deletionTypes };
 
 const DeleteConfirmationModal = (props) => {
     const {
@@ -23,7 +19,7 @@ const DeleteConfirmationModal = (props) => {
             onClose={() => setOpen(false)}
         >
             <div className={classes.modal}>
-                {!message ? <div className={classes.modalContent}>
+                <div className={classes.modalContent}>
                     <div className={classes.modalHeading}>
                         {message ?
                             <span>{message}</span>
@@ -34,6 +30,7 @@ const DeleteConfirmationModal = (props) => {
                                 {deletionType !== deletionTypes.DELETE_ALL_PARTICIPANTS && <span>Press Confirm or Cancel. </span>}
                             </>
                         }
+
                     </div>
                     <div className={classes.modalButtons}>
                         {message ?
@@ -62,24 +59,9 @@ const DeleteConfirmationModal = (props) => {
                                 </button>
                             </>
                         }
+
                     </div>
-                </div> :
-                    <div className={classes.modalContent}>
-                        <div className={classes.modalHeading}>
-                            <span>{message}</span>
-                        </div>
-                        <div className={classes.modalButtons}>
-                            <button
-                                className={classes.confirmButton}
-                                onClick={() => {
-                                    setOpen(false);
-                                }}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                }
+                </div>
             </div>
         </Modal>
     );

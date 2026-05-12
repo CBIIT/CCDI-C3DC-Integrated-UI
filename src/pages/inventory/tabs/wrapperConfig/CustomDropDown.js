@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { onAddParticipantsToCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
 import { useGlobal } from '../../../../components/Global/GlobalProvider';
-import DeleteConfirmationModal from '../../cohortModal/components/deleteConfirmationModal';
+import DeleteConfirmationModal from '../../../../components/CohortModal/components/shared/DeleteConfirmationModal';
 
 const DropdownContainer = styled.div`
   position: relative;

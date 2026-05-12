@@ -14,8 +14,8 @@ import TabPanel from './TabPanel';
 import { tabResponsiveBreakpoints } from '../../../bento/dashboardTabData';
 import { Tabs as BentoTabs }  from '@bento-core/tab';
 import { customTheme } from './DefaultTabTheme';
-import CohortModalGenerator from '../cohortModal/cohortModalGenerator';
-import { CohortModalContext } from '../cohortModal/CohortModalContext';
+import CohortModal from '../../../components/CohortModal/CohortModal';
+import { CohortModalContext } from '../../../components/CohortModal/CohortModalContext';
 
 const Tabs = (props) => {
    
@@ -41,7 +41,7 @@ const Tabs = (props) => {
     dispatch(changeTab(paramValue.tab_participants, paramValue.tab_files, 'not-facet'));
   };
 
-  const { CohortModal } = CohortModalGenerator();
+  // const { CohortModal } = CohortModalGenerator();
 
 
   /**

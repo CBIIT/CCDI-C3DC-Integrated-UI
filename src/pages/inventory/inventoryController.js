@@ -4,7 +4,7 @@ import InventoryCover from './inventoryCover';
 import InventoryView from './inventoryView';
 import InventoryRouteSync from './InventoryRouteSync';
 import { CohortStateProvider } from '../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalProvider } from './cohortModal/CohortModalContext';
+import { CohortModalProvider } from '../../components/CohortModal/CohortModalContext';
 
 const InventoryController = (() => {
 
