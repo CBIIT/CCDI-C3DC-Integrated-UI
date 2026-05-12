@@ -149,7 +149,7 @@ const StudiesView = () => {
       </div>
       <div className='resourceHeader'>
         <div className='resourceHeaderBackground'>
-          <div className='resourceHeaderText'>CCDI Hub</div>
+          <div className='resourceHeaderText'></div>
         </div>
       </div>
       <div className='resourceTitleContainer'>
