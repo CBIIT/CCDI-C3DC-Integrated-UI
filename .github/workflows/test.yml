@@ -5,12 +5,10 @@ on:
   push:
     branches:
       - "*.*.*"
-      - "main"
-      - "proof-of-concept"
   pull_request:
     branches: 
-      - "CCDIDASH-*"
-      - "C3DC-*"
+      - "*.*.*"
+      - "main"
 
 permissions:
   contents: read
