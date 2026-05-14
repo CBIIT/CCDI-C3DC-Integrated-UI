@@ -32,7 +32,9 @@ import { resetIcon, sectionLabel } from '../../../bento/dashTemplate';
 import { useInventoryTemplate } from '../useInventoryTemplate';
 import FacetFilterThemeProvider from './NewFilterThemeConfig';
 import {
-  getAllParticipantIds, getAllIds,
+  getAllParticipantIds,
+  buildParticipantAutocompleteUrlParams,
+  getParticipantSearchSuggestions,
 } from './BentoFilterUtils';
 
 const CustomExpansionPanelSummary = withStyles({
@@ -75,22 +77,17 @@ const NewBentoFacetFilter = ({
       config: {
         inputPlaceholder: 'Participant ID Search',
         noOptionsText: 'No matching items found',
-        searchType: 'participantIds',
+        searchType: ['participantIds', 'associatedIds'],
       },
       functions: {
         updateBrowserUrl: (query, navigateTo, newUniqueValue) => {
-          const paramValue = {
-            p_id: newUniqueValue.map((data) => data.title).join('|'),
-          };
+          const paramValue = buildParticipantAutocompleteUrlParams(newUniqueValue);
           const queryStr = generateQueryStr(query, queryParams, paramValue);
           navigateTo(`${basePath}${queryStr}`);
         },
-        getSuggestions: async (searchType) => {
+        getSuggestions: async () => {
           try {
-            const response = await getAllIds(searchType).catch(() => []);
-            return response && response[searchType] instanceof Array
-              ? response[searchType].map((id) => ({ type: searchType, title: id }))
-              : [];
+            return await getParticipantSearchSuggestions();
           } catch (e) {
             return [];
           }

@@ -216,7 +216,7 @@ const Inventory = ({
           disabled={disable}
           onClick={() => {
             const paramValue = {
-              'p_id': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
+              'p_id': '', 'p_syn': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
               'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_basis': '', 'diagnosis_category': '', 'disease_phase': '',
               'reported_significance': '', 'reported_significance_system': '', 'gene_symbol': '', 'alteration': '', 'fusion_partner_gene': '', 'alteration_type': '', 'status': '',
               'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'response_category': '', 'age_at_response': '', 'age_at_response_unknownAges': '',

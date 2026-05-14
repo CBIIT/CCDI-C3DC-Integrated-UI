@@ -16,6 +16,7 @@ import {
 import styles from './inventoryStyle';
 import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
 import { queryParams } from '../../bento/dashTemplate';
+import { parseParticipantAutocompleteFromUrl } from './sideBar/BentoFilterUtils';
 
 const InventoryCover = ({
   classes,
@@ -57,7 +58,7 @@ const InventoryCover = ({
         let unknownAgesState = {};
         
         queryParams.forEach((param) => {
-            if (param === 'import_from' || param === 'p_id' || param === 'u' || param === 'u_fc' || param === 'u_um'
+            if (param === 'import_from' || param === 'p_id' || param === 'p_syn' || param === 'u' || param === 'u_fc' || param === 'u_um'
                 || param === 'tab_participants' || param === 'tab_files') {
                     return;
             }
@@ -123,6 +124,7 @@ const InventoryCover = ({
         let filters = {};
         const import_from = query.get('import_from');
         const participant_id = query.get('p_id');
+        const participant_synonyms = query.get('p_syn');
         const upload = query.get('u');
         const upload_filecontent = query.get('u_fc');
         const upload_unmatched = query.get('u_um');
@@ -155,12 +157,9 @@ const InventoryCover = ({
                 }
             });
 
-            // Update autocomplete data
+            // Update autocomplete data (participant IDs vs synonym-associated IDs)
             if (participant_id) {
-                const data = participant_id.split('|').map((item) => ({
-                    type: 'participantIds',
-                    title: item,
-                }));
+                const data = parseParticipantAutocompleteFromUrl(participant_id, participant_synonyms);
                 store.dispatch(updateAutocompleteData(data));
             } else {
                 store.dispatch(updateAutocompleteData([]));

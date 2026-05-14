@@ -10,6 +10,7 @@ import store from '../../../store';
 import { resetAllData, resetUploadData, updateAutocompleteData } from '@bento-core/local-find';
 import { generateQueryStr } from '@bento-core/util';
 import { QueryBarGenerator } from '@bento-core/query-bar';
+import { buildParticipantAutocompleteUrlParams } from '../sideBar/BentoFilterUtils';
 import { useInventoryTemplate } from '../useInventoryTemplate';
 import { facetsExploreFilesConfig, facetsParticipantsConfig } from '../../../bento/dashTemplate';
 
@@ -98,7 +99,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
     functions: {
       clearAll: () => {
         const paramValue = {
-          'import_from': '', 'p_id': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
+          'import_from': '', 'p_id': '', 'p_syn': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
           'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_category': '', 'diagnosis_basis': '', 'disease_phase': '',
           'reported_significance': '', 'reported_significance_system': '', 'gene_symbol': '', 'alteration': '', 'fusion_partner_gene': '', 'alteration_type': '', 'status': '',
           'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'age_at_treatment_end': '', 'age_at_treatment_end_unknownAges': '',
@@ -146,22 +147,28 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
       },
       clearAutocomplete: () => {
         const paramValue = {
-          'p_id': ''
+          p_id: '',
+          p_syn: '',
         };
         const queryStr = generateQueryStr(query, queryParams, paramValue);
         navigate(`${basePath}${queryStr}`, { replace: true });
         dispatch(updateAutocompleteData([]));
       },
-      deleteAutocompleteItem: (title) => {
+      deleteAutocompleteItem: (item) => {
         const { autocomplete } = localFind;
         const newdata = [...autocomplete];
-        const index = newdata.findIndex((v) => v.title === title);
+        const index = newdata.findIndex((v) => {
+          if (item && item.type === 'associatedIds') {
+            return v.type === 'associatedIds'
+              && v.title === item.title
+              && v.synonym === item.synonym;
+          }
+          return v.title === item.title && v.type !== 'associatedIds';
+        });
 
         if (index > -1) {
           newdata.splice(index, 1);
-          const paramValue = {
-            'p_id': newdata.map((dt) => dt.title).join('|')
-          };
+          const paramValue = buildParticipantAutocompleteUrlParams(newdata);
           const queryStr = generateQueryStr(query, queryParams, paramValue);
           navigate(`${basePath}${queryStr}`, { replace: true });
           dispatch(updateAutocompleteData(newdata));
