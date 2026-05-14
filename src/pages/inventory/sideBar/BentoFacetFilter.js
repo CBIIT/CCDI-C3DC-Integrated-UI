@@ -31,7 +31,9 @@ import { generateQueryStr } from '@bento-core/util';
 import { facetsConfig, facetSectionVariables, resetIcon, sectionLabel, queryParams } from '../../../bento/dashTemplate';
 import FacetFilterThemeProvider from './FilterThemeConfig';
 import {
-  getAllParticipantIds, getAllIds,
+  getAllParticipantIds,
+  buildParticipantAutocompleteUrlParams,
+  getParticipantSearchSuggestions,
 } from './BentoFilterUtils';
 
 const CustomExpansionPanelSummary = withStyles({
@@ -60,22 +62,17 @@ const { SearchBox } = SearchBoxGenerator({
   config: {
     inputPlaceholder: 'Participant ID Search',
     noOptionsText: 'No matching items found',
-    searchType: 'participantIds',
+    searchType: ['participantIds', 'associatedIds'],
   },
   functions: {
     updateBrowserUrl: (query, navigate, newUniqueValue) => {
-      const paramValue = {
-        'p_id': newUniqueValue.map((data) => data.title).join('|')
-      };
+      const paramValue = buildParticipantAutocompleteUrlParams(newUniqueValue);
       const queryStr = generateQueryStr(query, queryParams, paramValue);
       navigate(`/exploreParticipants${queryStr}`);
     },
-    getSuggestions: async (searchType) => {
+    getSuggestions: async () => {
       try {
-        const response = await getAllIds(searchType).catch(() => []);
-        return response && response[searchType] instanceof Array
-          ? response[searchType].map((id) => ({ type: searchType, title: id }))
-          : [];
+        return await getParticipantSearchSuggestions();
       } catch (e) {
         return [];
       }
@@ -158,7 +155,7 @@ const BentoFacetFilter = ({
           disabled={disable}
           onClick={() => {
             const paramValue = {
-              'import_from': '', 'p_id': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
+              'import_from': '', 'p_id': '', 'p_syn': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
               'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_category': '', 'diagnosis_basis': '', 'disease_phase': '',
               'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'response_category': '', 'age_at_response': '', 'age_at_response_unknownAges': '',
               'age_at_last_known_survival_status': '', 'age_at_last_known_survival_status_unknownAges': '', 'first_event': '', 'last_known_survival_status': '', 
