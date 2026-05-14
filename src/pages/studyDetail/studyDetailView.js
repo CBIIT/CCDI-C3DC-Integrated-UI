@@ -210,7 +210,7 @@ const StudiesDetail = ({data}) => {
                 <img src={breadcrumbIcon} className='breadcrumbIcon' alt="breadcrumb icon" />
                 <span>Study Code {data.study_id}</span>
             </div>
-            <div className='resourceHeader'><div className='resourceHeaderBackground'><div className='resourceHeaderText'>CCDI Hub Studies</div></div></div>
+            <div className='resourceHeader'><div className='resourceHeaderBackground'><div className='resourceHeaderText'>Studies</div></div></div>
             <div className='resourceTitleContainer'>
                 <div className='resourceTitle'>
                     <div>Study Code:<a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.study_id}`} className='studyIdText' target="_blank" rel="noopener noreferrer">{data.study_id}</a><img src={bookIcon} alt="bookIcon" /></div>
