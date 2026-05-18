@@ -149,7 +149,7 @@ const StudiesView = () => {
       </div>
       <div className='resourceHeader'>
         <div className='resourceHeaderBackground'>
-          <div className='resourceHeaderText'></div>
+          <div className='resourceHeaderText'>{/*Title here*/}</div>
         </div>
       </div>
       <div className='resourceTitleContainer'>
