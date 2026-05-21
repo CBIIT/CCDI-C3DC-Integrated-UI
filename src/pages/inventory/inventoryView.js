@@ -216,11 +216,12 @@ const Inventory = ({
           disabled={disable}
           onClick={() => {
             const paramValue = {
-              'p_id': '', 'p_syn': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
-              'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_basis': '', 'diagnosis_category': '', 'disease_phase': '',
+              'import_from': '', 'p_id': '', 'p_syn': '', 'u': '', 'u_fc': '', 'u_um': '', 'sex_at_birth': '', 'race': '',
+              'age_at_diagnosis': '', 'age_at_diagnosis_unknownAges': '', 'diagnosis': '', 'diagnosis_anatomic_site': '', 'diagnosis_classification_system': '', 'diagnosis_category': '', 'diagnosis_basis': '', 'disease_phase': '',
               'reported_significance': '', 'reported_significance_system': '', 'gene_symbol': '', 'alteration': '', 'fusion_partner_gene': '', 'alteration_type': '', 'status': '',
-              'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'response_category': '', 'age_at_response': '', 'age_at_response_unknownAges': '',
-              'age_at_last_known_survival_status': '', 'age_at_last_known_survival_status_unknownAges': '', 'first_event': '', 'last_known_survival_status': '',
+              'treatment_type': '', 'treatment_agent': '', 'age_at_treatment_start': '', 'age_at_treatment_start_unknownAges': '', 'age_at_treatment_end': '', 'age_at_treatment_end_unknownAges': '',
+              'response': '', 'age_at_response': '', 'response_category': '', 'response_system': '', 'age_at_response_unknownAges': '',
+              'age_at_last_known_survival_status': '', 'age_at_last_known_survival_status_unknownAges': '','cause_of_death': '', 'first_event': '', 'last_known_survival_status': '',
               'participant_age_at_collection': '', 'participant_age_at_collection_unknownAges': '', 'sample_anatomic_site': '', 'sample_tumor_status': '', 'tumor_classification': '',
               'data_category': '', 'file_type': '', 'file_mapping_level': '', 'dbgap_accession': '', 'study_name': '', 'study_status': '',
               'library_selection': '', 'library_strategy': '', 'library_source_material': '', 'library_source_molecule': ''
