@@ -81,10 +81,10 @@ const ParticipantTable = (props) => {
 
             if (primaryComparison !== 0) return primaryComparison;
 
-            const secondaryComparison = a.dbgap_accession.localeCompare(b.dbgap_accession);
+            const secondaryComparison = a.study_id.localeCompare(b.study_id);
             if (secondaryComparison !== 0) return secondaryComparison;
 
-            return a.participant_pk.localeCompare(b.participant_pk);
+            return a.participant_id.localeCompare(b.participant_id);
         });
     }, [participants, selectedColumn]);
 
@@ -133,15 +133,15 @@ const ParticipantTable = (props) => {
     return (
         <div className={classes.participantTableSection}>
             <div className={getTableHeaderClasses()}>
-                <HeaderColumn 
-                    columnKey="participant_id" 
-                    label="Participant ID" 
-                    altText="sort by participant id icon" 
+                <HeaderColumn
+                    columnKey="participant_id"
+                    label="Participant ID"
+                    altText="sort by participant id icon"
                 />
-                <HeaderColumn 
-                    columnKey="dbgap_accession" 
-                    label="dbGaP Accession" 
-                    altText="sort by dbGaP accession icon" 
+                <HeaderColumn
+                    columnKey="study_id"
+                    label="Study ID"
+                    altText="sort by study id icon"
                 />
                 <ToolTip title={TOOLTIP_MESSAGES.removeCohort} placement="top-end" arrow>
                     <div className={classes.removeHeader} onClick={handleDeleteCohort}>
@@ -160,7 +160,7 @@ const ParticipantTable = (props) => {
                 {filteredParticipants.length > 0 ? filteredParticipants.map((participant) => (
                     <div key={participant.participant_id} className={classes.tableRow}>
                         <div>{participant.participant_id}</div>
-                        <div>{participant.dbgap_accession}</div>
+                        <div>{participant.study_id}</div>
                         <div className={classes.removeParticipant}>
                             <img
                                 src={TrashCanIconBlue}
