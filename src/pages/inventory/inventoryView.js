@@ -91,7 +91,7 @@ const Inventory = ({
   activeFilters,
   unknownAgesState,
 }) => {
-  const { mode, facetsConfig, basePath } = useInventoryTemplate();
+  const { facetsConfig, basePath } = useInventoryTemplate();
   const [selectedSection, setSelectedSection] = useState(-1);
   const location = useLocation();
 
@@ -397,9 +397,7 @@ const Inventory = ({
                 unknownAgesState={unknownAgesState}
               />
 
-              {mode === "participants" && (
-                <WidgetView data={dashData} activeFilters={activeFilters} />
-              )}
+              <WidgetView data={dashData} />
 
               <TabsView
                 dashboardStats={dashData}

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Collapse,
@@ -9,12 +9,13 @@ import {
 import ToolTip from '@bento-core/tool-tip';
 import styles from './WidgetStyle';
 import { WidgetGenerator } from '@bento-core/widgets';
-import { widgetConfig, widgetToolTipConfig, WIDGET_DATASET_LIMIT } from '../../../bento/dashTemplate';
+import { WIDGET_DATASET_LIMIT } from '../../../bento/dashTemplate';
 import colors from '../../../utils/colors';
 import ToolTipIconView from '../../../components/ToolTipIcon/ToolTipIconView';
 import { Typography } from '../../../components/Wrappers/Wrappers';
 import { formatWidgetData } from './WidgetUtils';
 import WidgetThemeProvider from './WidgetTheme';
+import { useInventoryTemplate } from '../useInventoryTemplate';
 
 const CustomCollapse = withStyles({
   wrapper: {
@@ -26,13 +27,18 @@ const WidgetView = ({
   classes,
   data,
   theme,
-  activeFilters,
 }) => {
+  const { widgetConfig, widgetToolTipConfig } = useInventoryTemplate();
   const displayWidgets = formatWidgetData(data, widgetConfig);
   const [widgetTypes, setWidgetTypes] = useState(
     widgetConfig.map((widget) => widget.type),
   );
   const [collapse, setCollapse] = useState(true);
+
+  useEffect(() => {
+    setWidgetTypes(widgetConfig.map((widget) => widget.type));
+  }, [widgetConfig]);
+
   const handleChange = () => setCollapse((prev) => !prev);
 
   const toggleWidgetType = (index) => {

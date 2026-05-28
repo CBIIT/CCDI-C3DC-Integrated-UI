@@ -3,6 +3,10 @@ import {
   facetsExploreFilesConfig,
   facetSectionVariables as facetSectionVariablesParticipants,
   facetSectionVariablesExploreFiles,
+  participantWidgetConfig,
+  participantWidgetToolTipConfig,
+  filesWidgetConfig,
+  filesWidgetToolTipConfig,
   queryParams,
 } from '../../bento/dashTemplate';
 import { exploreParticipantsTabs, exploreFilesTabs } from '../../bento/dashboardTabData';
@@ -129,6 +133,8 @@ export function selectInventoryExploreTemplate(state) {
     facetsConfig: isFiles ? facetsExploreFilesConfig : facetsParticipantsConfig,
     facetSectionVariables: isFiles ? facetSectionVariablesExploreFiles : facetSectionVariablesParticipants,
     tabItems: isFiles ? exploreFilesTabs : exploreParticipantsTabs,
+    widgetConfig: isFiles ? filesWidgetConfig : participantWidgetConfig,
+    widgetToolTipConfig: isFiles ? filesWidgetToolTipConfig : participantWidgetToolTipConfig,
     queryParams,
   };
 }
