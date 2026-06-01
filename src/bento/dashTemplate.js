@@ -1401,7 +1401,7 @@ export const SUNBURST_COLORS_LEVEL_2 = [
 // datatable_level2_field: string
 // datatable_level2_colors: string[]
 // sliceTitle: string (optional)
-export const widgetConfig = [
+export const participantWidgetConfig = [
   // {
   //   type: 'sunburst',
   //   title: 'Programs and Arms',
@@ -1474,7 +1474,7 @@ export const widgetConfig = [
 
 export const WIDGET_DATASET_LIMIT = 20;
 
-export const widgetToolTipConfig = {
+export const participantWidgetToolTipConfig = {
   Study: {
     icon: questionIcon,
     alt: 'study tooltip question mark icon',
@@ -1522,6 +1522,66 @@ export const widgetToolTipConfig = {
     maxWidth: '230px',
     clsName: 'widgetTotalTooltipIcon',
     plural: 'anatomic sites',
+  },
+};
+
+export const filesWidgetConfig = [
+  {
+    type: 'donut',
+    title: 'Data Category',
+    dataName: 'fileCountByDataCategory',
+    sliceTitle: 'Files',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
+  },
+  {
+    type: 'donut',
+    title: 'File Type',
+    dataName: 'fileCountByFileType',
+    sliceTitle: 'Files',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
+  },
+  {
+    type: 'donut',
+    title: 'Library Strategy',
+    dataName: 'fileCountByLibraryStrategy',
+    sliceTitle: 'Files',
+    width: '100%',
+    height: 210,
+    tooltip: 'Switch displays between pie and bar charts',
+    countType: 'discrete',
+  },
+];
+
+export const filesWidgetToolTipConfig = {
+  'Data Category': {
+    icon: questionIcon,
+    alt: 'data category tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'data categories',
+  },
+  'File Type': {
+    icon: questionIcon,
+    alt: 'file type tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'file types',
+  },
+  'Library Strategy': {
+    icon: questionIcon,
+    alt: 'library strategy tooltip question mark icon',
+    arrow: true,
+    maxWidth: '230px',
+    clsName: 'widgetTotalTooltipIcon',
+    plural: 'library strategies',
   },
 };
 

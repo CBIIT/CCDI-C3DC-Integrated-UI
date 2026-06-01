@@ -321,6 +321,19 @@ query search (
             group
             subjects
         }
+        
+        fileCountByDataCategory{
+            group
+            subjects
+        }
+        fileCountByFileType{
+            group
+            subjects
+        }
+        fileCountByLibraryStrategy{
+            group
+            subjects
+        }
 
         # Diagnosis filter counts
         filterParticipantCountByDiagnosisAnatomicSite{
