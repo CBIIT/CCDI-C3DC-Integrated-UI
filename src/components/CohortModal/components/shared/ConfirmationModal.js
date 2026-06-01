@@ -1,19 +1,15 @@
 import React from 'react';
 import { Modal, withStyles } from '@material-ui/core';
+import { confirmationTypes } from '../../../../bento/cohortModalData';
 
-export const deletionTypes = {
-    DELETE_ALL_COHORTS: 'delete all cohorts?',
-    DELETE_SINGLE_COHORT: 'delete this cohort?',
-    DELETE_ALL_PARTICIPANTS: 'delete all participants?',
-    CLEAR_UNSAVED_CHANGES: 'leave?'
-};
+export { confirmationTypes };
 
-const DeleteConfirmationModal = (props) => {
+const ConfirmationModal = (props) => {
     const {
         classes,
         open,
         setOpen,
-        handleDelete,
+        handleConfirm,
         deletionType,
         message
     } = props;
@@ -23,17 +19,24 @@ const DeleteConfirmationModal = (props) => {
             onClose={() => setOpen(false)}
         >
             <div className={classes.modal}>
-                {!message ? <div className={classes.modalContent}>
+                <div className={classes.modalContent}>
                     <div className={classes.modalHeading}>
                         {message ?
                             <span>{message}</span>
+                            : deletionType === confirmationTypes.DELETE_SINGLE_COHORT ?
+                            <>
+                                <span>Are you sure you want to delete this cohort?</span>
+                                <span>This will permanently delete the cohort and all associated participants.</span>
+                                <span>Please confirm or cancel.</span>
+                            </>
                             :
                             <>
                                 <span> Are you sure you want to {deletionType} </span>
-                                {deletionType !== deletionTypes.DELETE_ALL_PARTICIPANTS && <span>{deletionType === deletionTypes.CLEAR_UNSAVED_CHANGES && 'You will lose all unsaved changes. ' }This action cannot be undone.</span>}
-                                {deletionType !== deletionTypes.DELETE_ALL_PARTICIPANTS && <span>Press Confirm or Cancel. </span>}
+                                {deletionType !== confirmationTypes.DELETE_ALL_PARTICIPANTS && <span>{deletionType === confirmationTypes.CLEAR_UNSAVED_CHANGES && 'You will lose all unsaved changes. ' }This action cannot be undone.</span>}
+                                {deletionType !== confirmationTypes.DELETE_ALL_PARTICIPANTS && <span>Press Confirm or Cancel. </span>}
                             </>
                         }
+
                     </div>
                     <div className={classes.modalButtons}>
                         {message ?
@@ -54,7 +57,7 @@ const DeleteConfirmationModal = (props) => {
                                 <button
                                     className={classes.confirmButton}
                                     onClick={() => {
-                                        handleDelete();
+                                        handleConfirm();
                                         setOpen(false);
                                     }}
                                 >
@@ -62,24 +65,9 @@ const DeleteConfirmationModal = (props) => {
                                 </button>
                             </>
                         }
+
                     </div>
-                </div> :
-                    <div className={classes.modalContent}>
-                        <div className={classes.modalHeading}>
-                            <span>{message}</span>
-                        </div>
-                        <div className={classes.modalButtons}>
-                            <button
-                                className={classes.confirmButton}
-                                onClick={() => {
-                                    setOpen(false);
-                                }}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                }
+                </div>
             </div>
         </Modal>
     );
@@ -152,4 +140,4 @@ const styles = () => ({
 
 });
 
-export default withStyles(styles, { withTheme: true })(DeleteConfirmationModal);
+export default withStyles(styles, { withTheme: true })(ConfirmationModal);

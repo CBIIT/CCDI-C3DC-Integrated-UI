@@ -10,13 +10,13 @@ import { tableConfig, analyzer_query, analyzer_tables, responseKeys } from "../.
 import DownloadSelectedCohort from "./downloadCohort/DownloadSelectedCohorts";
 import client from "../../utils/graphqlClient";
 import ToolTip from "@bento-core/tool-tip/dist/ToolTip";
-import DeleteConfirmationModal from "../inventory/cohortModal/components/deleteConfirmationModal";
+import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
 import sortIcon from "../../assets/icons/sort_icon.svg";
 import placeHolder from "../../assets/vennDigram/placeHolder.png";
 import ChartVenn from "./vennDiagram/ChartVenn";
 import CheckBoxCustom from "./customCheckbox/CustomCheckbox";
-import { CohortModalContext } from "../inventory/cohortModal/CohortModalContext";
-import CohortModalGenerator from "../inventory/cohortModal/cohortModalGenerator";
+import { CohortModalContext } from "../../components/CohortModal/CohortModalContext";
+import CohortModal from "../../components/CohortModal/CohortModal";
 import { useGlobal } from "../../components/Global/GlobalProvider";
 import questionIcon from "../../assets/icons/Question_icon_2.svg";
 
@@ -58,7 +58,6 @@ export const CohortAnalyzer = () => {
     const [cohortData, setCohortData] = useState();
 
     const { setShowCohortModal, showCohortModal, setCurrentCohortChanges, setWarningMessage, warningMessage } = useContext(CohortModalContext);
-    const { CohortModal } = CohortModalGenerator();
     const { Notification } = useGlobal();
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [HoveredCohort, setHoveredCohort] = useState(true);
@@ -504,10 +503,10 @@ export const CohortAnalyzer = () => {
 
     return (
         <>
-            <DeleteConfirmationModal
+            <ConfirmationModal
                 open={deleteInfo.showDeleteConfirmation}
                 setOpen={() => { handlePopup("", state, setDeleteInfo, deleteInfo) }}
-                handleDelete={() => {
+                handleConfirm={() => {
                     handleDelete(deleteInfo.cohortId,
                         setCohortList,
                         setSelectedCohorts,
@@ -520,10 +519,10 @@ export const CohortAnalyzer = () => {
                 deletionType={deleteInfo.deleteType}
             />
 
-            <DeleteConfirmationModal
+            <ConfirmationModal
                 open={warningMessage}
                 setOpen={() => { setWarningMessage("") }}
-                handleDelete={() => { setWarningMessage("") }}
+                handleConfirm={() => { setWarningMessage("") }}
                 deletionType={false}
                 message={warningMessage}
             />
