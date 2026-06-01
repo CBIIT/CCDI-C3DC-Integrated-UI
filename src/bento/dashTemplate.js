@@ -1423,8 +1423,8 @@ export const widgetConfig = [
   },
   {
     type: 'donut',
-    title: 'Diagnosis',
-    dataName: 'participantCountByDiagnosis',
+    title: 'Diagnosis Category',
+    dataName: 'participantCountByDiagnosisCategory',
     sliceTitle: 'Participants',
     width: '100%',
     height: 210,
@@ -1462,8 +1462,8 @@ export const widgetConfig = [
   },
   {
     type: 'donut',
-    title: 'Data Category',
-    dataName: 'participantCountByDataCategory',
+    title: 'Anatomic Site',
+    dataName: 'participantCountByDiagnosisAnatomicSite',
     sliceTitle: 'Participants',
     width: '100%',
     height: 210,
@@ -1483,13 +1483,13 @@ export const widgetToolTipConfig = {
     clsName: 'widgetTotalTooltipIcon',
     plural: 'studies',
   },
-  Diagnosis: {
+  'Diagnosis Category': {
     icon: questionIcon,
-    alt: 'diagnosis tooltip question mark icon',
+    alt: 'diagnosis category tooltip question mark icon',
     arrow: true,
     maxWidth: '230px',
     clsName: 'widgetTotalTooltipIcon',
-    plural: 'diagnoses',
+    plural: 'diagnosis categories',
   },
   'Age at Diagnosis (years)': {
     icon: questionIcon,
@@ -1515,13 +1515,13 @@ export const widgetToolTipConfig = {
     clsName: 'widgetTotalTooltipIcon',
     plural: 'races',
   },
-  'Data Category': {
+  'Anatomic Site': {
     icon: questionIcon,
-    alt: 'data category tooltip question mark icon',
+    alt: 'anatomic site tooltip question mark icon',
     arrow: true,
     maxWidth: '230px',
     clsName: 'widgetTotalTooltipIcon',
-    plural: 'data categories',
+    plural: 'anatomic sites',
   },
 };
 

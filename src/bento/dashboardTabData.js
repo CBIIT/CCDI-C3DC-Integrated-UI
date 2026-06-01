@@ -313,6 +313,14 @@ query search (
             group
             subjects
         }
+        participantCountByDiagnosisAnatomicSite {
+            group
+            subjects
+        }
+        participantCountByDiagnosisCategory {
+            group
+            subjects
+        }
 
         # Diagnosis filter counts
         filterParticipantCountByDiagnosisAnatomicSite{
