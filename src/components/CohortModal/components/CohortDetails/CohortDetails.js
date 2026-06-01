@@ -133,6 +133,7 @@ const styles = () => ({
         display: 'flex',
         flexDirection: 'column',
         gap: 28,
+        minWidth: '490px'
     },
     cohortDetailsSection: {
         flexGrow: 55,
