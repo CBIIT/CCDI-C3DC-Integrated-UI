@@ -1529,7 +1529,7 @@ export const filesWidgetConfig = [
   {
     type: 'donut',
     title: 'Data Category',
-    dataName: 'filterFileCountByDataCategory',
+    dataName: 'fileCountByDataCategory',
     sliceTitle: 'Files',
     width: '100%',
     height: 210,
@@ -1539,7 +1539,7 @@ export const filesWidgetConfig = [
   {
     type: 'donut',
     title: 'File Type',
-    dataName: 'filterFileCountByFileType',
+    dataName: 'fileCountByFileType',
     sliceTitle: 'Files',
     width: '100%',
     height: 210,
@@ -1549,7 +1549,7 @@ export const filesWidgetConfig = [
   {
     type: 'donut',
     title: 'Library Strategy',
-    dataName: 'filterFileCountByLibraryStrategy',
+    dataName: 'fileCountByLibraryStrategy',
     sliceTitle: 'Files',
     width: '100%',
     height: 210,
