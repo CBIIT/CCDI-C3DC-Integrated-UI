@@ -1,11 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { VennDiagramChart, extractSets } from "chartjs-chart-venn";
-
-// Utility Functions
-const hexToRgba = (hex, alpha = 1) => {
-  const rgb = hex.replace("#", "").match(/.{2}/g).map(x => parseInt(x, 16));
-  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
-};
+import {
+  baseColorArray,
+  nodes,
+  DEFAULT_FONT_SIZE_THRESHOLD,
+  hexToRgba,
+  VENN_CHART_LAYOUT_PADDING,
+  VENN_CANVAS_SIZE_SCALE_NORMAL,
+  VENN_CANVAS_SIZE_SCALE_NORMAL_TWO_COHORTS,
+  VENN_CANVAS_SIZE_SCALE_EXPANDED,
+  VENN_CANVAS_SIZE_SCALE_BIG_SCREEN,
+  VENN_BIG_SCREEN_VIEWPORT_MIN_WIDTH,
+  buildVennCohortSetLabel,
+  vennCohortLabelFitPlugin,
+} from "./ChartVennConfig";
+import { chartVennFallbackCanvasDimensionsPx } from '../config/cohortAnalyzerViewPercentDefaults';
 
 const intersectionColors = [
   "#000","#000","#cbdfcc",
@@ -19,58 +28,71 @@ function reduceOpacity(rgbaColor, reductionPercentage) {
   const matches = rgbaColor.match(/rgba?\((\d+), (\d+), (\d+),? ([\d.]+)?\)/);
   if (!matches) throw new Error("Invalid RGBA color format");
 
-  // eslint-disable-next-line no-unused-vars
   const [, r, g, b, a = 1] = matches.map(Number); 
   const newAlpha = a * (1 - reductionPercentage / 100);
   return `rgba(${r}, ${g}, ${b}, ${newAlpha})`;
 }
 
-
-const ChartVenn = ({ intersection, cohortData, setSelectedChart, setSelectedCohortSections,selectedCohortSection,selectedCohort,setGeneralInfo }) => {
-  const canvasRef = useRef(null);
+const ChartVenn = ({
+  intersection,
+  cohortData,
+  setSelectedChart,
+  setSelectedCohortSections,
+  selectedCohortSection,
+  selectedCohort,
+  setGeneralInfo,
+  containerRef,
+  canvasRef,
+  slotWidth,
+  slotHeight,
+  /**
+   * When true (expanded chart modal), canvas uses VENN_CANVAS_SIZE_SCALE_EXPANDED.
+   * When false, scale follows cohort count; at viewport ≥ VENN_BIG_SCREEN_VIEWPORT_MIN_WIDTH,
+   * inline uses VENN_CANVAS_SIZE_SCALE_BIG_SCREEN instead.
+   */
+  expandedView = false,
+  chartPreviewMode = false,
+}) => {
   const chartRef = useRef(null);
-
-  const baseColorArray = ["#F9E28B", "#86E2B9", "#5198C8D9", ].map(color => hexToRgba(color));;
-  const nodes = ["id","id","treatment_type"];
+  /** Observed chart plot box — keeps canvas in sync when the parent card is resized. */
+  const chartAreaRef = useRef(null);
+  const [observedPlotSize, setObservedPlotSize] = useState({ width: 0, height: 0 });
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    (typeof window !== 'undefined' ? window.innerWidth : 0),
+  );
 
   const [baseSets, setBaseSets] = useState([]);
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    const updatedBaseSets = cohortData.map((cohort) => {
-      const seenValues = new Set();
-      return {
-        label: `${cohort.cohortName} (${cohort.participants.length})`,
-        values: cohort.participants
-          .map(p => p[nodes[intersection]])
-          .filter(value => {
-            if (value !== null && value !== undefined && !seenValues.has(value)) {
-              seenValues.add(value);
-              return true;
-            }
-            return false;
-          }),
-        size: cohort.participants.length,
-      };
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = chartAreaRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+
+    const measure = () => {
+      const { width, height } = el.getBoundingClientRect();
+      if (width < 1 || height < 1) return;
+      const w = Math.round(width);
+      const h = Math.round(height);
+      setObservedPlotSize((prev) => {
+        if (prev.width === w && prev.height === h) return prev;
+        return { width: w, height: h };
+      });
+    };
+
+    measure();
+    const ro = new ResizeObserver(() => {
+      measure();
     });
-   
-
-    setBaseSets(updatedBaseSets);
-  }, [cohortData]);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   
-  useEffect(() => {
-    if (baseSets.length > 0) {
-      const updatedData = extractSets(
-        baseSets.map(set => ({ label: set.label, values: set.values, value: set.size}))
-      );
-
-      
-      setData(updatedData);
-    } 
-  }, [baseSets]);
-
- 
-
   const handleChartClick = (event) => {
     const elementsAtEvent = chartRef.current.getElementsAtEventForMode(
       event,
@@ -103,15 +125,11 @@ const ChartVenn = ({ intersection, cohortData, setSelectedChart, setSelectedCoho
     }
   };
 
-
-
-  
   const getBorderColor = (item, index ) => {
-    return selectedCohortSection.includes(item.label) ? "white" : "#929292";
+    return selectedCohortSection.includes(item.label) ? "rgba(0, 0, 0, 0.1)" : "#929292";
   }
 
   const getBorderWidth = (item, index) =>{
-  
     return selectedCohortSection.includes(item.label) ? 4 : 0.5;
   }
 
@@ -127,7 +145,17 @@ const ChartVenn = ({ intersection, cohortData, setSelectedChart, setSelectedCoho
     }
   };
 
-  
+const fontSizeX = React.useMemo(() => {
+  if (!data || !data.datasets || !data.datasets[0] || !data.datasets[0].data) return 15;
+
+  const largeDataCount = data.datasets[0].data
+    .filter(item => item.sets.length > 1)
+    .reduce((sum, item) => sum + (Array.isArray(item.values) ? item.values.length : 0), 0);
+
+  return largeDataCount > DEFAULT_FONT_SIZE_THRESHOLD ? 10 : 15;
+}, [data]);
+
+
 let config = {};
 if(data){
    config = {
@@ -143,55 +171,139 @@ if(data){
         },
       ],
     },
+    /**
+     * Custom cohort labels (multiline + shrink) — chartjs-chart-venn only draws a single
+     * fillText; we hide y tick labels and render in {@link vennCohortLabelFitPlugin}.
+     */
+    plugins: [vennCohortLabelFitPlugin],
     options: {
       onClick: handleChartClick,
+      layout: {
+        padding: VENN_CHART_LAYOUT_PADDING,
+      },
       scales: {
         x: {
             ticks: {
+                display: !chartPreviewMode,
                 font: {
                     family: 'Nunito',
-                    size: 15,
+                    size: fontSizeX,
                     weight: 0,
                 },
-                color: '#000',
+                color: '#494949',
             },
         },
         y: {
             ticks: {
+                /* Font options still feed vennCohortLabelFitPlugin; display false skips built-in one-line labels. */
+                display: false,
                 font: {
                     family: 'Nunito',
                     size: 16,
                     weight: 570,
                 },
-                color: 'black',
+                color: '#494949',
             },
         },
     },
     hover: {
       mode: null,
       animationDuration: 0 
-    }
+    },
     },
   };
 
 }
 
  
+// useEffect hooks
+  useEffect(() => {
+    const updatedBaseSets = cohortData.filter(cohort => cohort && cohort.cohortName).map((cohort) => {
+      const seenValues = new Set();
+      return {
+        label: buildVennCohortSetLabel(
+          cohort.cohortName,
+          cohort.participants.length,
+          undefined,
+          !chartPreviewMode,
+        ),
+        values: cohort.participants
+          .map(p => p[nodes[intersection]])
+          .filter(value => {
+            if (value !== null && value !== undefined && !seenValues.has(value)) {
+              seenValues.add(value);
+              return true;
+            }
+            return false;
+          }),
+        size: cohort.participants.length,
+      };
+    });
+
+    setBaseSets(updatedBaseSets);
+  }, [cohortData, intersection, chartPreviewMode]);
+
+  useEffect(() => {
+    if (baseSets.length > 0) {
+      const updatedData = extractSets(
+        baseSets.map(set => ({ label: set.label, values: set.values, value: set.size }))
+      );
+      setData(updatedData);
+    }
+  }, [baseSets]);
 
 useEffect(() => {
   if (chartRef.current && canvasRef.current) {
     chartRef.current.destroy();
-    canvasRef.current.width = cohortData.length === 2 ? 800 : 700;
-    canvasRef.current.height =  cohortData.length === 2 ? 200 : 270; 
+    chartRef.current = null;
   }
-  chartRef.current = new VennDiagramChart(canvasRef.current, config);
+  
+  if (canvasRef.current && containerRef.current && data && config && config.type) {
+    const fallback = chartVennFallbackCanvasDimensionsPx(cohortData.length);
+    const slotW =
+      observedPlotSize.width > 0 ? observedPlotSize.width : slotWidth;
+    const slotH =
+      observedPlotSize.height > 0 ? observedPlotSize.height : slotHeight;
+
+    let maxWidth = fallback.width;
+    let maxHeight = fallback.height;
+    if (slotW != null && slotH != null) {
+      // Use nearly the full slot — only a few px reserved as safety so we never
+      // overflow when the slot resizes mid-render. The CSS margin below is 0,
+      // so this is the only buffer between canvas edge and slot edge.
+      maxWidth = Math.max(100, Math.round(slotW) );
+      maxHeight = Math.max(10, Math.round(slotH) );
+    }
+
+    const vennCohortCount = cohortData.filter((c) => c && c.cohortName).length;
+    const isBigScreen = viewportWidth >= VENN_BIG_SCREEN_VIEWPORT_MIN_WIDTH;
+    let canvasScale;
+    if (expandedView) {
+      canvasScale = VENN_CANVAS_SIZE_SCALE_EXPANDED;
+    } else if (isBigScreen) {
+      canvasScale = VENN_CANVAS_SIZE_SCALE_BIG_SCREEN;
+    } else if (vennCohortCount === 2) {
+      canvasScale = VENN_CANVAS_SIZE_SCALE_NORMAL_TWO_COHORTS;
+    } else {
+      canvasScale = VENN_CANVAS_SIZE_SCALE_NORMAL;
+    }
+    maxWidth = Math.round(maxWidth * canvasScale);
+    maxHeight = Math.round(maxHeight * canvasScale);
+
+    canvasRef.current.width = maxWidth;
+    canvasRef.current.height = maxHeight;
+    canvasRef.current.style.width = `${maxWidth}px`;
+    canvasRef.current.style.height = `${maxHeight}px`;
+    // No outer margin — slot-fit constants above already reserve safety pixels,
+    // and removing the 10px CSS margin lets the venn fill its slot.
+    canvasRef.current.style.margin = "0";
+    chartRef.current = new VennDiagramChart(canvasRef.current, config);
+  }
 
   return () => {
     if (chartRef.current) chartRef.current.destroy();
   };
-}, [selectedCohortSection, data, selectedCohort , cohortData]);
-    
-    
+}, [selectedCohortSection, data, selectedCohort, cohortData, slotWidth, slotHeight, expandedView, chartPreviewMode, observedPlotSize, viewportWidth]);
 
   useEffect(() => {
     let updatedStat = {};
@@ -216,9 +328,35 @@ useEffect(() => {
     )
   }
   return (
-    <div className="App">
-      <canvas  ref={canvasRef} id="canvas"></canvas>
-    
+    <div
+      ref={containerRef}
+      className="App"
+      style={{
+        width: '100%',
+        height: '100%',
+        minHeight: 0,
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 0,
+      }}
+    >
+      <div
+        ref={chartAreaRef}
+        className="chart-container"
+        style={{
+          flex: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          minHeight: '100%',
+          justifyContent: 'center',
+          padding: 0,
+          overflow: 'visible',
+        }}
+      >
+        <canvas ref={canvasRef} id="canvas" />
+      </div>
     </div>
   );
 };

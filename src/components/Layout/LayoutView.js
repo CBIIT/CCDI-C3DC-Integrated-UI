@@ -16,7 +16,7 @@ import ScrollButton from '../ScrollButton/ScrollButtonView';
 import StudiesView from '../../pages/studies/studiesView';
 import StudiesDetail from "../../pages/studyDetail/studyDetailController";
 import OverlayWindow from '../OverlayWindow/OverlayWindow';
-import CohortAnalyzerController  from "../../pages/CohortAnalyzer/CohortAnalyzerController";
+import CohortAnalyzerController  from "../../pages/CohortAnalyzer/controllers/CohortAnalyzerController";
 
 const Layout = () => {
     return (
