@@ -17,7 +17,7 @@ describe('CohortDataTransform', () => {
   const state = {
     'cohort-a': {
       cohortName: 'Cohort A',
-      participants: [{ participant_pk: 'pk1', participant: { id: 'pk1', participant_id: 'P1' } }],
+      participants: [{ id: 'pk1', participant_id: 'P1', study_id: 'phs1' }],
     },
   };
 
@@ -26,7 +26,7 @@ describe('CohortDataTransform', () => {
     client.query.mockResolvedValue({
       data: {
         participants: [
-          { id: 'pk1', participant_id: 'P1', participant: { id: 'pk1', participant_id: 'P1' } },
+          { id: 'pk1', participant_id: 'P1', study_id: 'phs1', participant: { id: 'pk1', participant_id: 'P1', study_id: 'phs1' } },
         ],
       },
     });
@@ -51,8 +51,14 @@ describe('CohortDataTransform', () => {
     await flushPromises();
 
     expect(client.query).toHaveBeenCalled();
-    expect(setQueryVariable).toHaveBeenCalled();
+    expect(setQueryVariable).toHaveBeenCalledWith({ id: ['pk1'], first: 10000 });
     expect(setRowData).toHaveBeenCalled();
+    expect(setCohortData).toHaveBeenCalledWith({
+      'cohort-a': {
+        cohortName: 'Cohort A',
+        participants: [{ id: 'pk1', participant_id: 'P1', study_id: 'phs1' }],
+      },
+    });
   });
 
   it('filters row data by search value', async () => {

@@ -24,8 +24,8 @@ export default function DownloadSelectedCohort({ queryVariable, isSelected }) {
 
         try {
             // Extract participant PKs from queryVariable for centralized function
-            const participants = queryVariable.participant_pk ?
-                queryVariable.participant_pk.map(pk => ({ participant_pk: pk })) : [];
+            const participants = queryVariable.id ?
+                queryVariable.id.map(id => ({ id: id })) : [];
 
             await downloadCohortManifest(participants, "analyzed", {
                 onLoadingStateChange: setIsDownloading
@@ -42,8 +42,8 @@ export default function DownloadSelectedCohort({ queryVariable, isSelected }) {
 
         try {
             // Extract participant PKs from queryVariable for centralized function
-            const participants = queryVariable.participant_pk ?
-                queryVariable.participant_pk.map(pk => ({ participant_pk: pk })) : [];
+            const participants = queryVariable.id ?
+                queryVariable.id.map(id => ({ id: id })) : [];
 
             await downloadCohortMetadata(participants, "Analyzed", {
                 onLoadingStateChange: setIsDownloading

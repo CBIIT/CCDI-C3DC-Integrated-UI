@@ -4,6 +4,9 @@ import { generateQueryVariable, getIdsFromCohort, getAllIds, filterAllParticipan
 
 const DEFAULT_QUERY_LIMIT = 10000;
 
+// const getParticipantId = (participant = {}) => participant.id || participant.participant_pk;
+// const stripParticipantPk = ({ participant_pk, ...participant }) => participant;
+
 
 const getJoinedCohortData = async ({
     nodeIndex,
@@ -19,23 +22,28 @@ const getJoinedCohortData = async ({
     function transformData(data, type) {
         if (type === "treatment") {
             return data.map(({ participant, id, ...rest }) => ({
+                id: participant.id,
                 participant_pk: participant.id,
                 participant_id: participant.participant_id,
+                study_id: participant.study_id,
                 treatment_pk: id,
                 ...rest,
             }));
         } else if (type === "diagnosis") {
             return data.map(({ participant, id, ...rest }) => ({
+                id: participant.id,
                 participant_pk: participant.id,
                 participant_id: participant.participant_id,
+                study_id: participant.study_id,
                 diagnosis_pk: id,
                 ...rest,
             }));
         } else {
-            return data.map(({ id, participant_id, ...rest }) => ({
+            return data.map(({ id, participant_id, study_id, ...rest }) => ({
                 participant_pk: id,
-                participant_id: participant_id,
+                participant_id,
                 id: id,
+                study_id,
                 ...rest,
             }));
         }
@@ -49,7 +57,7 @@ const getJoinedCohortData = async ({
 
             const updatedParticipants = existingParticipants.map(participant => {
                 const matchingNewParticipant = newParticipantsData.find(
-                    newParticipant => newParticipant.participant_pk === participant.participant_pk
+                    newParticipant => newParticipant.id === participant.id
                 );
 
                 if (matchingNewParticipant) {
@@ -79,7 +87,7 @@ const getJoinedCohortData = async ({
             let finalResponse = [];
             newParticipantsData.forEach((participant) => {
                 const matchingExistingParticipants = existingParticipants.find(
-                    existingParticipant => existingParticipant.participant_pk === participant.participant_pk
+                    existingParticipant => existingParticipant.id === participant.id
                 );
 
                 if (matchingExistingParticipants) {
@@ -102,8 +110,8 @@ const getJoinedCohortData = async ({
     async function getJoinedCohort(isReset = false) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) { 
-            const participantPK = isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo);
-            queryVariables = { "participant_pk": participantPK, first: DEFAULT_QUERY_LIMIT };
+            const participantIDs = isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo);
+            queryVariables = { "id": participantIDs, first: DEFAULT_QUERY_LIMIT };
         }
         setQueryVariable(queryVariables);
         let { data } = await client.query({
@@ -111,7 +119,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "participants") }
-        if (queryVariables.participant_pk.length > 0) {
+        if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
                 let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
                 setRowData(addCohortColumn(filteredRowData, state, selectedCohorts));
@@ -131,7 +139,7 @@ const getJoinedCohortData = async ({
     async function getJoinedCohortByD(selectedCohortSection = null) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "participant_pk": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
+            queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
         }
         setQueryVariable(queryVariables);
         let { data } = await client.query({
@@ -139,7 +147,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
-        if (queryVariables.participant_pk.length > 0) {
+        if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
 
                 let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
@@ -175,7 +183,7 @@ const getJoinedCohortData = async ({
     async function getJoinedCohortByT(selectedCohortSection = null) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "participant_pk": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
+            queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
         }
         setQueryVariable(queryVariables);
         let { data } = await client.query({
@@ -184,7 +192,7 @@ const getJoinedCohortData = async ({
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
 
-        if (queryVariables.participant_pk.length > 0) {
+        if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
                 let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
                 if (JSON.stringify(selectedCohortSection) !== "{}") {

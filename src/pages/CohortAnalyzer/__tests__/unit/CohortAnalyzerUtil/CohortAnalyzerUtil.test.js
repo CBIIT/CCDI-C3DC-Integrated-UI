@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
@@ -57,16 +56,16 @@ describe('CohortAnalyzerUtil', () => {
   });
 
   describe('getIdsFromCohort', () => {
-    it('collects participant pks for selected cohorts', () => {
+    it('collects participant ids for selected cohorts', () => {
       const data = {
-        a: { participants: [{ participant_pk: 'pk1' }, { participant_pk: 'pk2' }] },
-        b: { participants: [{ participant_pk: 'pk3' }] },
+        a: { participants: [{ id: 'pk1' }, { id: 'pk2' }] },
+        b: { participants: [{ id: 'pk3' }] },
       };
       expect(getIdsFromCohort(data, ['a'])).toEqual(['pk1', 'pk2']);
     });
 
     it('skips cohorts without participants array', () => {
-      const data = { a: {}, b: { participants: [{ participant_pk: 'pk1' }] } };
+      const data = { a: {}, b: { participants: [{ id: 'pk1' }] } };
       expect(getIdsFromCohort(data, ['a', 'b'])).toEqual(['pk1']);
     });
   });
@@ -81,11 +80,11 @@ describe('CohortAnalyzerUtil', () => {
     const state = {
       'cohort a': {
         cohortName: 'Cohort A',
-        participants: [{ participant_pk: 'pk1' }],
+        participants: [{ id: 'pk1' }],
       },
     };
 
-    it('adds cohort column using participant_pk', () => {
+    it('adds cohort column using row participant_pk against state ids', () => {
       const rows = [{ participant_pk: 'pk1', value: 1 }];
       const result = addCohortColumn(rows, state, ['cohort a'], 'other');
       expect(result[0].cohort).toBeDefined();
@@ -163,10 +162,10 @@ describe('CohortAnalyzerUtil', () => {
   });
 
   describe('generateQueryVariable', () => {
-    it('builds participant_pk query from state', () => {
-      const state = { a: { participants: [{ participant_pk: 'pk1' }] } };
+    it('builds id query from participant ids in state', () => {
+      const state = { a: { participants: [{ id: 'pk1' }] } };
       const query = generateQueryVariable(['a'], state);
-      expect(query.participant_pk).toEqual(['pk1']);
+      expect(query.id).toEqual(['pk1']);
       expect(query.first).toBe(10000);
     });
   });

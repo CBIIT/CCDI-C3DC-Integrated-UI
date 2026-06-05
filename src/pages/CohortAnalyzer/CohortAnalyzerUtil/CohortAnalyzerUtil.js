@@ -37,17 +37,17 @@ export const filterAllParticipantWithTreatmentType = (generalInfo, allParticipan
 
 
 export const getIdsFromCohort = (data, selectedCohorts) => {
-    const allParticipantPKs = [];
+    const allParticipantIDs = [];
 
     Object.keys(data).forEach((cohortKey) => {
         if (selectedCohorts.includes(cohortKey)) {
             if (data[cohortKey].participants) {
-                const participantPKs = data[cohortKey].participants.map(participant => participant.participant_pk);
-                allParticipantPKs.push(...participantPKs);
+                const participantIDs = data[cohortKey].participants.map(participant => participant.id);
+                allParticipantIDs.push(...participantIDs);
             }
         }
     });
-    return allParticipantPKs;
+    return allParticipantIDs;
 }
 
 export const getAllIds = (generalInfo) => {
@@ -64,7 +64,7 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
     let finalRowData = rowD.map((row) => {
         if (type === "other") {
 
-            let cohortName = getCohortName(row.participant_pk, state, selectedCohorts);
+            let cohortName = getCohortName(row.id, state, selectedCohorts);
             return {
                 ...row,
                 cohort: cohortName
@@ -86,7 +86,7 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
 const getCohortName = (pk, state, selectedCohorts) => {
     const cohortNames = selectedCohorts
         .filter(cohortKey =>
-            state[cohortKey].participants.some(participant => participant.participant_pk === pk)
+            state[cohortKey].participants.some(participant => participant.id === pk)
         ).map(cohortKey => state[cohortKey].cohortName);
     let finalResponse = [];
     const baseColorArray = ["#F0D571", "#A4E9CB", "#A3CCE8"];
@@ -194,11 +194,11 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
 
 export function generateQueryVariable(cohortNames, state) {
     let query = {};
-    query['participant_pk'] = [];
+    query['id'] = [];
     query["first"] = 10000;
     cohortNames.forEach((cName) => {
         state[cName].participants.forEach((participant) => {
-            query["participant_pk"].push(participant.participant_pk);
+            query["id"].push(participant.id);
         });
     });
     return query;

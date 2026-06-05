@@ -282,7 +282,7 @@ describe('CohortAnalyzer page entry point', () => {
   it('handleBuildInExplore skips modal when localStorage flag is set', () => {
     localStorage.setItem('hideNavigateModal', 'true');
     renderPage({
-      rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }],
+      rowData: [{ participant_id: 'P1', study_id: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(mockStoreDispatch).toHaveBeenCalled();
@@ -291,7 +291,7 @@ describe('CohortAnalyzer page entry point', () => {
   });
 
   it('handleBuildInExplore opens navigate-away modal by default', () => {
-    renderPage({ rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }] });
+    renderPage({ rowData: [{ participant_id: 'P1', study_id: 'phs1' }] });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(defaultCohortAnalyzerContext.setShowNavigateAwayModal).toHaveBeenCalledWith(true);
     expect(mockNavigate).not.toHaveBeenCalled();

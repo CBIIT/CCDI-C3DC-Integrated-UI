@@ -29,7 +29,7 @@ describe('ChartVennConfig color utilities', () => {
 
   describe('nodes', () => {
     it('lists analyzer node keys', () => {
-      expect(nodes).toEqual(['participant_pk', 'diagnosis', 'treatment_type']);
+      expect(nodes).toEqual(['id', 'diagnosis', 'treatment_type']);
     });
   });
 
