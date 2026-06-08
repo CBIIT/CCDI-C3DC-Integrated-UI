@@ -132,7 +132,7 @@ export const CohortAnalyzer = () => {
 
     }
 
-    async function getJoinedCohort(isReset = false) {
+    async function getJoinedCohort(isReset = false, isRequestActive) {
         await getJoinedCohortData({
             nodeIndex,
             selectedCohorts,
@@ -143,7 +143,8 @@ export const CohortAnalyzer = () => {
             setQueryVariable,
             setRowData,
             location,
-            setCohortData
+            setCohortData,
+            isRequestActive,
         });
     }
 
@@ -178,8 +179,9 @@ export const CohortAnalyzer = () => {
     }, [selectedChart])
 
     useEffect(() => {
+        let isActive = true;
         if (selectedChart.length >= 0) {
-            getJoinedCohort();
+            getJoinedCohort(false, () => isActive);
         }
 
 
@@ -197,17 +199,29 @@ export const CohortAnalyzer = () => {
                 setRowData([]);
             }
         }
+        return () => {
+            isActive = false;
+        };
     }, [selectedCohorts, selectedChart]);
 
     useEffect(() => {
-        getJoinedCohort();
+        let isActive = true;
+        getJoinedCohort(false, () => isActive);
+        return () => {
+            isActive = false;
+        };
     }, [searchValue])
 
     useEffect(() => {
-        getJoinedCohort();
+        let isActive = true;
+        getJoinedCohort(false, () => isActive);
+        return () => {
+            isActive = false;
+        };
     }, [generalInfo])
 
     useEffect(() => {
+        let isActive = true;
 
         setSelectedCohortSections([]);
         setGeneralInfo({})
@@ -215,13 +229,17 @@ export const CohortAnalyzer = () => {
         if (searchRef.current) {
             searchRef.current.value = "";
         }
-        getJoinedCohort(true);
+        getJoinedCohort(true, () => isActive);
 
+        return () => {
+            isActive = false;
+        };
     }, [nodeIndex])
 
     useEffect(() => {
         setRefreshTableContent(false)
-        setTimeout(() => setRefreshTableContent(true), 0)
+        const timer = setTimeout(() => setRefreshTableContent(true), 0)
+        return () => clearTimeout(timer);
     }, [cohortList, nodeIndex, cohortData])
 
     const handleClick = () => {
@@ -439,4 +457,3 @@ export const CohortAnalyzer = () => {
         </>
     )
 }
-

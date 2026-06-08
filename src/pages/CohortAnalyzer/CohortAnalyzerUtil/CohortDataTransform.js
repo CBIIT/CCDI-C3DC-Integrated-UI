@@ -17,7 +17,9 @@ const getJoinedCohortData = async ({
     setQueryVariable,
     setRowData,
     location,
-    setCohortData
+    setCohortData,
+    isReset = false,
+    isRequestActive = () => true,
 }) => {
     function transformData(data, type) {
         if (type === "treatment") {
@@ -75,7 +77,9 @@ const getJoinedCohortData = async ({
             };
 
         });
-        setCohortData(newState);
+        if (isRequestActive()) {
+            setCohortData(newState);
+        }
     }
 
     function updatedCohortContentAllowDuplication(newParticipantsData) {
@@ -104,7 +108,9 @@ const getJoinedCohortData = async ({
             };
 
         });
-        setCohortData(newState);
+        if (isRequestActive()) {
+            setCohortData(newState);
+        }
     }
 
     async function getJoinedCohort(isReset = false) {
@@ -118,6 +124,9 @@ const getJoinedCohortData = async ({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
+        if (!isRequestActive()) {
+            return;
+        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "participants") }
         if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
@@ -146,6 +155,9 @@ const getJoinedCohortData = async ({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
+        if (!isRequestActive()) {
+            return;
+        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
         if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
@@ -190,6 +202,9 @@ const getJoinedCohortData = async ({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
+        if (!isRequestActive()) {
+            return;
+        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
 
         if (queryVariables.id.length > 0) {
@@ -225,12 +240,12 @@ const getJoinedCohortData = async ({
     }
 
     if (nodeIndex === 0) {
-        getJoinedCohort();
+        return getJoinedCohort(isReset);
     } else if (nodeIndex === 1) {
 
-        getJoinedCohortByD(generalInfo);
+        return getJoinedCohortByD(generalInfo);
     } else if (nodeIndex === 2) {
-        getJoinedCohortByT(generalInfo)
+        return getJoinedCohortByT(generalInfo)
     }
 
 };

@@ -99,4 +99,29 @@ describe('CohortDataTransform', () => {
 
     expect(setRowData).toHaveBeenCalledWith([]);
   });
+
+  it('skips state updates after a request is inactive', async () => {
+    const setRowData = jest.fn();
+    const setQueryVariable = jest.fn();
+    const setCohortData = jest.fn();
+
+    await getJoinedCohortData({
+      nodeIndex: 0,
+      selectedCohorts: ['cohort-a'],
+      state,
+      generalInfo: {},
+      searchValue: '',
+      setQueryVariable,
+      setRowData,
+      location: {},
+      setCohortData,
+      isRequestActive: () => false,
+    });
+    await flushPromises();
+
+    expect(client.query).toHaveBeenCalled();
+    expect(setQueryVariable).toHaveBeenCalledWith({ id: ['pk1'], first: 10000 });
+    expect(setRowData).not.toHaveBeenCalled();
+    expect(setCohortData).not.toHaveBeenCalled();
+  });
 });
