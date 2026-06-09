@@ -111,7 +111,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: DIAGNOSIS,
-    label: 'Age at Diagnosis (days)',
+    label: 'Age at Diagnosis',
     apiPath: 'filterParticipantCountByDiagnosisAge',
     apiForFiltering: 'filterParticipantCountByDiagnosisAge',
     datafield: 'age_at_diagnosis',
