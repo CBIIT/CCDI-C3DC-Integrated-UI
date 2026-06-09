@@ -31,10 +31,10 @@ const addExistingCohortToolTip =
 export const tooltipContentAddAll = {
   icon: questionIcon,
   alt: 'tooltipIcon',
-  Participants: 'Click button to add all files associated with the filtered row(s).',
-  Studies: 'Click button to add all files associated with the filtered row(s).',
-  Samples: 'Click button to add all files associated with the filtered row(s).',
-  Files: 'Click button to add all files associated with the filtered row(s).',
+  Participants: 'Click button to add all files associated with the facet-filtered row(s).',
+  Studies: 'Click button to add all files associated with the facet-filtered row(s).',
+  Samples: 'Click button to add all files associated with the facet-filtered row(s).',
+  Files: 'Click button to add all files associated with the facet-filtered row(s).',
   arrow: true,
   styles: {
     border: '#03A383 1px solid',
@@ -44,10 +44,10 @@ export const tooltipContentAddAll = {
 export const tooltipContent = {
   icon: questionIcon,
   alt: 'tooltipIcon',
-  Participants: 'Click button to add files associated with the selected row(s).',
-  Studies: 'Click button to add files associated with the selected row(s).',
-  Samples: 'Click button to add files associated with the selected row(s).',
-  Files: 'Click button to add files associated with the selected row(s).',
+  Participants: 'Click button to add file(s) associated with the selected row(s).',
+  Studies: 'Click button to add file(s) associated with the selected row(s).',
+  Samples: 'Click button to add file(s) associated with the selected row(s).',
+  Files: 'Click button to add file(s) associated with the selected row(s).',
   arrow: true,
   styles: {
     border: '#03A383 1px solid',
