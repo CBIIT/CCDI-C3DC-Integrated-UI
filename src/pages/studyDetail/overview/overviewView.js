@@ -14,11 +14,10 @@ const OverviewView = ({ data, classes }) => {
             {/* Left Container for Study Details */}
             <div className={classes.leftContainer}>
                 <div className={classes.studyItem}>
-                    <div className={classes.studyItemTitle}>STUDY ID</div>
+                    <div className={classes.studyItemTitle}>dbGaP Accession</div>
                     <div className={classes.studyItemContent}>
-                        <span>dbGaP Accession: </span>
-                        <a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.study_id}`} target="_blank" rel="noopener noreferrer">
-                            {data.study_id}
+                        <a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${data.dbgap_accession}`} target="_blank" rel="noopener noreferrer">
+                            {data.dbgap_accession}
                             <img className={classes.exportIcon} src={exportIcon} alt="exportIcon" />
                         </a>
                     </div>
@@ -91,6 +90,10 @@ const OverviewView = ({ data, classes }) => {
                 <div className={classes.studyItem}>
                     <div className={classes.studyItemTitle}>Samples Count</div>
                     <div className={classes.studyItemContent}>{data.num_of_samples.toLocaleString('en-US')}</div>
+                </div>
+                <div className={classes.studyItem}>
+                    <div className={classes.studyItemTitle}>Files Count</div>
+                    <div className={classes.studyItemContent}>{data.num_of_files.toLocaleString('en-US')}</div>
                 </div>
                 <div className={classes.studyItem}>
                     <div className={classes.studyItemTitle}>Study Profile</div>
