@@ -3686,6 +3686,8 @@ export const exploreFilesTabs = [
         display: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
         hideable: true,
       },
       {
@@ -3694,6 +3696,8 @@ export const exploreFilesTabs = [
         display: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
         hideable: true,
       },
       {
@@ -3702,6 +3706,8 @@ export const exploreFilesTabs = [
         display: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
         hideable: true,
       },
       {
@@ -3782,6 +3788,8 @@ export const exploreFilesTabs = [
         display: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
         hideable: true,
       },
       {
