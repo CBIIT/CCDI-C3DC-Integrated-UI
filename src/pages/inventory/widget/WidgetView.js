@@ -99,11 +99,7 @@ const WidgetView = ({
               dataset = dataset.sort((a, b) => (b.subjects || 0) - (a.subjects || 0));
             }
             if (datasetLength > WIDGET_DATASET_LIMIT) {
-              const otherGroup = {
-                group: 'Other',
-                subjects: dataset.slice(WIDGET_DATASET_LIMIT).reduce((acc, curr) => acc + (curr.subjects || 0), 0),
-              };
-              dataset = dataset.slice(0, WIDGET_DATASET_LIMIT).concat(otherGroup);
+              dataset = dataset.slice(0, WIDGET_DATASET_LIMIT);
             }
             if (
               widgetTypes[index] === 'sunburst'
