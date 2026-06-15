@@ -78,21 +78,21 @@ export const landingPageData = {
     titleText: 'Data Model',
     descriptionText: 'Review components to gain a deeper understanding of the specifics of harmonization.',
     callToActionText: 'Explore Data Model',
-    callToActionLink: 'https://github.com/CBIIT/c3dc-model', // This links to the Data Model GitHub Page.
+    callToActionLink: '/data-model', // This links to the Data Model GitHub Page.
   },
   tile3: {
     alt: '',
     img: landingTile3,
-    titleText: 'Announcements',
-    descriptionText: 'The latest updates for both datasets and the application are now available.',
-    callToActionText: 'EXPLORE ANNOUNCEMENTS',
-    callToActionLink: '/announcements', //Link to the "Announcement" Static Page
+    titleText: 'Studies',
+    descriptionText: 'Browse the list of available CCDI studies.',
+    callToActionText: 'EXPLORE STUDIES',
+    callToActionLink: '/studies', 
   },
   tile4: {
     alt: '',
     img: landingTile4,
-    titleText: 'C3DC Data',
-    descriptionText: 'Explore and export C3DC data for analysis alongside other data types.',
+    titleText: 'CCDI Data',
+    descriptionText: 'Explore and export CCDI data for analysis alongside other data types.',
     callToActionText: 'Explore Data',
     callToActionLink: '/exploreParticipants', // This links to the explore dashboard.
   },

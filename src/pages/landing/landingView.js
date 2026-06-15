@@ -10,10 +10,12 @@ import iconAbout from '../../assets/landing/LP_About_Fullarticle.Arrow.svg';
 
 // Layout constants
 const TILE_IMAGE_HEIGHT = '249px';
+const DC_WORDS_HEIGHT = '200px';
 const LAYOUT_GAP = '18px';
 const CONTENT_LEFT_WIDTH = '300px';
 const CONTENT_RIGHT_WIDTH = '604px';
 const CONTAINER_PADDING = '20px';
+const TILE4_SECTION_HEIGHT = `calc(${TILE_IMAGE_HEIGHT} + ${DC_WORDS_HEIGHT} - ${LAYOUT_GAP})`;
 
 const LandingView = ({ classes, statsData }) => (
   <div className={classes.page}>
@@ -163,42 +165,32 @@ const LandingView = ({ classes, statsData }) => (
               </div>
             </div>
             <div className={classes.contentRight}>
-              <div className={classes.contentRightTop}>
-                <div className={classes.study}>
-                  <div className={classes.studyImg}>
-                    <img
-                      className={classes.image}
-                      src={landingPageData.tile2.img}
-                      alt={landingPageData.tile2.alt}
-                      id="tile2_image"
-                    />
+              <div className={classes.contentRightBottom}>
+                <div className={classes.cases} id="tile4_image">
+                  <h3 className={classes.mountainMeadowContentHeader} id="tile4_title">
+                    {landingPageData.tile4.titleText}
+                  </h3>
+                  <div className={classes.mountainMeadowContent} id="tile4_description">
+                    {landingPageData.tile4.descriptionText}
                   </div>
-                  <div className={classes.content}>
-                    <h3 className={classes.contentHeader} id="tile2_title">
-                      {landingPageData.tile2.titleText}
-                    </h3>
-                    <div className={classes.contentContainer} id="tile2_description">
-                      {landingPageData.tile2.descriptionText}
-                    </div>
-
-                  </div>
-                  <div className={classes.blueButton}>
+                  <div className={classes.mountainMeadowButtonSection}>
                     <div className={classes.blueButtonLeft}>
-                      <img className={classes.icon} src={icon} alt="CTDC about " />
+                      <img className={classes.mountainMeadowIcon} src={icon} alt="CTDC about " />
                       {' '}
                     </div>
-                    <div className={classes.blueButtonRight} id="tile2_button">
+                    <div className={classes.blueButtonRight} id="tile4_button">
                       <Link
-                        to={landingPageData.tile2.callToActionLink}
-                        className={classes.blueButton}
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                        to={landingPageData.tile4.callToActionLink}
+                        className={classes.mountainMeadowButton}
+                        reloadDocument={true}
                       >
-                        {landingPageData.tile2.callToActionText}
+                        {landingPageData.tile4.callToActionText}
                       </Link>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className={classes.contentRightTop}>
                 <div className={classes.studies}>
                   <div className={classes.studyImg}>
                     <img
@@ -233,32 +225,40 @@ const LandingView = ({ classes, statsData }) => (
                     </div>
                   </div>
                 </div>
-
-              </div>
-              <div className={classes.contentRightBottom}>
-                <div className={classes.cases} id="tile4_image">
-                  <h3 className={classes.mountainMeadowContentHeader} id="tile4_title">
-                    {landingPageData.tile4.titleText}
-                  </h3>
-                  <div className={classes.mountainMeadowContent} id="tile4_description">
-                    {landingPageData.tile4.descriptionText}
+                <div className={classes.study}>
+                  <div className={classes.studyImg}>
+                    <img
+                      className={classes.image}
+                      src={landingPageData.tile2.img}
+                      alt={landingPageData.tile2.alt}
+                      id="tile2_image"
+                    />
                   </div>
-                  <div className={classes.mountainMeadowButtonSection}>
+                  <div className={classes.content}>
+                    <h3 className={classes.contentHeader} id="tile2_title">
+                      {landingPageData.tile2.titleText}
+                    </h3>
+                    <div className={classes.contentContainer} id="tile2_description">
+                      {landingPageData.tile2.descriptionText}
+                    </div>
+
+                  </div>
+                  <div className={classes.blueButton}>
                     <div className={classes.blueButtonLeft}>
-                      <img className={classes.mountainMeadowIcon} src={icon} alt="CTDC about " />
+                      <img className={classes.icon} src={icon} alt="CTDC about " />
                       {' '}
                     </div>
-                    <div className={classes.blueButtonRight} id="tile4_button">
+                    <div className={classes.blueButtonRight} id="tile2_button">
                       <Link
-                        to={landingPageData.tile4.callToActionLink}
-                        className={classes.mountainMeadowButton}
-                        reloadDocument={true}
+                        to={landingPageData.tile2.callToActionLink}
+                        className={classes.blueButton}
                       >
-                        {landingPageData.tile4.callToActionText}
+                        {landingPageData.tile2.callToActionText}
                       </Link>
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -725,7 +725,7 @@ const styles = () => ({
     overflow: 'hidden',
   },
   DCWords: {
-    height: '200px',
+    height: DC_WORDS_HEIGHT,
     background: '#334a9b',
     color: '#FFFFFF',
     fontFamily: 'Poppins',
@@ -777,11 +777,8 @@ const styles = () => ({
     flex: 1,
   },
   aboutButtonSection: {
-    background: 'white',
-    marginBottom: LAYOUT_GAP,
-  },
-  imgIconAbout: {
-    width: '49px',
+    height: '45px',
+    width: '100%',
   },
   aboutButtonLeft: {
     float: 'left',
@@ -793,18 +790,23 @@ const styles = () => ({
     background: '#844715',
     float: 'left',
     height: '45px',
-    width: '132px',
+    width: 'calc(100% - 48px)',
+    lineHeight: '45px',
   },
   aboutButton: {
     color: '#ffffff',
     textDecoration: 'none',
     textTransform: 'uppercase',
+    fontFamily: 'Raleway',
     fontSize: '12px',
     fontWeight: '600',
+    fontStyle: 'normal',
     lineHeight: '45px',
-    paddingLeft: '20px',
-    boxShadow: 'none',
     letterSpacing: '1px',
+    verticalAlign: 'middle',
+    leadingTrim: 'none',
+    paddingLeft: '8px',
+    boxShadow: 'none',
   },
 
   content: {
@@ -871,9 +873,11 @@ const styles = () => ({
     backgroundImage: `url(${landingPageData.tile4.img})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    height: TILE4_SECTION_HEIGHT,
+    boxSizing: 'border-box',
   },
   cases: {
-    height: '436px',
+    height: 'calc(100% - 70px)',
     marginLeft: '395px',
     marginTop: '70px',
     background: '#0d4545'
