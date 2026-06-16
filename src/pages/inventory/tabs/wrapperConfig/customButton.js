@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { useGlobal } from '../../../../components/Global/GlobalProvider';
 import { onCreateNewCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalContext } from '../../cohortModal/CohortModalContext';
+import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
 import { onRowSelectHidden } from '@bento-core/paginated-table/dist/table/state/Actions';
-import DeleteConfirmationModal from '../../cohortModal/components/deleteConfirmationModal';
+import ConfirmationModal from '../../../../components/CohortModal/components/shared/ConfirmationModal';
 
 const ButtonContainer = styled.div`
   position: relative;
@@ -171,7 +171,7 @@ export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohorts
         <span className="title">{label}</span>
       </ButtonStyled>
       {/* Popup modal to show participant limit exceeded message */}
-      <DeleteConfirmationModal
+      <ConfirmationModal
         classes={""}
         open={showPopupMessage}
         setOpen={() => { setShowPopupMessage("")  }}
