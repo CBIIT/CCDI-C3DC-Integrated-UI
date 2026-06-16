@@ -31,10 +31,10 @@ const addExistingCohortToolTip =
 export const tooltipContentAddAll = {
   icon: questionIcon,
   alt: 'tooltipIcon',
-  Participants: 'Click button to add all files associated with the filtered row(s).',
-  Studies: 'Click button to add all files associated with the filtered row(s).',
-  Samples: 'Click button to add all files associated with the filtered row(s).',
-  Files: 'Click button to add all files associated with the filtered row(s).',
+  Participants: 'Click button to add all files associated with the facet-filtered row(s).',
+  Studies: 'Click button to add all files associated with the facet-filtered row(s).',
+  Samples: 'Click button to add all files associated with the facet-filtered row(s).',
+  Files: 'Click button to add all files associated with the facet-filtered row(s).',
   arrow: true,
   styles: {
     border: '#03A383 1px solid',
@@ -44,10 +44,10 @@ export const tooltipContentAddAll = {
 export const tooltipContent = {
   icon: questionIcon,
   alt: 'tooltipIcon',
-  Participants: 'Click button to add files associated with the selected row(s).',
-  Studies: 'Click button to add files associated with the selected row(s).',
-  Samples: 'Click button to add files associated with the selected row(s).',
-  Files: 'Click button to add files associated with the selected row(s).',
+  Participants: 'Click button to add file(s) associated with the selected row(s).',
+  Studies: 'Click button to add file(s) associated with the selected row(s).',
+  Samples: 'Click button to add file(s) associated with the selected row(s).',
+  Files: 'Click button to add file(s) associated with the selected row(s).',
   arrow: true,
   styles: {
     border: '#03A383 1px solid',
@@ -621,6 +621,11 @@ query fileOverview(
         participant_id
         sample_id
         file_id
+        anatomic_site
+        participant_age_at_collection
+        sample_description
+        percent_tumor
+        percent_necrosis
         guid
         md5sum
         library_selection
@@ -629,6 +634,9 @@ query fileOverview(
         library_strategy
         file_access
         file_mapping_level
+        consent_codes
+        fixation_embedding_method
+        staining_method
     }
 }
 `;
@@ -706,6 +714,11 @@ cohortMetadata(
             participant_id
             sample_id
             file_id
+            anatomic_site
+            participant_age_at_collection
+            sample_description
+            percent_tumor
+            percent_necrosis
             guid
             md5sum
             library_selection
@@ -714,6 +727,9 @@ cohortMetadata(
             library_strategy
             file_access
             file_mapping_level
+            consent_codes
+            fixation_embedding_method
+            staining_method
         }
     }
 }}
@@ -2437,6 +2453,11 @@ query getFilenames(
             participant_id
             sample_id
             file_id
+            anatomic_site
+            participant_age_at_collection
+            sample_description
+            percent_tumor
+            percent_necrosis
             guid
             md5sum
             library_selection
@@ -2445,6 +2466,9 @@ query getFilenames(
             library_strategy
             file_access
             file_mapping_level
+            consent_codes
+            fixation_embedding_method
+            staining_method
         }
     }
 }
@@ -3584,38 +3608,11 @@ export const exploreFilesTabs = [
         hideable: true,
       },
       {
-        dataField: 'file_description',
-        header: 'File Description',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
         dataField: 'file_type',
         header: 'File Type',
         display: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'file_size',
-        header: 'File Size',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        dataFormatType: dataFormatTypes.FORMAT_BYTES,
-        cellType: cellTypes.FORMAT_DATA,
-        hideable: true,
-      },
-      {
-        dataField: 'file_access',
-        header: 'File Access',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
       },
       {
         dataField: 'study_id',
@@ -3645,6 +3642,73 @@ export const exploreFilesTabs = [
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.MODAL,
         role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'anatomic_site',
+        header: 'Anatomic Site',
+        display: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'participant_age_at_collection',
+        header: 'Age at Collection',
+        display: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_tumor_status',
+        header: 'Sample Tumor Status',
+        display: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'tumor_spatial_extent',
+        header: 'Tumor Spatial Extent',
+        display: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        role: cellTypes.DISPLAY,
+      },
+
+      {
+        dataField: 'sample_description',
+        header: 'Sample Description',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        hideable: true,
+      },
+      {
+        dataField: 'percent_tumor',
+        header: 'Percent Tumor',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        hideable: true,
+      },
+      {
+        dataField: 'percent_necrosis',
+        header: 'Percent Necrosis',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        hideable: true,
       },
       {
         dataField: 'guid',
@@ -3702,6 +3766,57 @@ export const exploreFilesTabs = [
         role: cellTypes.DISPLAY,
         hideable: true,
       },
+      {
+        dataField: 'file_size',
+        header: 'File Size',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        hideable: true,
+      },
+      {
+        dataField: 'file_description',
+        header: 'File Description',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        hideable: true,
+      },
+      {
+        dataField: 'consent_codes',
+        header: 'Consent Codes',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        hideable: true,
+      },
+      {
+        dataField: 'file_access',
+        header: 'File Access',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        hideable: true,
+      },
+      {
+        dataField: 'fixation_embedding_method',
+        header: 'Fixation/Embedding Method',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        hideable: true,
+      },
+      {
+        dataField: 'staining_method',
+        header: 'Staining Method',
+        display: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        hideable: true,
+      },
+
     ],
     id: 'file_tab',
     tableID: 'file_tab_table',
