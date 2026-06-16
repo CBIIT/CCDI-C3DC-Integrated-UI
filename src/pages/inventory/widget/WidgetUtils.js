@@ -27,7 +27,7 @@ const COLORS_LEVEL_2 = [
  * @param {object} data
  * @returns {object} filtered data
  */
-const removeEmptySubjectsFromDonutData = (data) => data.filter((item) => item.subjects !== 0);
+const removeEmptySubjectsFromDonutData = (data) => (data || []).filter((item) => item.subjects !== 0);
 
 /**
  * Returns the widgets data formatted as key:dataset pairs
