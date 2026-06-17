@@ -643,6 +643,7 @@ query fileOverview(
 
 export const GET_COHORT_METADATA_QUERY = gql`
 query cohortMetadata(
+
     $id: [String],
     $first: Int,
     $offset: Int,
@@ -651,6 +652,7 @@ query cohortMetadata(
 ) {
 
 cohortMetadata(
+    
     id: $id,
     first: $first,
     offset: $offset,

@@ -31,7 +31,7 @@ export const DEFAULT_QUERY_LIMIT = 60000;
 
 export const DOWNLOAD_MANIFEST_KEYS = {
     'Participant ID': 'participant_id',
-    'dbGaP Accession': 'dbgap_accession',
+    'Study ID': 'dbgap_accession',
     'Sex at Birth': 'sex_at_birth',
     'Race': 'race',
     'Diagnosis': 'diagnosis',

@@ -1,258 +1,174 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { CohortStateContext } from "../../components/CohortSelectorState/CohortStateContext";
 import { configColumn } from "../inventory/tabs/tableConfig/Column";
-import { TableView } from "@bento-core/paginated-table";
-import { themeConfig } from "../studies/tableConfig/Theme";
-import trashCan from "../../assets/icons/trash_can.svg";
 import { onCreateNewCohort, onDeleteAllCohort, onDeleteSingleCohort } from "../../components/CohortSelectorState/store/action";
-import { tableConfig, analyzer_query, analyzer_tables, responseKeys } from "../../bento/cohortAnalayzerPageData";
-import DownloadSelectedCohort from "./downloadCohort/DownloadSelectedCohorts";
-import client from "../../utils/graphqlClient";
-import ToolTip from "@bento-core/tool-tip/dist/ToolTip";
+import { tableConfig, analyzer_tables } from "../../bento/cohortAnalayzerPageData";
+import Stats from '../../components/Stats/GlobalStatsController';
 import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
-import sortIcon from "../../assets/icons/sort_icon.svg";
-import placeHolder from "../../assets/vennDigram/placeHolder.png";
-import ChartVenn from "./vennDiagram/ChartVenn";
-import CheckBoxCustom from "./customCheckbox/CustomCheckbox";
+import NavigateAwayModal from './components/navigateAwayModal';
 import { CohortModalContext } from "../../components/CohortModal/CohortModalContext";
 import CohortModal from "../../components/CohortModal/CohortModal";
+import Alert from '@material-ui/lab/Alert';
 import { useGlobal } from "../../components/Global/GlobalProvider";
 import questionIcon from "../../assets/icons/Question_icon_2.svg";
-
-import { useStyle } from "./cohortAnalyzerStyling";
+import { useStyle } from './styling/cohortAnalyzerStyling';
+import { CohortAnalyzerTableSection } from "./CohortAnalyzerTableSection/CohortAnalyzerTableSection"
 import {
-    addCohortColumn,
-    generateQueryVariable,
     handlePopup,
     handleDelete,
-    resetSelection,
     SearchBox,
-    sortBy,
     triggerNotification,
-    sortByReturn,
-    getAllIds,
-    getIdsFromCohort,
-    filterAllParticipantWithDiagnosisName,
-} from "./CohortAnalyzerUtil";
-import styled from "styled-components";
+} from "./CohortAnalyzerUtil/CohortAnalyzerUtil";
+import store from "../../store";
+import { updateUploadData, updateUploadMetadata } from "@bento-core/local-find";
+import { CohortSelector } from "./CohortSelector/CohortSelector";
+import { useCohortAnalyzer } from './context/CohortAnalyzerContext';
+import { cohortAnalyzerThemeConfig } from './styling/cohortAnalyzerThemeConfig';
+import { useBesidePanelDnD } from './hooks/useBesidePanelDnD';
+import { CohortAnalyzerChartArea } from './components/CohortAnalyzerChartArea';
+import { CohortAnalyzerSummaryView } from './components/CohortAnalyzerSummaryView';
+import { getJoinedCohortData } from "./CohortAnalyzerUtil/CohortDataTransform";
+import { exampleCohorts, getExampleCohortKeys } from "../../bento/exampleCohortData";
+import { useUserGuide } from '../inventory/sideBar/UserGuideContext';
+import { USER_GUIDE_SECTION_ANALYZING_COHORTS } from '../inventory/sideBar/userGuideConstants';
+import {
+    computeHasParticipantData,
+    getCohortAnalyzerTableMessage,
+    filterVennSectionsForSelectedCohorts,
+    shouldClearRowDataOnEmptySelection,
+    canAddExampleCohorts,
+    buildExploreUploadPayload,
+    shouldSkipNavigateAwayModal,
+} from './cohortAnalyzerPageLogic';
 
 export const CohortAnalyzer = () => {
-    const classes = useStyle();
-    const { state, dispatch } = useContext(CohortStateContext);
-    const location = useLocation();
-    const [selectedCohorts, setSelectedCohorts] = useState([]);
-    const [queryVariable, setQueryVariable] = useState({});
-    const [rowData, setRowData] = useState([]);
-    const [refershInit] = useState(false);
-    const [searchValue, setSearchValue] = useState("");
-    const [cohortList, setCohortList] = useState(Object.keys(state) || {});
-    const [selectedChart, setSelectedChart] = useState([]);
-    const [refershSelectedChart, setRefershSelectedChart] = useState(false);
-    const [refershTableContent, setRefershTableContent] = useState(false);
-    const [selectedCohortSection, setSelectedCohortSections] = useState([]);
-    const [sortType, setSortType] = useState("alphabet");
-    const [deleteInfo, setDeleteInfo] = useState({ showDeleteConfirmation: false, deleteType: '', cohortId: '' });
-    const [generalInfo, setGeneralInfo] = useState({});
-    const [nodeIndex, setNodeIndex] = useState(0);
-    const [cohortData, setCohortData] = useState();
+    const { openUserGuide } = useUserGuide();
+    const topRowOrder = useSelector((s) => s.cohortAnalyzerLayout.topRowOrder);
 
+    const [activeView, setActiveView] = useState("chart");
+    const [inlineAddChartOpen, setInlineAddChartOpen] = useState(false);
+    const [inlineAddChartNonce, setInlineAddChartNonce] = useState(0);
+    const [survivalBesideVennEl, setSurvivalBesideVennEl] = useState(null);
+    const [survivalBesideColumnActive, setSurvivalBesideColumnActive] = useState(false);
+    const {
+        resetVennWorkspaceUi,
+        selectedCohorts,
+        setSelectedCohorts,
+        cohortList,
+        setCohortList,
+        nodeIndex,
+        cohortData,
+        setCohortData,
+        generalInfo,
+        setGeneralInfo,
+        rowData,
+        setRowData,
+        setRefreshTableContent,
+        searchValue,
+        setSearchValue,
+        setQueryVariable,
+        selectedChart,
+        selectedCohortSection,
+        setSelectedCohortSections,
+        setDeleteInfo,
+        deleteInfo,
+        handleCheckbox,
+        showNavigateAwayModal,
+        setShowNavigateAwayModal,
+        setAlert,
+        alert,
+    } = useCohortAnalyzer();
+
+    const containerRef = useRef(null);
+    const canvasRef = useRef(null);
+    const classes = useStyle();
+    const { state, dispatch: cohortDispatch } = useContext(CohortStateContext);
+    const hasParticipantData = useMemo(
+        () => computeHasParticipantData(state, selectedCohorts),
+        [state, selectedCohorts],
+    );
     const { setShowCohortModal, showCohortModal, setCurrentCohortChanges, setWarningMessage, warningMessage } = useContext(CohortModalContext);
     const { Notification } = useGlobal();
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [HoveredCohort, setHoveredCohort] = useState(true);
+    const navigate = useNavigate();
+    const handleUserRedirect = () => {
+        // NOTE: If needed to show in only Autocomplete of Localfind.
+        // const data = rowData.map(r=>({type: 'participantIds', title: r.participant_id}))
+        // store.dispatch(updateAutocompleteData(data));
+        // navigate('/explore');
 
-    const handleMouseMove = (event, cohortName) => {
-        if (cohortName.length > 17) {
-            setHoveredCohort(cohortName)
-        }
-        setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-    const handleMouseLeave = () => {
-        setHoveredCohort("");
+        const { upload, uploadMetadata } = buildExploreUploadPayload(rowData);
+
+        store.dispatch(updateUploadData(upload));
+        store.dispatch(updateUploadMetadata(uploadMetadata));
+        navigate('/explore');
     }
 
-    useEffect(() => {
-        if (location && location.state) {
-            const viewCohort = location.state.cohort;
-            if (viewCohort && viewCohort.cohortId && state[viewCohort.cohortId]) {
-                // Auto-select the cohort if it exists in the state
-                if (!selectedCohorts.includes(viewCohort.cohortId)) {
-                    setSelectedCohorts([viewCohort.cohortId]);
-                }
-                // Scroll to top of page
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+    const handleBuildInExplore = () => {
+        if (shouldSkipNavigateAwayModal()) {
+            handleUserRedirect(); // skip modal
+        } else {
+            setShowNavigateAwayModal(true); // show modal
         }
-    }, [location]);
+    }
 
     const searchRef = useRef();
 
-
     const handleSearchValue = (e) => {
         setSearchValue(e.target.value)
+
+
         if (searchRef.current) {
             searchRef.current.value = e.target.value;
-        }
+            if (searchRef.current.value === "") {
 
-    }
-
-    const exceedLimitCreatedCohost = (hiddenCohortState) => {
-
-        let cohortStateCount = 0;
-
-        // Count the number of cohost
-        if (hiddenCohortState && typeof hiddenCohortState === 'object') {
-            cohortStateCount = Object.keys(hiddenCohortState).length;
-        }
-
-        // Return true if the cohort total would exceed 20, otherwise false
-        if (cohortStateCount >= 20) {
-            return true;
-        }
-
-        return false;
-    }
-
-    const exceedLimitSelectedParticipant = (hiddenSelectedRows) => {
-        let selectedRowsCount = 0;
-
-        // Count the number of selected participants
-        if (hiddenSelectedRows && Array.isArray(hiddenSelectedRows)) {
-            selectedRowsCount = hiddenSelectedRows.length;
-        }
-
-        // Return true if the total would exceed 4000, otherwise false
-        if (selectedRowsCount >= 4000) {
-            return true;
-        }
-
-        return false;
-    }
-
-    function updatedCohortContent(newParticipantsData) {
-        const newState = { ...state };
-        selectedCohorts.forEach(cohortId => {
-            const existingParticipants = newState[cohortId].participants || [];
-
-            const updatedParticipants = existingParticipants.map(participant => {
-                const matchingNewParticipant = newParticipantsData.find(
-                    newParticipant => newParticipant.id === participant.id
-                );
-
-                if (matchingNewParticipant) {
-                    return {
-                        ...participant, ...matchingNewParticipant
-
-                    };
-                }
-
-                return participant;
-            })
-            newState[cohortId] = {
-                ...newState[cohortId],
-                participants: updatedParticipants,
-            };
-
-        });
-        console.log("newState", newState);
-        setCohortData(newState);
-    }
-
-    function updatedCohortContentAllowDuplication(newParticipantsData) {
-        const newState = { ...state };
-        selectedCohorts.forEach(cohortId => {
-            const existingParticipants = newState[cohortId].participants || [];
-
-
-            let finalResponse = [];
-            newParticipantsData.forEach((participant) => {
-                const matchingExistingParticipants = existingParticipants.find(
-                    existingParticipant => existingParticipant.id === participant.id
-                );
-
-                if (matchingExistingParticipants) {
-                    finalResponse.push({
-                        ...matchingExistingParticipants, ...participant
-                    })
-                }
-
-            })
-
-            newState[cohortId] = {
-                ...newState[cohortId],
-                participants: finalResponse,
-            };
-
-        });
-        console.log("newState allow Duplication", newState);
-        setCohortData(newState);
-    }
-
-    async function getJoinedCohort(isReset = false) {
-        let queryVariables = generateQueryVariable(selectedCohorts, state);
-
-        if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "id": isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo), first: 12000 };
-        }
-        setQueryVariable(queryVariables);
-        const { data } = await client.query({
-            query: analyzer_query[nodeIndex],
-            variables: queryVariables,
-        });
-        if (queryVariables.id.length > 0) {
-            if (searchValue !== "") {
-                let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
-                setRowData(addCohortColumn(filteredRowData, state, selectedCohorts));
-            } else {
-                setRowData(addCohortColumn(data[responseKeys[nodeIndex]], state, selectedCohorts));
-                updatedCohortContent(data[responseKeys[nodeIndex]])
+                setTimeout(() => {
+                    searchRef.current.focus();
+                }, 200);
 
             }
-        } else {
-            setRowData([]);
         }
+
     }
 
-    async function getJoinedCohortByD(selectedCohortSection = null) {
-        let queryVariables = generateQueryVariable(selectedCohorts, state);
-        if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: 12000 };
-        }
-        setQueryVariable(queryVariables);
-
-        const { data } = await client.query({
-            query: analyzer_query[nodeIndex],
-            variables: queryVariables,
+    async function getJoinedCohort(isReset = false, isRequestActive) {
+        await getJoinedCohortData({
+            nodeIndex,
+            selectedCohorts,
+            state,
+            generalInfo,
+            searchValue,
+            isReset,
+            setQueryVariable,
+            setRowData,
+            location,
+            setCohortData,
+            isRequestActive,
         });
-
-        if (queryVariables.id.length > 0) {
-            if (searchValue !== "") {
-
-                let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
-
-                if (JSON.stringify(selectedCohortSection) !== "{}") {
-                    filteredRowData = filterAllParticipantWithDiagnosisName(generalInfo, filteredRowData)
-                }
-                setRowData(addCohortColumn(filteredRowData, state, selectedCohorts));
-                updatedCohortContentAllowDuplication(filteredRowData)
-            } else {
-
-
-                if (JSON.stringify(selectedCohortSection) !== "{}") {
-
-                    let filterRowData = filterAllParticipantWithDiagnosisName(generalInfo, data[responseKeys[nodeIndex]])
-                    setRowData(addCohortColumn(filterRowData, state, selectedCohorts));
-                } else {
-                    setRowData(addCohortColumn(data[responseKeys[nodeIndex]], state, selectedCohorts));
-                    updatedCohortContent(data[responseKeys[nodeIndex]])
-                }
-
-            }
-        } else {
-            setRowData([]);
-        }
     }
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location) {
+            const viewCohort = location && location.state ? location.state.cohort : null;
+            if (viewCohort) {
+                handleCheckbox(viewCohort.cohortId, null);
+            }
+        }
+
+    }, [location]);
+
+    useEffect(() => {
+        if (alert.message) {
+            const timer = setTimeout(() => {
+                setAlert({ type: '', message: '' });
+            }, 2500);
+
+            return () => clearTimeout(timer);
+        }
+    }, [alert]);
 
     useEffect(() => {
         setSearchValue("");
@@ -263,197 +179,77 @@ export const CohortAnalyzer = () => {
     }, [selectedChart])
 
     useEffect(() => {
+        let isActive = true;
         if (selectedChart.length >= 0) {
-            if (nodeIndex === 0) {
-                getJoinedCohort();
-            } else if (nodeIndex === 1) {
-                getJoinedCohortByD(generalInfo);
-            }
+            getJoinedCohort(false, () => isActive);
         }
 
-        if (nodeIndex === 0 || nodeIndex === 1 || nodeIndex === 2) {
-            let finalVennSelection = [];
-            selectedCohortSection.forEach((section) => {
-                if (section.split(" ∩ ").length > 1) {
-                    let validCohorts = [];
-                    section.split(" ∩ ").forEach((sec, index) => {
-                        const regex = /(.*?)(?= \(\d+\))/;
-                        const match = sec.match(regex);
-                        if (selectedCohorts.includes(match[1])) {
-                            validCohorts.push(sec);
-                        }
-                    })
 
-                    if (validCohorts.length > 0) {
-                        finalVennSelection.push(validCohorts.join(" ∩ "))
-                    }
-                } else {
-                    const regex = /(.*?)(?= \(\d+\))/;
-                    const match = section.match(regex);
-                    if (match) {
-                        if (selectedCohorts.includes(match[1])) {
-                            finalVennSelection.push(section)
-                        }
-                    }
-
-                }
-
-            })
-            setSelectedCohortSections(finalVennSelection);
-
-        }
+        setSelectedCohortSections(
+            filterVennSectionsForSelectedCohorts(
+                selectedCohortSection,
+                selectedCohorts,
+                nodeIndex,
+            ),
+        );
 
         if (selectedCohorts.length === 0) {
             setGeneralInfo({});
-            setRowData([]);
+            if (shouldClearRowDataOnEmptySelection(selectedCohorts, location)) {
+                setRowData([]);
+            }
         }
+        return () => {
+            isActive = false;
+        };
     }, [selectedCohorts, selectedChart]);
 
-
-
     useEffect(() => {
-        if (nodeIndex === 0) {
-            getJoinedCohort();
-        } else if (nodeIndex === 1) {
-            getJoinedCohortByD(generalInfo);
-        }
+        let isActive = true;
+        getJoinedCohort(false, () => isActive);
+        return () => {
+            isActive = false;
+        };
     }, [searchValue])
 
     useEffect(() => {
-
-        if (nodeIndex === 0) {
-            getJoinedCohort();
-        } else if (nodeIndex === 1) {
-            getJoinedCohortByD(generalInfo);
-        }
-
+        let isActive = true;
+        getJoinedCohort(false, () => isActive);
+        return () => {
+            isActive = false;
+        };
     }, [generalInfo])
 
     useEffect(() => {
+        let isActive = true;
+
         setSelectedCohortSections([]);
         setGeneralInfo({})
         setSearchValue("");
         if (searchRef.current) {
             searchRef.current.value = "";
         }
-        if (nodeIndex === 0) {
-            getJoinedCohort(true);
-        } else if (nodeIndex === 1) {
-            getJoinedCohortByD({});
-        }
+        getJoinedCohort(true, () => isActive);
 
+        return () => {
+            isActive = false;
+        };
     }, [nodeIndex])
 
     useEffect(() => {
-        setRefershTableContent(false)
-        setTimeout(() => setRefershTableContent(true), 0)
+        setRefreshTableContent(false)
+        const timer = setTimeout(() => setRefreshTableContent(true), 0)
+        return () => clearTimeout(timer);
     }, [cohortList, nodeIndex, cohortData])
 
-
-    const Wrapper = styled.div`
-  display: flex;
-  position: relative;
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 0;
-  justify-content: space-between;
-`;
-
-    const CohortSelectionChild = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-
-  & > span:first-child {
-    font-size: 18px;
-    font-family: Poppins;
-    font-size: 18.5px;
-    font-weight: 500;
-  }
-
-  & > span:last-child {
-    font-size: 16px;
-    font-weight: 400;
-    padding-left: 4px;
-    font-family: Poppins;
-
-  }
-`;
-
-    const TrashCanIcon = styled.img`
-  opacity: ${(props) => (Object.keys(props.state).length === 0 ? 0.6 : 1)};
-  cursor: ${(props) => (Object.keys(props.state).length === 0 ? 'not-allowed' : 'pointer')};
-`;
-
-    const Instructions = styled.p`
-  font-size: 15px;
-  padding: 0;
-  margin: 0;
-  margin-top: 7px;
-  font-weight: 400;
-  font-family: 'Open Sans';
-`;
-
-    const InstructionsWrapper = styled.div`
-  padding: 0;
-  padding-left: 10px;
-`;
-
-
-    const handleCheckbox = (cohort, self) => {
-        console.log("cohort", cohort, "selectedCohorts", selectedCohorts);
-        if (selectedCohorts.includes(cohort)) {
-            let finalCohortList = [];
-            selectedCohorts.forEach((cohortItem) => {
-                if (cohort !== cohortItem) {
-                    finalCohortList.push(cohortItem);
-                }
-            })
-            setSelectedCohorts(finalCohortList)
-        } else {
-            if (selectedCohorts.length === 3) {
-                self.preventDefault();
-            } else {
-                setSelectedCohorts([...selectedCohorts, cohort])
-            }
-        }
-
-    }
-
     const handleClick = () => {
-        if (exceedLimitCreatedCohost(state)){
-            setWarningMessage("You are not allowed to create more that 20 cohorts");
-            return
-        }
-        if (exceedLimitSelectedParticipant(rowData)) {
-          setWarningMessage("You are not allowed to create a new cohort with more than 4000 participants");
-          return;
-        }
         if (selectedCohortSection.length > 0 && rowData.length > 0) {
-            const participantData = [];
-            rowData.forEach((row) => {
-                participantData.push({
-                    id: row.id ? row.id : row.pid,
-                    participant_id: row.participant_id,
-                    study_id: row.study_id,
-                });
-            });
-
-            // Remove duplicates by id
-            const uniqueParticipantData = [];
-            const seenIds = new Set();
-            participantData.forEach((participant) => {
-                if (!seenIds.has(participant.id)) {
-                    uniqueParticipantData.push(participant);
-                    seenIds.add(participant.id);
-                }
-            });
 
             setCurrentCohortChanges(null);
-            dispatch(onCreateNewCohort(
+            cohortDispatch(onCreateNewCohort(
                 "",
                 "",
-                uniqueParticipantData,
+                rowData,
                 (count) => {
                     triggerNotification(count, Notification);
                     setShowCohortModal(true);
@@ -465,16 +261,55 @@ export const CohortAnalyzer = () => {
         }
     };
 
-    const getTableMessage = (cohortList, selectedCohortSection, tableConfig) => {
-        if (cohortList.length === 0) {
-            return { noMatch: 'To proceed, please create your cohort by visiting the Explore Page.' };
-        }
-        if (selectedCohortSection.length === 0) {
-            return tableConfig.tableMsg;
-        }
-        return { noMatch: "No data available for the selected segment/segments. Please try a different segment/segments." };
-    };
+    const handleDemoClick = () => {
+        // First, clear any existing example cohorts from the state
+        const exampleCohortKeys = getExampleCohortKeys();
 
+        // Remove existing example cohorts from selected cohorts
+        setSelectedCohorts(prev => prev.filter(cohortId => !exampleCohortKeys.includes(cohortId)));
+
+        // Delete existing example cohorts from state
+        exampleCohortKeys.forEach(cohortId => {
+            if (state[cohortId]) {
+                cohortDispatch(onDeleteSingleCohort(cohortId));
+            }
+        });
+
+        // Check if adding 3 example cohorts would exceed the 20-cohort limit
+        // Only count non-example cohorts since example cohorts will be cleared/replaced
+        if (!canAddExampleCohorts(state, exampleCohortKeys)) {
+            Notification.show('Cannot add example cohorts. You have reached the maximum limit of 20 cohorts. Please delete some cohorts first.', 5000);
+            return;
+        }
+
+        let successCount = 0;
+        const totalCohorts = exampleCohorts.length;
+
+
+        const handleExampleSuccess = (count) => {
+            successCount++;
+            if (successCount === totalCohorts) {
+                // Auto-select the newly created example cohorts
+                setSelectedCohorts(getExampleCohortKeys());
+                Notification.show(`Successfully created and selected ${totalCohorts} example cohorts! View the results in the Venn diagram and histogram below.`, 7000);
+            }
+        };
+
+        const handleExampleError = (error) => {
+            Notification.show(`Failed to create example cohorts: ${error.message}`, 5000);
+        };
+
+        // Create each example cohort
+        exampleCohorts.forEach(cohort => {
+            cohortDispatch(onCreateNewCohort(
+                cohort.cohortId,
+                cohort.cohortDescription,
+                cohort.participants,
+                handleExampleSuccess,
+                handleExampleError
+            ));
+        });
+    };
 
     const initTblState = (initailState) => ({
         ...initailState,
@@ -492,25 +327,40 @@ export const CohortAnalyzer = () => {
         sortBy: tableConfig.defaultSortField,
         sortOrder: tableConfig.defaultSortDirection,
         extendedViewConfig: tableConfig.extendedViewConfig,
+        paginationCustomStyle: {
+            topPagination: {
+                display: 'flex',
+                borderTop: 'none',
+                paddingRight: '41px',
+            }
+        },
         rowsPerPage: 10,
         page: 0,
+        onPageChange: (somevalue) => alert("ok ok"),
         downloadFileName: "download",
-        showDownloadIcon: false,
         SearchBox: () => SearchBox(classes, handleSearchValue, searchValue, searchRef),
         showSearchBox: true,
-        tableMsg: getTableMessage(cohortList, selectedCohortSection, tableConfig)
+        tableMsg: getCohortAnalyzerTableMessage(cohortList, selectedCohortSection, tableConfig)
     });
+
+    const besideDnD = useBesidePanelDnD(survivalBesideColumnActive);
 
     return (
         <>
+            <NavigateAwayModal
+                open={showNavigateAwayModal}
+                setOpen={setShowNavigateAwayModal}
+                onConfirm={handleUserRedirect}
+            />
             <ConfirmationModal
+                classes={""}
                 open={deleteInfo.showDeleteConfirmation}
                 setOpen={() => { handlePopup("", state, setDeleteInfo, deleteInfo) }}
                 handleConfirm={() => {
                     handleDelete(deleteInfo.cohortId,
                         setCohortList,
                         setSelectedCohorts,
-                        dispatch,
+                        cohortDispatch,
                         onDeleteSingleCohort,
                         onDeleteAllCohort,
                         setGeneralInfo,
@@ -520,6 +370,7 @@ export const CohortAnalyzer = () => {
             />
 
             <ConfirmationModal
+                classes={""}
                 open={warningMessage}
                 setOpen={() => { setWarningMessage("") }}
                 handleConfirm={() => { setWarningMessage("") }}
@@ -531,195 +382,76 @@ export const CohortAnalyzer = () => {
                 open={showCohortModal}
                 onCloseModal={() => setShowCohortModal(false)}
             />
+            <Stats />
+            <div className={classes.container}  >
 
-            <div className={classes.container}>
-                <div className={classes.leftSideAnalyzer}>
-                    <div className={classes.sideHeader}>
-                        <>
-                            <Wrapper>
-                                <CohortSelectionChild>
-                                    <span>{"Cohort Selector "}</span>
-                                    <span>{" (" + selectedCohorts.length + "/3)"}</span>
-                                </CohortSelectionChild>
-                                <TrashCanIcon
-                                    alt="Trashcan"
-                                    state={state}
-                                    onClick={() => handlePopup("", state, setDeleteInfo, deleteInfo)}
-                                    src={trashCan}
-                                    width={15}
-                                    height={16}
-                                />
-                            </Wrapper>
-                            <InstructionsWrapper>
-                                <Instructions>
-                                    {"Select up to three cohorts to view in the Cohort Analyzer"}
-                                </Instructions>
-                            </InstructionsWrapper>
-                        </>
-                    </div>
-                    <div className={classes.sortSection}>
-                        <div style={{ display: 'flex', margin: 0, alignItems: 'center', cursor: 'pointer' }}>
-                            <img onClick={() => {
-                                resetSelection(setSelectedCohorts, setNodeIndex);
-                            }} alt={"sortIcon"} src={sortIcon} width={14} height={14} style={{ margin: 5 }} />
-                            <p style={{ fontFamily: 'Nunito', fontSize: '9px', color: sortType === 'alphabet' ? 'lightgray' : '#646464' }} onClick={() => {
-                                sortBy("alphabet", cohortList, setCohortList, state);
-                                setSortType("alphabet");
-                            }}> Sort Alphabetically </p>
-                        </div>
-                        <div onClick={() => {
-                            sortBy("", cohortList, setCohortList, state);
-                            setSortType("count");
-                        }} className={classes.sortCount} style={{ fontFamily: 'Nunito', fontSize: '9px', color: sortType === 'count' ? 'lightgray' : '#646464' }}>
-                            <p>Sort by Count</p>
-                        </div>
-                    </div>
-                    <div className={classes.leftSideAnalyzerChild}>
-                        {state && (sortType !== "" ? sortByReturn(sortType, Object.keys(state), state, selectedCohorts) : Object.keys(state)).map((cohort) => {
-                            let cohortName = state[cohort].cohortName + " (" + state[cohort].participants.length + ")";
-                            return (
-                                <div onMouseMove={(e) => { handleMouseMove(e, cohortName) }} onMouseLeave={handleMouseLeave}
-                                    style={{
-                                        cursor: 'pointer',
-                                        background: selectedCohorts.includes(cohort)
-                                            ? ['#FAE69C', '#A4E9CB', '#A3CCE8'][selectedCohorts.indexOf(cohort) % 3] : 'transparent'
-                                    }}
-                                >
-
-                                    <ToolTip
-                                        open={HoveredCohort === cohortName}
-                                        PopperProps={{
-                                            anchorEl: {
-                                                getBoundingClientRect: () => ({
-                                                    top: mousePosition.y,
-                                                    left: mousePosition.x,
-                                                    right: mousePosition.x,
-                                                    bottom: mousePosition.y,
-                                                    width: 0,
-                                                    height: 0,
-                                                }),
-                                            },
-                                            modifiers: [
-                                                {
-                                                    name: "offset",
-                                                    options: { offset: [10, 10] },
-                                                },
-                                            ],
-                                        }}
-                                        backgroundColor={'white'} zIndex={3000} title={cohortName} arrow placement="top">
-                                        <div className={!selectedCohorts.includes(cohort) ? classes.CohortChild : classes.cohortChildSelected}
-                                        >
-                                            <div className={classes.cohortChildContent} >
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', marginLeft: 6 }}>
-                                                    <CheckBoxCustom
-                                                        selectedCohorts={selectedCohorts}
-                                                        cohort={cohort}
-                                                        handleCheckbox={handleCheckbox} />
-                                                    <span className={classes.cardContent} style={{ opacity: selectedCohorts.length === 3 && !selectedCohorts.includes(cohort) ? 0.3 : 1 }} > {cohortName} </span>
-                                                </div>
-                                                <img alt={"Trashcan"} style={{ cursor: 'pointer', zIndex: 3 }} onClick={() => { handlePopup(cohort, state, setDeleteInfo, deleteInfo) }} src={trashCan} width={15} height={16} />
-                                            </div>
-                                        </div>
-                                    </ToolTip>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
+                <CohortSelector
+                    handleDemoClick={handleDemoClick}
+                />
                 <div className={classes.rightSideAnalyzer}>
+                    {alert.message && (
+                        <Alert severity={alert.type} className={classes.alert} onClose={() => setAlert({ type: '', message: '' })}>
+                            {alert.message}
+                        </Alert>
+                    )}
                     <div className={classes.rightSideAnalyzerHeader}>
-                        <h1> Cohort Analyzer</h1>
-                    </div>
-                    <div className={classes.rightSideAnalyzerHeader2}>
-                        <p>After selecting cohorts using the Cohort Selector panel (on the left), the Cohort Analyzer Venn diagram will be updated. Click on a Venn diagram segment to view the relevant results. By default, the Venn diagram will use <b>Participant ID</b> to match across cohorts, but other data categories can be selected.
-
-                            <ToolTip backgroundColor={'white'} zIndex={3000} title={"The Venn diagram is a stylized representation of selected cohorts. Numbers in parentheses show unique records for the radio button selection, while numbers inside the diagram indicate unique values. The count next to your cohort in the sidebar reflects total participants."} arrow placement="top">
-                                <img src={questionIcon} alt="question-icon" width={10} style={{ fontSize: 10, position: 'relative', top: -5, left: -3 }} />
-                            </ToolTip>
-                        </p>
+                        <h1>Cohort Analyzer</h1>
                     </div>
 
-                    <div style={{ display: 'flex', marginBottom: 40, justifyContent: 'space-between', width: '90%' }}>
-                        <div className={classes.catagoryCard} >
-                            <h3>Select a data category   <ToolTip backgroundColor={'white'} zIndex={3000} title={"Cohorts are compared using the data category selected below. Participant ID is the default"} arrow placement="top">
-
-
-                                <img src={questionIcon} alt="question-icon" width={10} style={{ fontSize: 10, position: 'relative', top: -5, left: -3 }} />
-
-                            </ToolTip>  <br></br>for cohort matching</h3>
-                            <div className={classes.catagoryCardChildren}>
-                                <ToolTip backgroundColor={'white'} zIndex={3000} title={"All Venn diagram selected areas will be cleared when changing buttons"} arrow placement="top">
-                                    <p>
-                                        <input disabled={selectedCohorts.length === 0} type="radio" checked={nodeIndex === 0} onClick={() => {
-                                            setNodeIndex(0);
-                                        }} radioGroup="node_type" name="node_type" />
-                                        Participant ID
-                                    </p>
-                                </ToolTip>
-                                <ToolTip backgroundColor={'white'} zIndex={3000} title={"All Venn diagram selected areas will be cleared when changing buttons"} arrow placement="top">
-
-                                    <p>
-                                        <input disabled={selectedCohorts.length === 0} type="radio" onClick={() => {
-                                            setNodeIndex(1);
-                                        }} radioGroup="node_type" name="node_type" />
-                                        Diagnosis
-                                    </p>
-                                </ToolTip>
-                            </div>
-                        </div>
-
-                        {refershTableContent && selectedCohorts.length > 0 &&
-                            <ChartVenn
-                                intersection={nodeIndex}
-                                cohortData={(selectedCohorts.map(cohortId => state[cohortId]))}
-                                setSelectedChart={(data) => { setSelectedChart(data); setRefershSelectedChart(!refershSelectedChart) }}
-                                setSelectedCohortSections={(data) => {
-                                    setSelectedCohortSections(data);
-                                }}
+                    <CohortAnalyzerSummaryView
+                        classes={classes}
+                        activeView={activeView}
+                        setActiveView={setActiveView}
+                        summaryTrailingActions={(
+                            <button
+                                type="button"
+                                className={classes.readmeButton}
+                                onClick={() => openUserGuide(USER_GUIDE_SECTION_ANALYZING_COHORTS)}
+                            >
+                                README
+                            </button>
+                        )}
+                        chartPanel={(
+                            <CohortAnalyzerChartArea
+                                classes={classes}
+                                state={state}
+                                containerRef={containerRef}
+                                canvasRef={canvasRef}
+                                selectedCohorts={selectedCohorts}
+                                hasParticipantData={hasParticipantData}
+                                survivalBesideTopRowUsesOrder={besideDnD.survivalBesideTopRowUsesOrder}
+                                topRowOrder={topRowOrder}
+                                besideDropTarget={besideDnD.besideDropTarget}
+                                besideColumnDropTargetStyle={besideDnD.besideColumnDropTargetStyle}
+                                handleBesideRowDragLeave={besideDnD.handleBesideRowDragLeave}
+                                handleBesideColumnDragOver={besideDnD.handleBesideColumnDragOver}
+                                handleBesidePanelDrop={besideDnD.handleBesidePanelDrop}
+                                survivalBesideDrag={besideDnD.survivalBesideDrag}
+                                besidePanelDragging={besideDnD.besidePanelDragging}
+                                besidePanelDraggingRef={besideDnD.besidePanelDraggingRef}
+                                endBesidePanelDrag={besideDnD.endBesidePanelDrag}
+                                survivalBesideVennEl={survivalBesideVennEl}
+                                setSurvivalBesideVennEl={setSurvivalBesideVennEl}
+                                setSurvivalBesideColumnActive={setSurvivalBesideColumnActive}
+                                inlineAddChartOpen={inlineAddChartOpen}
+                                setInlineAddChartOpen={setInlineAddChartOpen}
+                                inlineAddChartNonce={inlineAddChartNonce}
+                                setInlineAddChartNonce={setInlineAddChartNonce}
+                                resetVennWorkspaceUi={resetVennWorkspaceUi}
+                            />
+                        )}
+                        tablePanel={(
+                            <CohortAnalyzerTableSection
+                                classes={classes}
                                 selectedCohortSection={selectedCohortSection}
-                                selectedCohort={selectedCohorts}
-                                setGeneralInfo={setGeneralInfo}
-                            />}
-
-                        {selectedCohorts.length === 0 &&
-                            <img src={placeHolder} alt='placeholder' width={725} style={{ marginTop: -30 }} />
-                        }
-
-                    </div>
-                    <div className={classes.rightSideAnalyzerFooter}>
-                        <div className={classes.cohortCountSection}>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-evenly', paddingRight: '15px'}}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <button onClick={() => handleClick()} className={(selectedCohortSection.length === 0 || rowData.length === 0) ? classes.createCohortOpacity : classes.createCohort} >CREATE NEW COHORT</button>
-                                    <ToolTip title={"Click to create a new cohort based on these analysis results."} arrow placement="top">
-                                        <div
-                                            style={{ textAlign: 'right', marginLeft: 5, marginRight: 10 }}
-                                        >
-                                            <img src={questionIcon} alt="question-icon" width={10} style={{ fontSize: 10, position: 'relative', top: -5, left: -3 }} />
-                                        </div>
-                                    </ToolTip>
-                                </div>
-                                <DownloadSelectedCohort queryVariable={queryVariable} isSelected={selectedCohorts.length > 0 && rowData.length > 0} />
-
-                            </div>
-                        </div>
-                        <div className={classes.rightSideTableContainer}>
-
-                            {refershTableContent &&
-
-                                <TableView
-                                    initState={refershInit ? initTblState : initTblState}
-                                    themeConfig={themeConfig}
-                                    tblRows={rowData}
-                                    queryVariables={queryVariable}
-                                    server={false}
-                                    totalRowCount={rowData.length}
-                                    activeTab={"Participant"}
-                                />
-                            }
-                        </div>
-                    </div>
+                                questionIcon={questionIcon}
+                                handleClick={handleClick}
+                                handleBuildInExplore={handleBuildInExplore}
+                                initTblState={initTblState}
+                                themeConfig={cohortAnalyzerThemeConfig}
+                            />
+                        )}
+                    />
                 </div>
             </div>
         </>

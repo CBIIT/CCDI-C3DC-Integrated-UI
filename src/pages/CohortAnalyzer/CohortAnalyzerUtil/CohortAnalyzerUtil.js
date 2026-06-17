@@ -1,5 +1,5 @@
 import React from "react";
-import search_icon from '../../assets/icons/Search_Icon.svg';
+import search_icon from '../../../assets/icons/Search_Icon.svg';
 
 export const triggerNotification = (count, Notification) => {
     if (count > 1) {
@@ -10,27 +10,25 @@ export const triggerNotification = (count, Notification) => {
 
 };
 
-
-
-export const filterAllParticipantWithDiagnosisName=(generalInfo,allParticipants)=>{
+export const filterAllParticipantWithDiagnosisName = (generalInfo, allParticipants) => {
     let finalIds = [];
+
     Object.keys(generalInfo).forEach((section) => {
         allParticipants.forEach((part) => {
-            if(generalInfo[section].includes(part.pid)){
-                finalIds = [...finalIds,part]
+            if (generalInfo[section].includes(part.diagnosis)) {
+                finalIds = [...finalIds, part]
             }
         })
     });
     return finalIds;
 }
 
-export const filterAllParticipantWithTreatmentType=(generalInfo,allParticipants)=>{
+export const filterAllParticipantWithTreatmentType = (generalInfo, allParticipants) => {
     let finalIds = [];
-    
     Object.keys(generalInfo).forEach((section) => {
         allParticipants.forEach((part) => {
-            if(generalInfo[section].includes(part.treatment_type)){
-                finalIds = [...finalIds,part]
+            if (generalInfo[section].includes(part.treatment_type)) {
+                finalIds = [...finalIds, part]
             }
         })
     });
@@ -38,49 +36,56 @@ export const filterAllParticipantWithTreatmentType=(generalInfo,allParticipants)
 }
 
 
-export const getIdsFromCohort = (data,selectedCohorts) => {
-    const allParticipantPKs = [];
+export const getIdsFromCohort = (data, selectedCohorts) => {
+    const allParticipantIDs = [];
 
-    Object.keys(data).forEach(cohortKey => {
-        if(selectedCohorts.includes(cohortKey)){
-            if (data[cohortKey] && data[cohortKey].participants) {
-                const participantPKs = data[cohortKey].participants.map(participant => participant.id);
-                allParticipantPKs.push(...participantPKs);
+    Object.keys(data).forEach((cohortKey) => {
+        if (selectedCohorts.includes(cohortKey)) {
+            if (data[cohortKey].participants) {
+                const participantIDs = data[cohortKey].participants.map(participant => participant.id);
+                allParticipantIDs.push(...participantIDs);
             }
         }
     });
-
-    return allParticipantPKs;
+    return allParticipantIDs;
 }
-
-
 
 export const getAllIds = (generalInfo) => {
     let finalIds = [];
     Object.keys(generalInfo).forEach((section) => {
-        
-            finalIds = [...finalIds, ...generalInfo[section]]
-        
+
+        finalIds = [...finalIds, ...generalInfo[section]]
+
     })
     return finalIds;
 }
- 
-export const addCohortColumn = (rowD, state, selectedCohorts) => {
+
+export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") => {
     let finalRowData = rowD.map((row) => {
-        // Get the cohort name for the current participants
-        let cohortName = getCohortName(row.id ? row.id : row.pid, state, selectedCohorts);
-        // Return a new object with the added cohort property
-        return {
-            ...row,
-            cohort: cohortName
-        };
+        if (type === "other") {
+
+            let cohortName = getCohortName(row.id, state, selectedCohorts);
+            return {
+                ...row,
+                cohort: cohortName
+            };
+        } else {
+
+            let cohortName = getCohortName(row.id, state, selectedCohorts);
+
+            return {
+                ...row,
+                cohort: cohortName
+            };
+        }
+
     });
     return finalRowData;
 }
 
 const getCohortName = (pk, state, selectedCohorts) => {
     const cohortNames = selectedCohorts
-        .filter(cohortKey => 
+        .filter(cohortKey =>
             state[cohortKey].participants.some(participant => participant.id === pk)
         ).map(cohortKey => state[cohortKey].cohortName);
     let finalResponse = [];
@@ -94,8 +99,9 @@ const getCohortName = (pk, state, selectedCohorts) => {
     return finalResponse;
 }
 
-export const resetSelection = (setSelectedCohorts,setNodeIndex) => {
+export const resetSelection = (setSelectedCohorts, setNodeIndex, setRowData) => {
     setSelectedCohorts([]);
+    setRowData([]);
     setNodeIndex(0);
 }
 
@@ -164,17 +170,24 @@ export const handleDelete = (cohortId,
     }
 }
 
-export const SearchBox = (classes, handleSearchValue ,searchValue,searchReference) => {  
+export const SearchBox = (classes, handleSearchValue, searchValue, searchReference) => {
     return (
         <div className={classes.inputStyleContainer}>
+               
+
             <input
                 onChange={handleSearchValue}
                 ref={searchReference}
                 type="text"
                 placeholder={"Search Participant ID"}
+                name="search"
+                id="participant-search"
                 className={classes.inputStyle}
             />
+            <label htmlFor="participant-search" aria-label="search">
             <img alt={"Search Icon"} src={search_icon} />
+            </label>
+           
         </div>
     )
 }
@@ -182,7 +195,7 @@ export const SearchBox = (classes, handleSearchValue ,searchValue,searchReferenc
 export function generateQueryVariable(cohortNames, state) {
     let query = {};
     query['id'] = [];
-    query["first"] = 12000;
+    query["first"] = 10000;
     cohortNames.forEach((cName) => {
         state[cName].participants.forEach((participant) => {
             query["id"].push(participant.id);
