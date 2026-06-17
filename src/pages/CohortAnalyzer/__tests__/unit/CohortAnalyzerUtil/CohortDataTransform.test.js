@@ -1,3 +1,6 @@
+import client from '../../../../../utils/graphqlClient';
+import { getJoinedCohortData } from '../../../CohortAnalyzerUtil/CohortDataTransform';
+
 jest.mock('../../../../../utils/graphqlClient', () => ({
   __esModule: true,
   default: { query: jest.fn() },
@@ -7,9 +10,6 @@ jest.mock('../../../../../bento/cohortAnalayzerPageData', () => ({
   analyzer_query: [{ query: 'PARTICIPANTS' }, { query: 'DIAGNOSIS' }, { query: 'TREATMENT' }],
   responseKeys: ['participants', 'diagnosis', 'treatment'],
 }));
-
-import client from '../../../../../utils/graphqlClient';
-import { getJoinedCohortData } from '../../../CohortAnalyzerUtil/CohortDataTransform';
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 

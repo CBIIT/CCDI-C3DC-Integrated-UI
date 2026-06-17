@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
   mockNavigate,
@@ -12,6 +12,9 @@ import {
   resetCohortAnalyzerMocks,
 } from '../../testSupport/cohortAnalyzerMocks';
 import { renderWithCohortAnalyzerProviders } from '../../testSupport/cohortAnalyzerTestUtils';
+import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
+import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
+import { CohortAnalyzer } from '../../CohortAnalyzer';
 
 const mockUseCohortAnalyzer = jest.fn(() => defaultCohortAnalyzerContext);
 let mockLocation = { state: null };
@@ -164,10 +167,6 @@ jest.mock('../../../../components/CohortSelectorState/store/action', () => ({
   onDeleteSingleCohort: jest.fn(() => ({ type: 'MOCK_DELETE' })),
   onDeleteAllCohort: jest.fn(() => ({ type: 'MOCK_DELETE_ALL' })),
 }));
-
-import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
-import { CohortAnalyzer } from '../../CohortAnalyzer';
 
 describe('CohortAnalyzer page entry point', () => {
   const modalContext = {
