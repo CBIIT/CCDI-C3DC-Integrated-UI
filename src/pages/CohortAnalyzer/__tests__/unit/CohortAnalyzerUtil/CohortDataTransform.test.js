@@ -3,7 +3,7 @@ jest.mock('../../../../../utils/graphqlClient', () => ({
   default: { query: jest.fn() },
 }));
 
-jest.mock('../../../../../bento/cohortAnalyzerPageData', () => ({
+jest.mock('../../../../../bento/cohortAnalayzerPageData', () => ({
   analyzer_query: [{ query: 'PARTICIPANTS' }, { query: 'DIAGNOSIS' }, { query: 'TREATMENT' }],
   responseKeys: ['participants', 'diagnosis', 'treatment'],
 }));
@@ -56,7 +56,13 @@ describe('CohortDataTransform', () => {
     expect(setCohortData).toHaveBeenCalledWith({
       'cohort-a': {
         cohortName: 'Cohort A',
-        participants: [{ id: 'pk1', participant_id: 'P1', study_id: 'phs1' }],
+        participants: [{
+          id: 'pk1',
+          participant_id: 'P1',
+          study_id: 'phs1',
+          participant_pk: 'pk1',
+          participant: { id: 'pk1', participant_id: 'P1', study_id: 'phs1' }
+        }]
       },
     });
   });
