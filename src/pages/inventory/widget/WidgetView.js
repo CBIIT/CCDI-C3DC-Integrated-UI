@@ -87,23 +87,16 @@ const WidgetView = ({
         <Grid container>
           {widgetConfig.slice(0, 6).map((widget, index) => {
             let dataset = displayWidgets[widget.dataName];
-            if (!dataset || !Array.isArray(dataset)) {
-              return <React.Fragment key={index} />;
+            if (!Array.isArray(dataset)) {
+              dataset = [];
             }
             dataset = dataset.map((item) => ({ ...item }));
             const datasetLength = dataset.length;
-            if (datasetLength === 0) {
-              return <React.Fragment key={index} />;
-            }
             if (widget.countType === 'discrete') {
               dataset = dataset.sort((a, b) => (b.subjects || 0) - (a.subjects || 0));
             }
             if (datasetLength > WIDGET_DATASET_LIMIT) {
-              const otherGroup = {
-                group: 'Other',
-                subjects: dataset.slice(WIDGET_DATASET_LIMIT).reduce((acc, curr) => acc + (curr.subjects || 0), 0),
-              };
-              dataset = dataset.slice(0, WIDGET_DATASET_LIMIT).concat(otherGroup);
+              dataset = dataset.slice(0, WIDGET_DATASET_LIMIT);
             }
             if (
               widgetTypes[index] === 'sunburst'
