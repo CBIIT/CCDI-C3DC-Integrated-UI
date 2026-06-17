@@ -105,7 +105,7 @@ export const exampleCohorts = [
  * Returns cohort IDs in lowercase format as used by the application
  */
 export const getExampleCohortKeys = () => {
-  return exampleCohorts.map(cohort => cohort.cohortId.toLowerCase());
+  return exampleCohorts.map(cohort => cohort.cohortId);
 };
 
 /**
