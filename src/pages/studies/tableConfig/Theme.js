@@ -5,7 +5,10 @@ export const tblHeader = {
     },
     head: {
       color: '#0F253A',
-      position: 'relative',
+      position: 'sticky',
+      top: 0,
+      zIndex: 2,
+      backgroundColor: '#ffffff',
       fontSize: '15px',
       fontFamily: 'Open Sans',
       fontWeight: '700',
@@ -301,15 +304,16 @@ export const tblContainer = {
   MuiTableContainer: {
     root: {
       width: '100%',
-      overflowX: 'auto',
-      transform: 'rotateX(180deg)',
+      overflow: 'auto',
+      // 450px accounts for: global nav (~130px) + page banner/header (~215px)
+      // + title bar (~65px) + body padding-top (~45px) — leaves room for the table
+      maxHeight: 'calc(100vh - 450px)',
       boxShadow: 'none',
       borderRadius: '0',
     }
   },
   MuiTable: {
     root: {
-      transform: 'rotateX(180deg)',
       width: '100%',
       display: 'table',
       borderSpacing: '0',

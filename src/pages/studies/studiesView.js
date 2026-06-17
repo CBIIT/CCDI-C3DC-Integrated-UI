@@ -71,6 +71,9 @@ const StudiesContainer = styled.div`
     margin-right: 45px;
     padding-top: 45px;
     padding-bottom: 45px;
+    #addScrollContainer {
+      display: none;
+    }
   }
 
   .studyIcon{
