@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { CohortStateContext } from "../../components/CohortSelectorState/CohortStateContext";
 import { configColumn } from "../inventory/tabs/tableConfig/Column";
 import { onCreateNewCohort, onDeleteAllCohort, onDeleteSingleCohort } from "../../components/CohortSelectorState/store/action";
-import { tableConfig, analyzer_tables } from "../../bento/cohortAnalayzerPageData";
+import { tableConfig, analyzer_tables } from "../../bento/cohortAnalyzerPageData";
 import Stats from '../../components/Stats/GlobalStatsController';
 import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
 import NavigateAwayModal from './components/navigateAwayModal';
@@ -291,7 +291,11 @@ export const CohortAnalyzer = () => {
             if (successCount === totalCohorts) {
                 // Auto-select the newly created example cohorts
                 setSelectedCohorts(getExampleCohortKeys());
-                Notification.show(`Successfully created and selected ${totalCohorts} example cohorts! View the results in the Venn diagram and histogram below.`, 7000);
+                Notification.show(
+                    `Successfully created and selected ${totalCohorts} example cohorts!\nView the results in the Venn diagram and histogram below.`,
+                    7000,
+                    { width: '400px', textAlign: 'left' },
+                );
             }
         };
 
@@ -457,3 +461,4 @@ export const CohortAnalyzer = () => {
         </>
     )
 }
+
