@@ -225,7 +225,7 @@ export const HeaderSection = styled.div`
 export const RadioGroup = styled.div`
   display: flex;
   align-items: center;
-  margin: 6px 0 10px 12px;
+  margin: 6px 0 10px 35px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;
@@ -237,12 +237,13 @@ export const RadioLabel = styled.label`
   display: flex;
   align-items: center;
   font-family: Poppins;
-  font-size: 13px;
+  font-size: 16px;
   color: #494949;
   cursor: pointer;
 `;
 
 export const RadioInput = styled.input`
+  margin-top: 0;
   margin-right: 8px;
   accent-color: #3A7587;
   width: 16px;
