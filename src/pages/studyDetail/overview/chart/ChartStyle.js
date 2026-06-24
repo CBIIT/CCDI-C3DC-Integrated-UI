@@ -1,63 +1,95 @@
-// Style definitions for chart component
+const rowGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'minmax(140px, 34%) minmax(120px, 1fr) minmax(96px, auto)',
+  columnGap: '12px',
+  alignItems: 'center',
+};
+
 const styles = {
-  chartContainerModal: {
+  chartWrapper: {
     width: '100%',
-    minWidth: '900px',
-    height: '550px',
-    minHeight: '400px',
-    margin: '25px 0 15px',
+    marginTop: '12px',
   },
-  chartContainer: {
+  chartWrapperModal: {
     width: '100%',
-    minWidth: '500px',
-    height: '400px',
-    minHeight: '400px',
-    margin: '25px 0 15px',
+    marginTop: '8px',
   },
-  legendList: {
-    listStyle: 'none',
-    padding: '0px',
-    margin: '0px',
+  chartHeader: {
+    ...rowGrid,
+    padding: '0 8px 8px',
+    borderBottom: '1px solid #D9D9D9',
   },
-  legendItem: {
+  categoryHeader: {
+    fontFamily: 'Open Sans',
+    fontSize: '11px',
+    fontWeight: 600,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    color: '#71767A',
+  },
+  barHeader: {
+    display: 'block',
+  },
+  valueHeader: {
     display: 'flex',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    textAlign: 'right',
+    lineHeight: '13px',
+  },
+  valueHeaderLine: {
+    display: 'block',
+    fontFamily: 'Open Sans',
+    fontSize: '11px',
+    fontWeight: 600,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    color: '#71767A',
+    whiteSpace: 'nowrap',
+  },
+  chartBody: {
+    maxHeight: '360px',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+  },
+  chartBodyModal: {
+    maxHeight: '520px',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+  },
+  chartRow: {
+    ...rowGrid,
+    minHeight: '32px',
+    padding: '2px 8px',
+    backgroundColor: '#FFFFFF',
+  },
+  rowLabel: {
+    fontFamily: 'Open Sans',
     fontSize: '14px',
-    color: '#555',
-    padding: '0 5px',
-    backgroundColor: 'transparent',
+    lineHeight: '18px',
+    color: '#1B1B1B',
+    wordBreak: 'break-word',
   },
-  legendItemAlt: {
-    backgroundColor: '#f0f0f0',
-  },
-  legendItemHovered: {
-    boxShadow: '2px 2px 4px #ccc',
+  rowBarTrack: {
     position: 'relative',
+    height: '26px',
+    backgroundImage: 'linear-gradient(to right, #ECECEC 1px, transparent 1px)',
+    backgroundSize: '20% 100%',
   },
-  legendColorBox: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '2px',
-    marginRight: '8px',
-    display: 'inline-block',
+  rowBar: {
+    height: '100%',
+    minWidth: '2px',
+    borderRadius: '1px',
   },
-  legendItemLabel: {
-    maxWidth: '300px',
-  },
-  tooltip: {
-    background: '#fff',
-    border: '1px solid #CCCCCC',
-    padding: '8px',
-    color: '#000',
-    borderRadius: '4px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-    fontSize: '12px',
-  },
-  tooltipLabel: {
-    fontWeight: '400',
-  },
-  tooltipValue: {
-    fontWeight: '700',
+  rowValue: {
+    fontFamily: 'Open Sans',
+    fontSize: '14px',
+    fontWeight: 600,
+    lineHeight: '18px',
+    color: '#1B1B1B',
+    textAlign: 'right',
+    whiteSpace: 'nowrap',
   },
 };
 

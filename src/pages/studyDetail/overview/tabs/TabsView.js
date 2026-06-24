@@ -1,99 +1,223 @@
-import React, { useState } from 'react';
-import { Tabs as BentoTabs } from '@bento-core/tab';
-import { withStyles } from '@material-ui/core';
+import React, { useMemo, useState, useEffect } from 'react';
+import {
+  withStyles,
+  Select,
+  MenuItem,
+  FormControl,
+  Modal,
+  IconButton,
+  Button,
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import ExpandIcon from '../../../../assets/icons/Expand_Histogram_icon.svg';
+import DownloadIcon from '../../../../assets/icons/Download_Histogram_icon.svg';
 import TabPanel from './TabPanel';
-import customTheme from './DefaultTabTheme';
 import styles from './TabsStyle';
 import ChartView from '../chart/ChartView';
 
-/**
- * Tabs component displays tabbed chart views for study details
- * Renders a set of tabs displaying different data categories (Data Categories, Diagnoses, Anatomic Sites)
- * with optional modal view styling and participant count.
- *
- * @component
- * @param {Object} props - Component props.
- * @param {Object} props.data - Data object containing arrays for anatomic_sites, data_categories, diagnoses, and num_of_participants.
- * @param {Object} props.classes - CSS classes for styling the component.
- * @param {boolean} [props.isModalView=false] - Whether the component is rendered in a modal view.
- * @returns {JSX.Element} The rendered Tabs component.
- */
-const Tabs = ({ data, classes, isModalView = false }) => {
-  // Destructure relevant data arrays from the input data
-  const { anatomic_sites, data_categories, diagnoses } = data || {};
+const PROFILE_OPTIONS = [
+  {
+    key: 'diagnoses',
+    label: 'Diagnosis',
+    headerLabel: 'DIAGNOSIS',
+    valueHeaderLines: ['Number of', 'Participants'],
+    valueColumnLabel: 'Number of Participants',
+    dataKey: 'diagnoses',
+  },
+  {
+    key: 'anatomic_site',
+    label: 'Anatomic Site',
+    headerLabel: 'ANATOMIC SITE',
+    valueHeaderLines: ['Number of', 'Participants'],
+    valueColumnLabel: 'Number of Participants',
+    dataKey: 'anatomic_site',
+  },
+  {
+    key: 'data_categories',
+    label: 'Data Category',
+    headerLabel: 'DATA CATEGORY',
+    valueHeaderLines: ['Number of', 'Files'],
+    valueColumnLabel: 'Number of Files',
+    dataKey: 'data_categories',
+  },
+];
 
-  // State to track the currently selected tab
-  const [currentTab, setCurrentTab] = useState(0);
+const filterValidItems = (arr) => {
+  if (Array.isArray(arr)) {
+    return arr.filter((item) => item.group !== 0 && item.subjects !== 0);
+  }
+  return arr;
+};
 
-  // Helper to filter out items with group or subjects === 0
-  const filterValidItems = (arr) => {
-    if (Array.isArray(arr)) {
-      return arr.filter((item) => item.group !== 0 && item.subjects !== 0);
-    }
-    return arr;
-  };
+const createProfileData = (name, data) => {
+  if (Array.isArray(data) && data.length > 20) {
+    return { name: `Top 20 ${name}`, data: data.slice(0, 20) };
+  }
+  return { name, data };
+};
 
-  // Helper to create a tab object, limiting to top 20 if needed
-  const createTab = (name, data) => {
-    if (Array.isArray(data) && data.length > 20) {
-      return { name: `Top 20 ${name}`, data: data.slice(0, 20) };
-    }
-    return { name, data };
-  };
-
-  // Prepare Tabs filtering data arrays
-  const DataCategories = filterValidItems(data_categories);
-  const Diagnoses = filterValidItems(diagnoses);
-  const AnatomicSites = filterValidItems(anatomic_sites);
-
-  // Build tab containers, only including non-empty arrays
-  const tabContainers = [
-    createTab('Data Categories', DataCategories),
-    createTab('Diagnoses', Diagnoses),
-    createTab('Anatomic Sites', AnatomicSites),
-  ].filter((tab) => {
-    return Array.isArray(tab.data) && tab.data.length > 0;
+const downloadProfileCsv = (studyId, categoryLabel, valueColumnLabel, rows) => {
+  const header = `${categoryLabel},${valueColumnLabel}`;
+  const lines = rows.map((row) => {
+    const label = `"${String(row.group).replace(/"/g, '""')}"`;
+    return `${label},${row.subjects}`;
   });
+  const csv = [header, ...lines].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${studyId || 'study'}-${categoryLabel.replace(/\s+/g, '-').toLowerCase()}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
 
-  // Handle tab change event
-  const handleTabChange = (event, value) => {
-    setCurrentTab(value);
+const Tabs = ({ data, classes, isModalView = false }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const profileOptions = useMemo(() => PROFILE_OPTIONS.map((option) => {
+    const rawData = filterValidItems(data && data[option.dataKey]);
+    const profileData = createProfileData(option.label, rawData);
+    return {
+      ...option,
+      data: profileData.data,
+    };
+  }).filter((option) => Array.isArray(option.data) && option.data.length > 0), [data]);
+
+  const [selectedKey, setSelectedKey] = useState('');
+
+  useEffect(() => {
+    if (profileOptions.length === 0) {
+      return;
+    }
+    if (!profileOptions.some((option) => option.key === selectedKey)) {
+      setSelectedKey(profileOptions[0].key);
+    }
+  }, [profileOptions, selectedKey]);
+
+  const activeOption = profileOptions.find((option) => option.key === selectedKey)
+    || profileOptions[0];
+
+  const handleSelectChange = (event) => {
+    setSelectedKey(event.target.value);
   };
+
+  const handleDownload = () => {
+    if (!activeOption) {
+      return;
+    }
+    downloadProfileCsv(
+      data.study_id,
+      activeOption.label,
+      activeOption.valueColumnLabel,
+      activeOption.data,
+    );
+  };
+
+  if (!activeOption) {
+    return null;
+  }
+
+  const controls = (
+    <div className={isModalView ? classes.modalControls : classes.controls}>
+      <FormControl variant="outlined" className={classes.dropdown}>
+        <Select
+          value={activeOption.key}
+          onChange={handleSelectChange}
+          displayEmpty
+          MenuProps={{
+            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+            transformOrigin: { vertical: 'top', horizontal: 'left' },
+            getContentAnchorEl: null,
+          }}
+        >
+          {profileOptions.map((option) => (
+            <MenuItem key={option.key} value={option.key}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      {!isModalView && (
+        <div className={classes.actionButtons}>
+          <IconButton
+            className={classes.actionButton}
+            onClick={() => setModalOpen(true)}
+            aria-label="Expand study profile"
+          >
+            <img src={ExpandIcon} alt="" className={classes.actionIcon} />
+          </IconButton>
+          <IconButton
+            className={classes.actionButton}
+            onClick={handleDownload}
+            aria-label="Download study profile data"
+          >
+            <img src={DownloadIcon} alt="" className={classes.actionIcon} />
+          </IconButton>
+        </div>
+      )}
+
+      {isModalView && (
+        <div className={classes.actionButtons}>
+          <IconButton
+            className={classes.actionButton}
+            onClick={handleDownload}
+            aria-label="Download study profile data"
+          >
+            <img src={DownloadIcon} alt="" className={classes.actionIcon} />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+
+  const chart = (
+    <ChartView
+      data={activeOption.data}
+      categoryHeader={activeOption.headerLabel}
+      valueHeaderLines={activeOption.valueHeaderLines}
+      isModalView={isModalView}
+      chartId={isModalView ? 'study-profile-chart-modal' : 'study-profile-chart'}
+    />
+  );
+
+  if (isModalView) {
+    return (
+      <>
+        {controls}
+        {chart}
+      </>
+    );
+  }
 
   return (
     <>
-      {/* Tab header with optional modal view title */}
-      <div className={isModalView ? classes.modalHeader : classes.header}>
-        <BentoTabs
-          tabItems={tabContainers}
-          currentTab={currentTab}
-          handleTabChange={handleTabChange}
-          customTheme={customTheme}
-        />
+      {controls}
+      <TabPanel value={0} index={0}>
+        {chart}
+      </TabPanel>
 
-        {/* Show the 'Subjects in this Study' section when the view is in Modal mode.  */}
-        {isModalView && (
-          <h4 className={classes.modalTitle}>
-            Subjects in this Study:{' '}
-            <span className={classes.modalTitleSpan}>
-              {data.num_of_participants}
-            </span>
-          </h4>
-        )}
-      </div>
-
-      {/* Render tab panels with corresponding chart views */}
-      {tabContainers.map((tab, index) => (
-        <TabPanel value={currentTab} index={index} key={index}>
-          <ChartView
-            data={tabContainers[currentTab].data}
-            isModalView={isModalView}
-          />
-        </TabPanel>
-      ))}
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className={classes.modalContainer}>
+          <div className={classes.modalHeader}>
+            <h2 className={classes.modalTitle}>
+              Study Profile:{' '}
+              <span className={classes.titleSpan}>{data.study_id}</span>
+            </h2>
+            <Button onClick={() => setModalOpen(false)} className={classes.closeButton}>
+              <CloseIcon />
+            </Button>
+          </div>
+          <div className={classes.modalBody}>
+            <Tabs data={data} classes={classes} isModalView />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
 
-// Export Tabs component
 export default withStyles(styles)(Tabs);
