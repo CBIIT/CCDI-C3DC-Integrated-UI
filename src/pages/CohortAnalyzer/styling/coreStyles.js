@@ -126,7 +126,7 @@ export const cohortAnalyzerCoreStyles = (theme) => ({
   vennToolbarTitle: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 600,
-    fontSize: 18,
+    fontSize: 19,
     lineHeight: 1.2,
     color: '#18677A',
     paddingLeft: 5,

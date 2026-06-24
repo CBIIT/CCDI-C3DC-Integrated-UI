@@ -66,7 +66,7 @@ export const CheckBoxSection = styled.div`
 
 export const ChartTitle = styled.h2`
   font-family: Poppins;
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 400;
   color: #000000;
   margin: 0;
