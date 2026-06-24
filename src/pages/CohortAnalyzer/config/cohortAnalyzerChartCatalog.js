@@ -30,9 +30,9 @@ export const ADD_CHART_DATA_TYPES = [
   { id: 'demographics', label: 'Demographics', datasetKey: null, available: false }, */
   { id: 'sexAtBirth', label: 'Sex at Birth', datasetKey: 'sexAtBirth', available: true },
   { id: 'race', label: 'Race', datasetKey: 'race', available: true },
-  { id: 'ageRange', label: 'Age Range', datasetKey: null, available: true },
-  { id: 'ageAtDiagnosis', label: 'Age at Diagnosis', datasetKey: null, available: true },
-  { id: 'anatomicSite', label: 'Anatomic Site', datasetKey: null, available: false },
+  // { id: 'ageRange', label: 'Age Range', datasetKey: null, available: true },
+  // { id: 'ageAtDiagnosis', label: 'Age at Diagnosis', datasetKey: null, available: true },
+  // { id: 'anatomicSite', label: 'Anatomic Site', datasetKey: null, available: false },
   /** Below: supported today via cohort charts API (not in original mock list). */
   { id: 'treatmentType', label: 'Treatment Type', datasetKey: 'treatmentType', available: true },
   { id: 'response', label: 'Treatment Outcome', datasetKey: 'response', available: true },

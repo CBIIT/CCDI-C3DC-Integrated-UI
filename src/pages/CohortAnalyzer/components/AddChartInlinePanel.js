@@ -21,8 +21,8 @@ const useStyles = makeStyles(() => ({
   },
   header: {
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 14,
-    fontWeight: 500,
+    fontSize: 19,
+    fontWeight: 400,
     color: '#5C5C5C',
     margin: 0,
   },
@@ -59,12 +59,13 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '8px 4px',
+    padding: '10px 4px',
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 13,
+    fontSize: 18,
+    fontWeight: 300,
     color: '#1C2B33',
     cursor: 'pointer',
-    borderBottom: '1px solid #EFEFEF',
+    borderBottom: '1px solid #CCCCCC',
     '&:last-child': {
       borderBottom: 'none',
     },
@@ -99,11 +100,12 @@ const useStyles = makeStyles(() => ({
   },
   statusHintLegible: {
     marginLeft: 'auto',
-    fontSize: 11,
+    fontSize: 16,
     lineHeight: 1.3,
-    color: '#1C2B33',
-    fontWeight: 500,
+    color: '#9E9E9E',
+    fontWeight: 300,
     flexShrink: 0,
+    fontStyle: 'italic',
   },
   statusHintDim: {
     marginLeft: 'auto',
@@ -191,18 +193,8 @@ const AddChartInlinePanel = ({
   );
 
   const sortedAddChartDataTypes = useMemo(() => {
-    const indexed = ADD_CHART_DATA_TYPES.map((entry, index) => ({ entry, index }));
-    indexed.sort((a, b) => {
-      const aOn = isAddChartDataTypeOnStrip(a.entry, existingStripKeys, selectedDatasets);
-      const bOn = isAddChartDataTypeOnStrip(b.entry, existingStripKeys, selectedDatasets);
-      const aAddable = a.entry.available && a.entry.datasetKey && !aOn;
-      const bAddable = b.entry.available && b.entry.datasetKey && !bOn;
-      if (aAddable && !bAddable) return -1;
-      if (!aAddable && bAddable) return 1;
-      return a.index - b.index;
-    });
-    return indexed.map(({ entry }) => entry);
-  }, [existingStripKeys, selectedDatasets]);
+    return [...ADD_CHART_DATA_TYPES].sort((a, b) => a.label.localeCompare(b.label));
+  }, []);
 
   const handlePickDataType = (entry) => {
     if (!entry.available || !entry.datasetKey) return;
@@ -236,7 +228,6 @@ const AddChartInlinePanel = ({
           </button>
         ) : null}
       </div>
-      <div className={classes.divider} />
 
       {step === 1 && (
         <ul className={classes.list} role="listbox" aria-label="Chart data types">
@@ -255,7 +246,7 @@ const AddChartInlinePanel = ({
               ) {
                 return 'Already showing';
               }
-              if (onStrip) return 'Already on chart';
+              if (onStrip) return 'Displayed';
               return 'Coming soon';
             })();
             return (
