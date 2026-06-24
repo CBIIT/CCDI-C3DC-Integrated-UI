@@ -2539,7 +2539,7 @@ export const exploreParticipantsTabs = [
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         linkAttr: {
-          rootPath: './studies/',
+          rootPath: '/studies/',
         },
       },
       {
@@ -2613,7 +2613,7 @@ export const exploreParticipantsTabs = [
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         linkAttr: {
-          rootPath: './studies/',
+          rootPath: '/studies/',
         },
       },
       {
@@ -2966,7 +2966,7 @@ export const exploreParticipantsTabs = [
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         linkAttr: {
-          rootPath: './studies/',
+          rootPath: '/studies/',
         },
       },
       {
@@ -3137,7 +3137,7 @@ export const exploreParticipantsTabs = [
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         linkAttr: {
-          rootPath: './studies/',
+          rootPath: '/studies/',
         },
       },
       {
@@ -3624,7 +3624,7 @@ export const exploreFilesTabs = [
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         linkAttr: {
-          rootPath: './studies/',
+          rootPath: '/studies/',
         },
       },
       {

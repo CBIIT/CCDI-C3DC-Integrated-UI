@@ -145,7 +145,7 @@ const StudiesCard = ({ data = {}, index }) => {
               {(() => {
                 const { truncated, needsTruncation } = truncateTitle(study_id, containerWidth);
                 const linkElement = (
-                  <a href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${study_id}`} rel='noreferrer' target='_blank'>
+                  <a href={`/studies/${study_id}`}>
                     {needsTruncation ? truncated : study_id}
                   </a>
                 );
