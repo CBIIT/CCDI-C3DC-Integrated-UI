@@ -11,7 +11,7 @@ export function measureDragCardElement(el) {
 }
 
 export function requiresCompactSpacing(dataset) {
-  return dataset === 'race' || dataset === 'treatmentType' || dataset === 'response';
+  return dataset === 'sexAtBirth' || dataset === 'race' || dataset === 'treatmentType' || dataset === 'response';
 }
 
 /**

@@ -103,12 +103,12 @@ export const CenterContainer = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-  align-items: stretch;
+  align-items: flex-start;
   align-content: center;
   gap: 14px;
   @media (min-width: 1900px) {
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: flex-start;
   }
 `;
 
