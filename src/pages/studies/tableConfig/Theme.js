@@ -5,7 +5,10 @@ export const tblHeader = {
     },
     head: {
       color: '#0F253A',
-      position: 'relative',
+      backgroundColor: '#ffffff',
+      position: 'sticky',
+      top: 0,
+      zIndex: 2,
       fontSize: '15px',
       fontFamily: 'Open Sans',
       fontWeight: '700',
@@ -23,6 +26,7 @@ export const tblHeader = {
       letterSpacing: '-0.019em',
       lineHeight: '18px',
       textDecoration: 'none',
+      backgroundColor: '#ffffff',
       '&:hover': {
         color: '#13344A',
       },
@@ -34,6 +38,7 @@ export const tblHeader = {
     head: {
       height: '40px',
       borderBottom: '1px solid #000000',
+      backgroundColor: '#ffffff',
     },
   },
 };
@@ -301,19 +306,18 @@ export const tblContainer = {
   MuiTableContainer: {
     root: {
       width: '100%',
-      overflowX: 'auto',
-      transform: 'rotateX(180deg)',
       boxShadow: 'none',
       borderRadius: '0',
-    }
+      overflowX: 'auto',
+      overflowY: 'auto',
+    },
   },
   MuiTable: {
     root: {
-      transform: 'rotateX(180deg)',
       width: '100%',
       display: 'table',
       borderSpacing: '0',
-      borderCollapse: 'collapse',
+      borderCollapse: 'separate',
       borderTop: '3px solid #8A7F7C',
       borderBottom: '2px solid #8A7F7C',
     },

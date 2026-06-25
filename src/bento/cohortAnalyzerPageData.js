@@ -44,7 +44,7 @@ export const tableConfig = {
       role: cellTypes.DISPLAY,
       linkAttr: {
         linkAttr: {
-          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+          rootPath: '/studies/',
         },
         cellType: cellTypes.CUSTOM_ELEM,
       },

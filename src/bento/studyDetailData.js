@@ -11,6 +11,7 @@ query studyDetails($study_id: String) {
         num_of_participants
         num_of_samples
         num_of_files
+        consent_codes
         data_categories {
           group
           subjects
@@ -19,7 +20,7 @@ query studyDetails($study_id: String) {
           group
           subjects
         }
-        anatomic_sites {
+        anatomic_site {
           group
           subjects
         }
