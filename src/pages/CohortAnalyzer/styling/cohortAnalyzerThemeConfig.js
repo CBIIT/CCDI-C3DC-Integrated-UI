@@ -1,11 +1,10 @@
 import { themeConfig } from '../../studies/tableConfig/Theme';
 
 /**
- * Cohort Analyzer table typography tokens. Header + body share Primary 4; first-column links
- * use Purple 1. Sizes are spec'd as font-size / line-height / letter-spacing.
+ * Cohort Analyzer table typography tokens. Header + body share Primary 4.
+ * Sizes are spec'd as font-size / line-height / letter-spacing.
  */
 const PRIMARY_4 = '#0F253A';
-const PURPLE_1 = '#763E96';
 
 /**
  * Table + MUI overrides for Cohort Analyzer data grids (table view).
@@ -21,7 +20,7 @@ export const cohortAnalyzerThemeConfig = {
                 borderBottom: '1px solid #000000',
             },
         },
-        // Center all column headers; first column keeps link styling in body rows only.
+        // Center all column headers.
         MuiTableCell: {
             ...(themeConfig.tblHeader && themeConfig.tblHeader.MuiTableCell),
             root: {
@@ -74,12 +73,28 @@ export const cohortAnalyzerThemeConfig = {
                 lineHeight: '17px',
                 letterSpacing: '0',
                 color: PRIMARY_4,
+                // Override studies table first-column link color; all columns use body text styling.
                 '&:first-of-type': {
-                    // Table text links: Inter Semibold, 16/17/0, Purple 1.
-                    color: PURPLE_1,
-                    textDecoration: 'underline',
-                    fontWeight: 600,
+                    color: PRIMARY_4,
+                    textDecoration: 'none',
+                    fontWeight: 400,
                 },
+            },
+        },
+        // @bento-core/table renders cell values in MUI Typography (default body1).
+        // Base studies theme sets body1 to 600 — override so row text matches Inter Regular.
+        MuiTypography: {
+            ...(themeConfig.tblBody && themeConfig.tblBody.MuiTypography),
+            body1: {
+                ...(themeConfig.tblBody
+                    && themeConfig.tblBody.MuiTypography
+                    && themeConfig.tblBody.MuiTypography.body1),
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '17px',
+                letterSpacing: '0',
+                color: PRIMARY_4,
             },
         },
     },

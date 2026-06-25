@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { CA_SURVIVAL_CARD_MIN_HEIGHT } from '../../store/cohortAnalyzerLayoutConstants';
 import {
   HISTOGRAM_CARD_MIN_WIDTH,
   HISTOGRAM_CARD_SHELL_MIN_VH,
+  HISTOGRAM_CHART_STROKE_COLOR,
 } from '../histogramConstants';
 
 export const barColors = {
@@ -17,6 +18,16 @@ export const kmplotColors = {
   colorC: '#008FF7',
 };
 
+/** Grid and axis strokes for Recharts-based charts (histogram + Kaplan–Meier). */
+export const histogramChartGridAxisStrokeCss = css`
+  & .recharts-cartesian-grid-horizontal line,
+  & .recharts-cartesian-grid-vertical line,
+  & .recharts-cartesian-axis .recharts-cartesian-axis-line,
+  & .recharts-cartesian-axis-tick line {
+    stroke: ${HISTOGRAM_CHART_STROKE_COLOR};
+  }
+`;
+
 export const HistogramContainer = styled.div`
   background: transparent;
   border: none;
@@ -30,6 +41,7 @@ export const HistogramContainer = styled.div`
   min-height: 0;
   height: auto;
   margin-top: 16px;
+  overflow-x: hidden;
   @media (max-width: 1900px) {
     max-width: 100%;
     margin: 16px 0 0;
@@ -54,7 +66,7 @@ export const CheckBoxSection = styled.div`
 
 export const ChartTitle = styled.h2`
   font-family: Poppins;
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 400;
   color: #000000;
   margin: 0;
@@ -91,12 +103,12 @@ export const CenterContainer = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-  align-items: stretch;
+  align-items: flex-start;
   align-content: center;
   gap: 14px;
   @media (min-width: 1900px) {
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: flex-start;
   }
 `;
 
@@ -117,6 +129,7 @@ export const ChartWrapper = styled.div`
   border-radius: 10px;
   box-shadow: none;
   transition: none;
+  ${histogramChartGridAxisStrokeCss}
   &:hover {
     transform: none;
     box-shadow: none;
@@ -212,7 +225,7 @@ export const HeaderSection = styled.div`
 export const RadioGroup = styled.div`
   display: flex;
   align-items: center;
-  margin: 6px 0 10px 12px;
+  margin: 6px 0 10px 35px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;
@@ -224,12 +237,13 @@ export const RadioLabel = styled.label`
   display: flex;
   align-items: center;
   font-family: Poppins;
-  font-size: 13px;
+  font-size: 16px;
   color: #494949;
   cursor: pointer;
 `;
 
 export const RadioInput = styled.input`
+  margin-top: 0;
   margin-right: 8px;
   accent-color: #3A7587;
   width: 16px;

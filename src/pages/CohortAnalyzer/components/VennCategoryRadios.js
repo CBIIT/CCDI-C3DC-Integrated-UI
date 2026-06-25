@@ -1,24 +1,11 @@
 import React from 'react';
 import ToolTip from '@bento-core/tool-tip/dist/ToolTip';
 import questionIcon3 from '../../../assets/icons/Question_icon_2.svg';
-
-const vennRadioStyle = (selected) => ({
-  appearance: 'none',
-  WebkitAppearance: 'none',
-  width: 16,
-  height: 16,
-  margin: 0,
-  marginRight: 6,
-  cursor: 'pointer',
-  borderRadius: '50%',
-  border: '2px solid #5C5C5C',
-  backgroundColor: '#FFFFFF',
-  backgroundImage: selected
-    ? 'radial-gradient(circle, #3A7587 0 4px, transparent 4.5px)'
-    : 'none',
-  flexShrink: 0,
-  boxSizing: 'border-box',
-});
+import {
+  CohortAnalyzerRadioFieldset,
+  CohortAnalyzerRadioInput,
+  CohortAnalyzerRadioLabel,
+} from '../styling/cohortAnalyzerRadio.styled';
 
 const containerStyle = {
   padding: '12px 16px 16px',
@@ -41,20 +28,6 @@ const promptStyle = {
   fontFamily: 'Poppins',
   color: '#5C5C5C',
   lineHeight: 1.35,
-};
-
-const radioContainerStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'nowrap',
-  marginTop: 10,
-  gap: 16,
-  padding: 0,
-  margin: '10px 0 0',
-  color: '#1C2B33',
-  fontSize: 16,
-  fontFamily: 'Poppins, sans-serif',
-  border: 'none',
 };
 
 const legendOffscreenStyle = {
@@ -87,12 +60,16 @@ const VennCategoryRadios = ({
   nodeIndex,
   setNodeIndex,
   setRowData,
+  alignWithModalHeader = false,
 }) => {
   const cohortsReady = Array.isArray(selectedCohorts) && selectedCohorts.length > 0;
   const rowOpacity = cohortsReady ? 1 : 0.55;
+  const resolvedContainerStyle = alignWithModalHeader
+    ? { ...containerStyle, padding: '12px 0 16px' }
+    : containerStyle;
 
   return (
-    <div style={containerStyle}>
+    <div style={resolvedContainerStyle}>
       <div style={promptRowStyle}>
         <p style={promptStyle}>Select a data category for cohort matching:</p>
         <ToolTip
@@ -105,7 +82,7 @@ const VennCategoryRadios = ({
           <img alt="Help" src={questionIcon3} style={{ display: 'block' }} height={12} />
         </ToolTip>
       </div>
-      <fieldset style={radioContainerStyle}>
+      <CohortAnalyzerRadioFieldset>
         <legend style={legendOffscreenStyle}>Data category options</legend>
         {RADIO_OPTIONS.map(({ value, label }) => (
           <ToolTip
@@ -116,19 +93,14 @@ const VennCategoryRadios = ({
             arrow
             placement="top"
           >
-            <label
+            <CohortAnalyzerRadioLabel
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                margin: 0,
                 opacity: rowOpacity,
                 cursor: cohortsReady ? 'pointer' : 'not-allowed',
               }}
             >
-              <input
-                style={vennRadioStyle(nodeIndex === value)}
+              <CohortAnalyzerRadioInput
                 disabled={!cohortsReady}
-                type="radio"
                 value={String(value + 1)}
                 checked={nodeIndex === value}
                 onChange={() => {
@@ -139,10 +111,10 @@ const VennCategoryRadios = ({
                 aria-label={label}
               />
               {label}
-            </label>
+            </CohortAnalyzerRadioLabel>
           </ToolTip>
         ))}
-      </fieldset>
+      </CohortAnalyzerRadioFieldset>
     </div>
   );
 };

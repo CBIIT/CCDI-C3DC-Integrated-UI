@@ -6,7 +6,7 @@ jest.mock('../../../../../utils/graphqlClient', () => ({
   default: { query: jest.fn() },
 }));
 
-jest.mock('../../../../../bento/cohortAnalayzerPageData', () => ({
+jest.mock('../../../../../bento/cohortAnalyzerPageData', () => ({
   analyzer_query: [{ query: 'PARTICIPANTS' }, { query: 'DIAGNOSIS' }, { query: 'TREATMENT' }],
   responseKeys: ['participants', 'diagnosis', 'treatment'],
 }));

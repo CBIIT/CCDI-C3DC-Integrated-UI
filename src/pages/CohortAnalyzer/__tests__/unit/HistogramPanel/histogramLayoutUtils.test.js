@@ -25,10 +25,7 @@ describe('histogramLayoutUtils', () => {
       expect(requiresCompactSpacing('race')).toBe(true);
       expect(requiresCompactSpacing('treatmentType')).toBe(true);
       expect(requiresCompactSpacing('response')).toBe(true);
-    });
-
-    it('returns false for other datasets', () => {
-      expect(requiresCompactSpacing('sexAtBirth')).toBe(false);
+      expect(requiresCompactSpacing('sexAtBirth')).toBe(true);
     });
   });
 });

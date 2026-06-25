@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { CohortStateContext } from "../../components/CohortSelectorState/CohortStateContext";
 import { configColumn } from "../inventory/tabs/tableConfig/Column";
 import { onCreateNewCohort, onDeleteAllCohort, onDeleteSingleCohort } from "../../components/CohortSelectorState/store/action";
-import { tableConfig, analyzer_tables } from "../../bento/cohortAnalayzerPageData";
+import { tableConfig, analyzer_tables } from "../../bento/cohortAnalyzerPageData";
 import Stats from '../../components/Stats/GlobalStatsController';
 import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
 import NavigateAwayModal from './components/navigateAwayModal';
@@ -41,6 +41,7 @@ import {
     canAddExampleCohorts,
     buildExploreUploadPayload,
     shouldSkipNavigateAwayModal,
+    guardSetterForRequest,
 } from './cohortAnalyzerPageLogic';
 
 export const CohortAnalyzer = () => {
@@ -83,6 +84,8 @@ export const CohortAnalyzer = () => {
 
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
+    const tableFetchRequestIdRef = useRef(0);
+    const isReplacingExampleCohortsRef = useRef(false);
     const classes = useStyle();
     const { state, dispatch: cohortDispatch } = useContext(CohortStateContext);
     const hasParticipantData = useMemo(
@@ -132,7 +135,8 @@ export const CohortAnalyzer = () => {
 
     }
 
-    async function getJoinedCohort(isReset = false, isRequestActive) {
+    async function getJoinedCohort(isReset = false) {
+        const requestId = ++tableFetchRequestIdRef.current;
         await getJoinedCohortData({
             nodeIndex,
             selectedCohorts,
@@ -141,10 +145,9 @@ export const CohortAnalyzer = () => {
             searchValue,
             isReset,
             setQueryVariable,
-            setRowData,
+            setRowData: guardSetterForRequest(setRowData, requestId, tableFetchRequestIdRef),
             location,
-            setCohortData,
-            isRequestActive,
+            setCohortData: guardSetterForRequest(setCohortData, requestId, tableFetchRequestIdRef),
         });
     }
 
@@ -179,11 +182,9 @@ export const CohortAnalyzer = () => {
     }, [selectedChart])
 
     useEffect(() => {
-        let isActive = true;
-        if (selectedChart.length >= 0) {
-            getJoinedCohort(false, () => isActive);
+        if (selectedCohorts.length > 0) {
+            getJoinedCohort();
         }
-
 
         setSelectedCohortSections(
             filterVennSectionsForSelectedCohorts(
@@ -195,33 +196,24 @@ export const CohortAnalyzer = () => {
 
         if (selectedCohorts.length === 0) {
             setGeneralInfo({});
-            if (shouldClearRowDataOnEmptySelection(selectedCohorts, location)) {
+            if (
+                shouldClearRowDataOnEmptySelection(selectedCohorts, location)
+                && !isReplacingExampleCohortsRef.current
+            ) {
                 setRowData([]);
             }
         }
-        return () => {
-            isActive = false;
-        };
     }, [selectedCohorts, selectedChart]);
 
     useEffect(() => {
-        let isActive = true;
-        getJoinedCohort(false, () => isActive);
-        return () => {
-            isActive = false;
-        };
+        getJoinedCohort();
     }, [searchValue])
 
     useEffect(() => {
-        let isActive = true;
-        getJoinedCohort(false, () => isActive);
-        return () => {
-            isActive = false;
-        };
+        getJoinedCohort();
     }, [generalInfo])
 
     useEffect(() => {
-        let isActive = true;
 
         setSelectedCohortSections([]);
         setGeneralInfo({})
@@ -229,17 +221,13 @@ export const CohortAnalyzer = () => {
         if (searchRef.current) {
             searchRef.current.value = "";
         }
-        getJoinedCohort(true, () => isActive);
+        getJoinedCohort(true);
 
-        return () => {
-            isActive = false;
-        };
     }, [nodeIndex])
 
     useEffect(() => {
         setRefreshTableContent(false)
-        const timer = setTimeout(() => setRefreshTableContent(true), 0)
-        return () => clearTimeout(timer);
+        setTimeout(() => setRefreshTableContent(true), 0)
     }, [cohortList, nodeIndex, cohortData])
 
     const handleClick = () => {
@@ -264,6 +252,7 @@ export const CohortAnalyzer = () => {
     const handleDemoClick = () => {
         // First, clear any existing example cohorts from the state
         const exampleCohortKeys = getExampleCohortKeys();
+        isReplacingExampleCohortsRef.current = true;
 
         // Remove existing example cohorts from selected cohorts
         setSelectedCohorts(prev => prev.filter(cohortId => !exampleCohortKeys.includes(cohortId)));
@@ -278,6 +267,7 @@ export const CohortAnalyzer = () => {
         // Check if adding 3 example cohorts would exceed the 20-cohort limit
         // Only count non-example cohorts since example cohorts will be cleared/replaced
         if (!canAddExampleCohorts(state, exampleCohortKeys)) {
+            isReplacingExampleCohortsRef.current = false;
             Notification.show('Cannot add example cohorts. You have reached the maximum limit of 20 cohorts. Please delete some cohorts first.', 5000);
             return;
         }
@@ -286,16 +276,26 @@ export const CohortAnalyzer = () => {
         const totalCohorts = exampleCohorts.length;
 
 
+        const finishExampleCohortReplacement = () => {
+            isReplacingExampleCohortsRef.current = false;
+        };
+
         const handleExampleSuccess = (count) => {
             successCount++;
             if (successCount === totalCohorts) {
                 // Auto-select the newly created example cohorts
                 setSelectedCohorts(getExampleCohortKeys());
-                Notification.show(`Successfully created and selected ${totalCohorts} example cohorts! View the results in the Venn diagram and histogram below.`, 7000);
+                finishExampleCohortReplacement();
+                Notification.show(
+                    `Successfully created and selected ${totalCohorts} example cohorts!\nView the results in the Venn diagram and histogram below.`,
+                    7000,
+                    { width: '400px', textAlign: 'left' },
+                );
             }
         };
 
         const handleExampleError = (error) => {
+            finishExampleCohortReplacement();
             Notification.show(`Failed to create example cohorts: ${error.message}`, 5000);
         };
 
@@ -457,3 +457,4 @@ export const CohortAnalyzer = () => {
         </>
     )
 }
+

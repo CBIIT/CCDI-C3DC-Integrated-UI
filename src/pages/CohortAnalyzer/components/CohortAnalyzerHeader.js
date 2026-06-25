@@ -34,7 +34,6 @@ const CohortAnalyzerHeader = ({
     <>
       <div className={classes.vennToolbarRow}>
         <div className={classes.vennToolbarLeading}>
-          
           <h2 className={classes.vennToolbarTitle}>Venn Diagram</h2>
         </div>
         <div className={classes.vennToolbarSpacer} aria-hidden />

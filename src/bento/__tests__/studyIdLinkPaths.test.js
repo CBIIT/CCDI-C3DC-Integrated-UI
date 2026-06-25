@@ -1,5 +1,5 @@
 import { exploreParticipantsTabs, exploreFilesTabs } from '../dashboardTabData';
-import { tableConfig as cohortAnalyzerTableConfig } from '../cohortAnalayzerPageData';
+import { tableConfig as cohortAnalyzerTableConfig } from '../cohortAnalyzerPageData';
 
 const getStudyIdColumns = (tabs) => tabs
   .flatMap((tab) => tab.columns || [])

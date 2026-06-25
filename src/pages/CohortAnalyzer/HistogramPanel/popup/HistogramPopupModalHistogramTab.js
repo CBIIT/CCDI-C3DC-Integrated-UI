@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  RadioInput,
-  RadioLabel,
+  CohortAnalyzerRadioInput,
+} from '../../styling/cohortAnalyzerRadio.styled';
+import {
   ModalChartContainer,
   ModalHistogramChartInset,
   ModalRadioFieldset,
-  ModalRadioGroup,
+  ModalRadioLabel,
   ModalNoDataContainer,
 } from '../HistogramPanel.styled';
 import { HistogramDatasetChart, DEFAULT_CHART_TYPE } from '../chart/HistogramDatasetChart';
@@ -34,32 +35,24 @@ export function HistogramPopupModalHistogramTab({
   return (
     <ModalChartContainer>
       <ModalRadioFieldset>
-        <ModalRadioGroup>
-          <RadioLabel>
-            <RadioInput
-              type="radio"
-              name={`modalViewType-${activeTab}`}
-              value="count"
-              checked={viewType[activeTab] === 'count'}
-              onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
-            />
-            <span>
-              # of Cases
-            </span>
-          </RadioLabel>
-          <RadioLabel>
-            <RadioInput
-              type="radio"
-              name={`modalViewType-${activeTab}`}
-              value="percentage"
-              checked={viewType[activeTab] === 'percentage'}
-              onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
-            />
-            <span>
-              % of Cases
-            </span>
-          </RadioLabel>
-        </ModalRadioGroup>
+        <ModalRadioLabel>
+          <CohortAnalyzerRadioInput
+            name={`modalViewType-${activeTab}`}
+            value="count"
+            checked={viewType[activeTab] === 'count'}
+            onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
+          />
+          # of Cases
+        </ModalRadioLabel>
+        <ModalRadioLabel>
+          <CohortAnalyzerRadioInput
+            name={`modalViewType-${activeTab}`}
+            value="percentage"
+            checked={viewType[activeTab] === 'percentage'}
+            onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
+          />
+          % of Cases
+        </ModalRadioLabel>
       </ModalRadioFieldset>
       <ModalHistogramChartInset>
         {Array.isArray(data[activeTab]) && data[activeTab].length > 0 ? (
@@ -79,6 +72,7 @@ export function HistogramPopupModalHistogramTab({
               valueB={valueB}
               valueC={valueC}
               compact={requiresCompactSpacingModal(activeTab)}
+              expandedView
               height={modalHistogramDatasetChartHeight}
               width="100%"
               estimatedChartWidth={800}

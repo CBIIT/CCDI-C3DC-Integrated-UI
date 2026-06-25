@@ -15,6 +15,14 @@ import {
 } from 'recharts';
 import CustomChartTooltip from './CustomChartTooltip';
 import CustomXAxisTick from './CustomXAxisTick';
+import CustomCategoryAxisTick from './CustomCategoryAxisTick';
+import {
+  BESIDE_HORIZONTAL_BAR_BAR_GAP,
+  BESIDE_HORIZONTAL_BAR_CATEGORY_GAP,
+  HISTOGRAM_CHART_STROKE_COLOR,
+  HISTOGRAM_EXPANDED_AXIS_TICK_PROPS,
+  HORIZONTAL_BAR_MAX_CATEGORY_LABEL_LINES,
+} from '../histogramConstants';
 import { barColors } from '../HistogramPanel.styled';
 
 export const CHART_TYPE_KEYS = {
@@ -25,6 +33,9 @@ export const CHART_TYPE_KEYS = {
 };
 
 export const DEFAULT_CHART_TYPE = CHART_TYPE_KEYS.VERTICAL_BAR;
+
+const chartAxisLine = { stroke: HISTOGRAM_CHART_STROKE_COLOR };
+const chartTickLine = { stroke: HISTOGRAM_CHART_STROKE_COLOR };
 
 const tooltipBox = {
   backgroundColor: 'white',
@@ -70,7 +81,7 @@ const PieChartTooltip = ({ active, payload, viewType }) => {
   );
 };
 
-const yAxisTickStyle = {
+const DEFAULT_Y_AXIS_TICK_STYLE = {
   fontSize: 11,
   fill: '#666666',
   fontFamily: 'Nunito',
@@ -78,6 +89,22 @@ const yAxisTickStyle = {
   lineHeight: 11,
   letterSpacing: 0,
 };
+
+const buildYAxisTickStyle = (expandedView) => (
+  expandedView
+    ? { ...HISTOGRAM_EXPANDED_AXIS_TICK_PROPS }
+    : DEFAULT_Y_AXIS_TICK_STYLE
+);
+
+const buildXTickProps = (expandedView, compact) => (
+  expandedView
+    ? { ...HISTOGRAM_EXPANDED_AXIS_TICK_PROPS }
+    : {
+      fontSize: 10,
+      lineHeight: compact ? 10 : 11,
+      letterSpacing: 0,
+    }
+);
 
 function buildPieData(rows) {
   return rows
@@ -115,7 +142,22 @@ export function HistogramDatasetChart({
   c2Name = 'Cohort B',
   c3Name = 'Cohort C',
   previewShell = false,
+  expandedView = false,
+  /** Wider gaps between horizontal-bar categories (beside-Venn column). */
+  relaxedHorizontalBarSpacing = false,
 }) {
+  const yAxisTickStyle = buildYAxisTickStyle(expandedView);
+  const xTickProps = buildXTickProps(expandedView, compact);
+  const categoryAxisTickStyle = expandedView
+    ? { ...HISTOGRAM_EXPANDED_AXIS_TICK_PROPS }
+    : {
+      fontSize: 10,
+      fill: '#666666',
+      fontFamily: 'Nunito',
+      fontWeight: 500,
+      lineHeight: 10,
+      letterSpacing: 0,
+    };
   const bottomMargin = compact ? 12 : 0;
   const yAxisTickFormatter = (value) => {
     const num = Number(value);
@@ -135,20 +177,35 @@ export function HistogramDatasetChart({
 
   const lineMargin = { ...verticalBarMargin };
 
-  const horizontalBarMargin = {
-    top: 12,
-    right: 24,
-    left: compact ? 18 : 18,
-    bottom: 12,
-  };
+  const categoryAxisWidth = relaxedHorizontalBarSpacing
+    ? (compact ? 96 : 116)
+    : expandedView
+      ? 140
+      : (compact ? 92 : 112);
+
+  const horizontalBarCategoryGap = relaxedHorizontalBarSpacing
+    ? BESIDE_HORIZONTAL_BAR_CATEGORY_GAP
+    : dataLength >= 6
+      ? '32%'
+      : dataLength >= 4
+        ? '26%'
+        : '20%';
+
+  const horizontalBarMargin = relaxedHorizontalBarSpacing
+    ? {
+      top: 16,
+      right: 24,
+      left: 8,
+      bottom: 16,
+    }
+    : {
+      top: 12,
+      right: 24,
+      left: expandedView ? 12 : 8,
+      bottom: 12,
+    };
 
   const pieMargin = { top: 8, right: 8, left: 8, bottom: 8 };
-
-  const xTickProps = {
-    fontSize: compact ? 10 : 10,
-    lineHeight: compact ? 10 : 11,
-    letterSpacing: 0,
-  };
 
   if (previewShell) {
     const shellMargin = {
@@ -160,18 +217,21 @@ export function HistogramDatasetChart({
     return (
       <ResponsiveContainer width={width} height={height}>
         <BarChart data={[{ name: ' ' }]} margin={shellMargin}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke={HISTOGRAM_CHART_STROKE_COLOR} horizontal vertical={false} />
           <XAxis
             dataKey="name"
             interval={0}
             tick={false}
-            axisLine={{ stroke: '#e0e0e0' }}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
             height={xAxisHeight}
           />
           <YAxis
             domain={[0, 100]}
             tickFormatter={yAxisTickFormatter}
             tick={yAxisTickStyle}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
           />
         </BarChart>
       </ResponsiveContainer>
@@ -208,7 +268,7 @@ export function HistogramDatasetChart({
             cx="50%"
             cy="50%"
             outerRadius={Math.min(height, estimatedChartWidth) * 0.36}
-            stroke="#000"
+            stroke={HISTOGRAM_CHART_STROKE_COLOR}
             strokeWidth={0.5}
           >
             {pieData.map((entry, i) => (
@@ -225,13 +285,15 @@ export function HistogramDatasetChart({
     return (
       <ResponsiveContainer width={width} height={height}>
         <LineChart data={rows} margin={lineMargin}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke={HISTOGRAM_CHART_STROKE_COLOR} horizontal vertical={false} />
           <XAxis
             dataKey="name"
             interval={0}
             angle={0}
             textAnchor="middle"
             height={xAxisHeight}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
             tick={(props) => (
               <CustomXAxisTick {...props} width={availableWidth} {...xTickProps} />
             )}
@@ -240,6 +302,8 @@ export function HistogramDatasetChart({
             domain={[0, 'dataMax']}
             tickFormatter={yAxisTickFormatter}
             tick={yAxisTickStyle}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
           />
           <Tooltip content={<MultiseriesTooltip viewType={viewType} />} />
           {valueA > 0 && (
@@ -249,7 +313,7 @@ export function HistogramDatasetChart({
               name={c1Name}
               stroke={barColors.colorA}
               strokeWidth={2}
-              dot={{ r: 3, strokeWidth: 1, stroke: '#333', fill: barColors.colorA }}
+              dot={{ r: 3, strokeWidth: 1, stroke: HISTOGRAM_CHART_STROKE_COLOR, fill: barColors.colorA }}
               activeDot={{ r: 4 }}
             />
           )}
@@ -260,7 +324,7 @@ export function HistogramDatasetChart({
               name={c2Name}
               stroke={barColors.colorB}
               strokeWidth={2}
-              dot={{ r: 3, strokeWidth: 1, stroke: '#333', fill: barColors.colorB }}
+              dot={{ r: 3, strokeWidth: 1, stroke: HISTOGRAM_CHART_STROKE_COLOR, fill: barColors.colorB }}
               activeDot={{ r: 4 }}
             />
           )}
@@ -271,7 +335,7 @@ export function HistogramDatasetChart({
               name={c3Name}
               stroke={barColors.colorC}
               strokeWidth={2}
-              dot={{ r: 3, strokeWidth: 1, stroke: '#333', fill: barColors.colorC }}
+              dot={{ r: 3, strokeWidth: 1, stroke: HISTOGRAM_CHART_STROKE_COLOR, fill: barColors.colorC }}
               activeDot={{ r: 4 }}
             />
           )}
@@ -283,19 +347,48 @@ export function HistogramDatasetChart({
   if (chartType === CHART_TYPE_KEYS.HORIZONTAL_BAR) {
     return (
       <ResponsiveContainer width={width} height={height}>
-        <BarChart layout="vertical" data={rows} margin={horizontalBarMargin}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal vertical={false} />
-          <XAxis type="number" domain={[0, 'dataMax']} tickFormatter={yAxisTickFormatter} tick={yAxisTickStyle} />
+        <BarChart
+          layout="vertical"
+          data={rows}
+          margin={horizontalBarMargin}
+          barCategoryGap={horizontalBarCategoryGap}
+          barGap={relaxedHorizontalBarSpacing ? BESIDE_HORIZONTAL_BAR_BAR_GAP : 4}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke={HISTOGRAM_CHART_STROKE_COLOR} horizontal vertical={false} />
+          <XAxis
+            type="number"
+            domain={[0, 'dataMax']}
+            tickFormatter={yAxisTickFormatter}
+            tick={yAxisTickStyle}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
+          />
           <YAxis
             dataKey="name"
             type="category"
-            width={compact ? 90 : 110}
-            tick={{ fontSize: 10, fill: '#666666', fontFamily: 'Nunito' }}
-            tickFormatter={(v) => formatCategoryLabel(v)}
+            width={categoryAxisWidth}
+            interval={0}
+            minTickGap={0}
+            axisLine={chartAxisLine}
+            tickLine={chartTickLine}
+            tick={(props) => (
+              <CustomCategoryAxisTick
+                {...props}
+                width={categoryAxisWidth - 8}
+                maxLines={HORIZONTAL_BAR_MAX_CATEGORY_LABEL_LINES}
+                {...categoryAxisTickStyle}
+              />
+            )}
           />
           <Tooltip content={<MultiseriesTooltip viewType={viewType} />} />
           {valueA > 0 && (
-            <Bar dataKey="valueA" name="Cohort A" maxBarSize={28} stroke="#000" strokeWidth={0.6}>
+            <Bar
+              dataKey="valueA"
+              name="Cohort A"
+              maxBarSize={relaxedHorizontalBarSpacing ? 22 : 28}
+              stroke={HISTOGRAM_CHART_STROKE_COLOR}
+              strokeWidth={0.6}
+            >
               {rows.map((entry, entryIndex) => (
                 <Cell
                   key={`hbar-a-${entryIndex}`}
@@ -307,7 +400,13 @@ export function HistogramDatasetChart({
             </Bar>
           )}
           {valueB > 0 && (
-            <Bar dataKey="valueB" name="Cohort B" maxBarSize={28} stroke="#000" strokeWidth={0.6}>
+            <Bar
+              dataKey="valueB"
+              name="Cohort B"
+              maxBarSize={relaxedHorizontalBarSpacing ? 22 : 28}
+              stroke={HISTOGRAM_CHART_STROKE_COLOR}
+              strokeWidth={0.6}
+            >
               {rows.map((entry, entryIndex) => (
                 <Cell
                   key={`hbar-b-${entryIndex}`}
@@ -319,7 +418,13 @@ export function HistogramDatasetChart({
             </Bar>
           )}
           {valueC > 0 && (
-            <Bar dataKey="valueC" name="Cohort C" maxBarSize={28} stroke="#000" strokeWidth={0.6}>
+            <Bar
+              dataKey="valueC"
+              name="Cohort C"
+              maxBarSize={relaxedHorizontalBarSpacing ? 22 : 28}
+              stroke={HISTOGRAM_CHART_STROKE_COLOR}
+              strokeWidth={0.6}
+            >
               {rows.map((entry, entryIndex) => (
                 <Cell
                   key={`hbar-c-${entryIndex}`}
@@ -339,21 +444,29 @@ export function HistogramDatasetChart({
   return (
     <ResponsiveContainer width={width} height={height}>
       <BarChart data={rows} margin={verticalBarMargin}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={HISTOGRAM_CHART_STROKE_COLOR} horizontal vertical={false} />
         <XAxis
           dataKey="name"
           interval={0}
           angle={0}
           textAnchor="middle"
           height={xAxisHeight}
+          axisLine={chartAxisLine}
+          tickLine={chartTickLine}
           tick={(props) => (
             <CustomXAxisTick {...props} width={availableWidth} {...xTickProps} />
           )}
         />
-        <YAxis domain={[0, 'dataMax']} tickFormatter={yAxisTickFormatter} tick={yAxisTickStyle} />
+        <YAxis
+          domain={[0, 'dataMax']}
+          tickFormatter={yAxisTickFormatter}
+          tick={yAxisTickStyle}
+          axisLine={chartAxisLine}
+          tickLine={chartTickLine}
+        />
         <Tooltip content={<CustomChartTooltip viewType={viewType} cellHoverRef={cellHover} />} />
         {valueA > 0 && (
-          <Bar dataKey="valueA" maxBarSize={60} stroke="#000" strokeWidth={0.6}>
+          <Bar dataKey="valueA" maxBarSize={60} stroke={HISTOGRAM_CHART_STROKE_COLOR} strokeWidth={0.6}>
             {rows.map((entry, entryIndex) => (
               <Cell
                 key={`vbar-a-${entryIndex}`}
@@ -365,7 +478,7 @@ export function HistogramDatasetChart({
           </Bar>
         )}
         {valueB > 0 && (
-          <Bar dataKey="valueB" maxBarSize={60} stroke="#000" strokeWidth={0.6}>
+          <Bar dataKey="valueB" maxBarSize={60} stroke={HISTOGRAM_CHART_STROKE_COLOR} strokeWidth={0.6}>
             {rows.map((entry, entryIndex) => (
               <Cell
                 key={`vbar-b-${entryIndex}`}
@@ -377,7 +490,7 @@ export function HistogramDatasetChart({
           </Bar>
         )}
         {valueC > 0 && (
-          <Bar dataKey="valueC" maxBarSize={60} stroke="#000" strokeWidth={0.6}>
+          <Bar dataKey="valueC" maxBarSize={60} stroke={HISTOGRAM_CHART_STROKE_COLOR} strokeWidth={0.6}>
             {rows.map((entry, entryIndex) => (
               <Cell
                 key={`vbar-c-${entryIndex}`}

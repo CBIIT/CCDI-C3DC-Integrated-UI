@@ -12,9 +12,17 @@ describe('cohortAnalyzerThemeConfig', () => {
     expect(cell.color).toBe('#0F253A');
   });
 
-  it('styles first-column body cells with purple links', () => {
+  it('styles first-column body cells the same as other columns', () => {
     const firstCol = cohortAnalyzerThemeConfig.tblBody.MuiTableCell.body['&:first-of-type'];
-    expect(firstCol.color).toBe('#763E96');
-    expect(firstCol.fontWeight).toBe(600);
+    expect(firstCol.color).toBe('#0F253A');
+    expect(firstCol.fontWeight).toBe(400);
+    expect(firstCol.textDecoration).toBe('none');
+  });
+
+  it('uses Inter Regular for table body Typography (cell content)', () => {
+    const body1 = cohortAnalyzerThemeConfig.tblBody.MuiTypography.body1;
+    expect(body1.fontWeight).toBe(400);
+    expect(body1.fontFamily).toBe('Inter, sans-serif');
+    expect(body1.fontSize).toBe('16px');
   });
 });
