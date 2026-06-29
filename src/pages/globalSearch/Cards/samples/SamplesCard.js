@@ -64,7 +64,7 @@ const SamplesCard = ({ data = {}, index }) => {
     sample_anatomic_site_str,
     sample_tumor_status,
     diagnosis_str,
-    tumor_classification,
+    tumor_spatial_extent,
     diagnosis_category_str,
   } = data;
   const classes = useStyles();
@@ -158,7 +158,7 @@ const SamplesCard = ({ data = {}, index }) => {
             <div className={cn(classes.column, classes.leftColumn)}>
               {renderInfo('Study ID:', study_id)}
               {renderInfo('Sample Tumor Status:', sample_tumor_status)}
-              {renderInfo('Tumor Classification:', tumor_classification)}
+              {renderInfo('Tumor Spatial Extent:', tumor_spatial_extent)}
             </div>
           </div>
         </Grid>

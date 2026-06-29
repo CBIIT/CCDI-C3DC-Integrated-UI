@@ -11,7 +11,7 @@ describe('StudiesCard', () => {
           data={{
             study_id: 'phs123456',
             study_name: 'Test Study',
-            study_status: 'Active',
+            study_phase: 'Active',
             num_of_participants: 10,
             num_of_files: 20,
           }}
