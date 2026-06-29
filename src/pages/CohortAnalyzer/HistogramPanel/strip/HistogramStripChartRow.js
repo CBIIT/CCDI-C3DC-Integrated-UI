@@ -222,6 +222,14 @@ export function HistogramStripChartRow({
         onDrop={(e) => handleStripChartDrop(e, dataset)}
       >
         <HeaderSection>
+          <img
+            src={histogramChartTitleHandle}
+            alt=""
+            width={11}
+            height={12}
+            aria-hidden
+            style={Array.isArray(data[dataset]) && data[dataset].length > 0 ? {} : { opacity: 0.3 }}
+          />
           <ChartTitle className={`${Array.isArray(data[dataset]) && data[dataset].length > 0 ? '' : 'empty'}`}>
             <span
               role="button"
@@ -235,20 +243,11 @@ export function HistogramStripChartRow({
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
-                marginRight: 6,
                 cursor: allInputsEmpty ? 'not-allowed' : 'grab',
                 opacity: allInputsEmpty ? 0.45 : 1,
               }}
               title="Drag to reorder cards"
             >
-              <img
-                src={histogramChartTitleHandle}
-                alt=""
-                width={11}
-                height={12}
-                aria-hidden
-                style={{ display: 'block', flexShrink: 0 }}
-              />
             </span>
             {getChartTitle(dataset)}
             {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
