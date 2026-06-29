@@ -60,7 +60,7 @@ const StudiesCard = ({ data = {}, index }) => {
   const {
     study_id,
     study_name,
-    study_status,
+    study_phase,
     num_of_participants,
     num_of_files,
   } = data;
@@ -227,13 +227,13 @@ const StudiesCard = ({ data = {}, index }) => {
           {renderInfo('Study Name:', study_name)}
         </div>
         
-        {/* Number of participants, Study Status, Number of files - Line 2 */}
+        {/* Number of participants, Study Phase, Number of files - Line 2 */}
         <div className={classes.groupedProperties}>
           <div className={classes.propertyGroup}>
             {renderInfo('Number of Participants:', num_of_participants)}
           </div>
           <div className={classes.propertyGroup}>
-            {renderInfo('Study Status:', study_status)}
+            {renderInfo('Study Phase:', study_phase)}
           </div>
           <div className={classes.propertyGroup}>
             {renderInfo('Number of Files:', num_of_files)}

@@ -38,15 +38,15 @@ query sampleOverview($sample_ids: [String], $offset: Int = 0, $first: Int = 1000
     anatomic_site
     participant_age_at_collection
     sample_tumor_status
-    tumor_classification
+    tumor_spatial_extent
     diagnosis
   }
 }
 `;
 
 export const customSamplesTabDownloadCSV = {
-  keysToInclude: ['sample_id', 'participant_id', 'study_id', 'anatomic_site', 'participant_age_at_collection', 'sample_tumor_status', 'tumor_classification', 'diagnosis'],
-  header: ['Sample ID', 'Participant ID', 'Study ID', 'Sample Anatomic Site', 'Age at Sample Collection (days)', 'Diagnosis', 'Sample Tumor Status', 'Sample Tumor Classification', 'Diagnosis'],
+  keysToInclude: ['sample_id', 'participant_id', 'study_id', 'anatomic_site', 'participant_age_at_collection', 'sample_tumor_status', 'tumor_spatial_extent', 'diagnosis'],
+  header: ['Sample ID', 'Participant ID', 'Study ID', 'Sample Anatomic Site', 'Age at Sample Collection (days)', 'Diagnosis', 'Sample Tumor Status', 'Sample Tumor Spatial Extent', 'Diagnosis'],
   query: GET_SAMPLES_TAB,
   apiVariable: 'sampleOverview',
   fileName: 'tableDownload',
@@ -100,8 +100,8 @@ query studyOverview($study_id: [String], $offset: Int = 0, $first: Int = 1000, $
 `;
 
 export const customStudyTabDownloadCSV = {
-  keysToInclude: ['study_id', 'pubmed_id', 'grant_id', 'dbgap_accession', 'study_name', 'study_status', 'personnel_name', 'number_of_participants', 'diagnosis', 'number_of_samples', 'anatomic_site', 'number_of_files', 'file_type'],
-  header: ['Study ID', 'PubMed ID', 'Grant ID', 'Study Accession', 'Study Name', 'Study Status', 'Principle Investigator(s)', 'Number of Participants', 'Diagnosis', 'Number of Samples', 'Diagnosis Anatomic Site', 'Number of Files', 'File Type'],
+  keysToInclude: ['study_id', 'pubmed_id', 'grant_id', 'dbgap_accession', 'study_name', 'study_phase', 'personnel_name', 'number_of_participants', 'diagnosis', 'number_of_samples', 'anatomic_site', 'number_of_files', 'file_type'],
+  header: ['Study ID', 'PubMed ID', 'Grant ID', 'Study Accession', 'Study Name', 'Study Phase', 'Principle Investigator(s)', 'Number of Participants', 'Diagnosis', 'Number of Samples', 'Diagnosis Anatomic Site', 'Number of Files', 'File Type'],
   query: GET_STUDY_TAB,
   apiVariable: 'studyOverview',
   fileName: 'tableDownload',

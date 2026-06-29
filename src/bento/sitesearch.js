@@ -167,7 +167,7 @@ export const SEARCH_PAGE_RESULT_STUDIES = gql`
       studies {
         study_id
         study_name
-        study_status
+        study_phase
         num_of_participants
         num_of_samples
         num_of_files
@@ -190,7 +190,7 @@ export const SEARCH_PAGE_RESULT_SAMPLES = gql`
         sample_anatomic_site_str
         sample_tumor_status
         diagnosis_str
-        tumor_classification
+        tumor_spatial_extent
         diagnosis_category_str
       }
     }

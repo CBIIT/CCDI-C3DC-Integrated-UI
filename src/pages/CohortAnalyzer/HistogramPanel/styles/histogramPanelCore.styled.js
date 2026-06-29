@@ -71,7 +71,7 @@ export const ChartTitle = styled.h2`
   color: #000000;
   margin: 0;
   text-align: left;
-  margin-left: 3px;
+  margin-left: 6px;
   flex: 1;
   min-width: 0;
   line-height: 1.25;
