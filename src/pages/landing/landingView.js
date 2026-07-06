@@ -174,19 +174,15 @@ const LandingView = ({ classes, statsData }) => (
                     {landingPageData.tile4.descriptionText}
                   </div>
                   <div className={classes.mountainMeadowButtonSection}>
-                    <div className={classes.blueButtonLeft}>
-                      <img className={classes.mountainMeadowIcon} src={icon} alt="CTDC about " />
-                      {' '}
-                    </div>
-                    <div className={classes.blueButtonRight} id="tile4_button">
-                      <Link
-                        to={landingPageData.tile4.callToActionLink}
-                        className={classes.mountainMeadowButton}
-                        reloadDocument={true}
-                      >
-                        {landingPageData.tile4.callToActionText}
-                      </Link>
-                    </div>
+                    <img className={classes.mountainMeadowIcon} src={icon} alt="" />
+                    <Link
+                      to={landingPageData.tile4.callToActionLink}
+                      className={classes.mountainMeadowButton}
+                      reloadDocument={true}
+                      id="tile4_button"
+                    >
+                      {landingPageData.tile4.callToActionText}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -820,6 +816,7 @@ const styles = () => ({
     background: '#fff',
     paddingLeft: '30px',
     paddingTop: '5px',
+    paddingBottom: '24px',
   },
   tile3Content: {
     width: '100%',
@@ -901,19 +898,32 @@ const styles = () => ({
     backgroundSize: 'cover',
     height: TILE4_SECTION_HEIGHT,
     boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'stretch',
   },
   cases: {
-    height: 'calc(100% - 70px)',
-    marginLeft: '395px',
-    marginTop: '70px',
-    background: '#0d4545'
+    flex: 1,
+    marginLeft: '368px',
+    background: '#0d4545',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingLeft: '20px',
+    paddingRight: '12px',
+    boxSizing: 'border-box',
   },
   mountainMeadowButtonSection: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
     height: '44px',
     width: '184px',
-    marginTop: '60px',
+    marginTop: '32px',
     backgroundColor: 'transparent',
     border: '1px white solid',
+    boxSizing: 'border-box',
+    padding: '0 16px',
   },
   blueButton: {
     height: '45px',
@@ -945,7 +955,7 @@ const styles = () => ({
     fontSize: '28px',
     fontWeight: '500',
     lineHeight: '32px',
-    padding: '15px 0',
+    padding: '0 0 8px 0',
     margin: '0',
   },
   mountainMeadowContent: {
@@ -957,24 +967,21 @@ const styles = () => ({
   },
   mountainMeadowIcon: {
     width: '20px',
-    marginTop: '12px',
-    marginLeft: '28px',
+    height: '20px',
+    flexShrink: 0,
+    display: 'block',
   },
   mountainMeadowButton: {
-    padding: '15px 5px 0 0',
-    height: '9px',
-    width: '71px',
     color: '#FFFFFF',
     fontFamily: 'Raleway, sans-serif',
     fontSize: '12px',
     fontWeight: '600',
     fontStyle: 'normal',
-    lineHeight: '19.31px',
+    lineHeight: '1',
     letterSpacing: '1px',
     textTransform: 'uppercase',
-    verticalAlign: 'middle',
     textDecoration: 'none',
-    marginLeft: '8px',
+    whiteSpace: 'nowrap',
     '&:hover': {
       color: '#ffffff',
     },
