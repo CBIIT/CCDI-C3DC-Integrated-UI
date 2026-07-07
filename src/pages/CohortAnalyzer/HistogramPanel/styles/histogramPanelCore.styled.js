@@ -99,16 +99,24 @@ export const ChartActionButtons = styled.div`
 
 export const CenterContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  flex-direction: column;
   width: 100%;
-  align-items: flex-start;
-  align-content: center;
+  align-items: stretch;
   gap: 14px;
-  @media (min-width: 1900px) {
-    justify-content: flex-start;
-    align-items: flex-start;
+`;
+
+/** One row of up to three strip chart cards; column tracks redistribute when one card is resized. */
+export const HistogramStripRow = styled.div`
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 14px;
+  grid-template-columns: ${(props) => props.$gridTemplate || 'repeat(3, minmax(0, 1fr))'};
+  align-items: start;
+  ${(props) => (props.$isResizing ? 'transition: none;' : '')}
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -138,6 +146,17 @@ export const ChartWrapper = styled.div`
    * Keep three cards per row (1/3 − gap) until a narrow viewport; the old 1500px breakpoint
    * forced two columns and made cards look stretched. Stack to one column on small screens only.
    */
+  @media (max-width: 980px) {
+    width: 100%;
+    min-width: 0;
+  }
+`;
+
+/** Strip grid cell variant — overrides ChartWrapper default min-width so columns can shrink. */
+export const StripGridChartWrapper = styled(ChartWrapper)`
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   @media (max-width: 980px) {
     width: 100%;
     min-width: 0;

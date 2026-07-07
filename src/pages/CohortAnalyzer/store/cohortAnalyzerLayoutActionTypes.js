@@ -15,5 +15,7 @@ export const CA_LAYOUT_PATCH_UI_FLAGS = 'cohortAnalyzerLayout/PATCH_UI_FLAGS';
 /** Per-panel histogram chart visual type (bar, pie, etc.) — keys match strip panel ids. */
 export const CA_LAYOUT_PATCH_CHART_VISUALS = 'cohortAnalyzerLayout/PATCH_CHART_VISUALS';
 export const CA_LAYOUT_SET_WORKSPACE_GRID = 'cohortAnalyzerLayout/SET_WORKSPACE_GRID';
+/** Record most-recent strip resize per row (one pinned panel id per row). */
+export const CA_LAYOUT_SET_STRIP_RESIZE_PIN = 'cohortAnalyzerLayout/SET_STRIP_RESIZE_PIN';
 export const CA_LAYOUT_HYDRATE = 'cohortAnalyzerLayout/HYDRATE';
 export const CA_LAYOUT_RESET = 'cohortAnalyzerLayout/RESET';

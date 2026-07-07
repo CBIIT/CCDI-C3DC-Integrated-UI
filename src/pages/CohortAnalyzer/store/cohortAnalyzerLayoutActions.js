@@ -11,6 +11,7 @@ import {
   CA_LAYOUT_PATCH_UI_FLAGS,
   CA_LAYOUT_PATCH_CHART_VISUALS,
   CA_LAYOUT_SET_WORKSPACE_GRID,
+  CA_LAYOUT_SET_STRIP_RESIZE_PIN,
   CA_LAYOUT_HYDRATE,
   CA_LAYOUT_RESET,
 } from './cohortAnalyzerLayoutActionTypes';
@@ -103,6 +104,14 @@ export function setPanelSize(payload) {
 
 export function setWorkspaceGridLayout(layout) {
   return { type: CA_LAYOUT_SET_WORKSPACE_GRID, payload: layout };
+}
+
+/**
+ * Pin one panel width per strip row — most recent resize wins; siblings flex.
+ * @param {{ panelId: string, rowPanelIds: string[] }} payload
+ */
+export function setStripResizePin(payload) {
+  return { type: CA_LAYOUT_SET_STRIP_RESIZE_PIN, payload };
 }
 
 export function hydrateCohortAnalyzerLayout(partialState) {

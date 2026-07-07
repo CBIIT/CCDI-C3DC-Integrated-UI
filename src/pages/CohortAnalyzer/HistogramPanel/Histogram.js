@@ -4,7 +4,7 @@ import useKmplot from './survival/useKmplot';
 import useRiskTable from './survival/useRiskTable';
 import {
   HistogramContainer,
-  ChartWrapper,
+  StripGridChartWrapper,
   CenterContainer,
   ChartResizeHandle,
 } from './HistogramPanel.styled';
@@ -42,6 +42,7 @@ import { useHistogramPanelBootstrap } from './hooks/useHistogramPanelBootstrap';
 import { useSurvivalBesideVennCardStyle } from './hooks/useSurvivalBesideVennCardStyle';
 import { useBesideStripHistogramMetrics } from './hooks/useBesideStripHistogramMetrics';
 import { HistogramStripChartRow } from './strip/HistogramStripChartRow';
+import { HistogramStripRowContainer } from './strip/HistogramStripRowContainer';
 import { HistogramBesideVennHistogramPortal } from './strip/HistogramBesideVennHistogramPortal';
 import {
   HistogramSurvivalBesideVennPortal,
@@ -52,6 +53,11 @@ import {
   areChartsInteractionDisabled,
   getChartPreviewContentStyle,
 } from '../utils/cohortAnalyzerChartPreview';
+import {
+  chunkIntoStripRows,
+  STRIP_GRID_CELL_CHART_STYLE,
+  STRIP_GRID_CELL_WRAPPER_STYLE,
+} from './utils/histogramLayoutUtils';
 
 const Histogram = ({
   chartPreviewMode = false,
@@ -87,6 +93,7 @@ const Histogram = ({
   const panelRegistry = useSelector((state) => state.cohortAnalyzerLayout.panelRegistry || {});
   const besideStripPanelId = useSelector((state) => state.cohortAnalyzerLayout.besideStripPanelId);
   const layoutSizes = useSelector((state) => state.cohortAnalyzerLayout.sizes || {});
+  const stripResizePins = useSelector((state) => state.cohortAnalyzerLayout.stripResizePins || []);
   const topRowOrder = useSelector((state) => state.cohortAnalyzerLayout.topRowOrder);
   const chartVisualByPanelId = useSelector((state) => state.cohortAnalyzerLayout.chartVisualByPanelId || {});
 
@@ -178,6 +185,8 @@ const Histogram = ({
   const dropdownRef = useRef(null);
   const [chartTypeMenuDataset, setChartTypeMenuDataset] = useState(null);
   const chartTypeMenuRef = useRef(null);
+  /** Live strip resize drag — defers persisted sizes until mouseup for smooth grid updates. */
+  const [stripResizeSession, setStripResizeSession] = useState(null);
   /** Per-dataset card size after user resize: { width, plotHeight } (mirrors Redux; local updates during drag) */
   const [histogramCardSizes, setHistogramCardSizes] = useState(reduxHistogramSizes);
   const [survivalCardSize, setSurvivalCardSize] = useState(reduxSurvivalSize);
@@ -300,17 +309,11 @@ const Histogram = ({
   /** Strip `ChartWrapper` defaults to 1/3 row width — pin to Redux / drag snapshot size for top-row panels. */
   const stripVennChartWrapperStyle = useMemo(() => {
     const box = reduxVennSize != null ? reduxVennSize : defaultVennOuterPx();
-    const w = box.width;
     const h = box.height;
     return {
-      width: w,
-      minWidth: w,
+      ...STRIP_GRID_CELL_CHART_STYLE,
       height: h,
       minHeight: h,
-      maxWidth: 'none',
-      flex: '0 0 auto',
-      alignSelf: 'flex-start',
-      boxSizing: 'border-box',
     };
   }, [reduxVennSize]);
 
@@ -318,16 +321,30 @@ const Histogram = ({
     const raw = survivalCardSize || reduxSurvivalSize;
     const box = clampSurvivalPanelSize(raw && typeof raw === 'object' ? raw : {});
     return {
-      width: box.width,
-      minWidth: box.width,
+      ...STRIP_GRID_CELL_CHART_STYLE,
       height: box.height,
       minHeight: box.height,
-      maxWidth: 'none',
-      flex: '0 0 auto',
-      alignSelf: 'flex-start',
-      boxSizing: 'border-box',
     };
   }, [survivalCardSize, reduxSurvivalSize]);
+
+  const stripRows = useMemo(
+    () => chunkIntoStripRows(stripRenderOrder),
+    [stripRenderOrder],
+  );
+
+  const getStripPanelWidth = useCallback((panelId) => {
+    if (panelId === 'venn') {
+      const box = reduxVennSize != null ? reduxVennSize : defaultVennOuterPx();
+      return box.width != null ? box.width : null;
+    }
+    if (panelId === 'survivalAnalysis') {
+      const raw = survivalCardSize || reduxSurvivalSize;
+      const box = clampSurvivalPanelSize(raw && typeof raw === 'object' ? raw : {});
+      return box.width != null ? box.width : null;
+    }
+    const entry = histogramCardSizes[panelId];
+    return entry && entry.width != null ? entry.width : null;
+  }, [reduxVennSize, survivalCardSize, reduxSurvivalSize, histogramCardSizes]);
 
   useEffect(() => {
     if (!onSurvivalBesideColumnActive) return;
@@ -399,6 +416,7 @@ const Histogram = ({
     dispatch,
     defaultPlotHeightPx,
     besideHistogramDataset: besideDatasetForColumn,
+    setStripResizeSession,
   });
 
   const survivalAnalysisBodyProps = {
@@ -425,6 +443,139 @@ const Histogram = ({
     setExpandedChart,
     setActiveTab,
     handleRemoveHistogramDataset,
+  };
+
+  const renderStripPanel = (panelId) => {
+    if (panelId === 'venn') {
+      return (
+        <div key="strip-venn-wrap" style={STRIP_GRID_CELL_WRAPPER_STYLE}>
+        <StripGridChartWrapper
+          id="cohort-analyzer-venn-card"
+          data-ca-histogram-strip-dataset="venn"
+          ref={(el) => {
+            chartRef.current.venn = el;
+          }}
+          style={{
+            ...stripVennChartWrapperStyle,
+            ...chartPreviewStyle,
+            cursor: 'default',
+            overflow: 'hidden',
+          }}
+          draggable={false}
+          onDragOver={(e) => handleStripChartDragOver(e, 'venn')}
+          onDrop={(e) => handleStripChartDrop(e, 'venn')}
+        >
+          <VennDiagramContainer
+            state={cohortParticipantState}
+            chartPreviewMode={chartPreviewMode}
+            containerRef={containerRef}
+            canvasRef={canvasRef}
+            classes={classes}
+            besideCardDrag={undefined}
+            besidePanelDragState={besidePanelDragState}
+            chartModalOpen={chartModalExpandedChart != null}
+            chartModalActiveTab={chartModalActiveTab}
+            onExpandVenn={onExpandVenn}
+          />
+        </StripGridChartWrapper>
+        </div>
+      );
+    }
+    if (panelId === 'survivalAnalysis') {
+      const ds = 'survivalAnalysis';
+      return (
+        <div key="strip-survival-wrap" style={STRIP_GRID_CELL_WRAPPER_STYLE}>
+        <StripGridChartWrapper
+          id="cohort-analyzer-survival-beside-card"
+          data-ca-histogram-strip-dataset={ds}
+          ref={(el) => {
+            chartRef.current[ds] = el;
+          }}
+          style={{
+            ...stripSurvivalChartWrapperStyle,
+            ...chartPreviewStyle,
+            cursor: chartsInteractionDisabled ? 'default' : 'grab',
+          }}
+          draggable={!chartsInteractionDisabled}
+          onDragStart={(event) => {
+            setDragOverDataset(null);
+            captureHistogramDragCardSize(event, ds);
+            const payload = encodePanelDragPayload({ kind: 'histogram', dataset: ds });
+            event.dataTransfer.setData(CA_PANEL_DRAG_MIME, payload);
+            event.dataTransfer.setData('text/plain', ds);
+            event.dataTransfer.effectAllowed = 'move';
+            const imgEl = event.currentTarget || chartRef.current[ds];
+            if (imgEl) {
+              event.dataTransfer.setDragImage(imgEl, 32, 20);
+            }
+            beginStripChartDrag(ds);
+          }}
+          onDragEnd={() => {
+            endStripChartDrag();
+          }}
+          onDragOver={(e) => handleStripChartDragOver(e, ds)}
+          onDrop={(e) => handleStripChartDrop(e, ds)}
+        >
+          <SurvivalAnalysisCardBody {...survivalAnalysisBodyProps} besideVenn={false} />
+          <ChartResizeHandle
+            aria-label="Resize survival analysis card"
+            title="Drag to resize card"
+            onMouseDown={handleSurvivalCardResizeStart}
+            style={{ opacity: chartsInteractionDisabled ? 0.35 : 1, pointerEvents: chartsInteractionDisabled ? 'none' : 'auto' }}
+          />
+        </StripGridChartWrapper>
+        </div>
+      );
+    }
+    const dataset = panelId;
+    return (
+      <HistogramStripChartRow
+        key={dataset}
+        dataset={dataset}
+        classes={classes}
+        data={data}
+        filteredData={filteredData}
+        viewType={viewType}
+        setViewType={setViewType}
+        chartVisualByPanelId={chartVisualByPanelId}
+        histogramCardSizes={histogramCardSizes}
+        defaultPlotHeightPx={defaultPlotHeightPx}
+        defaultDropSlotWidthPx={defaultDropSlotWidthPx}
+        defaultHistogramCardOuterMinHeightPx={defaultHistogramCardOuterMinHeightPx}
+        estimateHistogramCardDropSize={estimateHistogramCardDropSize}
+        draggingDataset={draggingDataset}
+        beginStripChartDrag={beginStripChartDrag}
+        endStripChartDrag={endStripChartDrag}
+        dragOverDataset={dragOverDataset}
+        setDragOverDataset={setDragOverDataset}
+        draggingCardDimensions={draggingCardDimensions}
+        histogramDragSizeRef={histogramDragSizeRef}
+        captureHistogramDragCardSize={captureHistogramDragCardSize}
+        clearHistogramDragSize={clearHistogramDragSize}
+        handleStripChartDragOver={handleStripChartDragOver}
+        handleStripChartDrop={handleStripChartDrop}
+        handleHistogramCardResizeStart={handleHistogramCardResizeStart}
+        chartRef={chartRef}
+        allInputsEmpty={chartsInteractionDisabled}
+        chartPreviewMode={chartPreviewMode}
+        getChartTitle={getChartTitle}
+        chartTypeMenuDataset={chartTypeMenuDataset}
+        setChartTypeMenuDataset={setChartTypeMenuDataset}
+        chartTypeMenuRef={chartTypeMenuRef}
+        cellHover={cellHover}
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        downloadChart={downloadChart}
+        setExpandedChart={setExpandedChart}
+        setActiveTab={setActiveTab}
+        handleRemoveHistogramDataset={handleRemoveHistogramDataset}
+        c1Name={c1Name}
+        c2Name={c2Name}
+        c3Name={c3Name}
+        besidePanelDraggingRef={besidePanelDraggingRef}
+        stripResizeSession={stripResizeSession}
+      />
+    );
   };
 
   return (
@@ -498,149 +649,33 @@ const Histogram = ({
           stripOrder={stripOrder}
           topRowOrder={topRowOrder}
         />
-        {stripRenderOrder.map((panelId) => {
-          if (panelId === 'venn') {
-            return (
-              <ChartWrapper
-                key="strip-venn"
-                id="cohort-analyzer-venn-card"
-                data-ca-histogram-strip-dataset="venn"
-                ref={(el) => {
-                  chartRef.current.venn = el;
-                }}
-                style={{
-                  ...stripVennChartWrapperStyle,
-                  ...chartPreviewStyle,
-                  cursor: 'default',
-                  overflow: 'hidden',
-                }}
-                draggable={false}
-                onDragOver={(e) => handleStripChartDragOver(e, 'venn')}
-                onDrop={(e) => handleStripChartDrop(e, 'venn')}
-              >
-                <VennDiagramContainer
-                  state={cohortParticipantState}
-                  chartPreviewMode={chartPreviewMode}
-                  containerRef={containerRef}
-                  canvasRef={canvasRef}
-                  classes={classes}
-                  besideCardDrag={undefined}
-                  besidePanelDragState={besidePanelDragState}
-                  chartModalOpen={chartModalExpandedChart != null}
-                  chartModalActiveTab={chartModalActiveTab}
-                  onExpandVenn={onExpandVenn}
-                />
-              </ChartWrapper>
-            );
-          }
-          if (panelId === 'survivalAnalysis') {
-            const ds = 'survivalAnalysis';
-            return (
-              <ChartWrapper
-                key="strip-survival"
-                id="cohort-analyzer-survival-beside-card"
-                data-ca-histogram-strip-dataset={ds}
-                ref={(el) => {
-                  chartRef.current[ds] = el;
-                }}
-                style={{
-                  ...stripSurvivalChartWrapperStyle,
-                  ...chartPreviewStyle,
-                  cursor: chartsInteractionDisabled ? 'default' : 'grab',
-                }}
-                draggable={!chartsInteractionDisabled}
-                onDragStart={(event) => {
-                  setDragOverDataset(null);
-                  captureHistogramDragCardSize(event, ds);
-                  const payload = encodePanelDragPayload({ kind: 'histogram', dataset: ds });
-                  event.dataTransfer.setData(CA_PANEL_DRAG_MIME, payload);
-                  event.dataTransfer.setData('text/plain', ds);
-                  event.dataTransfer.effectAllowed = 'move';
-                  const imgEl = event.currentTarget || chartRef.current[ds];
-                  if (imgEl) {
-                    event.dataTransfer.setDragImage(imgEl, 32, 20);
-                  }
-                  beginStripChartDrag(ds);
-                }}
-                onDragEnd={() => {
-                  endStripChartDrag();
-                }}
-                onDragOver={(e) => handleStripChartDragOver(e, ds)}
-                onDrop={(e) => handleStripChartDrop(e, ds)}
-              >
-                <SurvivalAnalysisCardBody {...survivalAnalysisBodyProps} besideVenn={false} />
-                <ChartResizeHandle
-                  aria-label="Resize survival analysis card"
-                  title="Drag to resize card"
-                  onMouseDown={handleSurvivalCardResizeStart}
-                  style={{ opacity: chartsInteractionDisabled ? 0.35 : 1, pointerEvents: chartsInteractionDisabled ? 'none' : 'auto' }}
-                />
-              </ChartWrapper>
-            );
-          }
-          const dataset = panelId;
-          return (
-          <HistogramStripChartRow
-            key={dataset}
-            dataset={dataset}
-            classes={classes}
-            data={data}
-            filteredData={filteredData}
-            viewType={viewType}
-            setViewType={setViewType}
-            chartVisualByPanelId={chartVisualByPanelId}
-            histogramCardSizes={histogramCardSizes}
-            defaultPlotHeightPx={defaultPlotHeightPx}
-            defaultDropSlotWidthPx={defaultDropSlotWidthPx}
-            defaultHistogramCardOuterMinHeightPx={defaultHistogramCardOuterMinHeightPx}
-            estimateHistogramCardDropSize={estimateHistogramCardDropSize}
-            draggingDataset={draggingDataset}
-            beginStripChartDrag={beginStripChartDrag}
-            endStripChartDrag={endStripChartDrag}
-            dragOverDataset={dragOverDataset}
-            setDragOverDataset={setDragOverDataset}
-            draggingCardDimensions={draggingCardDimensions}
-            histogramDragSizeRef={histogramDragSizeRef}
-            captureHistogramDragCardSize={captureHistogramDragCardSize}
-            clearHistogramDragSize={clearHistogramDragSize}
-            handleStripChartDragOver={handleStripChartDragOver}
-            handleStripChartDrop={handleStripChartDrop}
-            handleHistogramCardResizeStart={handleHistogramCardResizeStart}
-            chartRef={chartRef}
-            allInputsEmpty={chartsInteractionDisabled}
-            chartPreviewMode={chartPreviewMode}
-            getChartTitle={getChartTitle}
-            chartTypeMenuDataset={chartTypeMenuDataset}
-            setChartTypeMenuDataset={setChartTypeMenuDataset}
-            chartTypeMenuRef={chartTypeMenuRef}
-            cellHover={cellHover}
-            handleMouseEnter={handleMouseEnter}
-            handleMouseLeave={handleMouseLeave}
-            downloadChart={downloadChart}
-            setExpandedChart={setExpandedChart}
-            setActiveTab={setActiveTab}
-            handleRemoveHistogramDataset={handleRemoveHistogramDataset}
-            c1Name={c1Name}
-            c2Name={c2Name}
-            c3Name={c3Name}
-            besidePanelDraggingRef={besidePanelDraggingRef}
-          />
-          );
-        })}
-        {inlineAddChartOpen ? (
-          <ChartWrapper
-            id="chart-inline-add"
-            draggable={false}
-            style={{
-              flexShrink: 0,
-              alignSelf: 'flex-start',
-              maxWidth: '100%',
-              boxSizing: 'border-box',
-              borderStyle: 'dashed',
-              borderWidth: 2,
-              borderColor: 'rgba(24, 103, 122, 0.55)',
-            }}
+        {stripRows.map((rowPanelIds, rowIndex) => (
+          <HistogramStripRowContainer
+            key={rowPanelIds.join('-') || `strip-row-${rowIndex}`}
+            rowPanelIds={rowPanelIds}
+            getStripPanelWidth={getStripPanelWidth}
+            stripResizeSession={stripResizeSession}
+            stripResizePins={stripResizePins}
           >
+            {rowPanelIds.map((panelId) => renderStripPanel(panelId))}
+          </HistogramStripRowContainer>
+        ))}
+        {inlineAddChartOpen ? (
+          <HistogramStripRowContainer
+            rowPanelIds={['inline-add']}
+            getStripPanelWidth={() => null}
+          >
+            <div style={STRIP_GRID_CELL_WRAPPER_STYLE}>
+            <StripGridChartWrapper
+              id="chart-inline-add"
+              draggable={false}
+              style={{
+                ...STRIP_GRID_CELL_CHART_STYLE,
+                borderStyle: 'dashed',
+                borderWidth: 2,
+                borderColor: 'rgba(24, 103, 122, 0.55)',
+              }}
+            >
             <div
               className={classes.chartContentWrapper}
               style={{ padding: '12px 14px 16px' }}
@@ -656,7 +691,9 @@ const Histogram = ({
                 selectedDatasets={selectedDatasets}
               />
             </div>
-          </ChartWrapper>
+          </StripGridChartWrapper>
+          </div>
+          </HistogramStripRowContainer>
         ) : null}
 
       </CenterContainer>
