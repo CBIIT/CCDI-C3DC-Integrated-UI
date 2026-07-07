@@ -11,6 +11,7 @@ import {
   CA_LAYOUT_PATCH_UI_FLAGS,
   CA_LAYOUT_PATCH_CHART_VISUALS,
   CA_LAYOUT_SET_WORKSPACE_GRID,
+  CA_LAYOUT_SET_STRIP_RESIZE_PIN,
   CA_LAYOUT_HYDRATE,
   CA_LAYOUT_RESET,
 } from './cohortAnalyzerLayoutActionTypes';
@@ -85,6 +86,8 @@ export const cohortAnalyzerLayoutInitialState = {
    */
   chartVisualByPanelId: {},
   workspaceGridLayout: null,
+  /** Ordered strip panel ids — most recent per row wins width pinning (see SET_STRIP_RESIZE_PIN). */
+  stripResizePins: [],
   /**
    * True after any user-initiated layout action (drag-drop, resize, chart-type swap,
    * top-row reorder, workspace grid drag, strip reorder, beside-promote). Bootstrap
@@ -130,6 +133,9 @@ export function migrateLayoutPayloadToV2(raw) {
         raw.workspaceGridLayout !== undefined
           ? raw.workspaceGridLayout
           : cohortAnalyzerLayoutInitialState.workspaceGridLayout,
+      stripResizePins: Array.isArray(raw.stripResizePins)
+        ? raw.stripResizePins
+        : cohortAnalyzerLayoutInitialState.stripResizePins,
     };
   }
 
@@ -167,6 +173,7 @@ export function migrateLayoutPayloadToV2(raw) {
             : cohortAnalyzerLayoutInitialState.uiFlags.survivalBesideFromSelection,
     },
     workspaceGridLayout: raw.workspaceGridLayout != null ? raw.workspaceGridLayout : null,
+    stripResizePins: Array.isArray(raw.stripResizePins) ? raw.stripResizePins : [],
     chartVisualByPanelId: {
       ...cohortAnalyzerLayoutInitialState.chartVisualByPanelId,
       ...(raw.chartVisualByPanelId || raw.chartVisualByDataset || {}),
@@ -288,6 +295,21 @@ export default function cohortAnalyzerLayoutReducer(state = cohortAnalyzerLayout
     case CA_LAYOUT_SET_WORKSPACE_GRID:
       return { ...state, workspaceGridLayout: action.payload, userLayoutChanged: true };
 
+    case CA_LAYOUT_SET_STRIP_RESIZE_PIN: {
+      const { panelId, rowPanelIds } = action.payload || {};
+      if (!panelId || !Array.isArray(rowPanelIds) || rowPanelIds.length === 0) {
+        return state;
+      }
+      const rowSet = new Set(rowPanelIds);
+      const prev = Array.isArray(state.stripResizePins) ? state.stripResizePins : [];
+      const filtered = prev.filter((id) => !rowSet.has(id));
+      return {
+        ...state,
+        stripResizePins: [...filtered, panelId],
+        userLayoutChanged: true,
+      };
+    }
+
     case CA_LAYOUT_HYDRATE: {
       const normalized = migrateLayoutPayloadToV2(action.payload);
       return {
@@ -308,6 +330,9 @@ export default function cohortAnalyzerLayoutReducer(state = cohortAnalyzerLayout
           ...cohortAnalyzerLayoutInitialState.chartVisualByPanelId,
           ...(normalized.chartVisualByPanelId || {}),
         },
+        stripResizePins: Array.isArray(normalized.stripResizePins)
+          ? normalized.stripResizePins
+          : cohortAnalyzerLayoutInitialState.stripResizePins,
       };
     }
 
