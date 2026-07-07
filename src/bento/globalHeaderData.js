@@ -76,11 +76,6 @@ export const navbarSublists = {
       className: 'navMobileSubItem',
     },
     {
-      name: 'Announcements',
-      link: '/announcements',
-      className: 'navMobileSubItem',
-    },
-    {
       name: 'Release Notes',
       link: '/release-notes-pdf',
       className: 'navMobileSubItem',
