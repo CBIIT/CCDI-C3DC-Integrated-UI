@@ -387,7 +387,7 @@ export function HistogramStripChartRow({
                       checked={viewType[dataset] === 'count'}
                       onChange={(e) => setViewType({ ...viewType, [dataset]: e.target.value })}
                     />
-                    # of Cases
+                    # of Participants
                   </RadioLabel>
                   <RadioLabel>
                     <RadioInput
@@ -397,7 +397,7 @@ export function HistogramStripChartRow({
                       checked={viewType[dataset] === 'percentage'}
                       onChange={(e) => setViewType({ ...viewType, [dataset]: e.target.value })}
                     />
-                    % of Cases
+                    % of Participants
                   </RadioLabel>
                 </RadioGroup>
               </fieldset>
