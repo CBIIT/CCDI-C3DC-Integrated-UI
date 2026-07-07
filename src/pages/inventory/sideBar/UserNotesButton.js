@@ -73,7 +73,7 @@ const UserNotesButton = ({classes}) => {
                             <ul>
                                 <li>Users of any data provided by CCDI, whether open, registered, or controlled access, agree not to attempt to reidentify any individual participant in any study represented within the CCDI, for any purpose.</li>
                                 <li>Some participants may be enrolled in more than one study; therefore, the cumulative counts might include duplicate representation of those participants.</li>
-                                <li>The CCDI Hub Explore Dashboard is a participant-based file inventory and provides links to diverse data sets. The data may have been assessed for quality based on technology-relevant controls but have not been independently validated. The data are made available to accelerate the identification of targets and facilitate discoveries related to understanding cancer biology.</li>
+                                <li>The Explore Dashboard is a participant-based file inventory and provides links to diverse data sets. The data may have been assessed for quality based on technology-relevant controls but have not been independently validated. The data are made available to accelerate the identification of targets and facilitate discoveries related to understanding cancer biology.</li>
                             </ul>
                         </div>
                     </div>
