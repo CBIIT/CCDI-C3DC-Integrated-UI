@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen, cleanup } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { navbarSublists } from '../src/bento/globalHeaderData';
 import Layout from '../src/components/Layout/LayoutView';
@@ -20,11 +21,7 @@ jest.mock('../src/pages/studies/studiesView', () => () => <div>Studies Page</div
 jest.mock('../src/pages/studyDetail/studyDetailController', () => () => <div>Study Detail Page</div>);
 jest.mock('../src/pages/CohortAnalyzer/controllers/CohortAnalyzerController', () => () => <div>Cohort Analyzer Page</div>);
 
-describe('about menu and announcements route', () => {
-  afterEach(() => {
-    cleanup();
-  });
-
+describe('About menu and announcements route', () => {
   it('keeps only About, Release Notes, and User Guide in About submenu', () => {
     const aboutSubmenu = navbarSublists.About;
     expect(aboutSubmenu.map((item) => item.name)).toEqual([
@@ -35,36 +32,39 @@ describe('about menu and announcements route', () => {
     expect(aboutSubmenu.some((item) => item.link === '/announcements')).toBe(false);
   });
 
-  it('does not resolve /announcements and still resolves existing about pages', () => {
+  it('routes /announcements to error page', () => {
     render(
       <MemoryRouter initialEntries={['/announcements']}>
         <Layout />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Error Page')).toBeTruthy();
-    cleanup();
+    expect(screen.getByText('Error Page')).toBeInTheDocument();
+  });
 
+  it('keeps /about accessible', () => {
     render(
       <MemoryRouter initialEntries={['/about']}>
         <Layout />
       </MemoryRouter>,
     );
-    expect(screen.getByText('About Page')).toBeTruthy();
-    cleanup();
+    expect(screen.getByText('About Page')).toBeInTheDocument();
+  });
 
+  it('keeps /release-notes-pdf accessible', () => {
     render(
       <MemoryRouter initialEntries={['/release-notes-pdf']}>
         <Layout />
       </MemoryRouter>,
     );
-    expect(screen.getByText('PDF Reader Page')).toBeTruthy();
-    cleanup();
+    expect(screen.getByText('PDF Reader Page')).toBeInTheDocument();
+  });
 
+  it('keeps /user-guide accessible', () => {
     render(
       <MemoryRouter initialEntries={['/user-guide']}>
         <Layout />
       </MemoryRouter>,
     );
-    expect(screen.getByText('PDF Reader Page')).toBeTruthy();
+    expect(screen.getByText('PDF Reader Page')).toBeInTheDocument();
   });
 });
