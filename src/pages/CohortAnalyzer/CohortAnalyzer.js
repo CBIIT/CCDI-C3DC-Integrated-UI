@@ -287,7 +287,7 @@ export const CohortAnalyzer = () => {
                 setSelectedCohorts(getExampleCohortKeys());
                 finishExampleCohortReplacement();
                 Notification.show(
-                    `Successfully created and selected ${totalCohorts} example cohorts!\nView the results in the Venn diagram and histogram below.`,
+                    `Successfully created and selected ${totalCohorts} example cohorts!\nView the results in the Venn diagram and histogram.`,
                     7000,
                     { width: '400px', textAlign: 'left' },
                 );
