@@ -83,8 +83,9 @@ export const navbarSublists = {
     },
     {
       name: 'User Guide',
-      link: '/user-guide',
+      link: '/user-guide.pdf',
       className: 'navMobileSubItem',
+      externalLink: true,
     },
   ],
 };
