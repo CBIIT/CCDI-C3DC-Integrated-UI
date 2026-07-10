@@ -514,7 +514,7 @@ export const ModalRadioGroup = styled(RadioGroup)`
   display: contents;
 `;
 
-/** Expanded modal: # of Cases / % of Cases — matches Venn category radio typography. */
+/** Expanded modal: # of Participants / % of Participants — matches Venn category radio typography. */
 export const ModalRadioLabel = styled(CohortAnalyzerRadioLabel)``;
 
 /** Wraps popup controls (e.g. Venn category radios) so they align with the first header tab. */
