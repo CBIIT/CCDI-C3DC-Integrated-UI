@@ -30,11 +30,14 @@ const OverlayWindow = () => {
     }
   }, [open]);
 
-  const content = text.content.map((item) => (
-    <DialogContentText id="alert-dialog-description">
-      {item}
-    </DialogContentText>
-  ));
+const content = text.content.map((item, index) => (
+  <DialogContentText
+    key={`overlay-content-${index}`}
+    id={index === 0 ? 'alert-dialog-description' : undefined}
+  >
+    {item}
+  </DialogContentText>
+));
   const list = text.list.map((item, index) => (
     <ListItem key={`${index}`}>
       <ListItemIcon>
