@@ -48,7 +48,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
   
   // Add unknownAges parameters to existing entries or create new ones
   // Check both Redux state and URL parameters for unknownAges
-  const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+  const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
   
   ageRelatedParams.forEach(param => {
     let unknownAges = 'include'; // default value
@@ -116,7 +116,7 @@ const QueryBarView = ({ data, hasImportFrom, statusReducer, localFind, unknownAg
         dispatch(clearAllFilters());
         
         // Reset unknownAges state to default values
-        const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+        const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
         ageRelatedParams.forEach(param => {
           store.dispatch({
             type: 'UNKNOWN_AGES_CHANGED',

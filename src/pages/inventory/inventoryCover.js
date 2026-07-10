@@ -64,7 +64,7 @@ const InventoryCover = ({
             }
             const paramValues = query.get(param);
             if (paramValues) {
-                if (param === 'age_at_diagnosis' || param === 'age_at_treatment_start' || param === 'age_at_response' || param === 'age_at_last_known_survival_status' || param === 'participant_age_at_collection') {
+                if (param === 'age_at_diagnosis' || param === 'age_at_treatment_start' || param === 'age_at_treatment_end' || param === 'age_at_response' || param === 'age_at_last_known_survival_status' || param === 'participant_age_at_collection') {
                     const rangeParams = paramValues.split(',');
                     const lowerBound = parseInt(rangeParams[0]);
                     const upperBound = parseInt(rangeParams[1]);
@@ -95,7 +95,7 @@ const InventoryCover = ({
         });
         
         // Set default unknownAges values for age-related parameters that don't have values
-        const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+        const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
         ageRelatedParams.forEach(param => {
             if (!unknownAgesState[param]) {
                 unknownAgesState[param] = 'include';

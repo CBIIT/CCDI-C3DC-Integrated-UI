@@ -151,7 +151,7 @@ const Inventory = ({
     
     // Calculate total number of active filters across all sections
     let activeFiltersCount = 0;
-    const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+    const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
     
     // Count filters, but handle age-related facets specially to avoid double counting
     Object.keys(activeFilters || {}).forEach(key => {
@@ -232,7 +232,7 @@ const Inventory = ({
             store.dispatch(resetAllData());
             
             // Reset unknownAges state to default values
-            const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+            const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
             ageRelatedParams.forEach(param => {
               store.dispatch({
                 type: 'UNKNOWN_AGES_CHANGED',
