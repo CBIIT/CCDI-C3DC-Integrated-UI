@@ -25,10 +25,10 @@ const OverlayWindow = () => {
   };
 
   useEffect(() => {
-    if (!sessionStorage.length) {
+    if (!sessionStorage.getItem('overlayLoad')) {
       setOpen(true);
     }
-  }, [open]);
+  }, []);
 
 const content = text.content.map((item, index) => (
   <DialogContentText
