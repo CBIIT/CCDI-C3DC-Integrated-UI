@@ -5,7 +5,6 @@ import Footer from '../ResponsiveFooter/';
 import Header from '../ResponsiveHeader/';
 import Home from '../../pages/landing/landingController';
 import About from '../../pages/about/AboutView';
-import AnnouncementPage from "../../pages/announcement/announcementPage";
 import PdfReader from "../../pages/pdfReader/pdfReader";
 import DataModelNavigator from '../../pages/dmn/DataModelNavigator';
 import Error from '../../pages/error/Error';
@@ -28,7 +27,6 @@ const Layout = () => {
           <Route exact path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/announcements" element={<AnnouncementPage />} />
           <Route path="/data-model" element={<DataModelNavigator />} />
           <Route path="/release-notes-pdf" element={<PdfReader />} />
           <Route path="/user-guide" element={<PdfReader />} />
