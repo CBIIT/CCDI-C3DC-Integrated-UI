@@ -13,36 +13,36 @@ import {
   DialogActions,
 } from '@material-ui/core';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
-// import { useSelector } from 'react-redux';
 import * as text from './OverlayText.json';
 import DialogThemeProvider from './OverlayThemConfig';
-import { setOverLayWindow } from '../../pages/search/store/sitesearchReducer';
 
 const OverlayWindow = () => {
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
-    setOverLayWindow(false);
-    localStorage.setItem('overlayLoad', 'true');
+    sessionStorage.setItem('overlayLoad', 'true');
   };
 
-  useEffect(() => { 
-    if (!localStorage.getItem('overlayLoad')) {
+  useEffect(() => {
+    if (!sessionStorage.length) {
       setOpen(true);
-      setOverLayWindow(true);
     }
   }, [open]);
 
-  const content = text.content.map((item, index) => (
-    <DialogContentText key={`${index}`} id="alert-dialog-description">{item}</DialogContentText>
+  const content = text.content.map((item) => (
+    <DialogContentText id="alert-dialog-description">
+      {item}
+    </DialogContentText>
   ));
   const list = text.list.map((item, index) => (
     <ListItem key={`${index}`}>
       <ListItemIcon>
         <FiberManualRecord style={{ fontSize: 8 }} />
       </ListItemIcon>
-      <ListItemText>{item}</ListItemText>
+      <ListItemText>
+        {item}
+      </ListItemText>
     </ListItem>
   ));
 
@@ -56,7 +56,9 @@ const OverlayWindow = () => {
             aria-describedby="alert-dialog-description"
             maxWidth="md"
           >
-            <DialogTitle id="alert-dialog-title">{'Warning'}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">
+              Warning
+            </DialogTitle>
             <Divider />
             <DialogContent>
               {content}
@@ -67,7 +69,9 @@ const OverlayWindow = () => {
             </DialogContent>
             <Divider />
             <DialogActions>
-              <Button onClick={handleClose}>{'Continue'}</Button>
+              <Button onClick={handleClose}>
+                Continue
+              </Button>
             </DialogActions>
           </Dialog>
         </DialogThemeProvider>
