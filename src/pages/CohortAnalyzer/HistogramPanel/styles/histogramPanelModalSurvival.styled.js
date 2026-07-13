@@ -84,6 +84,7 @@ export const CloseButton = styled.button`
   flex-shrink: 0;
   margin: 0px;
   box-sizing: border-box;
+  margin-left: -5px;
   &:hover {
     color: #333;
   }

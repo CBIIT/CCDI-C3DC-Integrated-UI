@@ -35,6 +35,7 @@ export const useHistogramPanelMuiStyles = makeStyles({
     borderRadius: 4,
     color: '#1C2B33',
     lineHeight: 0,
+    marginLeft: -5,
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.06)',
     },
