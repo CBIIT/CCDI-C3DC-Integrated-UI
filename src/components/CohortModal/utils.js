@@ -299,11 +299,15 @@ export const downloadCohortManifest = async (participants, cohortId, options = {
   try {
     if (onLoadingStateChange) onLoadingStateChange(true);
 
-    const participantIds = participants.map(item => item.id);
+    // Accepts either raw ids or wrapped { participant_pk } / { id } objects;
+    // filters out null/undefined so we never send [null] to the backend.
+    const participantIds = participants
+      .map((item) => (item && typeof item === 'object' ? (item.participant_pk || item.id) : item))
+      .filter((id) => id != null);
     const { data } = await client.query({
       query: GET_COHORT_MANIFEST_QUERY,
       variables: {
-        "id": participantIds,
+        "participant_pk": participantIds,
         "first": DEFAULT_QUERY_LIMIT
       },
     });
@@ -327,11 +331,15 @@ export const downloadCohortMetadata = async (participants, cohortId, options = {
   try {
     if (onLoadingStateChange) onLoadingStateChange(true);
 
-    const participantIds = participants.map(item => item.id);
+    // Accepts either raw ids or wrapped { participant_pk } / { id } objects;
+    // filters out null/undefined so we never send [null] to the backend.
+    const participantIds = participants
+      .map((item) => (item && typeof item === 'object' ? (item.participant_pk || item.id) : item))
+      .filter((id) => id != null);
     const { data } = await client.query({
       query: GET_COHORT_METADATA_QUERY,
       variables: {
-        "id": participantIds,
+        "participant_pk": participantIds,
         "first": DEFAULT_QUERY_LIMIT
       },
     });

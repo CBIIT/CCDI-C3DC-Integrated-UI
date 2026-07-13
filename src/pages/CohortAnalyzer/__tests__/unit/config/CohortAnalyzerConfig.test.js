@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from '@testing-library/react';
 import { exploreCCDIHubTooltip, exploreDashboardTooltip } from '../../../config/CohortAnalyzerConfig';
 

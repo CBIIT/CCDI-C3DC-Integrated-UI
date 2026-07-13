@@ -375,7 +375,7 @@ export const vennCohortLabelFitPlugin = {
   },
 };
 
-export const nodes = ["id","diagnosis","treatment_type"];
+export const nodes = ["participant_pk","diagnosis","treatment_type"];
 
 
 // Utility Functions

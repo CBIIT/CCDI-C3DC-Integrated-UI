@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
   mockNavigate,
@@ -12,9 +12,6 @@ import {
   resetCohortAnalyzerMocks,
 } from '../../testSupport/cohortAnalyzerMocks';
 import { renderWithCohortAnalyzerProviders } from '../../testSupport/cohortAnalyzerTestUtils';
-import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
-import { CohortAnalyzer } from '../../CohortAnalyzer';
 
 const mockUseCohortAnalyzer = jest.fn(() => defaultCohortAnalyzerContext);
 let mockLocation = { state: null };
@@ -168,6 +165,10 @@ jest.mock('../../../../components/CohortSelectorState/store/action', () => ({
   onDeleteAllCohort: jest.fn(() => ({ type: 'MOCK_DELETE_ALL' })),
 }));
 
+import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
+import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
+import { CohortAnalyzer } from '../../CohortAnalyzer';
+
 describe('CohortAnalyzer page entry point', () => {
   const modalContext = {
     setShowCohortModal: jest.fn(),
@@ -281,7 +282,7 @@ describe('CohortAnalyzer page entry point', () => {
   it('handleBuildInExplore skips modal when localStorage flag is set', () => {
     localStorage.setItem('hideNavigateModal', 'true');
     renderPage({
-      rowData: [{ participant_id: 'P1', study_id: 'phs1' }],
+      rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(mockStoreDispatch).toHaveBeenCalled();
@@ -290,7 +291,7 @@ describe('CohortAnalyzer page entry point', () => {
   });
 
   it('handleBuildInExplore opens navigate-away modal by default', () => {
-    renderPage({ rowData: [{ participant_id: 'P1', study_id: 'phs1' }] });
+    renderPage({ rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }] });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(defaultCohortAnalyzerContext.setShowNavigateAwayModal).toHaveBeenCalledWith(true);
     expect(mockNavigate).not.toHaveBeenCalled();

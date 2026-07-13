@@ -129,8 +129,8 @@ describe('cohortAnalyzerPageLogic', () => {
   describe('buildExploreUploadPayload', () => {
     it('maps row data to upload shape', () => {
       const rowData = [
-        { participant_id: 'P1', study_id: 'phs1' },
-        { participant_id: 'P2', study_id: 'phs2' },
+        { participant_id: 'P1', dbgap_accession: 'phs1' },
+        { participant_id: 'P2', dbgap_accession: 'phs2' },
       ];
       const { upload, uploadMetadata } = buildExploreUploadPayload(rowData);
       expect(upload).toHaveLength(2);

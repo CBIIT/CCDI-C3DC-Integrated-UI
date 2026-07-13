@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import CohortAnalyzerController from '../../../controllers/CohortAnalyzerController';
 
 jest.mock('../../../../../components/CohortSelectorState/CohortStateContext', () => {
   const ReactMock = require('react');
@@ -26,6 +25,8 @@ jest.mock('../../../context/CohortAnalyzerContext', () => ({
 jest.mock('../../../CohortAnalyzer', () => ({
   CohortAnalyzer: () => <div data-testid="cohort-analyzer-page">Analyzer</div>,
 }));
+
+import CohortAnalyzerController from '../../../controllers/CohortAnalyzerController';
 
 describe('CohortAnalyzerController', () => {
   it('wraps CohortAnalyzer with required providers', () => {

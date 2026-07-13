@@ -17,7 +17,8 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 8,
-    margin: '0 0 8px',
+    // Tight bottom margin so the step-2 divider hugs the header text.
+    margin: '0 0 4px',
   },
   header: {
     fontFamily: 'Poppins, sans-serif',
@@ -42,10 +43,13 @@ const useStyles = makeStyles(() => ({
       background: 'rgba(0, 0, 0, 0.06)',
     },
   },
+  // Step 2 header divider. Negative left/right margins punch out the parent
+  // chartContentWrapper's 14px horizontal padding so the border spans edge-to-edge
+  // of the panel card, per design.
   divider: {
     height: 1,
     background: '#ADADAD',
-    margin: '0 0 10px',
+    margin: '0 -14px 10px',
   },
   list: {
     listStyle: 'none',
@@ -59,13 +63,17 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '10px 4px',
+    padding: '8px 4px',
+    // Row typography per spec: Poppins Light 18/26.
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 18,
+    fontStyle: 'normal',
     fontWeight: 300,
+    fontSize: 18,
+    lineHeight: '26px',
+    letterSpacing: 0,
     color: '#1C2B33',
     cursor: 'pointer',
-    borderBottom: '1px solid #CCCCCC',
+    borderBottom: '1px solid #EFEFEF',
     '&:last-child': {
       borderBottom: 'none',
     },
@@ -98,14 +106,20 @@ const useStyles = makeStyles(() => ({
     borderColor: '#CFCFCF',
     filter: 'grayscale(0.6)',
   },
+  // Status hint on already-on-strip rows ("Displayed"). Kept muted so the whole
+  // row reads as disabled/greyed out, matching primaryBlockMuted.
+  // Typography per spec: Poppins Light Italic 16/26.
   statusHintLegible: {
     marginLeft: 'auto',
-    fontSize: 16,
-    lineHeight: 1.3,
-    color: '#9E9E9E',
-    fontWeight: 300,
-    flexShrink: 0,
+    fontFamily: 'Poppins, sans-serif',
     fontStyle: 'italic',
+    fontWeight: 300,
+    fontSize: 16,
+    lineHeight: '26px',
+    letterSpacing: 0,
+    color: '#9E9E9E',
+    opacity: 0.75,
+    flexShrink: 0,
   },
   statusHintDim: {
     marginLeft: 'auto',
@@ -130,12 +144,6 @@ const useStyles = makeStyles(() => ({
     height: 8,
     borderRadius: '50%',
     background: '#18677A',
-  },
-  hint: {
-    fontFamily: 'Poppins, sans-serif',
-    fontSize: 11,
-    color: '#5C5C5C',
-    margin: '0 0 10px',
   },
   step2Body: {
     flex: 1,
@@ -192,8 +200,15 @@ const AddChartInlinePanel = ({
     [selectedCatalogId],
   );
 
+  // Hide any "Coming soon" catalog entries entirely — those are the ones that
+  // are either not marked available or have no dataset wired up. What remains
+  // (addable, "Displayed", or "Already showing") is presented in alphabetical
+  // order by label so users can scan the list predictably.
   const sortedAddChartDataTypes = useMemo(() => {
-    return [...ADD_CHART_DATA_TYPES].sort((a, b) => a.label.localeCompare(b.label));
+    return ADD_CHART_DATA_TYPES
+      .filter((entry) => entry.available && entry.datasetKey)
+      .slice()
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, []);
 
   const handlePickDataType = (entry) => {
@@ -211,7 +226,9 @@ const AddChartInlinePanel = ({
     <div className={classes.root}>
       <div className={classes.headerRow}>
         <p className={classes.header}>
-          {step === 1 ? 'Choose one:' : 'Choose chart type:'}
+          {step === 1
+            ? 'Choose one:'
+            : ((selectedEntry && selectedEntry.label) || 'Choose chart type:')}
         </p>
         {typeof onClose === 'function' ? (
           <button
@@ -228,6 +245,7 @@ const AddChartInlinePanel = ({
           </button>
         ) : null}
       </div>
+      {step === 2 ? <div className={classes.divider} /> : null}
 
       {step === 1 && (
         <ul className={classes.list} role="listbox" aria-label="Chart data types">
@@ -244,7 +262,7 @@ const AddChartInlinePanel = ({
                 && Array.isArray(selectedDatasets)
                 && selectedDatasets.includes('survivalAnalysis')
               ) {
-                return 'Already showing';
+                return 'Displayed';
               }
               if (onStrip) return 'Displayed';
               return 'Coming soon';
@@ -303,7 +321,6 @@ const AddChartInlinePanel = ({
 
       {step === 2 && (
         <div className={classes.step2Body}>
-          <p className={classes.hint}>{selectedEntry ? selectedEntry.label : null}</p>
           <div className={classes.chartGrid} role="listbox" aria-label="Chart visualizations">
             {CHART_TYPE_OPTIONS.map(({ type, label }) => (
               <div

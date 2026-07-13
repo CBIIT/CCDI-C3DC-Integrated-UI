@@ -279,6 +279,10 @@ export const cohortAnalyzerSummaryStyles = (theme) => ({
   },
   addChartButtonLabel: {
     textAlign: 'left',
+    fontFamily: 'Poppins',
+    fontSize: 12,
+    fontWeight: 600,
+    lineHeight: 1,
   },
   addChartButtonIcon: {
     fontSize: 16,

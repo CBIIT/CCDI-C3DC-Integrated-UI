@@ -79,7 +79,7 @@ export function canAddExampleCohorts(state, exampleCohortKeys, maxNonExample = 1
 export function buildExploreUploadPayload(rowData) {
   const upload = rowData.map((r) => ({
     participant_id: r.participant_id,
-    study_id: r.study_id,
+    study_id: r.dbgap_accession,
   }));
   return {
     upload,

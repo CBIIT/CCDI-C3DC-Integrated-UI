@@ -66,12 +66,12 @@ export const CheckBoxSection = styled.div`
 
 export const ChartTitle = styled.h2`
   font-family: Poppins;
-  font-size: 19px;
+  font-size: 14px;
   font-weight: 400;
   color: #000000;
   margin: 0;
   text-align: left;
-  margin-left: 6px;
+  margin-left: 3px;
   flex: 1;
   min-width: 0;
   line-height: 1.25;
@@ -99,24 +99,16 @@ export const ChartActionButtons = styled.div`
 
 export const CenterContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   width: 100%;
   align-items: stretch;
+  align-content: center;
   gap: 14px;
-`;
-
-/** One row of up to three strip chart cards; column tracks redistribute when one card is resized. */
-export const HistogramStripRow = styled.div`
-  display: grid;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  gap: 14px;
-  grid-template-columns: ${(props) => props.$gridTemplate || 'repeat(3, minmax(0, 1fr))'};
-  align-items: start;
-  ${(props) => (props.$isResizing ? 'transition: none;' : '')}
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
+  @media (min-width: 1900px) {
+    justify-content: flex-start;
+    align-items: stretch;
   }
 `;
 
@@ -146,17 +138,6 @@ export const ChartWrapper = styled.div`
    * Keep three cards per row (1/3 − gap) until a narrow viewport; the old 1500px breakpoint
    * forced two columns and made cards look stretched. Stack to one column on small screens only.
    */
-  @media (max-width: 980px) {
-    width: 100%;
-    min-width: 0;
-  }
-`;
-
-/** Strip grid cell variant — overrides ChartWrapper default min-width so columns can shrink. */
-export const StripGridChartWrapper = styled(ChartWrapper)`
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
   @media (max-width: 980px) {
     width: 100%;
     min-width: 0;
@@ -244,7 +225,7 @@ export const HeaderSection = styled.div`
 export const RadioGroup = styled.div`
   display: flex;
   align-items: center;
-  margin: 6px 0 10px 35px;
+  margin: 6px 0 10px 12px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;
@@ -256,13 +237,12 @@ export const RadioLabel = styled.label`
   display: flex;
   align-items: center;
   font-family: Poppins;
-  font-size: 16px;
+  font-size: 13px;
   color: #494949;
   cursor: pointer;
 `;
 
 export const RadioInput = styled.input`
-  margin-top: 0;
   margin-right: 8px;
   accent-color: #3A7587;
   width: 16px;

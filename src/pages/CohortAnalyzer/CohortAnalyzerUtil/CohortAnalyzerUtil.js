@@ -36,26 +36,36 @@ export const filterAllParticipantWithTreatmentType = (generalInfo, allParticipan
 }
 
 
+// Participants are stored in cohort state under `id`; keep `participant_pk` as a
+// fallback so any legacy state shape still works. Filter out null/undefined so we
+// never emit `[null]` to the backend (its terms filter rejects nulls).
+const getParticipantPk = (participant) => {
+    if (!participant) return null;
+    return participant.id != null ? participant.id : participant.participant_pk;
+};
+
 export const getIdsFromCohort = (data, selectedCohorts) => {
-    const allParticipantIDs = [];
+    const allParticipantPKs = [];
 
     Object.keys(data).forEach((cohortKey) => {
         if (selectedCohorts.includes(cohortKey)) {
             if (data[cohortKey].participants) {
-                const participantIDs = data[cohortKey].participants.map(participant => participant.id);
-                allParticipantIDs.push(...participantIDs);
+                data[cohortKey].participants.forEach((participant) => {
+                    const pk = getParticipantPk(participant);
+                    if (pk != null) allParticipantPKs.push(pk);
+                });
             }
         }
     });
-    return allParticipantIDs;
+    return allParticipantPKs;
 }
 
 export const getAllIds = (generalInfo) => {
     let finalIds = [];
     Object.keys(generalInfo).forEach((section) => {
-
-        finalIds = [...finalIds, ...generalInfo[section]]
-
+        (generalInfo[section] || []).forEach((id) => {
+            if (id != null) finalIds.push(id);
+        });
     })
     return finalIds;
 }
@@ -64,7 +74,7 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
     let finalRowData = rowD.map((row) => {
         if (type === "other") {
 
-            let cohortName = getCohortName(row.id, state, selectedCohorts);
+            let cohortName = getCohortName(row.participant_pk, state, selectedCohorts);
             return {
                 ...row,
                 cohort: cohortName
@@ -86,7 +96,7 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
 const getCohortName = (pk, state, selectedCohorts) => {
     const cohortNames = selectedCohorts
         .filter(cohortKey =>
-            state[cohortKey].participants.some(participant => participant.id === pk)
+            state[cohortKey].participants.some(participant => getParticipantPk(participant) === pk)
         ).map(cohortKey => state[cohortKey].cohortName);
     let finalResponse = [];
     const baseColorArray = ["#F0D571", "#A4E9CB", "#A3CCE8"];
@@ -192,13 +202,19 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
     )
 }
 
+// The Cohort Analyzer queries filter participants via the `$id: [String]`
+// variable, so that's the key we emit here. `getParticipantPk` falls back to
+// `participant.participant_pk` for any legacy state shape.
 export function generateQueryVariable(cohortNames, state) {
     let query = {};
     query['id'] = [];
     query["first"] = 10000;
     cohortNames.forEach((cName) => {
         state[cName].participants.forEach((participant) => {
-            query["id"].push(participant.id);
+            const pk = getParticipantPk(participant);
+            if (pk != null) {
+                query["id"].push(pk);
+            }
         });
     });
     return query;

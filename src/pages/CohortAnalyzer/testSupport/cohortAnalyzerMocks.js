@@ -41,7 +41,7 @@ export const defaultCohortState = {
   'cohort-a': {
     cohortId: 'cohort-a',
     cohortName: 'Cohort A',
-    participants: [{ id: 'p1', participant_id: 'P1', study_id: 'phs1' }],
+    participants: [{ id: 'p1', participant: { id: 'p1' }, participant_pk: 'pk1' }],
   },
 };
 
