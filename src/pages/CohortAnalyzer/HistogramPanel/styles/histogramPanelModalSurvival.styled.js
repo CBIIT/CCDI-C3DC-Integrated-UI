@@ -9,7 +9,7 @@ import {
   SURVIVAL_RISK_TABLE_DOWNLOAD_ATTR,
   SURVIVAL_RISK_TABLE_DOWNLOAD_TEXT_COLOR,
 } from '../utils/survivalRiskTableDownloadCapture';
-import { RadioGroup, RadioLabel, histogramChartGridAxisStrokeCss } from './histogramPanelCore.styled';
+import { RadioGroup, histogramChartGridAxisStrokeCss } from './histogramPanelCore.styled';
 import {
   CohortAnalyzerRadioFieldset,
   CohortAnalyzerRadioLabel,

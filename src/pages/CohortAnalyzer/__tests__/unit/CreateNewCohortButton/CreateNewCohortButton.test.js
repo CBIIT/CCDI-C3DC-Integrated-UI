@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { CreateNewCohortButton } from '../../../CreateNewCohortButton/CreateNewCohortButton';
 
 jest.mock('@material-ui/core', () => ({
   makeStyles: () => () => ({
@@ -12,8 +13,6 @@ jest.mock('@bento-core/tool-tip/dist/ToolTip', () => ({
   __esModule: true,
   default: ({ children }) => <div data-testid="tooltip">{children}</div>,
 }));
-
-import { CreateNewCohortButton } from '../../../CreateNewCohortButton/CreateNewCohortButton';
 
 describe('CreateNewCohortButton', () => {
   it('calls handleClick when enabled', () => {
