@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { ButtonWithTooltip } from '../../../CohortAnalyzerTableSection/ButtonWithTooltip';
 
 jest.mock('@bento-core/tool-tip/dist/ToolTip', () => ({
   __esModule: true,
@@ -9,8 +10,6 @@ jest.mock('@bento-core/tool-tip/dist/ToolTip', () => ({
     </div>
   ),
 }));
-
-import { ButtonWithTooltip } from '../../../CohortAnalyzerTableSection/ButtonWithTooltip';
 
 describe('ButtonWithTooltip', () => {
   it('invokes onClick when enabled', () => {

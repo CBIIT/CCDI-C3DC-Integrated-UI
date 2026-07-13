@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
@@ -166,7 +165,7 @@ describe('CohortAnalyzerUtil', () => {
     it('builds participant_pk query from state', () => {
       const state = { a: { participants: [{ participant_pk: 'pk1' }] } };
       const query = generateQueryVariable(['a'], state);
-      expect(query.participant_pk).toEqual(['pk1']);
+      expect(query.id).toEqual(['pk1']);
       expect(query.first).toBe(10000);
     });
   });

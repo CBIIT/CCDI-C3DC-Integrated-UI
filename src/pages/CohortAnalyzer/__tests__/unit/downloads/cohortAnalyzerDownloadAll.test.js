@@ -1,11 +1,3 @@
-jest.mock('html-to-image', () => ({}));
-jest.mock('jspdf', () => ({
-  jsPDF: jest.fn().mockImplementation(() => ({
-    addImage: jest.fn(),
-    save: jest.fn(),
-  })),
-}));
-
 import {
   CHART_EXPORT_PADDING_PX,
   buildRawCohortChartTabularRows,
@@ -13,6 +5,14 @@ import {
   formatRowsAsCsv,
   downloadTextFile,
 } from '../../../downloads/cohortAnalyzerDownloadAll';
+
+jest.mock('html-to-image', () => ({}));
+jest.mock('jspdf', () => ({
+  jsPDF: jest.fn().mockImplementation(() => ({
+    addImage: jest.fn(),
+    save: jest.fn(),
+  })),
+}));
 
 describe('cohortAnalyzerDownloadAll', () => {
   it('exports chart padding constant', () => {
