@@ -74,6 +74,9 @@ export const configColumn = (columns) => {
 
   const displayCustomView = columns.map((column) => {
     if (column.cellType === cellTypes.CUSTOM_ELEM) {
+      if (typeof column.customCellRender === 'function') {
+        return column;
+      }
       return {
         ...column,
         customCellRender: (props) => <CustomCellView {...props} />,
