@@ -13,10 +13,13 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build --silent
 
 # FROM nginx:1.23.3-alpine
 #FROM nginx:1.25.5
-FROM nginx:1.26.3-alpine-slim AS fnl_base_image
+FROM nginx:1.29.8-alpine-slim AS fnl_base_image
 RUN apk add --no-cache ca-certificates && update-ca-certificates
-RUN apk update && apk add --no-cache --upgrade openssl busybox
-
+RUN apk update && apk add --no-cache --upgrade \
+	'musl>=1.2.5-r3' \
+	'zlib>=1.3.2-r0' \
+	'openssl>=3.3.7-r0' \
+	'busybox>=1.36.1-r31'
 
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 COPY --from=build /usr/src/app/config/inject.template.js /usr/share/nginx/html/inject.template.js
