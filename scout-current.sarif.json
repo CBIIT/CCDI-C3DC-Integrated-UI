@@ -1,0 +1,272 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "fullName": "Docker Scout",
+          "informationUri": "https://docker.com/products/docker-scout",
+          "name": "docker scout",
+          "rules": [
+            {
+              "id": "CVE-2026-27171",
+              "name": "OsPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2026-27171"
+              },
+              "helpUri": "https://scout.docker.com/v/CVE-2026-27171?s=alpine&n=zlib&ns=alpine&t=apk&osn=alpine&osv=3.20&vr=%3C1.3.2-r0",
+              "help": {
+                "text": "\n",
+                "markdown": "> \n\n|                                                                             |\n|Package         pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20  |\n|Affected range  <1.3.2-r0                                                    |\n|Fixed version   1.3.2-r0                                                     |\n"
+              },
+              "properties": {
+                "affected_version": "<1.3.2-r0",
+                "cvssV3_severity": "LOW",
+                "fixed_version": "1.3.2-r0",
+                "purls": [
+                  "pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20"
+                ],
+                "security-severity": "2.9",
+                "tags": [
+                  "LOW"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-22184",
+              "name": "OsPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2026-22184"
+              },
+              "helpUri": "https://scout.docker.com/v/CVE-2026-22184?s=alpine&n=zlib&ns=alpine&t=apk&osn=alpine&osv=3.20&vr=%3C1.3.2-r0",
+              "help": {
+                "text": "\n",
+                "markdown": "> \n\n|                                                                             |\n|Package         pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20  |\n|Affected range  <1.3.2-r0                                                    |\n|Fixed version   1.3.2-r0                                                     |\n"
+              },
+              "properties": {
+                "affected_version": "<1.3.2-r0",
+                "cvssV3_severity": "MEDIUM",
+                "fixed_version": "1.3.2-r0",
+                "purls": [
+                  "pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20"
+                ],
+                "security-severity": "4.6",
+                "tags": [
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-6042",
+              "name": "OsPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2026-6042"
+              },
+              "helpUri": "https://scout.docker.com/v/CVE-2026-6042?s=alpine&n=musl&ns=alpine&t=apk&osn=alpine&osv=3.20&vr=%3C1.2.5-r2",
+              "help": {
+                "text": "\n",
+                "markdown": "> \n\n|                                                                             |\n|Package         pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20  |\n|Affected range  <1.2.5-r2                                                    |\n|Fixed version   1.2.5-r2                                                     |\n"
+              },
+              "properties": {
+                "affected_version": "<1.2.5-r2",
+                "cvssV3_severity": "MEDIUM",
+                "fixed_version": "1.2.5-r2",
+                "purls": [
+                  "pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20"
+                ],
+                "security-severity": "4.8",
+                "tags": [
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-40200",
+              "name": "OsPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2026-40200"
+              },
+              "helpUri": "https://scout.docker.com/v/CVE-2026-40200?s=alpine&n=musl&ns=alpine&t=apk&osn=alpine&osv=3.20&vr=%3C1.2.5-r3",
+              "help": {
+                "text": "\n",
+                "markdown": "> \n\n|                                                                             |\n|Package         pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20  |\n|Affected range  <1.2.5-r3                                                    |\n|Fixed version   1.2.5-r3                                                     |\n"
+              },
+              "properties": {
+                "affected_version": "<1.2.5-r3",
+                "cvssV3_severity": "HIGH",
+                "fixed_version": "1.2.5-r3",
+                "purls": [
+                  "pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20"
+                ],
+                "security-severity": "8.1",
+                "tags": [
+                  "HIGH"
+                ]
+              }
+            }
+          ],
+          "version": "1.21.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2026-27171",
+          "ruleIndex": 0,
+          "kind": "fail",
+          "level": "note",
+          "message": {
+            "text": "Vulnerability    :CVE-2026-27171                                               \nSeverity         :LOW                                                          \nPackage          :pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20  \nAffected range   :<1.3.2-r0                                                    \nFixed version    :1.3.2-r0                                                     \nEPSS Score       :0.002040                                                     \nEPSS Percentile  :0.103960                                                     \n"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/apk/db/installed"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/libz.so.1.3.1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-22184",
+          "ruleIndex": 1,
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Vulnerability    :CVE-2026-22184                                               \nSeverity         :MEDIUM                                                       \nPackage          :pkg:apk/alpine/zlib@1.3.1-r1?os_name=alpine&os_version=3.20  \nAffected range   :<1.3.2-r0                                                    \nFixed version    :1.3.2-r0                                                     \nEPSS Score       :0.003500                                                     \nEPSS Percentile  :0.270740                                                     \n"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/apk/db/installed"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/libz.so.1.3.1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-6042",
+          "ruleIndex": 2,
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Vulnerability    :CVE-2026-6042                                                \nSeverity         :MEDIUM                                                       \nPackage          :pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20  \nAffected range   :<1.2.5-r2                                                    \nFixed version    :1.2.5-r2                                                     \nEPSS Score       :0.002270                                                     \nEPSS Percentile  :0.133630                                                     \n"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/apk/db/installed"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/sbin/ldconfig"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/getconf"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/getent"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/iconv"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/ldd"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-40200",
+          "ruleIndex": 3,
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "Vulnerability    :CVE-2026-40200                                               \nSeverity         :HIGH                                                         \nPackage          :pkg:apk/alpine/musl@1.2.5-r1?os_name=alpine&os_version=3.20  \nAffected range   :<1.2.5-r3                                                    \nFixed version    :1.2.5-r3                                                     \nEPSS Score       :0.001280                                                     \nEPSS Percentile  :0.028130                                                     \n"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/lib/apk/db/installed"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/sbin/ldconfig"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/getconf"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/getent"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/iconv"
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/usr/bin/ldd"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
