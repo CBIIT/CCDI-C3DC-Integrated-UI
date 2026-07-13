@@ -2,6 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { cellTypes, headerTypes } from '@bento-core/table';
 import DataAvailabilityHeader from '../pages/studies/tableConfig/DataAvailabilityHeader';
+import DataAvailabilityCell from '../pages/studies/tableConfig/DataAvailabilityCell';
 
 const studyDownloadLinks = {
   "phs000463": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs000463_CCDI_Study_Manifest_v3.1.0.xlsx",
@@ -185,7 +186,8 @@ const table = {
       headerType: headerTypes.CUSTOM_ELEM,
       customColHeaderRender: () => <DataAvailabilityHeader />,
       tooltipText: 'Data Availability',
-      cellType: cellTypes.STUDIES,
+      cellType: cellTypes.CUSTOM_ELEM,
+      customCellRender: (props) => <DataAvailabilityCell {...props} />,
       sortable: false,
       display: true,
       customCellData: {

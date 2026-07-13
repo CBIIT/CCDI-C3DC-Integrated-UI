@@ -98,6 +98,12 @@ const tblBody = {
       '&.study_name': {
         minWidth: '300px',
       },
+      '&.data_availability': {
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        minWidth: '400px',
+        width: '400px',
+      },
       '&.md5sum': {
         minWidth: '160px',
         '& p': {
