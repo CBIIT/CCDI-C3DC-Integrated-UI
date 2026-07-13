@@ -111,7 +111,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: DIAGNOSIS,
-    label: 'Age at Diagnosis',
+    label: 'Age at Diagnosis (Days)',
     apiPath: 'filterParticipantCountByDiagnosisAge',
     apiForFiltering: 'filterParticipantCountByDiagnosisAge',
     datafield: 'age_at_diagnosis',
@@ -902,7 +902,7 @@ export const facetsParticipantsConfig = [
   },
   {
     section: SURVIVAL,
-    label: 'Age at Last Known Survival Status',
+    label: 'Age at Last Known Survival Status (Days)',
     apiPath: 'participantCountByAgeAtLastKnownSurvivalStatus',
     apiForFiltering: 'filterParticipantCountByAgeAtLastKnownSurvivalStatus',
     datafield: 'age_at_last_known_survival_status',
