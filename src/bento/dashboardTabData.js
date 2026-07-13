@@ -873,13 +873,19 @@ query sampleOverview(
         sort_direction: $sort_direction
     ){
         id
-        sample_id
         participant_id
+        sample_id
         study_id
+        tumor_spatial_extent
         anatomic_site
+        laterality
         participant_age_at_collection
         sample_tumor_status
-        tumor_spatial_extent
+        sample_description
+        percent_tumor
+        percent_necrosis
+        pdx_id
+        cell_line_id
     }
 }
 `;
@@ -2478,7 +2484,7 @@ query getFilenames(
 
 // --------------- Tabs Table configuration --------------
 export const exploreParticipantsTabs = [
-  {
+{
     name: 'Participants',
     dataField: 'dataParticipant',
     api: GET_PARTICIPANTS_OVERVIEW_QUERY,
@@ -2573,7 +2579,7 @@ export const exploreParticipantsTabs = [
     addAllFileQuery: GET_ALL_FILEIDS_FROM_PARTICIPANTSTAB_FOR_ADD_ALL_CART,
     addSelectedFilesQuery: GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL,
   },
-  {
+{
     name: 'Studies',
     dataField: 'dataStudy',
     api: GET_STUDY_OVERVIEW_QUERY,
@@ -2720,7 +2726,7 @@ export const exploreParticipantsTabs = [
     ],
     id: 'study_tab',
     tableID: 'study_tab_table',
-    tabIndex: '4',
+    tabIndex: '1',
     selectableRows: true,
     tableDownloadCSV: customStudyTabDownloadCSV,
     downloadFileName: 'CCDI Studies Download',
@@ -2733,7 +2739,7 @@ export const exploreParticipantsTabs = [
     addAllFileQuery: GET_ALL_FILEIDS_FROM_STUDYTAB_FOR_ADD_ALL_CART,
     addSelectedFilesQuery: GET_ALL_FILEIDS_STUDYISTAB_FOR_SELECT_ALL,
   },
-  {
+{
     name: 'Diagnosis',
     dataField: 'dataDiagnosis',
     api: GET_DIAGNOSIS_OVERVIEW_QUERY,
@@ -2903,144 +2909,7 @@ export const exploreParticipantsTabs = [
       noMatch: 'No Matching Records Found',
     },
   },
-  {
-    name: 'Samples',
-    dataField: 'dataSample',
-    api: GET_SAMPLES_OVERVIEW_QUERY,
-    count: 'numberOfSamples',
-    fileCount: 'samplesFileCount',
-    paginationAPIField: 'sampleOverview',
-    dataKey: 'id',
-    defaultSortField: 'sample_id',
-    defaultSortDirection: 'asc',
-    toolTipText: "Count of Sample Record",
-    tableID: 'sample_tab_table',
-    extendedViewConfig: {
-      pagination: true,
-      manageViewColumns: {
-        title: 'Displayed Columns',
-      },
-    },
-    saveButtonDefaultStyle: {
-      color: '#fff',
-      backgroundColor: '#00AEEF',
-      opacity: '1',
-      border: '0px',
-      cursor: 'pointer',
-    },
-    DeactiveSaveButtonDefaultStyle: {
-      opacity: '0.3',
-      cursor: 'auto',
-    },
-    ActiveSaveButtonDefaultStyle: {
-      cursor: 'pointer',
-      opacity: 'unset',
-      border: 'unset',
-    },
-
-    columns: [
-      // {
-      //   cellType: cellTypes.CHECKBOX,
-      //   display: true,
-      //   role: cellTypes.CHECKBOX,
-      // },
-      {
-        dataField: 'sample_id',
-        header: 'Sample ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'participant_id',
-        header: 'Participant ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'study_id',
-        header: 'Study ID',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM,
-        linkAttr: {
-          rootPath: '/studies/',
-        },
-      },
-      {
-        dataField: 'anatomic_site',
-        header: 'Sample Anatomic Site',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'participant_age_at_collection',
-        header: 'Age at Sample Collection (days)',
-        display: true,
-        tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (!dt || dt === -999) {
-            return 'Not Reported';
-          }
-          return dt.toString();
-        },
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'sample_tumor_status',
-        header: 'Sample Tumor Status',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'tumor_spatial_extent',
-        header: 'Sample Tumor Spatial Extent',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'diagnosis',
-        header: 'Sample Diagnosis',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-      {
-        dataField: 'diagnosis_category',
-        header: 'Diagnosis Category',
-        display: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        hideable: true,
-      },
-    ],
-    id: 'sample_tab',
-    tableID: 'sample_tab_table',
-    tabIndex: '3',
-    tableDownloadCSV: customSamplesTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Samples Download',
-    tableMsg: {
-      noMatch: 'No Matching Records Found',
-    },
-    addFilesRequestVariableKey: 'sample_ids',
-    addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['sampleOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
-  },
-  {
+{
     name: 'Genetic Analyses',
     dataField: 'dataGeneticAnalysis',
     api: GET_GENETIC_ANALYSIS_OVERVIEW_QUERY,
@@ -3240,13 +3109,13 @@ export const exploreParticipantsTabs = [
     id: 'genetic_analysis_tab',
     tableID: 'genetic_analysis_tab_table',
     tableDownloadCSV: customGeneticAnalysisTabDownloadCSV,
-    tabIndex: '4',
+    tabIndex: '3',
     downloadFileName: 'CCDI Genetic Analyses Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
   },
-  {
+{
     name: 'Treatments',
     dataField: 'dataTreatment',
     api: GET_TREATMENT_OVERVIEW_QUERY,
@@ -3338,13 +3207,13 @@ export const exploreParticipantsTabs = [
     id: 'treatment_tab',
     tableID: 'treatment_tab_table',
     tableDownloadCSV: customTreatmentTabDownloadCSV,
-    tabIndex: '5',
+    tabIndex: '4',
     downloadFileName: 'CCDI Treatments Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
   },
-  {
+{
     name: 'Treatment Responses',
     dataField: 'dataTreatmentResponse',
     api: GET_TREATMENT_RESPONSE_OVERVIEW_QUERY,
@@ -3434,13 +3303,13 @@ export const exploreParticipantsTabs = [
     id: 'treatment_response_tab',
     tableID: 'treatment_response_tab_table',
     tableDownloadCSV: customTreatmentResponseTabDownloadCSV,
-    tabIndex: '6',
+    tabIndex: '5',
     downloadFileName: 'CCDI Treatment Responses Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
   },
-  {
+{
     name: 'Survival',
     dataField: 'dataSurvival',
     api: GET_SURVIVAL_OVERVIEW_QUERY,
@@ -3547,12 +3416,206 @@ export const exploreParticipantsTabs = [
     id: 'survival_tab',
     tableID: 'survival_tab_table',
     tableDownloadCSV: customSurvivalTabDownloadCSV,
-    tabIndex: '7',
+    tabIndex: '6',
     downloadFileName: 'CCDI Survivals Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
   },
+{
+    name: 'Samples',
+    dataField: 'dataSample',
+    api: GET_SAMPLES_OVERVIEW_QUERY,
+    count: 'numberOfSamples',
+    fileCount: 'samplesFileCount',
+    paginationAPIField: 'sampleOverview',
+    dataKey: 'id',
+    defaultSortField: 'sample_id',
+    defaultSortDirection: 'asc',
+    toolTipText: "Count of Sample Record",
+    tableID: 'sample_tab_table',
+    extendedViewConfig: {
+      pagination: true,
+      manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+    },
+    saveButtonDefaultStyle: {
+      color: '#fff',
+      backgroundColor: '#00AEEF',
+      opacity: '1',
+      border: '0px',
+      cursor: 'pointer',
+    },
+    DeactiveSaveButtonDefaultStyle: {
+      opacity: '0.3',
+      cursor: 'auto',
+    },
+    ActiveSaveButtonDefaultStyle: {
+      cursor: 'pointer',
+      opacity: 'unset',
+      border: 'unset',
+    },
+
+    columns: [
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
+      {
+        dataField: 'participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_id',
+        header: 'Sample ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'study_id',
+        header: 'Study ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: '/studies/',
+        },
+      },
+      {
+        dataField: 'tumor_spatial_extent',
+        header: 'Tumor Spatial Extent',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'anatomic_site',
+        header: 'Anatomic Site',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'laterality',
+        header: 'Laterality',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'participant_age_at_collection',
+        header: 'Participant Age at Collection (days)',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: (dt) => {
+          if (!dt || dt === -999) {
+            return 'Not Reported';
+          }
+          return dt.toString();
+        },
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_tumor_status',
+        header: 'Sample Tumor Status',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_description',
+        header: 'Sample Description',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'percent_tumor',
+        header: 'Percent Tumor',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'percent_necrosis',
+        header: 'Percent Necrosis',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'pdx_id',
+        header: 'PDX ID',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: (dt) => {
+          if (dt instanceof Array) {
+            return dt.join(', ');
+          }
+          if (dt == null) {
+            return '';
+          }
+          return dt.toString();
+        },
+      },
+      {
+        dataField: 'cell_line_id',
+        header: 'Cell Line ID',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: (dt) => {
+          if (dt instanceof Array) {
+            return dt.join(', ');
+          }
+          if (dt == null) {
+            return '';
+          }
+          return dt.toString();
+        },
+      },
+    ],
+    id: 'sample_tab',
+    tableID: 'sample_tab_table',
+    tabIndex: '7',
+    tableDownloadCSV: customSamplesTabDownloadCSV,
+    downloadFileName: 'CCDI Hub Samples Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+    addFilesRequestVariableKey: 'sample_ids',
+    addFilesResponseKeys: ['fileIDsFromList'],
+    addAllFilesResponseKeys: ['sampleOverview', 'files'],
+    addAllFileQuery: GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART,
+    addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
+  }
 ];
 
 export const exploreFilesTabs = [

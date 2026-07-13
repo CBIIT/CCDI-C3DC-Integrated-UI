@@ -32,21 +32,54 @@ export const customParticipantsTabDownloadCSV = {
 export const GET_SAMPLES_TAB = gql`
 query sampleOverview($sample_ids: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
   sampleOverview(sample_ids: $sample_ids, offset: $offset,first: $first, order_by: $order_by) {
-    sample_id,
     participant_id
+    sample_id
     study_id
+    tumor_spatial_extent
     anatomic_site
+    laterality
     participant_age_at_collection
     sample_tumor_status
-    tumor_spatial_extent
-    diagnosis
+    sample_description
+    percent_tumor
+    percent_necrosis
+    pdx_id
+    cell_line_id
   }
 }
 `;
 
 export const customSamplesTabDownloadCSV = {
-  keysToInclude: ['sample_id', 'participant_id', 'study_id', 'anatomic_site', 'participant_age_at_collection', 'sample_tumor_status', 'tumor_spatial_extent', 'diagnosis'],
-  header: ['Sample ID', 'Participant ID', 'Study ID', 'Sample Anatomic Site', 'Age at Sample Collection (days)', 'Diagnosis', 'Sample Tumor Status', 'Sample Tumor Spatial Extent', 'Diagnosis'],
+  keysToInclude: [
+    'participant_id',
+    'sample_id',
+    'study_id',
+    'tumor_spatial_extent',
+    'anatomic_site',
+    'laterality',
+    'participant_age_at_collection',
+    'sample_tumor_status',
+    'sample_description',
+    'percent_tumor',
+    'percent_necrosis',
+    'pdx_id',
+    'cell_line_id',
+  ],
+  header: [
+    'Participant ID',
+    'Sample ID',
+    'Study ID',
+    'Tumor Spatial Extent',
+    'Anatomic Site',
+    'Laterality',
+    'Participant Age at Collection (days)',
+    'Sample Tumor Status',
+    'Sample Description',
+    'Percent Tumor',
+    'Percent Necrosis',
+    'PDX ID',
+    'Cell Line ID',
+  ],
   query: GET_SAMPLES_TAB,
   apiVariable: 'sampleOverview',
   fileName: 'tableDownload',
