@@ -28,7 +28,7 @@ const CartView = (props) => {
     sortBy: config.defaultSortField,
     sortOrder: config.defaultSortDirection,
     extendedViewConfig: config.extendedViewConfig,
-    rowsPerPage: 10,
+    rowsPerPage: 50,
     page: 0,
   });
 
@@ -38,7 +38,6 @@ const CartView = (props) => {
     <Grid className={classes.backgroundContainer}>
       <Grid item xs={12}>
         <div className={classes.myFilesWrapper}>
-          <div className={classes.textContainer}>To access and analyze files, select or deselect any files as needed, and then choose an option from the 'Available Export Options' dropdown by clicking either 'Export to Cancer Genomics Cloud' or 'Download File Manifest'.</div>
           <CartWrapper
             classes={classes}
             queryVariables={variables}

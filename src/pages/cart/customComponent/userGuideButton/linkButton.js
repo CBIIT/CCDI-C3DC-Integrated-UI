@@ -1,13 +1,21 @@
 import React from 'react';
 import { Button, withStyles } from '@material-ui/core';
 import { linkStyles } from './linkStyles';
+import guideIcon from '../exportButton/assets/guide.svg';
 
 const linkButtonView = (props) => {
     const { classes } = props;
     return (
-        <a class="link" href="/user-guide.pdf" target="_blank" rel="noopener noreferrer">
-            <Button className={classes.linkBtn}>User Guide</Button>
-        </a>
+        <Button
+            component="a"
+            className={`link ${classes.link} ${classes.linkBtn}`}
+            href="/user-guide.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            USER GUIDE
+            <img className={classes.guideIcon} src={guideIcon} alt="" aria-hidden="true" />
+        </Button>
     );
 
 }

@@ -1,15 +1,20 @@
+const COLUMN_MIN_WIDTH = '150px';
+
 export const tblHeader = {
   MuiTableSortLabel: {
     root: {
-      color: '#13344A',
+      color: 'var(--Primary-Primary-4, #0F253A)',
       position: 'relative',
-      fontSize: '11pt',
-      fontFamily: 'Lato Regular,Raleway, sans-serif',
-      fontWeight: 'bold',
+      fontSize: '17px',
+      fontFamily: 'Inter',
+      fontStyle: 'normal',
+      fontWeight: '700',
+      lineHeight: '17px',
       letterSpacing: '0.06em',
       textDecoration: 'none',
+      whiteSpace: 'nowrap',
       '&:hover': {
-        color: '#13344A',
+        color: 'var(--Primary-Primary-4, #0F253A)',
       },
     },
   },
@@ -18,8 +23,8 @@ export const tblHeader = {
       padding: '0px 0px 0px 25px',
       paddingRight: '5px',
       color: '#13344A',
+      minWidth: COLUMN_MIN_WIDTH,
       '&.del_all_row': {
-        minWidth: '150px',
         cursor: 'pointer',
       },
     },
@@ -86,12 +91,25 @@ export const tblPgn = {
     },
     caption: {
       textTransform: 'none',
-      fontFamily: 'Open Sans',
-      fontSize: '14px',
+      fontFamily: 'Poppins',
+      fontSize: '12px',
+      fontStyle: 'normal',
+      fontWeight: '600',
+      '&:first-of-type': {
+        fontSize: 0,
+        '&:before': {
+          content: '"ROWS PER PAGE:"',
+          fontSize: '12px',
+          fontStyle: 'normal',
+          fontWeight: '600',
+        },
+      },
     },
     select: {
-      fontFamily: 'Open Sans',
-      fontSize: '14px',
+      fontFamily: 'Poppins',
+      fontSize: '12px',
+      fontStyle: 'normal',
+      fontWeight: '600',
     },
   },
   MuiSelect: {
@@ -154,18 +172,25 @@ export const tblBody = {
       color: '#004C73',
       borderBottom: 'none',
       '& p': {
-        fontFamily: 'Open Sans',
+        fontFamily: 'Inter',
         fontSize: '14px',
         fontWeight: '400',
         color: '#0F253A',
       },
       '&.file_name': {
-        maxWidth: '300px',
         '& p': {
-          lineBreak: 'anywhere',
+          overflowWrap: 'anywhere',
           paddingTop: '10px',
           paddingBottom: '10px',
         },
+      },
+      '&.participant_id, &.sample_id': {
+        color: 'var(--Primary-Primary-4, #0F253A)',
+      },
+      '&.delete_row': {
+        padding: '0px',
+        textAlign: 'center',
+        verticalAlign: 'middle',
       },
     },
     root: {
@@ -174,6 +199,14 @@ export const tblBody = {
       paddingRight: '20px',
       color: '#004C73',
       borderBottom: 'none',
+      minWidth: COLUMN_MIN_WIDTH,
+      '& .del_row_btn': {
+        padding: '0px',
+      },
+      '& .del_row_btn_icon': {
+        display: 'block',
+        margin: '0 auto',
+      },
     },
   },
 };

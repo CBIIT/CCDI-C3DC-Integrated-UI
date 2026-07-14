@@ -59,7 +59,7 @@ export const myFilesPageData = {
         // },
         {
           clsName: 'cart_sel_files_text',
-          text: 'MY FILES',
+          text: 'My Files',
           type: types.TEXT,
         },
       ],
@@ -69,6 +69,11 @@ export const myFilesPageData = {
     size: 'xl',
     clsName: 'container_header',
     items: [
+      {
+        clsName: 'cart_description_text',
+        text: "To access and analyze files, select or deselect any files as needed, and then choose an option from the 'Available Export Options' dropdown by clicking either 'Export to Cancer Genomics Cloud' or 'Download File Manifest'.",
+        type: types.TEXT,
+      },
       {
         type: types.CUSTOM_ELEM,
         customViewElem: (props) => <LinkButton {...props}/>
