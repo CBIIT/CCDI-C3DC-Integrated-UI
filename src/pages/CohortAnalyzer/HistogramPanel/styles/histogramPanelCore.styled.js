@@ -66,7 +66,7 @@ export const CheckBoxSection = styled.div`
 
 export const ChartTitle = styled.h2`
   font-family: Poppins;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 400;
   color: #000000;
   margin: 0;
@@ -78,9 +78,10 @@ export const ChartTitle = styled.h2`
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap;
+  
   column-gap: 2px;
-  row-gap: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &.empty {
     opacity: 0.3;
   }
@@ -89,12 +90,12 @@ export const ChartTitle = styled.h2`
 export const ChartActionButtons = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex-shrink: 0;
   justify-content: flex-end;
   margin: 0;
-  padding-left: 14px;
-  margin-left: 14px;
+  padding-left: 8px;
+  margin-left: 0;
 `;
 
 export const CenterContainer = styled.div`
