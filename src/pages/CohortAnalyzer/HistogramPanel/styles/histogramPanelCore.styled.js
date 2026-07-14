@@ -66,7 +66,7 @@ export const CheckBoxSection = styled.div`
 
 export const ChartTitle = styled.h2`
   font-family: Poppins;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   color: #000000;
   margin: 0;
@@ -103,12 +103,13 @@ export const CenterContainer = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-  align-items: stretch;
-  align-content: center;
+  /* flex-start so vertical resize of one card does not stretch siblings in the row */
+  align-items: flex-start;
+  align-content: flex-start;
   gap: 14px;
   @media (min-width: 1900px) {
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: flex-start;
   }
 `;
 
@@ -126,6 +127,10 @@ export const ChartWrapper = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: stretch;
+  /* Keep each card's width independent: growing one via resize must not
+     squeeze siblings. Extra cards wrap to the next row instead. */
+  flex-shrink: 0;
+  flex-grow: 0;
   border-radius: 10px;
   box-shadow: none;
   transition: none;
