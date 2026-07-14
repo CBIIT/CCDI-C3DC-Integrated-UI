@@ -83,6 +83,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. Neuroblastoma, Medulloblastoma',
     expanded: true,
   },
   {
@@ -96,6 +97,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. Cancer, Solid Tumor',
   },
   {
     section: DIAGNOSIS,
@@ -108,6 +110,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. Brain, Kidney, Liver',
   },
   {
     section: DIAGNOSIS,
@@ -1234,6 +1237,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. Brain, Kidney, Liver',
   },
     {
     section: SAMPLES,
