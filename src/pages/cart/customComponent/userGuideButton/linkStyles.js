@@ -1,15 +1,31 @@
 export const linkStyles = (props) =>({
+    link: {
+        textDecoration: 'none',
+    },
     linkBtn: {
-        backgroundColor: '#536D70',
+        backgroundColor: '#FFFFFF',
+        border: '1.25px solid #536D70',
+        borderRadius: '5px',
         width: '174px',
         height: '41px',
         padding: '2px 24px 2px 14px',
-        marginRight: '25px',
+        marginRight: '0px',
         textAlign: 'center',
         boxShadow: 'none',
+        color: '#337478',
+        fontFamily: 'Poppins',
+        fontSize: '12px',
+        fontWeight: '600',
+        lineHeight: '13px',
+        textTransform: 'uppercase',
         '&:hover': {
-          backgroundColor: '#2E4E51',
+          backgroundColor: '#FFFFFF',
           boxShadow: 'none',
         },
+    },
+    guideIcon: {
+        marginLeft: '7px',
+        width: '17px',
+        height: '14px',
     },
 })
