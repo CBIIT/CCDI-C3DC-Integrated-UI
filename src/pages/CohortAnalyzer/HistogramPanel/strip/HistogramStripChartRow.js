@@ -7,7 +7,7 @@ import questionIcon from '../../../../assets/icons/Question_icon_2.svg';
 import histogramChartTitleHandle from '../../../../assets/icons/histogramChartTitleHandle.svg';
 import histogramCloseIcon from '../../../../assets/icons/closeHistogramChart.svg';
 import {
-  StripGridChartWrapper,
+  ChartWrapper,
   HeaderSection,
   ChartTitle,
   ChartActionButtons,
@@ -27,12 +27,7 @@ import {
   encodePanelDragPayload,
   CA_PANEL_DRAG_MIME,
 } from '../../store/panelDnD';
-import {
-  requiresCompactSpacing,
-  HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE,
-  STRIP_GRID_CELL_CHART_STYLE,
-  STRIP_GRID_CELL_WRAPPER_STYLE,
-} from '../utils/histogramLayoutUtils';
+import { requiresCompactSpacing, HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE } from '../utils/histogramLayoutUtils';
 import { HistogramChartEmptyState } from '../chart/HistogramChartEmptyState';
 import { HISTOGRAM_STRIP_DROP_SLOT_WIDTH_EXTRA_PX } from '../histogramConstants';
 import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPreview';
@@ -80,7 +75,6 @@ export function HistogramStripChartRow({
   c2Name,
   c3Name,
   besidePanelDraggingRef,
-  stripResizeSession = null,
 }) {
   const dispatch = useDispatch();
 
@@ -95,21 +89,18 @@ export function HistogramStripChartRow({
     });
   }
   const cardSize = histogramCardSizes[dataset];
-  const liveResize =
-    stripResizeSession &&
-    stripResizeSession.panelId === dataset;
-  const plotH = liveResize && stripResizeSession.plotHeightPx != null
-    ? Math.round(stripResizeSession.plotHeightPx)
-    : (cardSize && cardSize.plotHeight != null ? cardSize.plotHeight : defaultPlotHeightPx);
-  const chartWrapperStyle = STRIP_GRID_CELL_CHART_STYLE;
-  const liveWidth = liveResize && stripResizeSession.widthPx != null
-    ? stripResizeSession.widthPx
-    : null;
-  const estimatedChartW = liveWidth != null
-    ? Math.max(280, Math.round(liveWidth) - 48)
-    : (cardSize && cardSize.width != null
-      ? Math.max(280, cardSize.width - 48)
-      : 400);
+  const plotH = cardSize && cardSize.plotHeight != null ? cardSize.plotHeight : defaultPlotHeightPx;
+  const chartWrapperStyle = cardSize && cardSize.width != null
+    ? {
+      width: cardSize.width,
+      flexShrink: 0,
+      alignSelf: 'flex-start',
+      maxWidth: 'none',
+    }
+    : undefined;
+  const estimatedChartW = cardSize && cardSize.width != null
+    ? Math.max(280, cardSize.width - 48)
+    : 400;
   const hasDatasetData = Array.isArray(data[dataset]) && data[dataset].length > 0;
   const showChartBody = chartPreviewMode || hasDatasetData;
   const chartPreviewStyle = getChartPreviewContentStyle(chartPreviewMode);
@@ -170,7 +161,7 @@ export function HistogramStripChartRow({
       : {};
 
   return (
-    <div style={STRIP_GRID_CELL_WRAPPER_STYLE}>
+    <React.Fragment>
       {showDropSlotBefore && (
         <div
           aria-hidden
@@ -178,10 +169,8 @@ export function HistogramStripChartRow({
           onDragOver={(e) => handleStripChartDragOver(e, dataset)}
           onDrop={(e) => handleStripChartDrop(e, dataset)}
           style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: 2,
+            flexShrink: 0,
+            alignSelf: 'flex-start',
             width: dropSlotSize.width,
             height: dropSlotSize.height,
             minWidth: 0,
@@ -197,7 +186,7 @@ export function HistogramStripChartRow({
           }}
         />
       )}
-      <StripGridChartWrapper
+      <ChartWrapper
         data-ca-histogram-strip-dataset={dataset}
         ref={(el) => { chartRef.current[dataset] = el; }}
         style={{
@@ -233,14 +222,6 @@ export function HistogramStripChartRow({
         onDrop={(e) => handleStripChartDrop(e, dataset)}
       >
         <HeaderSection>
-          <img
-            src={histogramChartTitleHandle}
-            alt=""
-            width={11}
-            height={12}
-            aria-hidden
-            style={Array.isArray(data[dataset]) && data[dataset].length > 0 ? {} : { opacity: 0.3 }}
-          />
           <ChartTitle className={`${Array.isArray(data[dataset]) && data[dataset].length > 0 ? '' : 'empty'}`}>
             <span
               role="button"
@@ -254,11 +235,20 @@ export function HistogramStripChartRow({
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
+                marginRight: 6,
                 cursor: allInputsEmpty ? 'not-allowed' : 'grab',
                 opacity: allInputsEmpty ? 0.45 : 1,
               }}
               title="Drag to reorder cards"
             >
+              <img
+                src={histogramChartTitleHandle}
+                alt=""
+                width={11}
+                height={12}
+                aria-hidden
+                style={{ display: 'block', flexShrink: 0 }}
+              />
             </span>
             {getChartTitle(dataset)}
             {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
@@ -451,7 +441,7 @@ export function HistogramStripChartRow({
           onMouseDown={(ev) => handleHistogramCardResizeStart(ev, dataset)}
           style={{ opacity: allInputsEmpty ? 0.35 : 1, pointerEvents: allInputsEmpty ? 'none' : 'auto' }}
         />
-      </StripGridChartWrapper>
-    </div>
+      </ChartWrapper>
+    </React.Fragment>
   );
 }

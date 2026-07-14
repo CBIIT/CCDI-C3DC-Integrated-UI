@@ -4,12 +4,14 @@ import { jsPDF } from 'jspdf';
 /** White margin around captured chart area for PNG/PDF exports. */
 export const CHART_EXPORT_PADDING_PX = 50;
 
-/** Elements marked with this attribute are omitted from PNG/PDF chart captures. */
-export const CHART_EXPORT_EXCLUDE_ATTR = 'data-chart-export-exclude';
-
-export function shouldIncludeNodeInChartExport(node) {
-  if (!(node instanceof Element)) return true;
-  return !node.closest(`[${CHART_EXPORT_EXCLUDE_ATTR}]`);
+/**
+ * html-to-image `filter`: keep everything except elements explicitly opted-out
+ * of the chart-area export via `data-chart-export-exclude="true"` (e.g. the
+ * ADD CHART toolbar button — a UI affordance, not chart content).
+ */
+function chartExportNodeFilter(node) {
+    if (!node || node.nodeType !== 1) return true;
+    return node.getAttribute && node.getAttribute('data-chart-export-exclude') !== 'true';
 }
 
 function escapeCsvCell(value) {
@@ -139,7 +141,7 @@ export async function downloadChartAreaAsPng(element, filename = 'cohort-analyze
       pixelRatio: 2,
       cacheBust: true,
       backgroundColor: '#ffffff',
-      filter: shouldIncludeNodeInChartExport,
+      filter: chartExportNodeFilter,
     });
     const padded = await addUniformPaddingToPngDataUrl(dataUrl, CHART_EXPORT_PADDING_PX);
     const blob = await dataUrlToBlob(padded);
@@ -167,7 +169,7 @@ export async function downloadChartAreaAsPdf(element, filename = 'cohort-analyze
       pixelRatio: 2,
       cacheBust: true,
       backgroundColor: '#ffffff',
-      filter: shouldIncludeNodeInChartExport,
+      filter: chartExportNodeFilter,
     });
     const paddedDataUrl = await addUniformPaddingToPngDataUrl(dataUrl, CHART_EXPORT_PADDING_PX);
     const img = new Image();

@@ -41,16 +41,12 @@ function AddChartToolbarButton({
             onClick={openAddChartInline}
             aria-label={ariaLabel}
             title={tooltipText || undefined}
-            data-chart-export-exclude="true"
         >
             <span className={classes.addChartButtonLabel}>ADD CHART</span>
             <span aria-hidden className={classes.addChartButtonIcon}>+</span>
         </button>
     );
-    if (!tooltipText) {
-        return button;
-    }
-    return (
+    const inner = tooltipText ? (
         <ToolTip
             maxWidth="280px"
             border="1px solid #598ac5"
@@ -63,6 +59,14 @@ function AddChartToolbarButton({
         >
             <span style={{ display: 'inline-flex' }}>{button}</span>
         </ToolTip>
+    ) : button;
+
+    // Marked so the PNG/PDF exporter skips this control — the ADD CHART affordance
+    // is a UI action, not chart content, and should never appear in the download.
+    return (
+        <span data-chart-export-exclude="true" style={{ display: 'inline-flex' }}>
+            {inner}
+        </span>
     );
 }
 
@@ -286,8 +290,9 @@ export function CohortAnalyzerChartArea({
             </div>
             <div
                 className={classes.chartSummaryMain}
+                ref={chartSummaryExportRef}
             >
-                <div style={chartPreviewContentStyle} ref={chartSummaryExportRef}>
+                <div style={chartPreviewContentStyle}>
                 {topRowOrder.length > 0 && (
                     <div
                         className={classes.vennSurvivalRow}
@@ -377,7 +382,6 @@ export function CohortAnalyzerChartArea({
                 <div
                     ref={addChartScrollAnchorRef}
                     className={classes.chartSummaryHistogramFooter}
-                    data-chart-export-exclude="true"
                 >
                     <AddChartToolbarButton
                         classes={classes}

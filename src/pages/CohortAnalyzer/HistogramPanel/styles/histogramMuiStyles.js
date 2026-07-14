@@ -25,7 +25,6 @@ export const useHistogramPanelMuiStyles = makeStyles({
     height: 'auto',
   },
   headerCloseButton: {
-    marginLeft: '-4px',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -36,6 +35,7 @@ export const useHistogramPanelMuiStyles = makeStyles({
     borderRadius: 4,
     color: '#1C2B33',
     lineHeight: 0,
+    marginLeft: -5,
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.06)',
     },

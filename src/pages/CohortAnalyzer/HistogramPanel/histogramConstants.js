@@ -9,7 +9,7 @@ export const HISTOGRAM_CHART_PLOT_HEIGHT = 240;
 /** Plot area min height hint as % of viewport height. */
 export const HISTOGRAM_CHART_PLOT_MIN_VH = 22;
 /** Card shell min height as % of viewport height (plot + chrome). */
-export const HISTOGRAM_CARD_SHELL_MIN_VH = 32;
+export const HISTOGRAM_CARD_SHELL_MIN_VH = 28;
 /** Plot + header, padding, borders, resize grip (~ full ChartWrapper height minus plot). */
 export const HISTOGRAM_CARD_CHROME_HEIGHT = 132;
 /** Extra width for the dashed “drop here” preview vs the card layout width (visual breathing room). */

@@ -62,7 +62,7 @@ export const ModalContent = styled.div`
 `;
 
 /** Shared hit target for chart-type, download, and close so flex gap reads evenly between items. */
-const MODAL_HEADER_ICON_CONTROL_PX = 30;
+const MODAL_HEADER_ICON_CONTROL_PX = 38;
 
 /** Horizontal inset where header tab labels begin; popup content aligns to the same left edge. */
 export const MODAL_HEADER_TAB_INSET_PX = 44;
@@ -84,6 +84,7 @@ export const CloseButton = styled.button`
   flex-shrink: 0;
   margin: 0px;
   box-sizing: border-box;
+  margin-left: -5px;
   &:hover {
     color: #333;
   }
@@ -124,7 +125,7 @@ export const TabContainer = styled.div`
 export const Tab = styled.button`
   background: transparent;
   border: none;
-  padding: 10px 0px 8px;
+  padding: 10px 0px;
   cursor: pointer;
   font-family: Poppins;
   font-size: 16px;
@@ -134,7 +135,6 @@ export const Tab = styled.button`
   font-weight: ${(props) => (props.active ? '600' : '400')};
   color: ${(props) => (props.active ? '#3A7587' : '#4A5C5E')};
   border-bottom: ${(props) => (props.active ? '5px solid #3A7587' : 'none')};
-  margin-bottom: ${(props) => (props.active ? '0' : '5px')};
 `;
 
 /**
@@ -404,7 +404,6 @@ export const RiskTableModalWrapper = styled.div`
 `;
 
 export const ModalHeaderContainer = styled.div`
-  margin-top: -10px;  
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;

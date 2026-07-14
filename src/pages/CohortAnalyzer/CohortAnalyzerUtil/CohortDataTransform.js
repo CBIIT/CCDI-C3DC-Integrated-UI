@@ -4,8 +4,18 @@ import { generateQueryVariable, getIdsFromCohort, getAllIds, filterAllParticipan
 
 const DEFAULT_QUERY_LIMIT = 10000;
 
-// const getParticipantId = (participant = {}) => participant.id || participant.participant_pk;
-// const stripParticipantPk = ({ participant_pk, ...participant }) => participant;
+// The backend's `terms` filter rejects null values, so we strip any null/undefined
+// entries from the `id` list before firing the query. This is our last line of
+// defense — upstream helpers (generateQueryVariable, getIdsFromCohort, getAllIds)
+// should already have filtered them out, but we normalize here so no code path
+// can regress.
+const sanitizeQueryVariables = (variables = {}) => {
+    if (!variables || !Array.isArray(variables.id)) return variables;
+    return {
+        ...variables,
+        id: variables.id.filter((pk) => pk != null),
+    };
+};
 
 
 const getJoinedCohortData = async ({
@@ -17,35 +27,65 @@ const getJoinedCohortData = async ({
     setQueryVariable,
     setRowData,
     location,
-    setCohortData,
-    isReset = false,
-    isRequestActive = () => true,
+    setCohortData
 }) => {
     function transformData(data, type) {
+        // Guard against null/undefined entries: GraphQL can legitimately return
+        // null items in a list (e.g. if a nullable child field can't be resolved),
+        // and destructuring a null row would throw before we got to any data.
+        const rows = Array.isArray(data) ? data.filter((row) => row != null) : [];
+
+        // The overview endpoints don't always expose a primary key on the
+        // nested `participant` object — treatmentOverview per Postman only
+        // returns `participant.participant_id`. Fall back through id → pk →
+        // display id so cohort matching still lines up.
+        const pickParticipantPk = (participant) => {
+            if (!participant) return undefined;
+            if (participant.id != null) return participant.id;
+            if (participant.participant_pk != null) return participant.participant_pk;
+            return participant.participant_id;
+        };
+
         if (type === "treatment") {
-            return data.map(({ participant, id, ...rest }) => ({
-                id: participant.id,
-                participant_pk: participant.id,
-                participant_id: participant.participant_id,
-                study_id: participant.study_id,
-                treatment_pk: id,
-                ...rest,
-            }));
+            return rows
+                .filter((row) => row.participant != null)
+                .map(({ participant, id, treatment_id, ...rest }) => {
+                    const pk = pickParticipantPk(participant);
+                    return {
+                        id: pk,
+                        participant_pk: pk,
+                        participant_id: participant.participant_id,
+                        study_id: participant.study_id,
+                        // Prefer the domain-level treatment_id when the backend
+                        // provides it — the top-level `id` on treatmentOverview
+                        // is not always populated.
+                        treatment_pk: treatment_id != null ? treatment_id : id,
+                        treatment_id,
+                        ...rest,
+                    };
+                });
         } else if (type === "diagnosis") {
-            return data.map(({ participant, id, ...rest }) => ({
-                id: participant.id,
-                participant_pk: participant.id,
-                participant_id: participant.participant_id,
-                study_id: participant.study_id,
-                diagnosis_pk: id,
-                ...rest,
-            }));
+            return rows
+                .filter((row) => row.participant != null)
+                .map(({ participant, id, diagnosis_id, ...rest }) => {
+                    const pk = pickParticipantPk(participant);
+                    return {
+                        id: pk,
+                        participant_pk: pk,
+                        participant_id: participant.participant_id,
+                        study_id: participant.study_id,
+                        // Prefer diagnosis_id — the top-level `id` on
+                        // diagnosisOverview is not always populated.
+                        diagnosis_pk: diagnosis_id != null ? diagnosis_id : id,
+                        diagnosis_id,
+                        ...rest,
+                    };
+                });
         } else {
-            return data.map(({ id, participant_id, study_id, ...rest }) => ({
+            return rows.map(({ id, participant_id, ...rest }) => ({
                 participant_pk: id,
-                participant_id,
+                participant_id: participant_id,
                 id: id,
-                study_id,
                 ...rest,
             }));
         }
@@ -58,8 +98,11 @@ const getJoinedCohortData = async ({
             const existingParticipants = newState[cohortId].participants || [];
 
             const updatedParticipants = existingParticipants.map(participant => {
+                // Match by `id` (what the cohort state stores) with a
+                // participant_pk fallback for any legacy row shape.
+                const key = participant.id != null ? participant.id : participant.participant_pk;
                 const matchingNewParticipant = newParticipantsData.find(
-                    newParticipant => newParticipant.id === participant.id
+                    newParticipant => (newParticipant.id != null ? newParticipant.id : newParticipant.participant_pk) === key
                 );
 
                 if (matchingNewParticipant) {
@@ -77,9 +120,7 @@ const getJoinedCohortData = async ({
             };
 
         });
-        if (isRequestActive()) {
-            setCohortData(newState);
-        }
+        setCohortData(newState);
     }
 
     function updatedCohortContentAllowDuplication(newParticipantsData) {
@@ -90,8 +131,9 @@ const getJoinedCohortData = async ({
 
             let finalResponse = [];
             newParticipantsData.forEach((participant) => {
+                const key = participant.id != null ? participant.id : participant.participant_pk;
                 const matchingExistingParticipants = existingParticipants.find(
-                    existingParticipant => existingParticipant.id === participant.id
+                    existingParticipant => (existingParticipant.id != null ? existingParticipant.id : existingParticipant.participant_pk) === key
                 );
 
                 if (matchingExistingParticipants) {
@@ -108,25 +150,21 @@ const getJoinedCohortData = async ({
             };
 
         });
-        if (isRequestActive()) {
-            setCohortData(newState);
-        }
+        setCohortData(newState);
     }
 
     async function getJoinedCohort(isReset = false) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) { 
-            const participantIDs = isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo);
-            queryVariables = { "id": participantIDs, first: DEFAULT_QUERY_LIMIT };
+            const participantIds = isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo);
+            queryVariables = { "id": participantIds, first: DEFAULT_QUERY_LIMIT };
         }
+        queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
         let { data } = await client.query({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
-        if (!isRequestActive()) {
-            return;
-        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "participants") }
         if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
@@ -150,14 +188,12 @@ const getJoinedCohortData = async ({
         if (Object.keys(generalInfo).length > 0) {
             queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
         }
+        queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
         let { data } = await client.query({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
-        if (!isRequestActive()) {
-            return;
-        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
         if (queryVariables.id.length > 0) {
             if (searchValue !== "") {
@@ -197,14 +233,12 @@ const getJoinedCohortData = async ({
         if (Object.keys(generalInfo).length > 0) {
             queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
         }
+        queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
         let { data } = await client.query({
             query: analyzer_query[nodeIndex],
             variables: queryVariables,
         });
-        if (!isRequestActive()) {
-            return;
-        }
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
 
         if (queryVariables.id.length > 0) {
@@ -239,13 +273,21 @@ const getJoinedCohortData = async ({
         }
     }
 
+    // Belt-and-suspenders: if a caller passes a nodeIndex that has no matching
+    // query (e.g. someone shrinks `analyzer_query` again), don't call Apollo with
+    // `query: undefined` — that surfaces as an opaque Apollo Invariant #26.
+    if (!analyzer_query[nodeIndex]) {
+        setRowData([]);
+        return;
+    }
+
     if (nodeIndex === 0) {
-        return getJoinedCohort(isReset);
+        getJoinedCohort();
     } else if (nodeIndex === 1) {
 
-        return getJoinedCohortByD(generalInfo);
+        getJoinedCohortByD(generalInfo);
     } else if (nodeIndex === 2) {
-        return getJoinedCohortByT(generalInfo)
+        getJoinedCohortByT(generalInfo)
     }
 
 };

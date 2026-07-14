@@ -1,6 +1,9 @@
 import React from 'react';
 import { screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
+import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
+import { CohortAnalyzer } from '../../CohortAnalyzer';
 import {
   mockNavigate,
   mockDispatch,
@@ -12,9 +15,6 @@ import {
   resetCohortAnalyzerMocks,
 } from '../../testSupport/cohortAnalyzerMocks';
 import { renderWithCohortAnalyzerProviders } from '../../testSupport/cohortAnalyzerTestUtils';
-import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
-import { CohortAnalyzer } from '../../CohortAnalyzer';
 
 const mockUseCohortAnalyzer = jest.fn(() => defaultCohortAnalyzerContext);
 let mockLocation = { state: null };
@@ -281,7 +281,7 @@ describe('CohortAnalyzer page entry point', () => {
   it('handleBuildInExplore skips modal when localStorage flag is set', () => {
     localStorage.setItem('hideNavigateModal', 'true');
     renderPage({
-      rowData: [{ participant_id: 'P1', study_id: 'phs1' }],
+      rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(mockStoreDispatch).toHaveBeenCalled();
@@ -290,7 +290,7 @@ describe('CohortAnalyzer page entry point', () => {
   });
 
   it('handleBuildInExplore opens navigate-away modal by default', () => {
-    renderPage({ rowData: [{ participant_id: 'P1', study_id: 'phs1' }] });
+    renderPage({ rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }] });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
     expect(defaultCohortAnalyzerContext.setShowNavigateAwayModal).toHaveBeenCalledWith(true);
     expect(mockNavigate).not.toHaveBeenCalled();

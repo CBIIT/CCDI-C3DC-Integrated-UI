@@ -1,7 +1,6 @@
 import React from 'react';
 import vennToolbarActions from '../../../assets/icons/VennToolbarActions.svg';
 import VennCategoryRadios from './VennCategoryRadios';
-import histogramChartTitleHandle from '../../../assets/icons/histogramChartTitleHandle.svg';
 
 
 /** Hit targets aligned to viewBox 0 0 73 19 (expand ~x 27–46, download ~x 54–73). */
@@ -35,14 +34,7 @@ const CohortAnalyzerHeader = ({
     <>
       <div className={classes.vennToolbarRow}>
         <div className={classes.vennToolbarLeading}>
-          <img
-            src={histogramChartTitleHandle}
-            alt=""
-            width={11}
-            height={12}
-            aria-hidden
-            style={{ display: 'block', flexShrink: 0 }}
-          />
+          
           <h2 className={classes.vennToolbarTitle}>Venn Diagram</h2>
         </div>
         <div className={classes.vennToolbarSpacer} aria-hidden />
