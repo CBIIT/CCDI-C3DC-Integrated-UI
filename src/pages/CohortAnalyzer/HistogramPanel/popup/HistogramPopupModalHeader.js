@@ -122,7 +122,7 @@ export function HistogramPopupModalHeader({
           </DownloadButton>
         ) : (
           <>
-            <ChartTypeDropdownRoot ref={chartTypeMenuRef} $compactTrailingGap={false}>
+            <ChartTypeDropdownRoot ref={chartTypeMenuRef}>
               <ChartTypeTriggerButton
                 type="button"
                 aria-haspopup="listbox"
@@ -130,10 +130,12 @@ export function HistogramPopupModalHeader({
                 aria-label="Chart type"
                 onClick={() => setShowChartTypeMenu((o) => !o)}
               >
-                <ChartTypeIcon
-                  type={chartVisualByPanelId[activeTab] || DEFAULT_CHART_TYPE}
-                  size={36}
-                />
+                <span style={{ display: 'inline-flex', marginTop: 6 }}>
+                  <ChartTypeIcon
+                    type={chartVisualByPanelId[activeTab] || DEFAULT_CHART_TYPE}
+                    size={28}
+                  />
+                </span>
               </ChartTypeTriggerButton>
               {showChartTypeMenu && (
                 <ChartTypeDropdownPanel role="listbox" aria-label="Choose chart type">
@@ -149,7 +151,7 @@ export function HistogramPopupModalHeader({
                         setShowChartTypeMenu(false);
                       }}
                     >
-                      <ChartTypeIcon type={type} size={28} />
+                      <ChartTypeIcon type={type} size={20} />
                     </ChartTypeOption>
                   ))}
                 </ChartTypeDropdownPanel>
@@ -162,6 +164,7 @@ export function HistogramPopupModalHeader({
           </>
         )}
       
+      <span style={{ display: 'inline-flex', marginLeft: -5 }}>
       <CloseButton onClick={() => setExpandedChart(null)}>
       <svg width="16" height="16" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clipPath="url(#clip0_12597_43488)">
@@ -177,6 +180,7 @@ export function HistogramPopupModalHeader({
 
 
       </CloseButton>
+      </span>
       </ModalActionButtons>
     </ModalHeaderContainer>
   );

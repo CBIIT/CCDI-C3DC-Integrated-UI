@@ -71,16 +71,20 @@ const VennCategoryRadios = ({
   return (
     <div style={resolvedContainerStyle}>
       <div style={promptRowStyle}>
-        <p style={promptStyle}>Select a data category for cohort matching:</p>
-        <ToolTip
-          maxWidth="380px"
-          zIndex={3000}
-          title="The venn diagram is a stylized representation of the selected cohorts and their shared Participant IDs, and are not proportionally accurate,"
-          arrow
-          placement="top"
-        >
-          <img alt="Help" src={questionIcon3} style={{ display: 'block' }} height={12} />
-        </ToolTip>
+        <p style={promptStyle}>
+          Select a data category for cohort matching:
+          <ToolTip
+            maxWidth="380px"
+            zIndex={3000}
+            title="The venn diagram is a stylized representation of the selected cohorts and their shared Participant IDs, and are not proportionally accurate,"
+            arrow
+            placement="top"
+          >
+            {/* Inline (not a flex sibling) so it hugs the prompt text in both the
+                live view and html-to-image PNG/PDF export. */}
+            <img alt="Help" src={questionIcon3} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '2px' }} height={12} />
+          </ToolTip>
+        </p>
       </div>
       <CohortAnalyzerRadioFieldset>
         <legend style={legendOffscreenStyle}>Data category options</legend>

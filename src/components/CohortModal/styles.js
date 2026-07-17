@@ -13,12 +13,30 @@ export default (theme) => ({
     height: 'auto',
     minWidth: '437.5px',
     minHeight: '472px',
-    maxHeight: '875px',
+    maxHeight: '100%',
     maxWidth: '944px',
     borderRadius: '10px',
     border: '1px solid #598AC5',
     boxShadow: theme.shadows[5],
     backgroundColor: theme.palette.background.paper,
+    // Outer container scrolls so the title's close (X) and the bottom action
+    // buttons are reachable when content overflows. Mirrors the inner cohort /
+    // participant boxes: style only the ::-webkit-scrollbar pseudo-elements
+    // (no standard scrollbar-width/color) so Chromium renders a classic,
+    // non-overlay scrollbar that stays visible whenever it is applicable.
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#CECECE',
+      borderRadius: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#8B98AF',
+      borderRadius: '10px',
+    },
   },
   modalTitle: {
     fontFamily: 'Poppins',

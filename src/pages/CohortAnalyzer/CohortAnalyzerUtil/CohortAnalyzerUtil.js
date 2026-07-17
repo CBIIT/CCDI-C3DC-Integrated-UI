@@ -202,22 +202,25 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
     )
 }
 
-// The Cohort Analyzer queries filter participants via the `$id: [String]`
-// variable, so that's the key we emit here. `getParticipantPk` falls back to
-// `participant.participant_pk` for any legacy state shape.
+// The Cohort Analyzer overview queries filter via `$id: [String]` (bound per
+// endpoint to `id`, `participant_ids`, or `participant_pk`). `cohortManifest` /
+// `cohortMetadata` take `$participant_pk` instead — emit both so one variables
+// object works for overview fetches and manifest/metadata downloads.
 export function generateQueryVariable(cohortNames, state) {
-    let query = {};
-    query['id'] = [];
-    query["first"] = 10000;
+    const ids = [];
     cohortNames.forEach((cName) => {
         state[cName].participants.forEach((participant) => {
             const pk = getParticipantPk(participant);
             if (pk != null) {
-                query["id"].push(pk);
+                ids.push(pk);
             }
         });
     });
-    return query;
+    return {
+        id: ids,
+        participant_pk: [...ids],
+        first: 10000,
+    };
 }
 
 export const handlePopup = (cohortId, state, setDeleteInfo, deleteInfo) => {

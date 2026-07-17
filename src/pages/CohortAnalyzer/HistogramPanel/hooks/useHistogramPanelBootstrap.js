@@ -99,7 +99,7 @@ export function useHistogramPanelBootstrap({
         );
         // Show survival only in the lower histogram strip (last), not beside Venn in the upper row.
         const stripWithoutSurvival = stripOrder.filter((id) => id !== 'survivalAnalysis');
-        dispatch(setStripOrder([...stripWithoutSurvival, 'survivalAnalysis']));
+        dispatch(setStripOrder([...stripWithoutSurvival, 'survivalAnalysis'], { userInitiated: true }));
         let nextTopRow = (topRowOrder || []).filter((p) => p !== 'survival');
         if (nextTopRow.length === 0) {
           nextTopRow = ['venn'];
@@ -135,7 +135,7 @@ export function useHistogramPanelBootstrap({
       const nextOrder = stripOrder.includes(datasetKey)
         ? stripOrder
         : [...stripOrder, datasetKey];
-      dispatch(setStripOrder(nextOrder));
+      dispatch(setStripOrder(nextOrder, { userInitiated: true }));
       setSelectedDatasets((prev) => (prev.includes(datasetKey) ? prev : [...prev, datasetKey]));
       setActiveTab(datasetKey);
       if (typeof onInlineAddChartClose === 'function') {
@@ -170,7 +170,32 @@ export function useHistogramPanelBootstrap({
       });
       return next;
     });
-  }, [setSelectedDatasets, setActiveTab, setExpandedChart, setShowDownloadDropdown, setChartTypeMenuDataset]);
+    // Mark layout dirty and prune strip / top row so Reset View can restore items.
+    if (dataset === 'survivalAnalysis') {
+      const nextStrip = stripOrder.filter((id) => id !== 'survivalAnalysis');
+      if (nextStrip.length !== stripOrder.length) {
+        dispatch(setStripOrder(nextStrip, { userInitiated: true }));
+      }
+      const nextTop = (topRowOrder || []).filter((p) => p !== 'survival');
+      dispatch(setTopRowOrder(nextTop.length > 0 ? nextTop : ['venn']));
+    } else {
+      const nextStrip = stripOrder.filter((id) => id !== dataset);
+      dispatch(setStripOrder(nextStrip, { userInitiated: true }));
+      if (besideStripPanelId === dataset) {
+        dispatch(setBesideStripPanelId(null));
+      }
+    }
+  }, [
+    setSelectedDatasets,
+    setActiveTab,
+    setExpandedChart,
+    setShowDownloadDropdown,
+    setChartTypeMenuDataset,
+    stripOrder,
+    topRowOrder,
+    besideStripPanelId,
+    dispatch,
+  ]);
 
   useEffect(() => {
     setHistogramCardSizes(reduxHistogramSizes);

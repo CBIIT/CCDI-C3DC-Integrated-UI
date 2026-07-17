@@ -8,6 +8,7 @@ import {
   ChartWrapper,
   HeaderSection,
   ChartTitle,
+  ChartTitleLabel,
   ChartActionButtons,
   ChartResizeHandle,
   ChartTypeDropdownRoot,
@@ -132,13 +133,9 @@ export function HistogramBesideVennHistogramPortal({
           <span
             role="button"
             tabIndex={0}
+            data-ca-chart-title-drag
             aria-label={`Drag ${getChartTitle(d) || 'chart'}`}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              marginRight: 6,
               cursor: allInputsEmpty ? 'not-allowed' : 'grab',
               opacity: allInputsEmpty ? 0.45 : 1,
             }}
@@ -152,7 +149,7 @@ export function HistogramBesideVennHistogramPortal({
               style={{ display: 'block', flexShrink: 0 }}
             />
           </span>
-          {getChartTitle(d)}
+          <ChartTitleLabel>{getChartTitle(d)}</ChartTitleLabel>
         </ChartTitle>
         <ChartActionButtons>
           <ChartTypeDropdownRoot
@@ -160,6 +157,7 @@ export function HistogramBesideVennHistogramPortal({
           >
             <ChartTypeTriggerButton
               type="button"
+              $hitTarget={22}
               disabled={allInputsEmpty}
               aria-haspopup="listbox"
               aria-expanded={chartTypeMenuDataset === d}
@@ -197,27 +195,25 @@ export function HistogramBesideVennHistogramPortal({
           <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => { if (!allInputsEmpty) { setExpandedChart(d); setActiveTab(d); } }}>
             <img src={ExpandIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
           </span>
-          <div style={{ display: 'inline-flex', alignItems: 'center', columnGap: 4 }}>
-            <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => !allInputsEmpty && downloadChart(d, false)}>
-              <img src={DownloadIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
-            </span>
-            <button
-              type="button"
-              className={classes.headerCloseButton}
-              aria-label={`Remove ${getChartTitle(d) || 'chart'} from layout`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemoveHistogramDataset(d);
-              }}
-            >
-              <img src={histogramCloseIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
-            </button>
-          </div>
+          <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => !allInputsEmpty && downloadChart(d, false)}>
+            <img src={DownloadIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
+          </span>
+          <button
+            type="button"
+            className={classes.headerCloseButton}
+            aria-label={`Remove ${getChartTitle(d) || 'chart'} from layout`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemoveHistogramDataset(d);
+            }}
+          >
+            <img src={histogramCloseIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
+          </button>
         </ChartActionButtons>
       </HeaderSection>
       <div
         className={classes.chartContentWrapper}
-        style={{ paddingBottom: requiresCompactSpacing(d) ? '12px' : '0px' }}
+        style={{ paddingBottom: '12px' }}
       >
         {showChartBody ? (
           <div

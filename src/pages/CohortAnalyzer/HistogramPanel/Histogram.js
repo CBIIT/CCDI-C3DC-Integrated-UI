@@ -69,6 +69,8 @@ const Histogram = ({
   inlineAddChartOpen = false,
   onInlineAddChartClose,
   inlineAddChartNonce = 0,
+  /** Bumps when toolbar “Reset View” runs — restores default chart set + clears local sizes. */
+  layoutResetNonce = 0,
   chartModalExpandedChart,
   setChartModalExpandedChart,
   chartModalActiveTab,
@@ -140,6 +142,7 @@ const Histogram = ({
     setExpandedChart: setChartModalExpandedChart,
     activeTab: chartModalActiveTab,
     setActiveTab: setChartModalActiveTab,
+    layoutResetNonce,
   });
 
   useEffect(() => {
@@ -181,6 +184,14 @@ const Histogram = ({
   /** Per-dataset card size after user resize: { width, plotHeight } (mirrors Redux; local updates during drag) */
   const [histogramCardSizes, setHistogramCardSizes] = useState(reduxHistogramSizes);
   const [survivalCardSize, setSurvivalCardSize] = useState(reduxSurvivalSize);
+
+  useEffect(() => {
+    if (!layoutResetNonce) return;
+    setHistogramCardSizes({});
+    setSurvivalCardSize(null);
+    setChartTypeMenuDataset(null);
+    setShowDownloadDropdown(false);
+  }, [layoutResetNonce]);
 
   const {
     stripOrder,

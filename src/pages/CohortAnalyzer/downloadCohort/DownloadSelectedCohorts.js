@@ -19,18 +19,17 @@ export default function DownloadSelectedCohort({ queryVariable, isSelected }) {
         }
     }
 
-    // The Cohort Analyzer emits query variables under `id` now, but older
-    // callers used `participant_pk` — accept either so this component doesn't
-    // silently produce an empty download when the naming changes.
+    // The Cohort Analyzer emits query variables under both `id` (overview
+    // endpoints) and `participant_pk` (cohortManifest / cohortMetadata).
     const getParticipantIds = () => (
-        (queryVariable && (queryVariable.id || queryVariable.participant_pk)) || []
+        (queryVariable && (queryVariable.participant_pk || queryVariable.id)) || []
     );
 
     const handleDownloadManifest = async () => {
         if (isDownloading) return; // Prevent multiple simultaneous downloads
 
         try {
-            const participants = getParticipantIds().map(pk => ({ id: pk }));
+            const participants = getParticipantIds().map(pk => ({ participant_pk: pk }));
 
             await downloadCohortManifest(participants, "analyzed", {
                 onLoadingStateChange: setIsDownloading
@@ -46,7 +45,7 @@ export default function DownloadSelectedCohort({ queryVariable, isSelected }) {
         if (isDownloading) return; // Prevent multiple simultaneous downloads
 
         try {
-            const participants = getParticipantIds().map(pk => ({ id: pk }));
+            const participants = getParticipantIds().map(pk => ({ participant_pk: pk }));
 
             await downloadCohortMetadata(participants, "Analyzed", {
                 onLoadingStateChange: setIsDownloading

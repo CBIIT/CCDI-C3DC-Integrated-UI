@@ -109,7 +109,7 @@ function ChartTypeIconBase({ type, size = 20, iconVariant = 'compact' }) {
         <svg
           width={s}
           height={s}
-          viewBox="0 0 26 26"
+          viewBox="3 3 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden

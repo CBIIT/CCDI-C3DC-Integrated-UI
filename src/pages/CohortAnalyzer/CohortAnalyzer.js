@@ -10,6 +10,7 @@ import ConfirmationModal from "../../components/CohortModal/components/shared/Co
 import NavigateAwayModal from './components/navigateAwayModal';
 import { CohortModalContext } from "../../components/CohortModal/CohortModalContext";
 import CohortModal from "../../components/CohortModal/CohortModal";
+import { buildPendingNewCohortFromRowData } from "../../components/CohortModal/pendingCohortUtils";
 import Alert from '@material-ui/lab/Alert';
 import { useGlobal } from "../../components/Global/GlobalProvider";
 import questionIcon from "../../assets/icons/Question_icon_2.svg";
@@ -19,10 +20,11 @@ import {
     handlePopup,
     handleDelete,
     SearchBox,
-    triggerNotification,
 } from "./CohortAnalyzerUtil/CohortAnalyzerUtil";
 import store from "../../store";
+import { generateQueryStr } from "@bento-core/util";
 import { updateUploadData, updateUploadMetadata } from "@bento-core/local-find";
+import { queryParams } from "../../bento/dashTemplate";
 import { CohortSelector } from "./CohortSelector/CohortSelector";
 import { useCohortAnalyzer } from './context/CohortAnalyzerContext';
 import { cohortAnalyzerThemeConfig } from './styling/cohortAnalyzerThemeConfig';
@@ -92,20 +94,22 @@ export const CohortAnalyzer = () => {
         () => computeHasParticipantData(state, selectedCohorts),
         [state, selectedCohorts],
     );
-    const { setShowCohortModal, showCohortModal, setCurrentCohortChanges, setWarningMessage, warningMessage } = useContext(CohortModalContext);
+    const { setShowCohortModal, showCohortModal, setCurrentCohortChanges, setWarningMessage, warningMessage, setPendingNewCohort, setSelectedCohort } = useContext(CohortModalContext);
     const { Notification } = useGlobal();
     const navigate = useNavigate();
     const handleUserRedirect = () => {
-        // NOTE: If needed to show in only Autocomplete of Localfind.
-        // const data = rowData.map(r=>({type: 'participantIds', title: r.participant_id}))
-        // store.dispatch(updateAutocompleteData(data));
-        // navigate('/explore');
-
         const { upload, uploadMetadata } = buildExploreUploadPayload(rowData);
 
+        // Keep Redux in sync as before; the `u` URL param below is what actually
+        // drives Explore's participant_ids filter. InventoryCover reads `u` and would
+        // otherwise call resetUploadData() when it is absent.
         store.dispatch(updateUploadData(upload));
         store.dispatch(updateUploadMetadata(uploadMetadata));
-        navigate('/explore');
+
+        const participantIds = upload.map((p) => p.participant_id).filter(Boolean);
+        const paramValue = { u: participantIds.join('|') };
+        const queryStr = generateQueryStr(new URLSearchParams(''), queryParams, paramValue);
+        navigate(`/exploreParticipants${queryStr}`);
     }
 
     const handleBuildInExplore = () => {
@@ -231,21 +235,28 @@ export const CohortAnalyzer = () => {
     }, [cohortList, nodeIndex, cohortData])
 
     const handleClick = () => {
-        if (selectedCohortSection.length > 0 && rowData.length > 0) {
+        if (!(selectedCohortSection.length > 0 && rowData.length > 0)) {
+            return;
+        }
 
+        if (Object.keys(state || {}).length >= 20) {
+            setWarningMessage('Cannot create a new cohort. You have reached the maximum limit of 20 cohorts.');
+            return;
+        }
+
+        try {
+            const draft = buildPendingNewCohortFromRowData(state, rowData);
+            if (!draft.participants.length) {
+                setWarningMessage('Unable to create a cohort from the current selection. Participants are missing required fields.');
+                return;
+            }
+            // Draft only — cohort state / localStorage update happens on Save Changes.
             setCurrentCohortChanges(null);
-            cohortDispatch(onCreateNewCohort(
-                "",
-                "",
-                rowData,
-                (count) => {
-                    triggerNotification(count, Notification);
-                    setShowCohortModal(true);
-                },
-                (error) => {
-                    setWarningMessage(error.toString().replace("Error:", ""));
-                }
-            ));
+            setPendingNewCohort(draft);
+            setSelectedCohort(draft.cohortId);
+            setShowCohortModal(true);
+        } catch (error) {
+            setWarningMessage((error && error.message) ? error.message : String(error).replace('Error:', ''));
         }
     };
 

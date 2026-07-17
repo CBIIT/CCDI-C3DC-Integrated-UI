@@ -175,6 +175,8 @@ describe('CohortAnalyzer page entry point', () => {
     setCurrentCohortChanges: jest.fn(),
     setWarningMessage: jest.fn(),
     warningMessage: '',
+    setPendingNewCohort: jest.fn(),
+    setSelectedCohort: jest.fn(),
   };
 
   const renderPage = (contextOverrides = {}, state = defaultCohortState, modalOverrides = {}) => {
@@ -194,6 +196,9 @@ describe('CohortAnalyzer page entry point', () => {
     mockLocation = { state: null };
     jest.useFakeTimers();
     localStorage.clear();
+    Object.values(modalContext).forEach((value) => {
+      if (typeof value === 'function' && value.mockClear) value.mockClear();
+    });
     const { onCreateNewCohort } = require('../../../../components/CohortSelectorState/store/action');
     onCreateNewCohort.mockImplementation((id, desc, parts, onSuccess) => {
       if (onSuccess) onSuccess(1);
@@ -284,8 +289,10 @@ describe('CohortAnalyzer page entry point', () => {
       rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
+    // Redux stays in sync (as before) and the `u` URL param drives inventoryCover's
+    // participant_ids table filter.
     expect(mockStoreDispatch).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith('/explore');
+    expect(mockNavigate).toHaveBeenCalledWith('/exploreParticipants?u=P1');
     expect(defaultCohortAnalyzerContext.setShowNavigateAwayModal).not.toHaveBeenCalled();
   });
 
@@ -296,13 +303,20 @@ describe('CohortAnalyzer page entry point', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('handleClick creates cohort when section and row data exist', () => {
+  it('handleClick opens a draft cohort modal without creating until Save Changes', () => {
     renderPage({
       selectedCohortSection: ['Cohort A (1)'],
-      rowData: [{ participant_id: 'P1' }],
+      rowData: [{ id: 'pk1', participant_id: 'P1', study_id: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /create cohort/i }));
-    expect(mockDispatch).toHaveBeenCalled();
+    expect(mockDispatch).not.toHaveBeenCalled();
+    expect(modalContext.setPendingNewCohort).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cohortId: 'New Cohort',
+        participants: [{ id: 'pk1', participant_id: 'P1', study_id: 'phs1' }],
+      }),
+    );
+    expect(modalContext.setSelectedCohort).toHaveBeenCalledWith('New Cohort');
     expect(modalContext.setShowCohortModal).toHaveBeenCalledWith(true);
   });
 
@@ -310,6 +324,7 @@ describe('CohortAnalyzer page entry point', () => {
     renderPage({ selectedCohortSection: [], rowData: [] });
     fireEvent.click(screen.getByRole('button', { name: /create cohort/i }));
     expect(mockDispatch).not.toHaveBeenCalled();
+    expect(modalContext.setShowCohortModal).not.toHaveBeenCalled();
   });
 
   it('clears search when selectedChart changes', () => {
@@ -361,17 +376,16 @@ describe('CohortAnalyzer page entry point', () => {
     expect(defaultCohortAnalyzerContext.setGeneralInfo).toHaveBeenCalledWith({});
   });
 
-  it('handleClick surfaces create-cohort errors', () => {
-    const { onCreateNewCohort } = require('../../../../components/CohortSelectorState/store/action');
-    onCreateNewCohort.mockImplementationOnce((id, desc, parts, onSuccess, onError) => {
-      onError(new Error('duplicate'));
-    });
+  it('handleClick warns when participants lack required fields', () => {
     renderPage({
       selectedCohortSection: ['Cohort A (1)'],
       rowData: [{ participant_id: 'P1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /create cohort/i }));
-    expect(modalContext.setWarningMessage).toHaveBeenCalledWith(' duplicate');
+    expect(modalContext.setPendingNewCohort).not.toHaveBeenCalled();
+    expect(modalContext.setWarningMessage).toHaveBeenCalledWith(
+      expect.stringContaining('Unable to create a cohort'),
+    );
   });
 
   it('handleDemoClick shows error when example cohort creation fails', () => {

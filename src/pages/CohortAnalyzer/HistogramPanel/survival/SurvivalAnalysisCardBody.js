@@ -16,10 +16,12 @@ import {
   RiskTableWrapper,
   RiskTableWrapperBesideVenn,
   ChartTitle,
+  ChartTitleLabel,
   ChartActionButtons,
   DownloadDropdown,
   DownloadDropdownMenu,
   DownloadDropdownItem,
+  HeaderSectionContainer
 } from '../HistogramPanel.styled';
 import {
   CA_SURVIVAL_CARD_MIN_HEIGHT as SURVIVAL_CARD_MIN_HEIGHT,
@@ -107,10 +109,12 @@ export function SurvivalAnalysisCardBody({
   return (
     <>
       <SurvivalAnalysisHeader>
+        <HeaderSectionContainer>
         <ChartTitle className={!chartPreviewMode && survivalHasNoDisplayData ? 'empty' : ''}>
           <span
             role="button"
             tabIndex={0}
+            data-ca-chart-title-drag
             aria-label={
               canBesideReorder
                 ? 'Drag to swap with Venn diagram or drop on a histogram card below to show it beside this row'
@@ -120,11 +124,6 @@ export function SurvivalAnalysisCardBody({
               if (event.key === 'Enter' || event.key === ' ') event.preventDefault();
             }}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              marginRight: 6,
               cursor: (!chartPreviewMode && survivalHasNoDisplayData) ? 'not-allowed' : canBesideReorder ? 'grab' : 'default',
               opacity: (!chartPreviewMode && survivalHasNoDisplayData) ? 0.45 : 1,
             }}
@@ -143,8 +142,8 @@ export function SurvivalAnalysisCardBody({
               style={{ display: 'block', flexShrink: 0 }}
             />
           </span>
-          {'Overall Survival by Diagnosis'}
-          <span style={{ display: 'inline-flex', alignSelf: 'flex-start' }}>
+          <ChartTitleLabel>
+            Overall Survival by Diagnosis
             <ToolTip
               maxWidth="235px"
               border="1px solid #598ac5"
@@ -162,15 +161,17 @@ export function SurvivalAnalysisCardBody({
               interactive
               arrowSize="30px"
             >
+              {/* Inline (not a flex sibling) so it hugs the last word of the
+                  title in both the live view and html-to-image PNG/PDF export. */}
               <img
                 alt=""
                 src={questionIcon}
                 width={10}
-                style={{ border: '0px', display: 'block', flexShrink: 0 }}
+                style={{ border: '0px', display: 'inline', verticalAlign: 'middle', marginLeft: '2px' }}
               />
             </ToolTip>
-          </span>
-        </ChartTitle>
+          </ChartTitleLabel>
+          </ChartTitle>
 
         <ChartActionButtons>
           <button
@@ -247,6 +248,8 @@ export function SurvivalAnalysisCardBody({
             <img src={histogramCloseIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
           </button>
         </ChartActionButtons>
+        </HeaderSectionContainer>
+       
       </SurvivalAnalysisHeader>
 
       <SurvivalAnalysisContainer ref={survivalAnalysisContainerRef}>
