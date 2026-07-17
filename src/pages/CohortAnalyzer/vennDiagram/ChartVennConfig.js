@@ -106,6 +106,10 @@ export function buildVennCohortSetLabel(
 }
 
 /**
+ * Word-wrap cohort labels to `maxWidth`. Breaks only at whitespace — never
+ * mid-word. An overlong token stays on its own line; font shrink in
+ * {@link vennCohortLabelFitPlugin} handles fit.
+ *
  * @param {CanvasRenderingContext2D} ctx
  * @param {string} text
  * @param {number} maxWidth
@@ -136,23 +140,9 @@ function wrapVennTextToWidth(ctx, text, maxWidth, maxLines) {
       if (lines.length >= maxLines) {
         return lines.slice(0, maxLines);
       }
-      if (ctx.measureText(w).width <= maxWidth) {
-        line = w;
-        continue;
-      }
-      for (let i = 0; i < w.length; i += 1) {
-        const ch = w.charAt(i);
-        const t2 = line + ch;
-        if (ctx.measureText(t2).width > maxWidth && line) {
-          lines.push(line);
-          line = ch;
-          if (lines.length >= maxLines) {
-            return lines.slice(0, maxLines);
-          }
-        } else {
-          line = t2;
-        }
-      }
+      // Start a new line with this word even if it is wider than maxWidth —
+      // never insert a break inside the token (only at spaces).
+      line = w;
     }
   }
   takeLine();

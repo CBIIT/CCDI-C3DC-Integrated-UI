@@ -743,43 +743,42 @@ cohortMetadata(
 
 export const GET_COHORT_MANIFEST_QUERY = gql`
   query cohortManifest(
-    # Demographics
-    $participant_pk: [String],
+  # Demographics
+  $participant_pk: [String],
 
-    # Table config
-    $first: Int,
-    $offset: Int,
-    $order_by: String,
-    $sort_direction: String
-  ) {
-    cohortManifest(
-      # Demographics
-      participant_pk: $participant_pk,
+  # Table config
+  $first: Int,
+  $offset: Int,
+  $order_by: String,
+  $sort_direction: String
+) {
+cohortManifest(
+  # Demographics
+  participant_pk: $participant_pk,
 
-      # Table config
-      first: $first,
-      offset: $offset,
-      order_by: $order_by,
-      sort_direction: $sort_direction
-    ) {
-      # Diagnosis
-      id
-      diagnosis
+  # Table config
+  first: $first,
+  offset: $offset,
+  order_by: $order_by,
+  sort_direction: $sort_direction
+) {
+  # Diagnosis
+  id
+  diagnosis
 
-      # Participants
-      participant {
-        id
-        participant_id
-        race
-        sex_at_birth
-      }
-
-      # Study
-      dbgap_accession
-
-      __typename
-    }
+  # Participants
+  participant {
+    id
+    participant_id
+    race
+    sex_at_birth
   }
+
+  # Study
+  dbgap_accession
+
+  __typename
+}}
 `
 
 export const GET_SAMPLES_OVERVIEW_QUERY = gql`

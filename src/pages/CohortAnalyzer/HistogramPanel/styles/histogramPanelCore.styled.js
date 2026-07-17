@@ -64,40 +64,101 @@ export const CheckBoxSection = styled.div`
   flex-wrap: wrap;
 `;
 
+/**
+ * Fixed header control row: grab hit-target matches expand/download so
+ * grab + ChartActionButtons share one top edge (chart-type may be taller).
+ */
+export const CHART_HEADER_ACTION_ICON_PX = 19;
+/** Chart-type selector size on strip cards (larger than sibling actions). */
+export const CHART_HEADER_CHART_TYPE_ICON_PX = 22;
+
 export const ChartTitle = styled.h2`
   font-family: Poppins;
   font-size: 18px;
   font-weight: 400;
   color: #000000;
   margin: 0;
+  padding: 0;
   text-align: left;
   margin-left: 3px;
   flex: 1;
   min-width: 0;
-  line-height: 1.25;
+  align-self: flex-start;
+  line-height: 1;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  
-  column-gap: 2px;
+  /* Grab + title text + "?" share the same top edge as ChartActionButtons. */
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  /* 1px between title text and trailing "?" (grab has its own margin). */
+  column-gap: 1px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  height: 100%;
+
+  & > [data-ca-chart-title-drag] {
+    box-sizing: border-box;
+    width: ${CHART_HEADER_ACTION_ICON_PX}px;
+    height: ${CHART_HEADER_ACTION_ICON_PX}px;
+    margin: 0 6px 0 0;
+    padding: 0;
+    display: inline-flex;
+    /* Center the 12px grip inside the same 19px row as expand/download. */
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+
   &.empty {
     opacity: 0.3;
   }
 `;
 
+/** Title string beside the drag handle — wraps independently so new lines
+ *  still start at the same horizontal inset as the first line of text. */
+export const ChartTitleLabel = styled.span`
+  /* Shrink-wrap to text so the "?" sits 1px away (not pushed by flex-grow). */
+  flex: 0 1 auto;
+  min-width: 0;
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  /* Stay inside the fixed header; extra wrap lines are clipped, not grown into. */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  height: 100%;
+`;
+
 export const ChartActionButtons = styled.div`
   display: flex;
-  align-items: center;
-  gap: 6px;
+  /* Same top edge as ChartTitle / grab — no extra pad or self-centering. */
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 8px;
   flex-shrink: 0;
   justify-content: flex-end;
   margin: 0;
-  padding-left: 8px;
-  margin-left: 0;
-`;
+  padding: 0 0 0 8px;
+  height: fit-content;
 
+  & > * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-start;
+    line-height: 0;
+  }
+`;
 export const CenterContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -218,20 +279,28 @@ export const HeaderSection = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  min-height: 50px;
+  align-items: flex-start;
+  /* Fixed chrome — wrap mode must not grow the header past this size. */
+  height: 58px;
+  min-height: 58px;
+  max-height: 58px;
   margin: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 12px 8px 15px;
+  /* Extra top padding so top-aligned header content reads as centered in the bar. */
+  padding: 14px 12px 8px 15px;
   margin-left: 0;
   border-bottom: 1px solid #e5e5e5;
+  /* Visible so the chart-type dropdown can paint below the header chrome. */
+  overflow: visible;
+  
 `;
 
 export const RadioGroup = styled.div`
   display: flex;
   align-items: center;
-  margin: 6px 0 10px 12px;
+  /* Sit directly under the widget title (header left inset is 15px). */
+  margin: 0 0 8px 15px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;
@@ -241,16 +310,19 @@ export const RadioGroup = styled.div`
 
 export const RadioLabel = styled.label`
   display: flex;
-  align-items: center;
+  align-items: start;
   font-family: Poppins;
   font-size: 13px;
+  line-height: 1.0;
   color: #494949;
   cursor: pointer;
+  margin-top: 4px;
 `;
 
 export const RadioInput = styled.input`
-  margin-right: 8px;
+  margin: 0 6px 0 0;
   accent-color: #3A7587;
   width: 16px;
   height: 16px;
+  
 `;

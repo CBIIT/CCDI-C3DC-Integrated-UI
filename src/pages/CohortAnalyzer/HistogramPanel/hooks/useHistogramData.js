@@ -2,6 +2,15 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import { gql } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 import { barColors } from '../HistogramPanel.styled';
+import { DEFAULT_COHORT_ANALYZER_SELECTED_DATASETS } from '../../store/cohortAnalyzerDefaultPanelRegistry';
+
+export const DEFAULT_HISTOGRAM_VIEW_TYPE = {
+  treatmentType: "percentage",
+  response: "percentage",
+  sexAtBirth: "percentage",
+  race: "percentage"
+};
+
 export const useHistogramData = ({
   c1 = [],
   c2 = [],
@@ -11,6 +20,7 @@ export const useHistogramData = ({
   setExpandedChart,
   activeTab,
   setActiveTab,
+  layoutResetNonce = 0,
 }) => {
   const viewTypeApiKeys= {
     treatmentType: 'treatment_type',
@@ -19,18 +29,10 @@ export const useHistogramData = ({
     race: 'race'
   };
 
-  const [viewType, setViewType] = useState({
-    treatmentType: "percentage",
-    response: "percentage",
-    sexAtBirth: "percentage",
-    race: "percentage"
-  });
+  const [viewType, setViewType] = useState(() => ({ ...DEFAULT_HISTOGRAM_VIEW_TYPE }));
 
-  const [selectedDatasets, setSelectedDatasets] = useState([
-    "sexAtBirth",
-    "race",
-    "response",
-    "survivalAnalysis",
+  const [selectedDatasets, setSelectedDatasets] = useState(() => [
+    ...DEFAULT_COHORT_ANALYZER_SELECTED_DATASETS,
   ]);
   const chartRef = useRef({});
   const [fetchedData, setFetchedData] = useState({});
@@ -226,9 +228,22 @@ const fetchChartData = async () => {
   useEffect(() => {
     const allInputsEmpty = [c1, c2, c3].every(arr => arr.length === 0);
     if (allInputsEmpty) {
-      setSelectedDatasets(["sexAtBirth", "race", "response", "survivalAnalysis"]);
+      setSelectedDatasets([...DEFAULT_COHORT_ANALYZER_SELECTED_DATASETS]);
     }
   }, [c1, c2, c3]);
+
+  /** “Reset View” restores the original chart set (add/remove), not only positions. */
+  useEffect(() => {
+    if (!layoutResetNonce) return;
+    setSelectedDatasets([...DEFAULT_COHORT_ANALYZER_SELECTED_DATASETS]);
+    setViewType({ ...DEFAULT_HISTOGRAM_VIEW_TYPE });
+    if (typeof setActiveTab === 'function') {
+      setActiveTab('sexAtBirth');
+    }
+    if (typeof setExpandedChart === 'function') {
+      setExpandedChart(null);
+    }
+  }, [layoutResetNonce, setActiveTab, setExpandedChart]);
 
   /** Ensure count/percentage exists for any histogram key (e.g. chart added from Add chart wizard). */
   useEffect(() => {

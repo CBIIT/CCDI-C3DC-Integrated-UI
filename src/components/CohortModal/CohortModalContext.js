@@ -13,6 +13,11 @@ export const CohortModalProvider = ({ children }) => {
     handleConfirm: () => { },
     deletionType: "",
   });
+  /**
+   * Draft cohort opened from Cohort Analyzer “CREATE NEW COHORT”.
+   * Not written to cohort state / localStorage until the user clicks Save Changes.
+   */
+  const [pendingNewCohort, setPendingNewCohort] = useState(null);
 
   const showAlert = useCallback((type, message, duration = 2500) => {
     setAlert({ type, message });
@@ -27,6 +32,10 @@ export const CohortModalProvider = ({ children }) => {
 
   const clearCurrentCohortChanges = useCallback(() => {
     setCurrentCohortChanges(null);
+  }, []);
+
+  const clearPendingNewCohort = useCallback(() => {
+    setPendingNewCohort(null);
   }, []);
 
   const contextValue = {
@@ -45,7 +54,10 @@ export const CohortModalProvider = ({ children }) => {
     showConfirmation,
     setShowConfirmation,
     confirmModalProps,
-    setConfirmModalProps
+    setConfirmModalProps,
+    pendingNewCohort,
+    setPendingNewCohort,
+    clearPendingNewCohort,
   };
 
   return (

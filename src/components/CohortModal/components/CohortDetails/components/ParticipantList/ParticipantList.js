@@ -15,11 +15,16 @@ const ParticipantList = (props) => {
         selectedCohort,
         currentCohortChanges,
         setCurrentCohortChanges,
-        clearCurrentCohortChanges
+        clearCurrentCohortChanges,
+        pendingNewCohort,
+        clearPendingNewCohort,
+        setSelectedCohort,
     } = useContext(CohortModalContext);
     
-    const activeCohort = state[selectedCohort];
-    const matchingCohortID = currentCohortChanges && currentCohortChanges.cohortId === activeCohort.cohortId;
+    const activeCohort = (pendingNewCohort && selectedCohort === pendingNewCohort.cohortId)
+        ? pendingNewCohort
+        : state[selectedCohort];
+    const matchingCohortID = currentCohortChanges && activeCohort && currentCohortChanges.cohortId === activeCohort.cohortId;
 
     const [searchText, setSearchText] = useState(matchingCohortID && currentCohortChanges['searchText'] ? currentCohortChanges['searchText'] : '');
 
@@ -58,9 +63,24 @@ const ParticipantList = (props) => {
     }, [localCohort.participants, updateCohortState]);
 
     const handleDeleteCohort = useCallback(() => {
+        if (pendingNewCohort && selectedCohort === pendingNewCohort.cohortId) {
+            clearPendingNewCohort();
+            clearCurrentCohortChanges();
+            const remaining = Object.keys(state || {});
+            setSelectedCohort(remaining.length > 0 ? remaining[0] : null);
+            return;
+        }
         dispatch(onDeleteSingleCohort(selectedCohort));
         clearCurrentCohortChanges();
-    }, [dispatch, selectedCohort, clearCurrentCohortChanges]);
+    }, [
+        dispatch,
+        selectedCohort,
+        clearCurrentCohortChanges,
+        pendingNewCohort,
+        clearPendingNewCohort,
+        setSelectedCohort,
+        state,
+    ]);
 
     const datePrefix = useMemo(() => {
         return (config && config.datePrefix) || DEFAULT_CONFIG.config.cohortDetails.datePrefix;
@@ -88,7 +108,7 @@ const ParticipantList = (props) => {
                 </Button>
             </div>
             <div className={classes.cohortLastUpdated}>
-                {datePrefix} {(new Date(activeCohort.lastUpdated)).toLocaleDateString('en-US')}
+                {datePrefix} {(new Date(activeCohort && activeCohort.lastUpdated ? activeCohort.lastUpdated : Date.now())).toLocaleDateString('en-US')}
             </div>
         </div>
     );

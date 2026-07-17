@@ -9,6 +9,17 @@ export const COHORT_ANALYZER_HISTOGRAM_TITLES = {
   response: 'Treatment Outcome',
 };
 
+/**
+ * Default charts shown on first load / after “Reset View”
+ * (positions come from Redux layout; this list is the item set).
+ */
+export const DEFAULT_COHORT_ANALYZER_SELECTED_DATASETS = [
+  'sexAtBirth',
+  'race',
+  'response',
+  'survivalAnalysis',
+];
+
 /** Baseline `panelRegistry` entries (Venn, survival, all known histogram keys). */
 export function buildDefaultCohortAnalyzerPanelRegistry() {
   const patch = {

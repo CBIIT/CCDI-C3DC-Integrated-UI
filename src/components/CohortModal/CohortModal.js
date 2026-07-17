@@ -31,6 +31,7 @@ const CohortModal = (props) => {
 
     const {
         clearCurrentCohortChanges,
+        clearPendingNewCohort,
         showConfirmation,
         setShowConfirmation,
         confirmModalProps
@@ -59,8 +60,11 @@ const CohortModal = (props) => {
     useEffect(() => {
         if (!open) {
             clearCurrentCohortChanges();
+            if (typeof clearPendingNewCohort === 'function') {
+                clearPendingNewCohort();
+            }
         }
-    }, [open, clearCurrentCohortChanges]);
+    }, [open, clearCurrentCohortChanges, clearPendingNewCohort]);
 
     return (
         <>

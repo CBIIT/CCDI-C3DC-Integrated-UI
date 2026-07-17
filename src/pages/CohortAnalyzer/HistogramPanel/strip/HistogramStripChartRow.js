@@ -10,6 +10,7 @@ import {
   ChartWrapper,
   HeaderSection,
   ChartTitle,
+  ChartTitleLabel,
   ChartActionButtons,
   ChartTypeDropdownRoot,
   ChartTypeDropdownPanel,
@@ -226,16 +227,12 @@ export function HistogramStripChartRow({
             <span
               role="button"
               tabIndex={0}
+              data-ca-chart-title-drag
               aria-label={`Drag to reorder ${getChartTitle(dataset) || 'chart'} card`}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') event.preventDefault();
               }}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                marginRight: 6,
                 cursor: allInputsEmpty ? 'not-allowed' : 'grab',
                 opacity: allInputsEmpty ? 0.45 : 1,
               }}
@@ -250,9 +247,9 @@ export function HistogramStripChartRow({
                 style={{ display: 'block', flexShrink: 0 }}
               />
             </span>
-            {getChartTitle(dataset)}
+            <ChartTitleLabel>{getChartTitle(dataset)}</ChartTitleLabel>
             {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
-              <span style={{ display: 'inline-flex', alignSelf: 'flex-start' }}>
+              <span style={{ display: 'inline-flex', alignSelf: 'flex-start', flexShrink: 0, marginLeft: 0 }}>
                 <ToolTip
                   maxWidth="335px"
                   border="1px solid #598ac5"
@@ -284,6 +281,7 @@ export function HistogramStripChartRow({
             >
               <ChartTypeTriggerButton
                 type="button"
+                $hitTarget={22}
                 disabled={allInputsEmpty}
                 aria-haspopup="listbox"
                 aria-expanded={chartTypeMenuDataset === dataset}
@@ -295,7 +293,7 @@ export function HistogramStripChartRow({
               >
                 <ChartTypeIcon
                   type={chartVisualByPanelId[dataset] || DEFAULT_CHART_TYPE}
-                  size={28}
+                  size={22}
                 />
               </ChartTypeTriggerButton>
               {chartTypeMenuDataset === dataset && !allInputsEmpty && (
@@ -358,7 +356,9 @@ export function HistogramStripChartRow({
         <div
           className={classes.chartContentWrapper}
           style={{
-            paddingBottom: requiresCompactSpacing(dataset) ? '12px' : '0px',
+            // Same chrome height for every card — Sex at Birth previously skipped
+            // the compact bottom pad and read shorter than its row mates.
+            paddingBottom: '12px',
           }}
         >
 

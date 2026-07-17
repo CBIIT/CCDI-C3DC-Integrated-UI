@@ -10,15 +10,20 @@ import { IGNORED_FIELDS } from '../../../bento/cohortModalData';
  */
 export const useUnsavedChanges = () => {
   const { state } = useContext(CohortStateContext) || {};
-  const { currentCohortChanges, selectedCohort } = useContext(CohortModalContext) || {};
+  const { currentCohortChanges, selectedCohort, pendingNewCohort } = useContext(CohortModalContext) || {};
 
   const unSavedChanges = useMemo(() => {
+    // A draft from CREATE NEW COHORT is never persisted until Save Changes.
+    if (pendingNewCohort && selectedCohort === pendingNewCohort.cohortId) {
+      return true;
+    }
+
     if (!currentCohortChanges || !state || !selectedCohort || !state[selectedCohort]) {
       return false;
     }
     
     return checkUnsavedChanges(currentCohortChanges, state[selectedCohort], IGNORED_FIELDS);
-  }, [currentCohortChanges, state, selectedCohort]);
+  }, [currentCohortChanges, state, selectedCohort, pendingNewCohort]);
 
   return {
     unSavedChanges,

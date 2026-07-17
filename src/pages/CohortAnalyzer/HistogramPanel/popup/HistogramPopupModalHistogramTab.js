@@ -42,7 +42,7 @@ export function HistogramPopupModalHistogramTab({
             checked={viewType[activeTab] === 'count'}
             onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
           />
-          # of Participants
+          <span># of Participants</span>
         </ModalRadioLabel>
         <ModalRadioLabel>
           <CohortAnalyzerRadioInput
@@ -51,7 +51,7 @@ export function HistogramPopupModalHistogramTab({
             checked={viewType[activeTab] === 'percentage'}
             onChange={(e) => setViewType((prev) => ({ ...prev, [activeTab]: e.target.value }))}
           />
-          % of Participants
+          <span>% of Participants</span>
         </ModalRadioLabel>
       </ModalRadioFieldset>
       <ModalHistogramChartInset>

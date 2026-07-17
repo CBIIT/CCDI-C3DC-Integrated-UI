@@ -112,6 +112,8 @@ export function CohortAnalyzerChartArea({
     const [expandedChart, setExpandedChart] = useState(null);
     const [chartModalActiveTab, setChartModalActiveTab] = useState('sexAtBirth');
     const [allAddableChartsAdded, setAllAddableChartsAdded] = useState(false);
+    /** Bumped on Reset View so Histogram restores default chart items (add/remove), not only positions. */
+    const [layoutResetNonce, setLayoutResetNonce] = useState(0);
 
     const handleExpandVennInChartModal = useCallback(() => {
         setExpandedChart(CA_EXPANDED_CHART_MODAL_TAB_VENN);
@@ -265,6 +267,7 @@ export function CohortAnalyzerChartArea({
                                 dispatch(resetCohortAnalyzerLayout());
                                 dispatch(upsertPanelRegistry(buildDefaultCohortAnalyzerPanelRegistry()));
                                 setInlineAddChartOpen(false);
+                                setLayoutResetNonce((n) => n + 1);
                                 resetVennWorkspaceUi();
                             }}
                         >
@@ -360,6 +363,7 @@ export function CohortAnalyzerChartArea({
                     inlineAddChartOpen={inlineAddChartOpen}
                     onInlineAddChartClose={() => setInlineAddChartOpen(false)}
                     inlineAddChartNonce={inlineAddChartNonce}
+                    layoutResetNonce={layoutResetNonce}
                     c1={participantIds(0)}
                     c2={participantIds(1)}
                     c3={participantIds(2)}

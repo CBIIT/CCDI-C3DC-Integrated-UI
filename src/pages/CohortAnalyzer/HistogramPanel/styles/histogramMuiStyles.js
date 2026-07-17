@@ -28,14 +28,19 @@ export const useHistogramPanelMuiStyles = makeStyles({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 2,
+    padding: 0,
     border: 'none',
     background: 'transparent',
     cursor: 'pointer',
     borderRadius: 4,
     color: '#1C2B33',
     lineHeight: 0,
-    marginLeft: -5,
+    margin: 0,
+    /* Optical: X glyph reads slightly right-heavy — nudge the art left without
+       changing the shared action-icon flex gap. */
+    '& img': {
+      transform: 'translateX(-3px)',
+    },
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.06)',
     },

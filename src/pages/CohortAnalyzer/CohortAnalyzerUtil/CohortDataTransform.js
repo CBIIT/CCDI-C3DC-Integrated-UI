@@ -5,17 +5,30 @@ import { generateQueryVariable, getIdsFromCohort, getAllIds, filterAllParticipan
 const DEFAULT_QUERY_LIMIT = 10000;
 
 // The backend's `terms` filter rejects null values, so we strip any null/undefined
-// entries from the `id` list before firing the query. This is our last line of
-// defense — upstream helpers (generateQueryVariable, getIdsFromCohort, getAllIds)
-// should already have filtered them out, but we normalize here so no code path
-// can regress.
+// entries from id / participant_pk lists before firing the query. This is our last
+// line of defense — upstream helpers (generateQueryVariable, getIdsFromCohort,
+// getAllIds) should already have filtered them out, but we normalize here so no
+// code path can regress.
 const sanitizeQueryVariables = (variables = {}) => {
-    if (!variables || !Array.isArray(variables.id)) return variables;
-    return {
-        ...variables,
-        id: variables.id.filter((pk) => pk != null),
-    };
+    if (!variables) return variables;
+    const next = { ...variables };
+    if (Array.isArray(next.id)) {
+        next.id = next.id.filter((pk) => pk != null);
+    }
+    if (Array.isArray(next.participant_pk)) {
+        next.participant_pk = next.participant_pk.filter((pk) => pk != null);
+    } else if (Array.isArray(next.id)) {
+        // Keep cohortManifest / cohortMetadata in sync when only `id` was set.
+        next.participant_pk = [...next.id];
+    }
+    return next;
 };
+
+const withParticipantFilterIds = (participantIds) => ({
+    id: participantIds,
+    participant_pk: participantIds,
+    first: DEFAULT_QUERY_LIMIT,
+});
 
 
 const getJoinedCohortData = async ({
@@ -157,7 +170,7 @@ const getJoinedCohortData = async ({
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) { 
             const participantIds = isReset ? getIdsFromCohort(state, selectedCohorts) : getAllIds(generalInfo);
-            queryVariables = { "id": participantIds, first: DEFAULT_QUERY_LIMIT };
+            queryVariables = withParticipantFilterIds(participantIds);
         }
         queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
@@ -186,7 +199,7 @@ const getJoinedCohortData = async ({
     async function getJoinedCohortByD(selectedCohortSection = null) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
+            queryVariables = withParticipantFilterIds(getIdsFromCohort(state, selectedCohorts));
         }
         queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
@@ -231,7 +244,7 @@ const getJoinedCohortData = async ({
     async function getJoinedCohortByT(selectedCohortSection = null) {
         let queryVariables = generateQueryVariable(selectedCohorts, state);
         if (Object.keys(generalInfo).length > 0) {
-            queryVariables = { "id": getIdsFromCohort(state, selectedCohorts), first: DEFAULT_QUERY_LIMIT };
+            queryVariables = withParticipantFilterIds(getIdsFromCohort(state, selectedCohorts));
         }
         queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
