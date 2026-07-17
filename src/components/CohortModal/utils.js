@@ -307,7 +307,7 @@ export const downloadCohortManifest = async (participants, cohortId, options = {
     const { data } = await client.query({
       query: GET_COHORT_MANIFEST_QUERY,
       variables: {
-        "participant_pk": participantIds,
+        "id": participantIds,
         "first": DEFAULT_QUERY_LIMIT
       },
     });
@@ -339,7 +339,7 @@ export const downloadCohortMetadata = async (participants, cohortId, options = {
     const { data } = await client.query({
       query: GET_COHORT_METADATA_QUERY,
       variables: {
-        "participant_pk": participantIds,
+        "id": participantIds,
         "first": DEFAULT_QUERY_LIMIT
       },
     });
@@ -356,4 +356,3 @@ export const downloadCohortMetadata = async (participants, cohortId, options = {
     if (onLoadingStateChange) onLoadingStateChange(false);
   }
 };
-
