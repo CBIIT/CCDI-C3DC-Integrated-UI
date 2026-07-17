@@ -22,7 +22,9 @@ import {
     SearchBox,
 } from "./CohortAnalyzerUtil/CohortAnalyzerUtil";
 import store from "../../store";
+import { generateQueryStr } from "@bento-core/util";
 import { updateUploadData, updateUploadMetadata } from "@bento-core/local-find";
+import { queryParams } from "../../bento/dashTemplate";
 import { CohortSelector } from "./CohortSelector/CohortSelector";
 import { useCohortAnalyzer } from './context/CohortAnalyzerContext';
 import { cohortAnalyzerThemeConfig } from './styling/cohortAnalyzerThemeConfig';
@@ -96,16 +98,18 @@ export const CohortAnalyzer = () => {
     const { Notification } = useGlobal();
     const navigate = useNavigate();
     const handleUserRedirect = () => {
-        // NOTE: If needed to show in only Autocomplete of Localfind.
-        // const data = rowData.map(r=>({type: 'participantIds', title: r.participant_id}))
-        // store.dispatch(updateAutocompleteData(data));
-        // navigate('/explore');
-
         const { upload, uploadMetadata } = buildExploreUploadPayload(rowData);
 
+        // Keep Redux in sync as before; the `u` URL param below is what actually
+        // drives Explore's participant_ids filter. InventoryCover reads `u` and would
+        // otherwise call resetUploadData() when it is absent.
         store.dispatch(updateUploadData(upload));
         store.dispatch(updateUploadMetadata(uploadMetadata));
-        navigate('/exploreParticipants');
+
+        const participantIds = upload.map((p) => p.participant_id).filter(Boolean);
+        const paramValue = { u: participantIds.join('|') };
+        const queryStr = generateQueryStr(new URLSearchParams(''), queryParams, paramValue);
+        navigate(`/exploreParticipants${queryStr}`);
     }
 
     const handleBuildInExplore = () => {

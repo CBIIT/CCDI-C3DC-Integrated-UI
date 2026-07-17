@@ -14,6 +14,42 @@ function chartExportNodeFilter(node) {
     return node.getAttribute && node.getAttribute('data-chart-export-exclude') !== 'true';
 }
 
+/**
+ * Build html-to-image options that always render the chart area as it looks at
+ * 100% zoom, regardless of the user's current browser page zoom.
+ *
+ * Chromium page zoom (Ctrl/Cmd +/-) reflows the layout in CSS pixels: zooming
+ * in shrinks the element's CSS width while raising window.devicePixelRatio by
+ * the same factor. Capturing in *physical device pixels* (pixelRatio =
+ * devicePixelRatio) cancels those two out — cssWidth * devicePixelRatio is
+ * constant across zoom levels — so the exported bitmap matches the 100% render.
+ * A fixed pixelRatio (e.g. 2) would instead scale with zoom and shrink/grow the
+ * output, which is the bug this replaces.
+ */
+function buildFixedCaptureOptions(element) {
+    const width = Math.ceil(element.scrollWidth || element.offsetWidth || 0);
+    const height = Math.ceil(element.scrollHeight || element.offsetHeight || 0);
+    // Track devicePixelRatio exactly (no floor) so cssWidth * pixelRatio stays
+    // constant across zoom levels — the export is locked to the 100% render.
+    // On HiDPI/retina this is >= 2x; on 1x displays it is native 1x.
+    const pixelRatio = window.devicePixelRatio || 1;
+    return {
+        pixelRatio,
+        cacheBust: true,
+        backgroundColor: '#ffffff',
+        filter: chartExportNodeFilter,
+        width,
+        height,
+        style: {
+            // Neutralize any inherited transform/margins in the cloned node so the
+            // capture starts at the top-left of the element at 1:1 scale.
+            transform: 'none',
+            transformOrigin: 'top left',
+            margin: '0',
+        },
+    };
+}
+
 function escapeCsvCell(value) {
   const s = String(value == null ? '' : value);
   if (/[",\n\r]/.test(s)) {
@@ -137,12 +173,7 @@ export async function downloadChartAreaAsPng(element, filename = 'cohort-analyze
     return;
   }
   try {
-    const dataUrl = await htmlToImage.toPng(element, {
-      pixelRatio: 2,
-      cacheBust: true,
-      backgroundColor: '#ffffff',
-      filter: chartExportNodeFilter,
-    });
+    const dataUrl = await htmlToImage.toPng(element, buildFixedCaptureOptions(element));
     const padded = await addUniformPaddingToPngDataUrl(dataUrl, CHART_EXPORT_PADDING_PX);
     const blob = await dataUrlToBlob(padded);
     const url = URL.createObjectURL(blob);
@@ -165,12 +196,7 @@ export async function downloadChartAreaAsPdf(element, filename = 'cohort-analyze
     return;
   }
   try {
-    const dataUrl = await htmlToImage.toPng(element, {
-      pixelRatio: 2,
-      cacheBust: true,
-      backgroundColor: '#ffffff',
-      filter: chartExportNodeFilter,
-    });
+    const dataUrl = await htmlToImage.toPng(element, buildFixedCaptureOptions(element));
     const paddedDataUrl = await addUniformPaddingToPngDataUrl(dataUrl, CHART_EXPORT_PADDING_PX);
     const img = new Image();
     await new Promise((resolve, reject) => {

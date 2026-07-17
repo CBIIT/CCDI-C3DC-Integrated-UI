@@ -120,6 +120,11 @@ export const ChartTitleLabel = styled.span`
   /* Shrink-wrap to text so the "?" sits 1px away (not pushed by flex-grow). */
   flex: 0 1 auto;
   min-width: 0;
+  /* Size to the text, not the available track. Without this a -webkit-box is
+     laid out at full width during html-to-image (PNG/PDF) export, pushing the
+     trailing "?" tooltip far from the title. Capped at 100% so it still wraps. */
+  width: fit-content;
+  max-width: 100%;
   align-self: flex-start;
   margin: 0;
   padding: 0;
@@ -131,7 +136,6 @@ export const ChartTitleLabel = styled.span`
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   height: 100%;
 `;
 

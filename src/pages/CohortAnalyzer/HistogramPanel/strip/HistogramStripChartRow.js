@@ -247,9 +247,9 @@ export function HistogramStripChartRow({
                 style={{ display: 'block', flexShrink: 0 }}
               />
             </span>
-            <ChartTitleLabel>{getChartTitle(dataset)}</ChartTitleLabel>
-            {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
-              <span style={{ display: 'inline-flex', alignSelf: 'flex-start', flexShrink: 0, marginLeft: 0 }}>
+            <ChartTitleLabel>
+              {getChartTitle(dataset)}
+              {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
                 <ToolTip
                   maxWidth="335px"
                   border="1px solid #598ac5"
@@ -264,15 +264,17 @@ export function HistogramStripChartRow({
                   interactive
                   arrowSize="30px"
                 >
+                  {/* Inline (not a flex sibling) so it hugs the last word of the
+                      title in both the live view and html-to-image PNG/PDF export. */}
                   <img
                     alt="Question Icon"
                     src={questionIcon}
                     width={10}
-                    style={{ border: '0px', display: 'block', flexShrink: 0 }}
+                    style={{ border: '0px', display: 'inline', verticalAlign: 'middle', marginLeft: '2px' }}
                   />
                 </ToolTip>
-              </span>
-            )}
+              )}
+            </ChartTitleLabel>
           </ChartTitle>
 
           <ChartActionButtons>

@@ -142,8 +142,8 @@ export function SurvivalAnalysisCardBody({
               style={{ display: 'block', flexShrink: 0 }}
             />
           </span>
-          <ChartTitleLabel>Overall Survival by Diagnosis</ChartTitleLabel>
-          <span style={{ display: 'inline-flex', alignSelf: 'flex-start', flexShrink: 0 }}>
+          <ChartTitleLabel>
+            Overall Survival by Diagnosis
             <ToolTip
               maxWidth="235px"
               border="1px solid #598ac5"
@@ -161,14 +161,16 @@ export function SurvivalAnalysisCardBody({
               interactive
               arrowSize="30px"
             >
+              {/* Inline (not a flex sibling) so it hugs the last word of the
+                  title in both the live view and html-to-image PNG/PDF export. */}
               <img
                 alt=""
                 src={questionIcon}
                 width={10}
-                style={{ border: '0px', display: 'block', flexShrink: 0 }}
+                style={{ border: '0px', display: 'inline', verticalAlign: 'middle', marginLeft: '2px' }}
               />
             </ToolTip>
-          </span>
+          </ChartTitleLabel>
           </ChartTitle>
 
         <ChartActionButtons>

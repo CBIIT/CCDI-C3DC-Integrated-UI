@@ -289,8 +289,10 @@ describe('CohortAnalyzer page entry point', () => {
       rowData: [{ participant_id: 'P1', dbgap_accession: 'phs1' }],
     });
     fireEvent.click(screen.getByRole('button', { name: /build in explore/i }));
+    // Redux stays in sync (as before) and the `u` URL param drives inventoryCover's
+    // participant_ids table filter.
     expect(mockStoreDispatch).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith('/exploreParticipants');
+    expect(mockNavigate).toHaveBeenCalledWith('/exploreParticipants?u=P1');
     expect(defaultCohortAnalyzerContext.setShowNavigateAwayModal).not.toHaveBeenCalled();
   });
 
