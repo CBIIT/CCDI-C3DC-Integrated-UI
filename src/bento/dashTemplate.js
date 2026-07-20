@@ -83,6 +83,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. sarcoma, neoplasm, leukemia',
     expanded: true,
   },
   {
@@ -96,6 +97,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. sarcoma, neoplasm, leukemia',
   },
   {
     section: DIAGNOSIS,
@@ -108,6 +110,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. blood, brain, kidney',
   },
   {
     section: DIAGNOSIS,
@@ -344,7 +347,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
-    searchPlaceholder: 'e.g. MLL, TP53, BRAF',
+    searchPlaceholder: 'e.g. BRAF, TP53, MYCN',
   },
   {
     section: GENETIC_ANALYSIS,
@@ -368,7 +371,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
-    searchPlaceholder: 'e.g. LOH, Gain, Heterozygosity',
+    searchPlaceholder: 'e.g. Somatic mutation, loss, gain',
   },
   {
     section: GENETIC_ANALYSIS,
@@ -1234,6 +1237,7 @@ export const facetsParticipantsConfig = [
     sort_type: sortType.ALPHABET,
     show: true,
     search: true,
+    searchPlaceholder: 'e.g. blood, brain, kidney',
   },
     {
     section: SAMPLES,
