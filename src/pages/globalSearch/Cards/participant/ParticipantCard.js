@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 import useStyles from './style';
 import { cn } from 'bento-components';
-import CPIModal from './CPIModal';
 import { Link, useNavigate } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -15,6 +14,7 @@ import { getFilesID } from './WrapperService';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
 import { onAddParticipantsToCohort } from '../../../../components/CohortSelectorState/store/action';
 import ToastNotification from './ToastNotification';
+import ConsentCodesRow from '../ConsentCodesRow';
 
 /* const removeSquareBracketsFromString = (text) => {
   return text.replace(/\[|\]/g, '');
@@ -90,14 +90,13 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
     treatment_agent_str,
     race_str,
     last_known_survival_status_str,
-    cpi_data,
+    consent_codes,
   } = data;
 
   const classes = useStyles();
   const navigation = useNavigate();
   const { state: cohortState, dispatch: cohortDispatch } = useContext(CohortStateContext);
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cohortDropdownOpen, setCohortDropdownOpen] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', type: 'success' });
@@ -106,14 +105,6 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
   const [containerWidth, setContainerWidth] = useState(0);
   const dropdownRef = useRef(null);
   const cardRef = useRef(null);
-
-  const handleModalOpen = () => {
-    setModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
@@ -425,12 +416,6 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
 
   return (
     <div className={classes.card} ref={cardRef}>
-      {data.cpi_data && data.cpi_data.length ? <CPIModal
-        row={data}
-        open={modalOpen}
-        onClose={handleModalClose}
-      /> : <></>}
-      
       {/* Header with participant title and actions button */}
       <div className={classes.cardHeader}>
         <Grid container alignItems="flex-start">
@@ -462,95 +447,82 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
             </div>
           </Grid>
           
-          {/* Available Actions button moved to top right */}
-          {cpi_data && cpi_data.length && (
-            <Grid item className={classes.buttonAlignWithTitle}>
-              <Box className={classes.dropdownContainer} ref={dropdownRef}>
-                <Button 
-                  className={`${classes.button} ${classes.topRightButton} ${dropdownOpen ? classes.buttonOpen : ''}`}
-                  variant="outlined" 
-                  onClick={handleDropdownToggle}
-                >
-                  <span>AVAILABLE ACTIONS</span>
-                  {dropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </Button>
-                
-                {dropdownOpen && (
-                  <Box className={classes.dropdown}>
-                    <List className={classes.dropdownList}>
+          {/* Available Actions button */}
+          <Grid item className={classes.buttonAlignWithTitle}>
+            <Box className={classes.dropdownContainer} ref={dropdownRef}>
+              <Button 
+                className={`${classes.button} ${classes.topRightButton} ${dropdownOpen ? classes.buttonOpen : ''}`}
+                variant="outlined" 
+                onClick={handleDropdownToggle}
+              >
+                <span>AVAILABLE ACTIONS</span>
+                {dropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </Button>
+              
+              {dropdownOpen && (
+                <Box className={classes.dropdown}>
+                  <List className={classes.dropdownList}>
+                    {cohorts.length > 0 && (
                       <ListItem 
                         button 
-                        className={classes.dropdownItem}
-                        onClick={handleModalOpen}
+                        className={`${classes.dropdownItemWithSubmenu} ${cohortDropdownOpen ? '' : ''}`}
+                        style={{ borderBottom: cohortDropdownOpen ? 'none' : '1px solid #07679C' }}
+                        onClick={handleCohortDropdownToggle}
                       >
                         <ListItemText 
-                          primary="VIEW CPI MAPPING" 
+                          primary="ADD TO EXISTING COHORT" 
                           className={classes.dropdownItemText}
                         />
+                        {cohortDropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                       </ListItem>
-                      
-                      {cohorts.length > 0 && (
-                        <ListItem 
-                          button 
-                          className={`${classes.dropdownItemWithSubmenu} ${cohortDropdownOpen ? '' : ''}`}
-                          style={{ borderBottom: cohortDropdownOpen ? 'none' : '1px solid #07679C' }}
-                          onClick={handleCohortDropdownToggle}
-                        >
-                          <ListItemText 
-                            primary="ADD TO EXISTING COHORT" 
-                            className={classes.dropdownItemText}
-                          />
-                          {cohortDropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </ListItem>
-                      )}
-                      
-                      {cohorts.length > 0 && cohortDropdownOpen && (
-                        <Box className={classes.cohortDropdown}>
-                          <List className={classes.cohortList}>
-                            {cohorts.map((cohort, index) => (
-                              <ListItem 
-                                key={cohort.id}
-                                button 
-                                className={classes.cohortItem}
-                                onClick={() => handleAddToCohort(cohort.id)}
-                              >
-                                <ListItemText 
-                                  primary={cohort.name} 
-                                  className={classes.cohortItemText}
-                                />
-                              </ListItem>
-                            ))}
-                          </List>
-                        </Box>
-                      )}
-                      
-                      <ListItem 
-                        button 
-                        className={classes.dropdownItem}
-                        onClick={handleExploreDashboard}
-                      >
-                        <ListItemText 
-                          primary="VIEW IN EXPLORE DASHBOARD" 
-                          className={classes.dropdownItemText}
-                        />
-                      </ListItem>
-                      
-                      <ListItem 
-                        button 
-                        className={classes.dropdownItem}
-                        onClick={handleAddToCart}
-                      >
-                        <ListItemText 
-                          primary="ADD TO CART" 
-                          className={classes.dropdownItemText}
-                        />
-                      </ListItem>
-                    </List>
-                  </Box>
-                )}
-              </Box>
-            </Grid>
-          )}
+                    )}
+                    
+                    {cohorts.length > 0 && cohortDropdownOpen && (
+                      <Box className={classes.cohortDropdown}>
+                        <List className={classes.cohortList}>
+                          {cohorts.map((cohort) => (
+                            <ListItem 
+                              key={cohort.id}
+                              button 
+                              className={classes.cohortItem}
+                              onClick={() => handleAddToCohort(cohort.id)}
+                            >
+                              <ListItemText 
+                                primary={cohort.name} 
+                                className={classes.cohortItemText}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+                    
+                    <ListItem 
+                      button 
+                      className={classes.dropdownItem}
+                      onClick={handleExploreDashboard}
+                    >
+                      <ListItemText 
+                        primary="VIEW IN EXPLORE DASHBOARD" 
+                        className={classes.dropdownItemText}
+                      />
+                    </ListItem>
+                    
+                    <ListItem 
+                      button 
+                      className={classes.dropdownItem}
+                      onClick={handleAddToCart}
+                    >
+                      <ListItemText 
+                        primary="ADD TO CART" 
+                        className={classes.dropdownItemText}
+                      />
+                    </ListItem>
+                  </List>
+                </Box>
+              )}
+            </Box>
+          </Grid>
         </Grid>
       </div>
       
@@ -565,7 +537,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
         <div className={classes.propertyLine}>
           <div className={classes.groupedProperties}>
             <div className={classes.propertyGroup}>
-              {renderInfo('Age at Diagnosis:', age_at_diagnosis_str + ' days')}
+              {renderInfo('Age at Diagnosis:', age_at_diagnosis_str != null && age_at_diagnosis_str !== '' ? `${age_at_diagnosis_str} days` : '')}
             </div>
             <div className={classes.propertyGroup}>
               {renderInfo('Sex at Birth:', sex_at_birth)}
@@ -576,16 +548,9 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
           </div>
         </div>
         
-        {/* Study ID and CPI Mappings - grouped on one line */}
+        {/* Study ID */}
         <div className={classes.propertyLine}>
-          <div className={classes.groupedProperties}>
-            <div className={classes.propertyGroup}>
-              {renderInfo('Study ID:', study_id)}
-            </div>
-            <div className={classes.propertyGroup}>
-              {renderInfo('CPI Mappings:', cpi_data && cpi_data.length ? cpi_data.length : '0')}
-            </div>
-          </div>
+          {renderInfo('Study ID:', study_id)}
         </div>
         
         {/* Treatment Type - with expand/collapse */}
@@ -618,6 +583,8 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
         <div className={classes.propertyLine}>
           {renderInfo('Last Known Survival Status:', last_known_survival_status_str)}
         </div>
+
+        <ConsentCodesRow consentCodes={consent_codes} classes={classes} />
       </div>
               
               <ToastNotification
