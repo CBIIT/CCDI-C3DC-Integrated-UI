@@ -5,6 +5,8 @@ import {
 import useStyles from './style';
 import { cn } from 'bento-components';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as DownArrowIcon } from '../../assets/Down_Arrow.svg';
+import { ReactComponent as UpArrowIcon } from '../../assets/Up_Arrow.svg';
 
 /* const removeSquareBracketsFromString = (text) => {
   return text.replace(/\[|\]/g, '');
@@ -70,7 +72,25 @@ const SamplesCard = ({ data = {}, index }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [containerWidth, setContainerWidth] = useState(0);
+  const [diagnosisCategoryExpanded, setDiagnosisCategoryExpanded] = useState(false);
   const cardRef = useRef(null);
+
+  const getDiagnosisCategoryMaxLength = () => {
+    if (window.innerWidth <= 600) {
+      return 35;
+    }
+    if (window.innerWidth <= 900) {
+      return 55;
+    }
+    if (window.innerWidth <= 1200) {
+      return 75;
+    }
+    return 95;
+  };
+
+  const [diagnosisCategoryMaxLength, setDiagnosisCategoryMaxLength] = useState(
+    getDiagnosisCategoryMaxLength,
+  );
 
   // Measure container width for title truncation
   useEffect(() => {
@@ -83,6 +103,15 @@ const SamplesCard = ({ data = {}, index }) => {
     measureWidth();
     window.addEventListener('resize', measureWidth);
     return () => window.removeEventListener('resize', measureWidth);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDiagnosisCategoryMaxLength(getDiagnosisCategoryMaxLength());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleClick = () => {
@@ -99,6 +128,54 @@ const SamplesCard = ({ data = {}, index }) => {
       </Typography>
     </div>
   );
+
+  const renderDiagnosisCategory = (label, value = '') => {
+    const shouldTruncate = value && value.length > diagnosisCategoryMaxLength;
+    const isCollapsed = shouldTruncate && !diagnosisCategoryExpanded;
+    const displayValue = isCollapsed
+      ? value.substring(0, diagnosisCategoryMaxLength)
+      : value;
+
+    const handleToggleExpand = () => {
+      setDiagnosisCategoryExpanded(!diagnosisCategoryExpanded);
+    };
+
+    return {
+      content: (
+        <div className={classes.keyAndValueRow}>
+          <Typography variant="h6" className={classes.key}>
+            {label}
+          </Typography>
+          <div className={classes.expandableValueContainer}>
+            <div className={classes.expandableTextContainer}>
+              <Typography
+                variant="body1"
+                className={`${classes.value} ${
+                  isCollapsed
+                    ? classes.expandableValueCollapsed
+                    : classes.expandableValueExpanded
+                } ${shouldTruncate ? classes.clickableText : ''}`}
+                onClick={shouldTruncate ? handleToggleExpand : undefined}
+              >
+                {displayValue}
+                {isCollapsed && '...'}
+              </Typography>
+            </div>
+          </div>
+        </div>
+      ),
+      arrow: shouldTruncate ? (
+        <span
+          className={classes.expandToggle}
+          onClick={handleToggleExpand}
+        >
+          {diagnosisCategoryExpanded
+            ? <UpArrowIcon className={classes.expandIcon} />
+            : <DownArrowIcon className={classes.expandIcon} />}
+        </span>
+      ) : null,
+    };
+  };
 
   return (
     <div className={classes.card} ref={cardRef}>
@@ -152,7 +229,6 @@ const SamplesCard = ({ data = {}, index }) => {
               {renderInfo('Participant ID:', participant_id)}
               {renderInfo('Sample Anatomic Site:', sample_anatomic_site_str)}
               {renderInfo('Sample Diagnosis:', diagnosis_str)}
-              {renderInfo('Diagnosis Category:', diagnosis_category_str)}
             </div>
 
             <div className={cn(classes.column, classes.leftColumn)}>
@@ -160,6 +236,21 @@ const SamplesCard = ({ data = {}, index }) => {
               {renderInfo('Sample Tumor Status:', sample_tumor_status)}
               {renderInfo('Tumor Spatial Extent:', tumor_spatial_extent)}
             </div>
+          </div>
+
+          <div className={classes.propertyLine}>
+            {(() => {
+              const diagnosisCategory = renderDiagnosisCategory(
+                'Diagnosis Category:',
+                diagnosis_category_str,
+              );
+              return (
+                <>
+                  {diagnosisCategory.content}
+                  {diagnosisCategory.arrow}
+                </>
+              );
+            })()}
           </div>
         </Grid>
 

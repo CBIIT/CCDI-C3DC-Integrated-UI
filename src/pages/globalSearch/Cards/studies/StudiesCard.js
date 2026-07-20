@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { studyDownloadLinks, openDoubleLink } from '../../../../bento/studiesData';
+import ConsentCodesRow from '../ConsentCodesRow';
 
 // Utility function to truncate title with start...end format
 const truncateTitle = (title, containerWidth) => {
@@ -63,6 +64,7 @@ const StudiesCard = ({ data = {}, index }) => {
     study_phase,
     num_of_participants,
     num_of_files,
+    consent_codes,
   } = data;
 
   const classes = useStyles();
@@ -239,6 +241,8 @@ const StudiesCard = ({ data = {}, index }) => {
             {renderInfo('Number of Files:', num_of_files)}
           </div>
         </div>
+
+        <ConsentCodesRow consentCodes={consent_codes} classes={classes} />
       </div>
     </div>
   );

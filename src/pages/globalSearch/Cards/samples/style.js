@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       margin: '0px',
       padding: '0px',
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'flex-start',
     },
     row: {
       display: 'flex',
@@ -114,6 +117,7 @@ const useStyles = makeStyles((theme) => {
       textTransform: 'uppercase',
       color: '#0F757E',
       whiteSpace: 'nowrap',
+      flexShrink: 0,
     },
     value: {
       fontFamily: 'Inter',
@@ -124,6 +128,76 @@ const useStyles = makeStyles((theme) => {
       textAlign: 'left',
       margin: '0px',
       paddingLeft: '15px',
+      wordBreak: 'break-word',
+    },
+    propertyLine: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      margin: '0px',
+      padding: '0px',
+      position: 'relative',
+      width: '100%',
+    },
+    expandableValueContainer: {
+      paddingLeft: '15px',
+      flex: 1,
+      minWidth: 0,
+      paddingRight: '30px',
+      lineHeight: '22px',
+      [mdBreakpoint]: {
+        paddingRight: '35px',
+      },
+      '@media (max-width: 600px)': {
+        paddingLeft: '8px',
+        paddingRight: '28px',
+      },
+    },
+    expandableTextContainer: {
+      width: '100%',
+      minWidth: 0,
+    },
+    expandableValueCollapsed: {
+      display: 'block',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      paddingLeft: '0 !important',
+      maxWidth: '100%',
+    },
+    expandableValueExpanded: {
+      display: 'inline',
+      whiteSpace: 'normal',
+      wordBreak: 'break-word',
+      paddingLeft: '0 !important',
+    },
+    expandToggle: {
+      cursor: 'pointer',
+      position: 'absolute',
+      top: '2px',
+      right: '20px',
+      display: 'flex',
+      alignItems: 'flex-start',
+      '&:hover': {
+        opacity: '0.7',
+      },
+      '@media (max-width: 600px)': {
+        top: '2px',
+        right: '0px',
+      },
+    },
+    expandIcon: {
+      fontSize: '18px',
+      color: '#000000',
+      '@media (max-width: 600px)': {
+        fontSize: '16px',
+      },
+    },
+    clickableText: {
+      cursor: 'pointer',
+      '&:hover': {
+        opacity: '0.7',
+      },
     },
     hrContainer: {
       paddingTop: '10px',
