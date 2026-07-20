@@ -644,7 +644,7 @@ query fileOverview(
 export const GET_COHORT_METADATA_QUERY = gql`
 query cohortMetadata(
     # Demographics
-    $participant_pk: [String],
+    $id: [String],
 
     # Table config
     $first: Int,
@@ -655,7 +655,7 @@ query cohortMetadata(
 
 cohortMetadata(
     # Demographics
-    participant_pk: $participant_pk,
+    id: $id,
 
     # Table config
     first: $first,
@@ -743,18 +743,18 @@ cohortMetadata(
 
 export const GET_COHORT_MANIFEST_QUERY = gql`
   query cohortManifest(
-  # Demographics
-  $participant_pk: [String],
+    # Demographics
+    $id: [String],
 
-  # Table config
-  $first: Int,
-  $offset: Int,
-  $order_by: String,
-  $sort_direction: String
-) {
-cohortManifest(
-  # Demographics
-  participant_pk: $participant_pk,
+    # Table config
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+  ) {
+    cohortManifest(
+      # Demographics
+      id: $id,
 
   # Table config
   first: $first,
@@ -766,16 +766,14 @@ cohortManifest(
   id
   diagnosis
 
-  # Participants
-  participant {
-    id
-    participant_id
-    race
-    sex_at_birth
-  }
+      # Participants
+      participant_id
+      race
+      sex_at_birth
 
-  # Study
-  dbgap_accession
+      # Study
+      dbgap_accession
+      study_id
 
   __typename
 }}
