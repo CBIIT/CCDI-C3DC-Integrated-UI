@@ -131,16 +131,6 @@ const InventoryCover = ({
         const tab_participants = query.get('tab_participants');
         const tab_files = query.get('tab_files');
         const tab = query.get('tab');
-        // After the filter is applied, strip the (potentially huge) participant-id
-        // `u` param from the address bar so the user isn't left staring at a giant URL.
-        // Native replaceState keeps react-router's location untouched, so this effect
-        // does NOT re-run (which would reset the filter). return_query_url has already
-        // captured the full search before this runs, so return-to-page still restores it.
-        const stripUploadParamsFromAddressBar = () => {
-            if (upload) {
-                window.history.replaceState(null, '', window.location.pathname);
-            }
-        };
         // Helper to finish the rest of the logic after import_from is handled
         const continueWithFilters = (extraParticipantIds = []) => {
             filters.participant_ids = [];
@@ -219,14 +209,12 @@ const InventoryCover = ({
                         store.dispatch(afterInitialLoading());
                         store.dispatch(inDataloading(false));
                         store.dispatch(syncUpDashboard(filters, result.searchParticipants));
-                        stripUploadParamsFromAddressBar();
                     }
                 });
             } else {
                 store.dispatch(return2Page(false));
                 store.dispatch(returnQueryUrl(window.location.search));
                 store.dispatch(restoreActionType());
-                stripUploadParamsFromAddressBar();
             }
         };
 
