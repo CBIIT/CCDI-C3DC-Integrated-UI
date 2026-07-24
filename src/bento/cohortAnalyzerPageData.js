@@ -380,9 +380,10 @@ const diagnosis_query = gql`query diagnosisOverview(
 }
 `;
 
-// treatmentOverview accepts `participant_pk` (per the Postman collection that
-// currently succeeds against the backend). We keep the JS variable name `$id`
-// so all callers stay uniform; only the field-argument name differs per endpoint.
+// treatmentOverview's top-level `id` argument filters by TREATMENT id, not
+// participant id. Participants are filtered via `participant_ids`. We keep the
+// JS variable name `$id` so callers stay uniform and map it to participant_ids.
+// Response is flat (no nested participant) — matching the current backend schema.
 const treatment_query = gql`query treatmentOverview(
     $id: [String],
 
@@ -393,8 +394,8 @@ const treatment_query = gql`query treatmentOverview(
     $sort_direction: String
 ) {
     treatmentOverview(
-        # Demographics
-        participant_pk: $id,
+        # Demographics — do not bind top-level id (that is treatment id)
+        participant_ids: $id,
 
         # Table config
         first: $first,
@@ -402,16 +403,15 @@ const treatment_query = gql`query treatmentOverview(
         order_by: $order_by,
         sort_direction: $sort_direction
     ) {
-        # Participant
-        participant {
-            participant_id
-        }
-
-        # Treatment
         id
-        treatment_type
+        dbgap_accession
+        participant_id
+        study_id
+        treatment_id
+        age_at_treatment_end
+        age_at_treatment_start
         treatment_agent
-
+        treatment_type
         __typename
     }
 }`;
