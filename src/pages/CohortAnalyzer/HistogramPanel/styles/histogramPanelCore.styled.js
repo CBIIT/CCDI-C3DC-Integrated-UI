@@ -2,7 +2,8 @@ import styled, { css } from 'styled-components';
 import { CA_SURVIVAL_CARD_MIN_HEIGHT } from '../../store/cohortAnalyzerLayoutConstants';
 import {
   HISTOGRAM_CARD_MIN_WIDTH,
-  HISTOGRAM_CARD_SHELL_MIN_VH,
+  HISTOGRAM_PLOT_MIN_HEIGHT,
+  HISTOGRAM_CARD_CHROME_HEIGHT,
   HISTOGRAM_CHART_STROKE_COLOR,
 } from '../histogramConstants';
 
@@ -137,6 +138,11 @@ export const ChartTitleLabel = styled.span`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   height: 100%;
+
+  /* Help "?" sits on the top of the title line (not vertically centered). */
+  & img {
+    vertical-align: text-top;
+  }
 `;
 
 export const ChartActionButtons = styled.div`
@@ -183,7 +189,8 @@ export const ChartWrapper = styled.div`
   position: relative;
   width: calc((100% - 28px) / 3);
   min-width: clamp(${HISTOGRAM_CARD_MIN_WIDTH}px, 17vw, 100%);
-  min-height: max(200px, ${HISTOGRAM_CARD_SHELL_MIN_VH}vh);
+  /* Content-based floor — avoid vh mins that leave slack under the plot on tall screens. */
+  min-height: ${HISTOGRAM_PLOT_MIN_HEIGHT + HISTOGRAM_CARD_CHROME_HEIGHT}px;
   max-height: none;
   margin-bottom: 0;
   padding: 0px;
@@ -228,7 +235,7 @@ export const ChartResizeHandle = styled.div`
   align-items: flex-end;
   justify-content: flex-end;
   box-sizing: border-box;
-  padding: 0 6px 6px 0;
+  padding: 0 6px 2px 0;
   &::after {
     content: '';
     display: block;
@@ -304,7 +311,7 @@ export const RadioGroup = styled.div`
   display: flex;
   align-items: center;
   /* Sit directly under the widget title (header left inset is 15px). */
-  margin: 0 0 8px 15px;
+  margin: 0 0 2px 15px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;

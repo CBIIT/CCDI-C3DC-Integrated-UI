@@ -82,7 +82,7 @@ const VennCategoryRadios = ({
           >
             {/* Inline (not a flex sibling) so it hugs the prompt text in both the
                 live view and html-to-image PNG/PDF export. */}
-            <img alt="Help" src={questionIcon3} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '2px' }} height={12} />
+            <img alt="Help" src={questionIcon3} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '2px', marginTop: '-10px' }} height={12} />
           </ToolTip>
         </p>
       </div>

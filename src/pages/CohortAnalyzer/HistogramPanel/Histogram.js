@@ -461,6 +461,7 @@ const Histogram = ({
         chartVisualByPanelId={chartVisualByPanelId}
         besideHistogramBarSums={besideHistogramBarSums}
         besideStripPlotHeight={besideStripPlotHeight}
+        defaultPlotHeightPx={defaultPlotHeightPx}
         besidePeerShellBox={besidePeerShellBox}
         besideColumnPlotHeightPx={besideColumnPlotHeightPx}
         cellHover={cellHover}
