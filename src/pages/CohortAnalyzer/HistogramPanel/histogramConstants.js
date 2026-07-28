@@ -10,8 +10,11 @@ export const HISTOGRAM_CHART_PLOT_HEIGHT = 240;
 export const HISTOGRAM_CHART_PLOT_MIN_VH = 22;
 /** Card shell min height as % of viewport height (plot + chrome). */
 export const HISTOGRAM_CARD_SHELL_MIN_VH = 28;
-/** Plot + header, padding, borders, resize grip (~ full ChartWrapper height minus plot). */
-export const HISTOGRAM_CARD_CHROME_HEIGHT = 132;
+/** Plot + header, radios, padding, borders (~ full ChartWrapper height minus plot).
+ *  Tuned so leftover space under the plot is ~30% of the prior ~38px gap (~11px). */
+export const HISTOGRAM_CARD_CHROME_HEIGHT = 97;
+/** Content area bottom padding under the plot (was 4px; reduced ~70%). */
+export const HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX = 1;
 /** Extra width for the dashed “drop here” preview vs the card layout width (visual breathing room). */
 export const HISTOGRAM_STRIP_DROP_SLOT_WIDTH_EXTRA_PX = 16;
 export const HISTOGRAM_CARD_MIN_WIDTH = 280;

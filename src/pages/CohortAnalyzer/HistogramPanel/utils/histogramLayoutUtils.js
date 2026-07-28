@@ -15,6 +15,17 @@ export function requiresCompactSpacing(dataset) {
 }
 
 /**
+ * Scale header chart/action icons up as the plot shrinks so controls stay readable
+ * on small cards. Clamped so icons never shrink when the plot is taller than default.
+ */
+export function histogramHeaderIconScale(plotHeightPx, defaultPlotHeightPx) {
+  const plotH = Number(plotHeightPx);
+  const refH = Number(defaultPlotHeightPx);
+  if (!(plotH > 0) || !(refH > 0)) return 1;
+  return Math.min(1.4, Math.max(1, refH / plotH));
+}
+
+/**
  * Collapse the strip item being dragged so its slot is freed. Avoid display:none so native
  * drag + setDragImage stay reliable; drag image is captured in dragstart before this applies.
  */

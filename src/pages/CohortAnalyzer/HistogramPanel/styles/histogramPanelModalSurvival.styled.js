@@ -285,16 +285,15 @@ export const SurvivalAnalysisHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
-  /* Fixed chrome — wrap mode must not grow the header past this size. */
-  height: 58px;
-  min-height: 58px;
-  max-height: 58px;
-  margin-bottom: 10px;
+  align-items: center;
+  /* Fixed chrome — slightly tighter than histogram strip headers. */
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  margin: 0;
   width: 100%;
   box-sizing: border-box;
-  /* Extra top padding so top-aligned header content reads as centered in the bar. */
-  padding: 14px 12px 8px 12px;
+  padding: 0 12px;
   border-bottom: 1px solid #e5e5e5;
   /* Visible so header menus (download) aren’t clipped by the fixed chrome. */
   overflow: visible;
@@ -304,13 +303,48 @@ export const HeaderSectionContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  /* Same top row as strip HeaderSection — never vertically center vs title wrap. */
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
   min-width: 0;
   margin: 0;
   padding: 0;
   height: 100%;
+
+  /* Shared ChartTitle / ChartActionButtons default to flex-start for strip cards —
+     center them in the survival header only. */
+  & > h2 {
+    align-self: center;
+    align-items: center;
+    height: auto;
+    /* line-height: 1 + overflow:hidden on shared ChartTitle clips descenders (g, y). */
+    line-height: 1.25;
+    overflow: visible;
+  }
+
+  & > h2 > [data-ca-chart-title-drag] {
+    align-self: center;
+  }
+
+  /* ChartTitleLabel only — drop the -webkit-box height clamp that cuts off “g”. */
+  & > h2 > span:not([data-ca-chart-title-drag]) {
+    align-self: center;
+    line-height: 1.25;
+    height: auto;
+    overflow: visible;
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+
+    /* Keep the “?” top-aligned to the title text (not vertically centered). */
+    & img {
+      vertical-align: text-top;
+    }
+  }
+
+  & > div:last-of-type {
+    align-self: center;
+    align-items: center;
+  }
 `;
 
 export const SurvivalAnalysisContainer = styled.div`
@@ -331,10 +365,20 @@ export const KmChartWrapper = styled.div`
   max-width: 100%;
   min-width: 0;
   flex-shrink: 0;
-  padding-left: 100px;
-  margin-top: -20px;
-  overflow: hidden;
+  padding-left: 4px;
+  padding-right: 12px;
+  margin-top: 0;
+  /* Visible so the rotated Y-axis title at the SVG left edge isn’t clipped. */
+  overflow: visible;
   box-sizing: border-box;
+  /* @bento-core/kmplot always renders an empty <h3> title row + 8px margin when
+     title="" — collapse it so the SVG height matches our kmHeight allocation. */
+  & > div > div:first-child {
+    display: none !important;
+    margin: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
   ${histogramChartGridAxisStrokeCss}
 `;
 
@@ -343,24 +387,30 @@ export const RiskTableWrapper = styled.div`
   max-width: 100%;
   padding-left: 50px;
   padding-right: 50px;
-  margin-top: 10px;
+  margin-top: 0;
   min-width: 0;
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
   box-sizing: border-box;
+  /* Library defaults table to margin 30px top+bottom — that ate the card body and clipped. */
+  & table {
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+  }
   ${survivalRiskTableDownloadTextCss}
 `;
 
 export const KmChartWrapperBesideVenn = styled(KmChartWrapper)`
   padding-left: 8px;
+  padding-right: 8px;
   margin-top: 0;
 `;
 
 export const RiskTableWrapperBesideVenn = styled(RiskTableWrapper)`
   padding-left: 8px;
   padding-right: 8px;
-  margin-top: -2px;
+  margin-top: 0;
   overflow: hidden;
 `;
 

@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core';
-import { HISTOGRAM_CHART_PLOT_MIN_VH } from '../histogramConstants';
 
 export const useHistogramPanelMuiStyles = makeStyles({
   cohortNameEllipsis: {
@@ -12,7 +11,7 @@ export const useHistogramPanelMuiStyles = makeStyles({
   chartContentWrapper: {
     margin: 0,
     width: '100%',
-    flex: 1,
+    flex: '0 0 auto',
     minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
@@ -20,9 +19,7 @@ export const useHistogramPanelMuiStyles = makeStyles({
   },
   chartPlotArea: {
     width: '100%',
-    minHeight: `${HISTOGRAM_CHART_PLOT_MIN_VH}vh`,
-    flex: 1,
-    height: 'auto',
+    flex: '0 0 auto',
   },
   headerCloseButton: {
     display: 'inline-flex',
