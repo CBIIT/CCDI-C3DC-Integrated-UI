@@ -180,18 +180,35 @@ export const customGeneticAnalysisTabDownloadCSV = {
 };
 
 export const GET_TREATMENT_TAB = gql`
-query treatmentOverview($treatment_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
-  treatmentOverview(treatment_id: $treatment_id, offset: $offset,first: $first, order_by: $order_by) {
+query treatmentOverview(
+  $participant_ids: [String],
+  $offset: Int = 0,
+  $first: Int = 1000,
+  $order_by: String = "",
+  $sort_direction: String
+){
+  treatmentOverview(
+    participant_ids: $participant_ids,
+    offset: $offset,
+    first: $first,
+    order_by: $order_by,
+    sort_direction: $sort_direction
+  ) {
     treatment_id
     participant_id
     study_id
+    age_at_treatment_start
+    age_at_treatment_end
+    treatment_type
+    treatment_agent
+    dbgap_accession
   }
 }
 `;
 
 export const customTreatmentTabDownloadCSV = {
-  keysToInclude: ['treatment_id', 'participant_id', 'study_id', 'treatment', 'treatment_classification_system', 'treatment_basis', 'disease_phase', 'age_at_treatment'],
-  header: ['Treatment ID', 'Participant ID', 'Study ID', 'Treatment', 'Treatment Classification System', 'Treatment Basis', 'Disease Phase', 'Age at Treatment'],
+  keysToInclude: ['treatment_id', 'participant_id', 'study_id', 'age_at_treatment_start', 'age_at_treatment_end', 'treatment_type', 'treatment_agent'],
+  header: ['Treatment ID', 'Participant ID', 'Study ID', 'Age at Treatment Start', 'Age at Treatment End', 'Treatment Type', 'Treatment Agent'],
   query: GET_TREATMENT_TAB,
   apiVariable: 'treatmentOverview',
   fileName: 'tableDownload',
