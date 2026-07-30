@@ -87,8 +87,7 @@ export const globalStatsData = [
 ];
 
 // --------------- GraphQL query - Retrieve stats details --------------
-// Study / sample / file counts are only exposed under `searchParticipants`;
-// the root QueryType has no `numberOfSamples` / `numberOfFiles` fields.
+
 export const GET_GLOBAL_STATS_DATA_QUERY = gql`{
   searchParticipants {
     numberOfStudies
