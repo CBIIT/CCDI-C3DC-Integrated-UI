@@ -4,16 +4,26 @@ import DownloadIcon from '../../../../assets/icons/Download_Histogram_icon.svg';
 import ExpandIcon from '../../../../assets/icons/Expand_Histogram_icon.svg';
 import histogramChartTitleHandle from '../../../../assets/icons/histogramChartTitleHandle.svg';
 import histogramCloseIcon from '../../../../assets/icons/closeHistogramChart.svg';
+import { requiresCompactSpacing, HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE, histogramHeaderIconScale } from '../utils/histogramLayoutUtils';
+import { HistogramChartEmptyState } from '../chart/HistogramChartEmptyState';
+import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPreview';
+import {
+  HISTOGRAM_CARD_CHROME_HEIGHT,
+  HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX,
+} from '../histogramConstants';
 import {
   ChartWrapper,
   HeaderSection,
   ChartTitle,
+  ChartTitleLabel,
   ChartActionButtons,
   ChartResizeHandle,
   ChartTypeDropdownRoot,
   ChartTypeDropdownPanel,
   ChartTypeOption,
   ChartTypeTriggerButton,
+  CHART_HEADER_ACTION_ICON_PX,
+  CHART_HEADER_CHART_TYPE_ICON_PX,
 } from '../HistogramPanel.styled';
 import { HistogramDatasetChart, DEFAULT_CHART_TYPE } from '../chart/HistogramDatasetChart';
 import { ChartTypeIcon, CHART_TYPE_OPTIONS } from '../chart/HistogramChartTypeIcons';
@@ -21,9 +31,6 @@ import {
   encodePanelDragPayload,
   CA_PANEL_DRAG_MIME,
 } from '../../store/panelDnD';
-import { requiresCompactSpacing, HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE } from '../utils/histogramLayoutUtils';
-import { HistogramChartEmptyState } from '../chart/HistogramChartEmptyState';
-import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPreview';
 
 export function HistogramBesideVennHistogramPortal({
   survivalSelected,
@@ -45,6 +52,7 @@ export function HistogramBesideVennHistogramPortal({
   chartVisualByPanelId,
   besideHistogramBarSums,
   besideStripPlotHeight,
+  defaultPlotHeightPx,
   /** Same outer size as survival strip / top-row survival card when shown beside Venn. */
   besidePeerShellBox = null,
   besideColumnPlotHeightPx,
@@ -76,6 +84,9 @@ export function HistogramBesideVennHistogramPortal({
     besidePeerShellBox && besideColumnPlotHeightPx != null
       ? besideColumnPlotHeightPx
       : besideStripPlotHeight;
+  const iconScale = histogramHeaderIconScale(plotHeightPx, defaultPlotHeightPx);
+  const actionIconPx = Math.round(CHART_HEADER_ACTION_ICON_PX * iconScale);
+  const chartTypeIconPx = Math.round(CHART_HEADER_CHART_TYPE_ICON_PX * iconScale);
   const hasDatasetData = Array.isArray(data[d]) && data[d].length > 0;
   const showChartBody = chartPreviewMode || hasDatasetData;
   const chartPreviewStyle = getChartPreviewContentStyle(chartPreviewMode);
@@ -98,14 +109,19 @@ export function HistogramBesideVennHistogramPortal({
               maxWidth: 'none',
               boxSizing: 'border-box',
             }
-            : histogramCardSizes[d] && histogramCardSizes[d].width != null
-              ? {
-                width: histogramCardSizes[d].width,
-                flexShrink: 0,
-                alignSelf: 'flex-start',
-                maxWidth: 'none',
-              }
-              : {}),
+            : {
+              ...(histogramCardSizes[d] && histogramCardSizes[d].width != null
+                ? {
+                  width: histogramCardSizes[d].width,
+                  maxWidth: 'none',
+                }
+                : {}),
+              height: plotHeightPx + HISTOGRAM_CARD_CHROME_HEIGHT,
+              minHeight: plotHeightPx + HISTOGRAM_CARD_CHROME_HEIGHT,
+              flexShrink: 0,
+              alignSelf: 'flex-start',
+              boxSizing: 'border-box',
+            }),
         ...chartPreviewStyle,
         cursor: allInputsEmpty ? 'default' : 'grab',
       }}
@@ -132,13 +148,9 @@ export function HistogramBesideVennHistogramPortal({
           <span
             role="button"
             tabIndex={0}
+            data-ca-chart-title-drag
             aria-label={`Drag ${getChartTitle(d) || 'chart'}`}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              marginRight: 6,
               cursor: allInputsEmpty ? 'not-allowed' : 'grab',
               opacity: allInputsEmpty ? 0.45 : 1,
             }}
@@ -152,7 +164,7 @@ export function HistogramBesideVennHistogramPortal({
               style={{ display: 'block', flexShrink: 0 }}
             />
           </span>
-          {getChartTitle(d)}
+          <ChartTitleLabel>{getChartTitle(d)}</ChartTitleLabel>
         </ChartTitle>
         <ChartActionButtons>
           <ChartTypeDropdownRoot
@@ -160,6 +172,7 @@ export function HistogramBesideVennHistogramPortal({
           >
             <ChartTypeTriggerButton
               type="button"
+              $hitTarget={chartTypeIconPx}
               disabled={allInputsEmpty}
               aria-haspopup="listbox"
               aria-expanded={chartTypeMenuDataset === d}
@@ -171,7 +184,7 @@ export function HistogramBesideVennHistogramPortal({
             >
               <ChartTypeIcon
                 type={chartVisualByPanelId[d] || DEFAULT_CHART_TYPE}
-                size={22}
+                size={chartTypeIconPx}
               />
             </ChartTypeTriggerButton>
             {chartTypeMenuDataset === d && !allInputsEmpty && (
@@ -188,36 +201,34 @@ export function HistogramBesideVennHistogramPortal({
                       setChartTypeMenuDataset(null);
                     }}
                   >
-                    <ChartTypeIcon type={type} size={20} />
+                    <ChartTypeIcon type={type} size={Math.max(20, chartTypeIconPx - 2)} />
                   </ChartTypeOption>
                 ))}
               </ChartTypeDropdownPanel>
             )}
           </ChartTypeDropdownRoot>
           <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => { if (!allInputsEmpty) { setExpandedChart(d); setActiveTab(d); } }}>
-            <img src={ExpandIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
+            <img src={ExpandIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
           </span>
-          <div style={{ display: 'inline-flex', alignItems: 'center', columnGap: 4 }}>
-            <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => !allInputsEmpty && downloadChart(d, false)}>
-              <img src={DownloadIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
-            </span>
-            <button
-              type="button"
-              className={classes.headerCloseButton}
-              aria-label={`Remove ${getChartTitle(d) || 'chart'} from layout`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemoveHistogramDataset(d);
-              }}
-            >
-              <img src={histogramCloseIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
-            </button>
-          </div>
+          <span style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }} onClick={() => !allInputsEmpty && downloadChart(d, false)}>
+            <img src={DownloadIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
+          </span>
+          <button
+            type="button"
+            className={classes.headerCloseButton}
+            aria-label={`Remove ${getChartTitle(d) || 'chart'} from layout`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemoveHistogramDataset(d);
+            }}
+          >
+            <img src={histogramCloseIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
+          </button>
         </ChartActionButtons>
       </HeaderSection>
       <div
         className={classes.chartContentWrapper}
-        style={{ paddingBottom: requiresCompactSpacing(d) ? '12px' : '0px' }}
+        style={{ paddingBottom: `${HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX}px` }}
       >
         {showChartBody ? (
           <div

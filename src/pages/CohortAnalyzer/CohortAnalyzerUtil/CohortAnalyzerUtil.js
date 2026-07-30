@@ -60,6 +60,24 @@ export const getIdsFromCohort = (data, selectedCohorts) => {
     return allParticipantPKs;
 }
 
+/** Display participant_id values for diagnosis/treatment overview `participant_ids`. */
+export const getDisplayIdsFromCohort = (data, selectedCohorts) => {
+    const displayIds = [];
+
+    Object.keys(data).forEach((cohortKey) => {
+        if (selectedCohorts.includes(cohortKey)) {
+            if (data[cohortKey].participants) {
+                data[cohortKey].participants.forEach((participant) => {
+                    if (participant.participant_id != null) {
+                        displayIds.push(participant.participant_id);
+                    }
+                });
+            }
+        }
+    });
+    return displayIds;
+}
+
 export const getAllIds = (generalInfo) => {
     let finalIds = [];
     Object.keys(generalInfo).forEach((section) => {
@@ -96,7 +114,10 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
 const getCohortName = (pk, state, selectedCohorts) => {
     const cohortNames = selectedCohorts
         .filter(cohortKey =>
-            state[cohortKey].participants.some(participant => getParticipantPk(participant) === pk)
+            state[cohortKey].participants.some((participant) => (
+                getParticipantPk(participant) === pk
+                || participant.participant_id === pk
+            ))
         ).map(cohortKey => state[cohortKey].cohortName);
     let finalResponse = [];
     const baseColorArray = ["#F0D571", "#A4E9CB", "#A3CCE8"];
@@ -202,22 +223,29 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
     )
 }
 
-// The Cohort Analyzer queries filter participants via the `$id: [String]`
-// variable, so that's the key we emit here. `getParticipantPk` falls back to
-// `participant.participant_pk` for any legacy state shape.
+// Diagnosis/treatment overview bind `$id` → `participant_ids`, which expects
+// display `participant_id` values (UUIDs return empty). `participantOverview`
+// still filters by internal id — callers remap `id` ← `participant_pk` for that
+// path. `cohortManifest` / `cohortMetadata` use `participant_pk` (UUID).
 export function generateQueryVariable(cohortNames, state) {
-    let query = {};
-    query['id'] = [];
-    query["first"] = 10000;
+    const pks = [];
+    const displayIds = [];
     cohortNames.forEach((cName) => {
         state[cName].participants.forEach((participant) => {
             const pk = getParticipantPk(participant);
             if (pk != null) {
-                query["id"].push(pk);
+                pks.push(pk);
+            }
+            if (participant.participant_id != null) {
+                displayIds.push(participant.participant_id);
             }
         });
     });
-    return query;
+    return {
+        id: displayIds,
+        participant_pk: pks,
+        first: 10000,
+    };
 }
 
 export const handlePopup = (cohortId, state, setDeleteInfo, deleteInfo) => {

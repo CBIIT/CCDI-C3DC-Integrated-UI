@@ -12,7 +12,6 @@ import {
 import { RadioGroup, histogramChartGridAxisStrokeCss } from './histogramPanelCore.styled';
 import {
   CohortAnalyzerRadioFieldset,
-  CohortAnalyzerRadioLabel,
 } from '../../styling/cohortAnalyzerRadio.styled';
 
 /** Risk table body text only — month header row (thead) keeps @bento-core/risk-table colors. */
@@ -82,9 +81,8 @@ export const CloseButton = styled.button`
   cursor: pointer;
   color: #666;
   flex-shrink: 0;
-  margin: 0px;
+  margin: 0;
   box-sizing: border-box;
-  margin-left: -5px;
   &:hover {
     color: #333;
   }
@@ -138,25 +136,27 @@ export const Tab = styled.button`
 `;
 
 /**
- * Chart type selector (pie / vertical bar / horizontal bar / line). Strip cards have a 38px
- * trigger button next to 19px expand/download/close icons, so the empty space inside the button
- * widens the visible gap; the negative trailing margin pulls the icon back to sit visually in
- * line with its neighbours. The expanded modal opts out with `$compactTrailingGap={false}`
- * because all of its buttons are already equal-sized 38px hit-targets.
+ * Chart type selector (pie / vertical bar / horizontal bar / line).
+ * Strip cards pass `$hitTarget` matching expand/download/close (19px).
+ * Expanded modal keeps the default 38px hit-target.
  */
 export const ChartTypeDropdownRoot = styled.div`
   position: relative;
   display: inline-flex;
-  align-items: center;
-  z-index: 2;
-  margin-right: ${(p) => (p.$compactTrailingGap !== false ? '-8px' : '0')};
+  /* Top-align with expand/download/close on the title row. */
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  /* Above sibling cards / chrome so the open menu isn’t buried. */
+  z-index: 40;
 `;
 
 export const ChartTypeDropdownPanel = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  z-index: 30;
+  z-index: 200;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -206,17 +206,20 @@ export const ChartTypeOption = styled.button`
 export const ChartTypeTriggerButton = styled.button`
   display: inline-flex;
   box-sizing: border-box;
-  align-items: center;
+  /* Flush with sibling action icons / grab / title (no vertical centering). */
+  align-items: flex-start;
   justify-content: center;
-  min-width: ${MODAL_HEADER_ICON_CONTROL_PX}px;
-  min-height: ${MODAL_HEADER_ICON_CONTROL_PX}px;
-  width: max-content;
-  height: max-content;
+  width: ${(p) => (p.$hitTarget != null ? p.$hitTarget : MODAL_HEADER_ICON_CONTROL_PX)}px;
+  height: ${(p) => (p.$hitTarget != null ? p.$hitTarget : MODAL_HEADER_ICON_CONTROL_PX)}px;
+  min-width: ${(p) => (p.$hitTarget != null ? p.$hitTarget : MODAL_HEADER_ICON_CONTROL_PX)}px;
+  min-height: ${(p) => (p.$hitTarget != null ? p.$hitTarget : MODAL_HEADER_ICON_CONTROL_PX)}px;
   padding: 0;
   border: none;
   border-radius: 6px;
   background: transparent;
   cursor: pointer;
+  line-height: 0;
+  margin: 0;
   &:hover {
     background: #f5f5f5;
   }
@@ -233,11 +236,10 @@ export const ChartTypeTriggerButton = styled.button`
 export const DownloadDropdown = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1;
 `;
-
 export const DownloadDropdownMenu = styled.div`
   position: absolute;
   top: 100%;
@@ -284,11 +286,65 @@ export const SurvivalAnalysisHeader = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  /* Fixed chrome — slightly tighter than histogram strip headers. */
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  margin: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 12px 8px 12px;
+  padding: 0 12px;
   border-bottom: 1px solid #e5e5e5;
+  /* Visible so header menus (download) aren’t clipped by the fixed chrome. */
+  overflow: visible;
+`;
+
+export const HeaderSectionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  /* Shared ChartTitle / ChartActionButtons default to flex-start for strip cards —
+     center them in the survival header only. */
+  & > h2 {
+    align-self: center;
+    align-items: center;
+    height: auto;
+    /* line-height: 1 + overflow:hidden on shared ChartTitle clips descenders (g, y). */
+    line-height: 1.25;
+    overflow: visible;
+  }
+
+  & > h2 > [data-ca-chart-title-drag] {
+    align-self: center;
+  }
+
+  /* ChartTitleLabel only — drop the -webkit-box height clamp that cuts off “g”. */
+  & > h2 > span:not([data-ca-chart-title-drag]) {
+    align-self: center;
+    line-height: 1.25;
+    height: auto;
+    overflow: visible;
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+
+    /* Keep the “?” top-aligned to the title text (not vertically centered). */
+    & img {
+      vertical-align: text-top;
+    }
+  }
+
+  & > div:last-of-type {
+    align-self: center;
+    align-items: center;
+  }
 `;
 
 export const SurvivalAnalysisContainer = styled.div`
@@ -309,10 +365,20 @@ export const KmChartWrapper = styled.div`
   max-width: 100%;
   min-width: 0;
   flex-shrink: 0;
-  padding-left: 100px;
-  margin-top: -20px;
-  overflow: hidden;
+  padding-left: 4px;
+  padding-right: 12px;
+  margin-top: 0;
+  /* Visible so the rotated Y-axis title at the SVG left edge isn’t clipped. */
+  overflow: visible;
   box-sizing: border-box;
+  /* @bento-core/kmplot always renders an empty <h3> title row + 8px margin when
+     title="" — collapse it so the SVG height matches our kmHeight allocation. */
+  & > div > div:first-child {
+    display: none !important;
+    margin: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
   ${histogramChartGridAxisStrokeCss}
 `;
 
@@ -321,24 +387,30 @@ export const RiskTableWrapper = styled.div`
   max-width: 100%;
   padding-left: 50px;
   padding-right: 50px;
-  margin-top: 10px;
+  margin-top: 0;
   min-width: 0;
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
   box-sizing: border-box;
+  /* Library defaults table to margin 30px top+bottom — that ate the card body and clipped. */
+  & table {
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+  }
   ${survivalRiskTableDownloadTextCss}
 `;
 
 export const KmChartWrapperBesideVenn = styled(KmChartWrapper)`
   padding-left: 8px;
+  padding-right: 8px;
   margin-top: 0;
 `;
 
 export const RiskTableWrapperBesideVenn = styled(RiskTableWrapper)`
   padding-left: 8px;
   padding-right: 8px;
-  margin-top: -2px;
+  margin-top: 0;
   overflow: hidden;
 `;
 
@@ -503,7 +575,7 @@ export const ModalRadioFieldset = styled(CohortAnalyzerRadioFieldset)`
   margin: 20px 0;
   box-sizing: border-box;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 export const ModalRadioGroup = styled(RadioGroup)`
@@ -511,10 +583,35 @@ export const ModalRadioGroup = styled(RadioGroup)`
   margin: 0;
   padding: 0;
   display: contents;
+   
 `;
 
-/** Expanded modal: # of Participants / % of Participants — matches Venn category radio typography. */
-export const ModalRadioLabel = styled(CohortAnalyzerRadioLabel)``;
+/** Expanded modal: # / % of Participants — radio stays on the first line when label wraps. */
+export const ModalRadioLabel = styled.label`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #1C2B33;
+  cursor: pointer;
+  max-width: 100%;
+ 
+
+  & > input {
+    flex-shrink: 0;
+    align-self: flex-start;
+    /* Flush with the top of the first text line (no centering nudge). */
+    margin-top: 0;
+  }
+
+  & > span {
+    min-width: 0;
+  }
+`;
 
 /** Wraps popup controls (e.g. Venn category radios) so they align with the first header tab. */
 export const ModalPopupContentInset = styled.div`

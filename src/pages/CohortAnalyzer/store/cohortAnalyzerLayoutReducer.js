@@ -87,10 +87,10 @@ export const cohortAnalyzerLayoutInitialState = {
   workspaceGridLayout: null,
   /**
    * True after any user-initiated layout action (drag-drop, resize, chart-type swap,
-   * top-row reorder, workspace grid drag, strip reorder, beside-promote). Bootstrap
-   * auto-sync dispatches (initial stripOrder / besideStripPanelId computed from default
-   * selected datasets) do NOT flip this flag, so the "Reset View" button knows there is
-   * nothing to undo on first mount.
+   * top-row reorder, workspace grid drag, strip reorder / add / remove, beside-promote).
+   * Bootstrap auto-sync dispatches (initial stripOrder / besideStripPanelId computed from
+   * default selected datasets) do NOT flip this flag, so the "Reset View" button knows
+   * there is nothing to undo on first mount.
    */
   userLayoutChanged: false,
 };

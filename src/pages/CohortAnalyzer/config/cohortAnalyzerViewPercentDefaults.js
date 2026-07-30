@@ -4,7 +4,7 @@
  * INVENTORY — former hard-coded initial / fallback pixel values:
  *
  * Histogram — histogramConstants.js:
- *   HISTOGRAM_CHART_PLOT_HEIGHT (240), HISTOGRAM_CARD_CHROME_HEIGHT (132),
+ *   HISTOGRAM_CHART_PLOT_HEIGHT (240), HISTOGRAM_CARD_CHROME_HEIGHT (97),
  *   HISTOGRAM_CARD_MIN_WIDTH (280), HISTOGRAM_PLOT_MIN/MAX_HEIGHT
  * Histogram — Histogram.js:
  *   Drop slot fallbacks 320×261; plot default HISTOGRAM_CHART_PLOT_HEIGHT

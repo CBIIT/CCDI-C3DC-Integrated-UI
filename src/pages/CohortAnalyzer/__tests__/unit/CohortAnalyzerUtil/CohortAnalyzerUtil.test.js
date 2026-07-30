@@ -162,10 +162,13 @@ describe('CohortAnalyzerUtil', () => {
   });
 
   describe('generateQueryVariable', () => {
-    it('builds participant_pk query from state', () => {
-      const state = { a: { participants: [{ participant_pk: 'pk1' }] } };
+    it('builds display id and participant_pk query from state', () => {
+      const state = {
+        a: { participants: [{ id: 'pk1', participant_pk: 'pk1', participant_id: 'P1' }] },
+      };
       const query = generateQueryVariable(['a'], state);
-      expect(query.id).toEqual(['pk1']);
+      expect(query.id).toEqual(['P1']);
+      expect(query.participant_pk).toEqual(['pk1']);
       expect(query.first).toBe(10000);
     });
   });

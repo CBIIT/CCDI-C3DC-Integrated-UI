@@ -41,16 +41,25 @@ const CohortList = (props) => {
         setShowConfirmation,
         setConfirmModalProps,
         clearAlert,
-        showAlert
+        showAlert,
+        pendingNewCohort,
+        clearPendingNewCohort,
     } = useContext(CohortModalContext);
 
     const handleDeleteCohort = useCallback((cohortId) => {
+        if (pendingNewCohort && cohortId === pendingNewCohort.cohortId) {
+            clearPendingNewCohort();
+            clearCurrentCohortChanges();
+            const remaining = Object.keys(state);
+            setSelectedCohort(remaining.length > 0 ? remaining[0] : null);
+            return;
+        }
         dispatch(onDeleteSingleCohort(cohortId));
         // Only clear unsaved changes if we're deleting the currently selected cohort
         if (cohortId === selectedCohort) {
             clearCurrentCohortChanges();
         }
-    }, [dispatch, selectedCohort, clearCurrentCohortChanges]);
+    }, [dispatch, selectedCohort, clearCurrentCohortChanges, pendingNewCohort, clearPendingNewCohort, setSelectedCohort, state]);
 
     const handleDeleteAllCohorts = useCallback(() => {
         dispatch(onDeleteAllCohort());
@@ -127,21 +136,35 @@ const CohortList = (props) => {
         
         // Clear any existing alert when switching cohorts
         clearAlert();
+
+        const switchToCohort = () => {
+            if (pendingNewCohort && cohortId !== pendingNewCohort.cohortId) {
+                clearPendingNewCohort();
+            }
+            setSelectedCohort(cohortId);
+            clearCurrentCohortChanges();
+        };
         
         if (unSavedChanges) {
             setConfirmModalProps({
-                handleConfirm: () => {
-                    setSelectedCohort(cohortId);
-                    clearCurrentCohortChanges();
-                },
+                handleConfirm: switchToCohort,
                 deletionType: confirmationTypes.CLEAR_UNSAVED_CHANGES,
             });
             setShowConfirmation(true);
         } else {
-            setSelectedCohort(cohortId);
-            clearCurrentCohortChanges();
+            switchToCohort();
         }
-    }, [selectedCohort, unSavedChanges, setConfirmModalProps, setShowConfirmation, setSelectedCohort, clearCurrentCohortChanges, clearAlert]);
+    }, [
+        selectedCohort,
+        unSavedChanges,
+        setConfirmModalProps,
+        setShowConfirmation,
+        setSelectedCohort,
+        clearCurrentCohortChanges,
+        clearAlert,
+        pendingNewCohort,
+        clearPendingNewCohort,
+    ]);
 
     const handleSingleCohortDelete = useCallback((e, cohortId) => {
         e.stopPropagation();
@@ -170,28 +193,34 @@ const CohortList = (props) => {
     const scrollContainerRef = useRef(null);
 
     const cohortOrderedList = useMemo(() => {
-        return Object.keys(state).sort((a, b) => {
+        const keys = Object.keys(state).sort((a, b) => {
             return new Date(state[b].lastUpdated) - new Date(state[a].lastUpdated);
         });
-    }, [state]);
+        if (pendingNewCohort && pendingNewCohort.cohortId && !state[pendingNewCohort.cohortId]) {
+            return [pendingNewCohort.cohortId, ...keys];
+        }
+        return keys;
+    }, [state, pendingNewCohort]);
 
     const isAtCohortLimit = useMemo(() => {
-        return Object.keys(state).length >= 20;
-    }, [state]);
+        const pendingCount = pendingNewCohort && !state[pendingNewCohort.cohortId] ? 1 : 0;
+        return Object.keys(state).length + pendingCount >= 20;
+    }, [state, pendingNewCohort]);
 
-    // Handle empty state - close modal when no cohorts exist
+    // Handle empty state - close modal when no cohorts and no draft exist
     useEffect(() => {
-        if (Object.keys(state).length === 0) {
+        if (Object.keys(state).length === 0 && !pendingNewCohort) {
             closeModal();
         }
-    }, [state, closeModal]);
+    }, [state, closeModal, pendingNewCohort]);
 
     // Handle invalid selectedCohort - select first cohort if current selection is invalid
     useEffect(() => {
-        if (!state[selectedCohort] && cohortOrderedList.length > 0) {
+        const hasPendingSelection = pendingNewCohort && selectedCohort === pendingNewCohort.cohortId;
+        if (!state[selectedCohort] && !hasPendingSelection && cohortOrderedList.length > 0) {
             setSelectedCohort(cohortOrderedList[0]);
         }
-    }, [selectedCohort, state, cohortOrderedList, setSelectedCohort]);
+    }, [selectedCohort, state, cohortOrderedList, setSelectedCohort, pendingNewCohort]);
 
 
     useEffect(() => {
@@ -248,7 +277,9 @@ const CohortList = (props) => {
                     aria-label="Cohort selection list"
                 >
                     {cohortOrderedList.map((cohort) => {
-                        const cohortData = state[cohort];
+                        const cohortData = (pendingNewCohort && cohort === pendingNewCohort.cohortId)
+                            ? pendingNewCohort
+                            : state[cohort];
                         
                         // Safety check - skip rendering if cohort data is invalid
                         if (!cohortData || !cohortData.cohortId || !cohortData.cohortName) {

@@ -11,9 +11,16 @@ const CohortMetadata = (props) => {
     const { config, classes } = props;
 
     // Get data from context instead of props
-    const { selectedCohort, currentCohortChanges, setCurrentCohortChanges } = useContext(CohortModalContext) || {};
+    const {
+        selectedCohort,
+        currentCohortChanges,
+        setCurrentCohortChanges,
+        pendingNewCohort,
+    } = useContext(CohortModalContext) || {};
     const { state } = useContext(CohortStateContext) || {};
-    const activeCohort = state && state[selectedCohort];
+    const activeCohort = (pendingNewCohort && selectedCohort === pendingNewCohort.cohortId)
+        ? pendingNewCohort
+        : (state && state[selectedCohort]);
 
     // Early return if required data is not available
     if (!activeCohort) {

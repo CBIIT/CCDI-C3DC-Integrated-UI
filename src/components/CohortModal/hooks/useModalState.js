@@ -12,11 +12,19 @@ export const useModalState = (onModalClose, modalClosed) => {
   const {
     setSelectedCohort,
     setConfirmModalProps,
-    setShowConfirmation
+    setShowConfirmation,
+    clearPendingNewCohort,
+    clearCurrentCohortChanges,
   } = useContext(CohortModalContext) || {};
 
   // Close modal wrapper, handles cleanup and state reset
   const closeModalWrapper = useCallback(() => {
+    if (typeof clearPendingNewCohort === 'function') {
+      clearPendingNewCohort();
+    }
+    if (typeof clearCurrentCohortChanges === 'function') {
+      clearCurrentCohortChanges();
+    }
     if (typeof modalClosed === 'function') {
       modalClosed();
     }
@@ -26,7 +34,7 @@ export const useModalState = (onModalClose, modalClosed) => {
     if (setSelectedCohort) {
       setSelectedCohort(null);
     }
-  }, [modalClosed, onModalClose, setSelectedCohort]);
+  }, [modalClosed, onModalClose, setSelectedCohort, clearPendingNewCohort, clearCurrentCohortChanges]);
 
   const unSavedChangesCheck = useCallback((hasUnsavedChanges) => {
     if (hasUnsavedChanges) {

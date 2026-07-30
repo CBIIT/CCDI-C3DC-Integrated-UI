@@ -10,6 +10,7 @@ import {
   ChartWrapper,
   HeaderSection,
   ChartTitle,
+  ChartTitleLabel,
   ChartActionButtons,
   ChartTypeDropdownRoot,
   ChartTypeDropdownPanel,
@@ -19,6 +20,8 @@ import {
   RadioGroup,
   RadioInput,
   RadioLabel,
+  CHART_HEADER_ACTION_ICON_PX,
+  CHART_HEADER_CHART_TYPE_ICON_PX,
 } from '../HistogramPanel.styled';
 import { HistogramDatasetChart, DEFAULT_CHART_TYPE } from '../chart/HistogramDatasetChart';
 import { ChartTypeIcon, CHART_TYPE_OPTIONS } from '../chart/HistogramChartTypeIcons';
@@ -27,9 +30,13 @@ import {
   encodePanelDragPayload,
   CA_PANEL_DRAG_MIME,
 } from '../../store/panelDnD';
-import { requiresCompactSpacing, HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE } from '../utils/histogramLayoutUtils';
+import { requiresCompactSpacing, HISTOGRAM_DRAG_SOURCE_COLLAPSED_STYLE, histogramHeaderIconScale } from '../utils/histogramLayoutUtils';
 import { HistogramChartEmptyState } from '../chart/HistogramChartEmptyState';
-import { HISTOGRAM_STRIP_DROP_SLOT_WIDTH_EXTRA_PX } from '../histogramConstants';
+import {
+  HISTOGRAM_CARD_CHROME_HEIGHT,
+  HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX,
+  HISTOGRAM_STRIP_DROP_SLOT_WIDTH_EXTRA_PX,
+} from '../histogramConstants';
 import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPreview';
 
 export function HistogramStripChartRow({
@@ -90,14 +97,24 @@ export function HistogramStripChartRow({
   }
   const cardSize = histogramCardSizes[dataset];
   const plotH = cardSize && cardSize.plotHeight != null ? cardSize.plotHeight : defaultPlotHeightPx;
-  const chartWrapperStyle = cardSize && cardSize.width != null
-    ? {
-      width: cardSize.width,
-      flexShrink: 0,
-      alignSelf: 'flex-start',
-      maxWidth: 'none',
-    }
-    : undefined;
+  // Card shell height tracks plot + chrome so it cannot lag/settle independently of the chart.
+  const outerCardHeight = plotH + HISTOGRAM_CARD_CHROME_HEIGHT;
+  const iconScale = histogramHeaderIconScale(plotH, defaultPlotHeightPx);
+  const actionIconPx = Math.round(CHART_HEADER_ACTION_ICON_PX * iconScale);
+  const chartTypeIconPx = Math.round(CHART_HEADER_CHART_TYPE_ICON_PX * iconScale);
+  const chartWrapperStyle = {
+    height: outerCardHeight,
+    minHeight: outerCardHeight,
+    flexShrink: 0,
+    alignSelf: 'flex-start',
+    boxSizing: 'border-box',
+    ...(cardSize && cardSize.width != null
+      ? {
+        width: cardSize.width,
+        maxWidth: 'none',
+      }
+      : {}),
+  };
   const estimatedChartW = cardSize && cardSize.width != null
     ? Math.max(280, cardSize.width - 48)
     : 400;
@@ -226,16 +243,12 @@ export function HistogramStripChartRow({
             <span
               role="button"
               tabIndex={0}
+              data-ca-chart-title-drag
               aria-label={`Drag to reorder ${getChartTitle(dataset) || 'chart'} card`}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') event.preventDefault();
               }}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                marginRight: 6,
                 cursor: allInputsEmpty ? 'not-allowed' : 'grab',
                 opacity: allInputsEmpty ? 0.45 : 1,
               }}
@@ -250,9 +263,9 @@ export function HistogramStripChartRow({
                 style={{ display: 'block', flexShrink: 0 }}
               />
             </span>
-            {getChartTitle(dataset)}
-            {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
-              <span style={{ display: 'inline-flex', alignSelf: 'flex-start' }}>
+            <ChartTitleLabel>
+              {getChartTitle(dataset)}
+              {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
                 <ToolTip
                   maxWidth="335px"
                   border="1px solid #598ac5"
@@ -267,15 +280,17 @@ export function HistogramStripChartRow({
                   interactive
                   arrowSize="30px"
                 >
+                  {/* Inline (not a flex sibling) so it hugs the last word of the
+                      title in both the live view and html-to-image PNG/PDF export. */}
                   <img
                     alt="Question Icon"
                     src={questionIcon}
                     width={10}
-                    style={{ border: '0px', display: 'block', flexShrink: 0 }}
+                    style={{ border: '0px', display: 'inline', verticalAlign: 'text-top', marginLeft: '2px' }}
                   />
                 </ToolTip>
-              </span>
-            )}
+              )}
+            </ChartTitleLabel>
           </ChartTitle>
 
           <ChartActionButtons>
@@ -284,6 +299,7 @@ export function HistogramStripChartRow({
             >
               <ChartTypeTriggerButton
                 type="button"
+                $hitTarget={chartTypeIconPx}
                 disabled={allInputsEmpty}
                 aria-haspopup="listbox"
                 aria-expanded={chartTypeMenuDataset === dataset}
@@ -295,7 +311,7 @@ export function HistogramStripChartRow({
               >
                 <ChartTypeIcon
                   type={chartVisualByPanelId[dataset] || DEFAULT_CHART_TYPE}
-                  size={28}
+                  size={chartTypeIconPx}
                 />
               </ChartTypeTriggerButton>
               {chartTypeMenuDataset === dataset && !allInputsEmpty && (
@@ -316,7 +332,7 @@ export function HistogramStripChartRow({
                         setChartTypeMenuDataset(null);
                       }}
                     >
-                      <ChartTypeIcon type={type} size={20} />
+                      <ChartTypeIcon type={type} size={Math.max(20, chartTypeIconPx - 2)} />
                     </ChartTypeOption>
                   ))}
                 </ChartTypeDropdownPanel>
@@ -331,13 +347,13 @@ export function HistogramStripChartRow({
                 }
               }}
             >
-              <img src={ExpandIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
+              <img src={ExpandIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
             </span>
             <span
               style={{ cursor: allInputsEmpty ? 'default' : 'pointer' }}
               onClick={() => !allInputsEmpty && downloadChart(dataset, false)}
             >
-              <img src={DownloadIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
+              <img src={DownloadIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.5 : 1, display: 'block' }} />
             </span>
             <button
               type="button"
@@ -349,7 +365,7 @@ export function HistogramStripChartRow({
                 handleRemoveHistogramDataset(dataset);
               }}
             >
-              <img src={histogramCloseIcon} alt="" width={19} height={19} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
+              <img src={histogramCloseIcon} alt="" width={actionIconPx} height={actionIconPx} style={{ opacity: allInputsEmpty ? 0.45 : 1, display: 'block' }} />
             </button>
 
           </ChartActionButtons>
@@ -358,7 +374,7 @@ export function HistogramStripChartRow({
         <div
           className={classes.chartContentWrapper}
           style={{
-            paddingBottom: requiresCompactSpacing(dataset) ? '12px' : '0px',
+            paddingBottom: `${HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX}px`,
           }}
         >
 

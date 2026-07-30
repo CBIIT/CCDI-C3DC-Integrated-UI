@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback, memo } from 'react';
 import { withStyles } from '@material-ui/core';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
-import { onMutateSingleCohort } from '../../../../components/CohortSelectorState/store/action';
+import { onMutateSingleCohort, onCreateNewCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortModalContext } from '../../CohortModalContext';
 import CohortMetadata from './components/CohortMetadata';
 import ParticipantList from './components/ParticipantList';
@@ -24,10 +24,21 @@ const CohortDetails = (props) => {
         currentCohortChanges, 
         setCurrentCohortChanges, 
         showAlert, 
-        clearCurrentCohortChanges
+        clearCurrentCohortChanges,
+        pendingNewCohort,
+        clearPendingNewCohort,
+        setSelectedCohort,
     } = useContext(CohortModalContext);
+
+    const isPendingNewCohort = Boolean(
+        pendingNewCohort
+        && selectedCohort
+        && pendingNewCohort.cohortId === selectedCohort
+    );
     
-    const activeCohort = state[selectedCohort];
+    const activeCohort = isPendingNewCohort
+        ? pendingNewCohort
+        : state[selectedCohort];
 
     // Memoized matching cohort ID calculation
     const matchingCohortID = useMemo(() => {
@@ -54,25 +65,25 @@ const CohortDetails = (props) => {
 
     const [localCohort, setLocalCohort] = useState(initialCohortState);
 
-    const handleSetCurrentCohortChanges = useCallback((localCohort) => {
-        if (!localCohort.cohortId) return;
+    const handleSetCurrentCohortChanges = useCallback((nextLocalCohort) => {
+        if (!nextLocalCohort.cohortId) return;
         setCurrentCohortChanges({
-            cohortId: localCohort.cohortId,
-            cohortName: localCohort.cohortName,
-            cohortDescription: localCohort.cohortDescription,
-            participants: localCohort.participants,
-            searchText: localCohort.searchText,
+            cohortId: nextLocalCohort.cohortId,
+            cohortName: nextLocalCohort.cohortName,
+            cohortDescription: nextLocalCohort.cohortDescription,
+            participants: nextLocalCohort.participants,
+            searchText: nextLocalCohort.searchText,
         });
     }, [setCurrentCohortChanges]);
 
-    const handleSaveCohort = useCallback((localCohort) => {
-        if (!localCohort.cohortId) return;
+    const handleSaveExistingCohort = useCallback((nextLocalCohort) => {
+        if (!nextLocalCohort.cohortId) return;
         dispatch(onMutateSingleCohort(
-            localCohort.cohortId,
+            nextLocalCohort.cohortId,
             {
-                cohortName: localCohort.cohortName,
-                cohortDescription: localCohort.cohortDescription,
-                participants: localCohort.participants
+                cohortName: nextLocalCohort.cohortName,
+                cohortDescription: nextLocalCohort.cohortDescription,
+                participants: nextLocalCohort.participants
             },
             () => {
                 showAlert('success', 'Cohort updated successfully!');
@@ -84,14 +95,43 @@ const CohortDetails = (props) => {
         ));
     }, [dispatch, showAlert, clearCurrentCohortChanges]);
 
+    const handleSavePendingNewCohort = useCallback((nextLocalCohort) => {
+        const cohortName = (nextLocalCohort.cohortName || '').trim() || nextLocalCohort.cohortId;
+        dispatch(onCreateNewCohort(
+            cohortName,
+            nextLocalCohort.cohortDescription || '',
+            nextLocalCohort.participants || [],
+            () => {
+                clearPendingNewCohort();
+                clearCurrentCohortChanges();
+                setSelectedCohort(cohortName);
+                showAlert('success', 'Cohort created successfully!');
+            },
+            (error) => {
+                showAlert('error', `Failed to create cohort: ${error.message}`);
+            },
+        ));
+    }, [dispatch, clearPendingNewCohort, clearCurrentCohortChanges, setSelectedCohort, showAlert]);
+
     // Memoized save handler to prevent unnecessary re-renders
     const handleSave = useCallback(() => {
-        handleSaveCohort(localCohort);
+        if (isPendingNewCohort) {
+            handleSavePendingNewCohort(localCohort);
+            return;
+        }
+        handleSaveExistingCohort(localCohort);
         handleSetCurrentCohortChanges({
             ...currentCohortChanges,
             ...localCohort,
         });
-    }, [localCohort, currentCohortChanges, handleSaveCohort, handleSetCurrentCohortChanges]);
+    }, [
+        isPendingNewCohort,
+        localCohort,
+        currentCohortChanges,
+        handleSavePendingNewCohort,
+        handleSaveExistingCohort,
+        handleSetCurrentCohortChanges,
+    ]);
 
     // Update localCohort when selectedCohort changes (optimized)
     useEffect(() => {

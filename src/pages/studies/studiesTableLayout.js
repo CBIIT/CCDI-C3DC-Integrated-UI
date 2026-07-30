@@ -1,19 +1,3 @@
-const getTableContainerHeight = (wrapper, tableContainer) => {
-  if (!wrapper) {
-    return 0;
-  }
-
-  let chromeHeight = 0;
-  const children = wrapper.children;
-  for (let i = 0; i < children.length; i += 1) {
-    if (children[i] !== tableContainer) {
-      chromeHeight += children[i].offsetHeight;
-    }
-  }
-
-  return Math.max(wrapper.clientHeight - chromeHeight, 120);
-};
-
 const clearSplitTableStyles = (tableContainer) => {
   const table = tableContainer.querySelector('.MuiTable-root');
   const thead = tableContainer.querySelector('.MuiTableHead-root');
@@ -71,27 +55,19 @@ const clearSplitTableStyles = (tableContainer) => {
 
 export const resetStudiesTableColumnWidths = () => {};
 
-export const applyStudiesTableLayout = (tableContainer, tableBodyHeight = 0) => {
+export const applyStudiesTableLayout = (tableContainer) => {
   if (!tableContainer) {
     return;
   }
 
   clearSplitTableStyles(tableContainer);
 
-  const wrapper = tableContainer.closest('.studiesTableWrapper');
-  const containerHeight = tableBodyHeight > 0
-    ? tableBodyHeight
-    : getTableContainerHeight(wrapper, tableContainer);
-
   tableContainer.style.setProperty('flex', '0 0 auto', 'important');
   tableContainer.style.setProperty('min-height', '0', 'important');
   tableContainer.style.setProperty('overflow-x', 'auto', 'important');
-  tableContainer.style.setProperty('overflow-y', 'auto', 'important');
-
-  if (containerHeight > 0) {
-    tableContainer.style.setProperty('height', `${containerHeight}px`, 'important');
-    tableContainer.style.setProperty('max-height', `${containerHeight}px`, 'important');
-  }
+  tableContainer.style.setProperty('overflow-y', 'visible', 'important');
+  tableContainer.style.removeProperty('height');
+  tableContainer.style.removeProperty('max-height');
 };
 
 export const syncStudiesTableHeaderPadding = (tableContainer) => {

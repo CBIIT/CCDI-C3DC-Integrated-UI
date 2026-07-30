@@ -15,15 +15,6 @@ import {
   resetStudiesTableColumnWidths,
 } from './studiesTableLayout';
 
-const TABLE_CHROME_HEIGHT = 130;
-
-const getTableBodyHeight = () => Math.min(
-  600,
-  Math.max(window.innerHeight - 420, 360),
-);
-
-const getTableRegionHeight = () => getTableBodyHeight() + TABLE_CHROME_HEIGHT;
-
 const StudiesContainer = styled.div`
   .breadcrumb {
     font-family: Public Sans;
@@ -144,8 +135,6 @@ const StudiesView = () => {
   const [studies, setNumStudies] = useState(0);
   const [studiesData, setStudiesData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tableRegionHeight, setTableRegionHeight] = useState(getTableRegionHeight);
-  const [tableBodyHeight, setTableBodyHeight] = useState(getTableBodyHeight);
   
   const initTblState = (initialState) => ({
     ...initialState,
@@ -201,9 +190,9 @@ const StudiesView = () => {
     }
 
     if (tableContainer) {
-      applyStudiesTableLayout(tableContainer, tableBodyHeight);
+      applyStudiesTableLayout(tableContainer);
     }
-  }, [tableBodyHeight]);
+  }, []);
 
   useEffect(() => {
     fetchAllStudies();
@@ -212,8 +201,6 @@ const StudiesView = () => {
   useEffect(() => {
     const handleResize = () => {
       resetStudiesTableColumnWidths();
-      setTableBodyHeight(getTableBodyHeight());
-      setTableRegionHeight(getTableRegionHeight());
     };
 
     window.addEventListener('resize', handleResize);
@@ -261,7 +248,7 @@ const StudiesView = () => {
         observer.disconnect();
       }
     };
-  }, [loading, studiesData, tableRegionHeight, tableBodyHeight, applyTableLayout]);
+  }, [loading, studiesData, applyTableLayout]);
 
   return (
     <StudiesContainer>
@@ -281,10 +268,7 @@ const StudiesView = () => {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '50px' }}>Loading studies...</div>
         ) : (
-          <div
-            className="studiesTableWrapper"
-            style={{ height: `${tableRegionHeight}px` }}
-          >
+          <div className="studiesTableWrapper">
             <TableView
               initState={initTblState}
               themeConfig={themeConfig}
