@@ -3,10 +3,10 @@ import { useQuery } from '@apollo/client';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import StatsView from './StatsView';
 import { Typography } from '../../components/Wrappers/Wrappers';
-import { GET_PARTICIPANTS_STATS_QUERY } from '../../bento/globalStatsData';
+import { GET_GLOBAL_STATS_DATA_QUERY } from '../../bento/globalStatsData';
 
 const globalStatsController = () => {
-  const { loading, error, data } = useQuery(GET_PARTICIPANTS_STATS_QUERY, {
+  const { loading, error, data } = useQuery(GET_GLOBAL_STATS_DATA_QUERY, {
     fetchPolicy: 'no-cache',
   });
 
@@ -19,7 +19,7 @@ const globalStatsController = () => {
     );
   }
 
-  return <StatsView data={ data } />;
+  return <StatsView data={(data && data.searchParticipants) || {}} />;
 };
 
 export default globalStatsController;
