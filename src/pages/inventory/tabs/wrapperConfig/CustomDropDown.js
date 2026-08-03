@@ -497,14 +497,14 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
           })}
         </DropdownList>
       )}
-          <ConfirmationModal
-                classes={""}
-                open={showPopupMessage}
-                setOpen={() => { setShowPopupMessage("")  }}
-                handleConfirm={() => { setShowPopupMessage("") }}
-                deletionType={false}
-                message={showPopupMessage}
-            />
+      <ConfirmationModal
+        classes={""}
+        open={showPopupMessage}
+        setOpen={() => { setShowPopupMessage("")  }}
+        handleConfirm={() => { setShowPopupMessage("") }}
+        deletionType={false}
+        message={showPopupMessage}
+      />
     </DropdownContainer>
   );
 };
