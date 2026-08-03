@@ -643,103 +643,903 @@ query fileOverview(
 
 export const GET_COHORT_METADATA_QUERY = gql`
 query cohortMetadata(
-    # Demographics
-    $id: [String],
-
-    # Table config
-    $first: Int,
-    $offset: Int,
-    $order_by: String,
-    $sort_direction: String
+  $id: [String]
+  $first: Int
+  $offset: Int
+  $order_by: String
+  $sort_direction: String
 ) {
-
-cohortMetadata(
-    # Demographics
-    id: $id,
-
-    # Table config
-    first: $first,
-    offset: $offset,
-    order_by: $order_by,
+  cohortMetadata(
+    id: $id
+    first: $first
+    offset: $offset
+    order_by: $order_by
     sort_direction: $sort_direction
-) {
+  ) {
+    guid
+    study_id
     dbgap_accession
-
-    participants {
+    study_name
+    study_acronym
+    study_description
+    external_url
+    experimental_strategy_and_data_subtype
+    study_phase
+    study_data_types
+    promotion_status
+    crdc_id
+    study_period_start
+    study_period_stop
+    clinical_measure_files {
+      clinical_measure_file_id
+      file_name
+      data_category
+      file_type
+      file_description
+      md5sum
+      file_mapping_level
+      file_access
+      acl
+      authz
+      file_url
+      dcf_indexd_guid
+      checksum_algorithm
+      checksum_value
+      participant_list
+      guid
+      crdc_id
+      file_size
+    }
+    generic_files {
+      generic_file_id
+      file_name
+      data_category
+      file_type
+      file_description
+      md5sum
+      file_mapping_level
+      file_access
+      acl
+      authz
+      file_url
+      dcf_indexd_guid
+      guid
+      crdc_id
+      file_size
+    }
+    publications {
+      publication_id
+      pubmed_id
+      guid
+    }
+    study_admins {
+      study_admin_id
+      organism_species
+      adult_or_childhood_study
+      file_types_and_format
+      guid
+    }
+    study_arms {
+      study_arm_id
+      study_arm_description
+      clinical_trial_identifier
+      clinical_trial_repository
+      guid
+    }
+    study_fundings {
+      study_funding_id
+      funding_agency
+      grant_id
+      funding_source_program_name
+      guid
+    }
+    study_personnels {
+      study_personnel_id
+      personnel_name
+      personnel_type
+      email_address
+      institution
+      orcid
+      guid
+      crdc_id
+    }
+    study_statuses {
+      study_status_id
+      repository_name
+      version
+      study_repository_start
+      study_repository_released
+      external_url
+      release_status
+      guid
+      number_of_participants
+      number_of_samples
+      number_of_files
+      total_size_of_data_files
+    }
+    consent_groups {
+      consent_group_id
+      consent_group_name
+      consent_group_suffix
+      guid
+      participants {
+        id
         participant_id
-        dbgap_accession  
         race
         sex_at_birth
+        occupation
+        guid
+        crdc_id
+        consent_group_guid
+        study_guid
+        clinical_measure_files {
+          clinical_measure_file_id
+          file_name
+          data_category
+          file_type
+          file_description
+          md5sum
+          file_mapping_level
+          file_access
+          acl
+          authz
+          file_url
+          dcf_indexd_guid
+          checksum_algorithm
+          checksum_value
+          participant_list
+          guid
+          crdc_id
+          file_size
+        }
         diagnoses {
-            diagnosis_id
-            diagnosis
-            diagnosis_classification_system
-            diagnosis_category,
-            diagnosis_basis
-            disease_phase
-            anatomic_site
-            age_at_diagnosis
+          diagnosis_id
+          submitted_diagnosis
+          diagnosis
+          diagnosis_category
+          diagnosis_classification_system
+          diagnosis_basis
+          diagnosis_comment
+          disease_phase
+          tumor_spatial_extent
+          submitted_anatomic_site
+          anatomic_site
+          toronto_childhood_cancer_staging
+          tumor_stage_clinical_t
+          tumor_stage_clinical_n
+          tumor_stage_clinical_m
+          tumor_stage_source
+          tumor_grade
+          tumor_grade_source
+          year_of_diagnosis
+          laterality
+          guid
+          age_at_diagnosis
+        }
+        exposures {
+          exposure_id
+          alcohol_history
+          alcohol_intensity
+          asbestos_exposure
+          coal_dust_exposure
+          environmental_tobacco_smoke_exposure
+          radon_exposure
+          respirable_crystalline_silica_exposure
+          smoking_frequency
+          time_between_waking_and_first_smoke
+          tobacco_smoking_status
+          type_of_smoke_exposure
+          type_of_tobacco_used
+          guid
+          cigarettes_per_day
+          tobacco_smoking_onset_year
+          tobacco_smoking_quit_year
+          age_at_exposure
+          pack_years_smoked
+          years_smoked
+          alcohol_days_per_week
+          alcohol_drinks_per_day
+        }
+        family_relationships {
+          family_relationship_id
+          relationship
+          family_id
+          guid
+        }
+        laboratory_tests {
+          laboratory_test_id
+          laboratory_test_method
+          laboratory_test_name
+          specimen
+          test_result_text
+          test_result_modifier
+          test_result_numeric
+          test_result_unit
+          guid
+          age_at_laboratory_test
+          sensitivity
+        }
+        medical_histories {
+          medical_history_id
+          medical_history_category
+          medical_history_condition
+          guid
+        }
+        radiology_files {
+          radiology_file_id
+          file_name
+          data_category
+          file_type
+          file_description
+          md5sum
+          file_mapping_level
+          file_access
+          acl
+          authz
+          file_url
+          dcf_indexd_guid
+          anatomic_site
+          image_modality
+          deidentification_method
+          magnetic_field_strength
+          scanner_manufacturer
+          scanner_model
+          imaging_frequency
+          repetition_time
+          echo_time
+          inversion_time
+          flip_angle
+          pixel_spacing
+          slice_thickness
+          echoPulseSequenceCategoryCode
+          diffusionBValue
+          diffusionDirectionalityCode
+          resonantNucleusCode
+          acquisitionContrastCode
+          inversionRecoveryIndicator
+          pulseSequenceName
+          multipleSpinEchoIndicator
+          phaseContrastIndicator
+          timeOfFlightContrastIndicator
+          arterialSpinLabelingContrastCode
+          steadyStatePulseSequenceCode
+          echoPlanarPulseSequenceIndicator
+          saturationRecoveryIndicator
+          spectrallySelectedSuppressionCode
+          mrImageReconstructionProtocolElement
+          complexImageComponentCode
+          guid
+          crdc_id
+          file_size
+          participant_age_at_imaging
         }
         survivals {
-            survival_id
-            age_at_event_free_survival_status
-            age_at_last_known_survival_status
-            cause_of_death
-            event_free_survival_status
-            first_event
-            last_known_survival_status
+          survival_id
+          last_known_survival_status
+          first_event
+          event_free_survival_status
+          follow_up_category
+          follow_up_other
+          adverse_event
+          comorbidity
+          comorbidity_method_of_diagnosis
+          risk_factor
+          cause_of_death
+          guid
+          age_at_last_known_survival_status
+          age_at_event_free_survival_status
         }
-        treatments {
-            treatment_id
-            age_at_treatment_end
-            age_at_treatment_start
-            treatment_agent
-            treatment_type
+        synonyms {
+          synonym_id
+          repository_of_synonym_id
+          associated_id
+          domain_description
+          domain_category
+          data_location
+          guid
         }
-        treatment_responses {    
-            treatment_response_id
-            age_at_response
-            response
-            response_category
-            response_system
+        treatments_chemotherapy {
+          treatment_chemotherapy_id
+          treatment_type
+          chemotherapy_type
+          chemotherapy_agent
+          chemotherapy_class
+          chemotherapy_subclass
+          dose
+          dose_unit
+          dose_route
+          dose_frequency
+          protocol
+          guid
+          age_at_treatment_start
+          age_at_treatment_end
+        }
+        treatments_other {
+          treatment_other_id
+          treatment_type
+          other_treatment_type
+          guid
+          age_at_treatment_start
+          age_at_treatment_end
+        }
+        treatments_radiation {
+          treatment_radiation_id
+          treatment_type
+          radiation_therapy_type
+          beam_radiation_type
+          total_radiation_dose
+          total_radiation_dose_unit
+          anatomic_site
+          laterality_of_radiation_field
+          radiation_therapy_fraction
+          fraction_radiation_dose
+          fraction_radiation_dose_unit
+          guid
+          age_at_treatment_start
+          age_at_treatment_end
+        }
+        treatment_responses {
+          treatment_response_id
+          response
+          response_category
+          response_system
+          guid
+          age_at_response
+        }
+        treatments_surgery {
+          treatment_surgery_id
+          treatment_type
+          surgery_type
+          anatomic_site
+          resection_margin_status
+          guid
+          age_at_treatment_start
+          age_at_treatment_end
         }
         samples {
-            sample_id
-            anatomic_site
-            participant_age_at_collection
-            sample_tumor_status
+          sample_id
+          anatomic_site
+          sample_tumor_status
+          tumor_spatial_extent
+          sample_description
+          laterality
+          guid
+          crdc_id
+          participant_age_at_collection
+          percent_tumor
+          percent_necrosis
+          diagnoses {
+            diagnosis_id
+            submitted_diagnosis
+            diagnosis
+            diagnosis_category
+            diagnosis_classification_system
+            diagnosis_basis
+            diagnosis_comment
+            disease_phase
             tumor_spatial_extent
-        }
-        files {
+            submitted_anatomic_site
+            anatomic_site
+            toronto_childhood_cancer_staging
+            tumor_stage_clinical_t
+            tumor_stage_clinical_n
+            tumor_stage_clinical_m
+            tumor_stage_source
+            tumor_grade
+            tumor_grade_source
+            year_of_diagnosis
+            laterality
+            guid
+            age_at_diagnosis
+          }
+          generic_files {
+            generic_file_id
             file_name
             data_category
-            file_description
             file_type
-            file_size
-            study_id
-            participant_id
-            sample_id
-            file_id
-            anatomic_site
-            participant_age_at_collection
-            sample_description
-            percent_tumor
-            percent_necrosis
-            guid
+            file_description
             md5sum
-            library_selection
-            library_source_material
-            library_source_molecule
-            library_strategy
-            file_access
             file_mapping_level
-            consent_codes
+            file_access
+            acl
+            authz
+            file_url
+            dcf_indexd_guid
+            guid
+            crdc_id
+            file_size
+          }
+          genetic_analyses {
+            genetic_analysis_id
+            genomic_source_category
+            reported_significance
+            reported_significance_system
+            test
+            method
+            result
+            reference_genome
+            chromosome
+            cytoband
+            gene_symbol
+            transcript
+            exon
+            hgvs_coding
+            hgvs_protein
+            hgvs_genome
+            alteration
+            alteration_type
+            alteration_effect
+            iscn
+            status
+            fusion_partner_gene
+            fusion_partner_transcript
+            fusion_partner_exon
+            translocation_partner_chromosome
+            translocation_partner_cytoband
+            guid
+            age_at_genetic_analysis
+            allelic_ratio
+            vaf_numeric
+            dna_index_numeric
+          }
+          laboratory_tests {
+            laboratory_test_id
+            laboratory_test_method
+            laboratory_test_name
+            specimen
+            test_result_text
+            test_result_modifier
+            test_result_numeric
+            test_result_unit
+            guid
+            age_at_laboratory_test
+            sensitivity
+          }
+          methylation_array_files {
+            methylation_array_file_id
+            file_name
+            data_category
+            file_type
+            file_description
+            md5sum
+            file_mapping_level
+            file_access
+            acl
+            authz
+            file_url
+            dcf_indexd_guid
+            methylation_platform
+            reporter_label
+            guid
+            crdc_id
+            file_size
+          }
+          pathology_files {
+            pathology_file_id
+            file_name
+            data_category
+            file_type
+            file_description
+            md5sum
+            file_mapping_level
+            file_access
+            acl
+            authz
+            file_url
+            dcf_indexd_guid
+            image_modality
+            license
+            magnification
             fixation_embedding_method
             staining_method
+            deidentification_method
+            slim_url
+            guid
+            crdc_id
+            file_size
+          }
+          sequencing_files {
+            sequencing_file_id
+            file_name
+            data_category
+            file_type
+            file_description
+            md5sum
+            file_mapping_level
+            file_access
+            acl
+            authz
+            file_url
+            dcf_indexd_guid
+            library_id
+            library_selection
+            library_strategy
+            library_layout
+            library_source_material
+            library_source_molecule
+            design_description
+            platform
+            instrument_model
+            reference_genome_assembly
+            checksum_algorithm
+            checksum_value
+            custom_assembly_fasta_file_for_alignment
+            sequence_alignment_software
+            cDNA_read
+            cDNA_read_size
+            cDNA_read_offset
+            cell_barcode_offset
+            cell_barcode_read
+            cell_barcode_size
+            single_cell_entity
+            dissociation_method
+            end_bias
+            total_number_of_input_cells
+            library_construction_method
+            library_strand
+            protocols_link
+            reverse_transcription_primer
+            spike_in
+            UMI_barcode_offset
+            UMI_barcode_read
+            UMI_barcode_size
+            guid
+            crdc_id
+            file_size
+            number_of_bp
+            number_of_reads
+            avg_read_length
+            coverage
+          }
+          synonyms {
+            synonym_id
+            repository_of_synonym_id
+            associated_id
+            domain_description
+            domain_category
+            data_location
+            guid
+          }
+          cell_lines {
+            cell_line_id
+            source
+            guid
+            cell_line_passage_number
+            samples {
+              sample_id
+              anatomic_site
+              sample_tumor_status
+              tumor_spatial_extent
+              sample_description
+              laterality
+              guid
+              crdc_id
+              participant_age_at_collection
+              percent_tumor
+              percent_necrosis
+              diagnoses {
+                diagnosis_id
+                submitted_diagnosis
+                diagnosis
+                diagnosis_category
+                diagnosis_classification_system
+                diagnosis_basis
+                diagnosis_comment
+                disease_phase
+                tumor_spatial_extent
+                submitted_anatomic_site
+                anatomic_site
+                toronto_childhood_cancer_staging
+                tumor_stage_clinical_t
+                tumor_stage_clinical_n
+                tumor_stage_clinical_m
+                tumor_stage_source
+                tumor_grade
+                tumor_grade_source
+                year_of_diagnosis
+                laterality
+                guid
+                age_at_diagnosis
+              }
+              sequencing_files {
+                sequencing_file_id
+                file_name
+                data_category
+                file_type
+                file_description
+                md5sum
+                file_mapping_level
+                file_access
+                acl
+                authz
+                file_url
+                dcf_indexd_guid
+                library_id
+                library_selection
+                library_strategy
+                library_layout
+                library_source_material
+                library_source_molecule
+                design_description
+                platform
+                instrument_model
+                reference_genome_assembly
+                checksum_algorithm
+                checksum_value
+                custom_assembly_fasta_file_for_alignment
+                sequence_alignment_software
+                cDNA_read
+                cDNA_read_size
+                cDNA_read_offset
+                cell_barcode_offset
+                cell_barcode_read
+                cell_barcode_size
+                single_cell_entity
+                dissociation_method
+                end_bias
+                total_number_of_input_cells
+                library_construction_method
+                library_strand
+                protocols_link
+                reverse_transcription_primer
+                spike_in
+                UMI_barcode_offset
+                UMI_barcode_read
+                UMI_barcode_size
+                guid
+                crdc_id
+                file_size
+                number_of_bp
+                number_of_reads
+                avg_read_length
+                coverage
+              }
+            }
+          }
+          pdxes {
+            pdx_id
+            model_id
+            mouse_strain
+            sample_type_for_implantation
+            implantation_type
+            implantation_site
+            tumor_confirmed_not_to_be_mus_or_ebv_origin
+            is_tumor_from_untreated_patient
+            passage_number
+            passages_tested
+            validation_technique
+            guid
+            samples {
+              sample_id
+              anatomic_site
+              sample_tumor_status
+              tumor_spatial_extent
+              sample_description
+              laterality
+              guid
+              crdc_id
+              participant_age_at_collection
+              percent_tumor
+              percent_necrosis
+              cytogenomic_files {
+                cytogenomic_file_id
+                file_name
+                data_category
+                file_type
+                file_description
+                md5sum
+                file_mapping_level
+                file_access
+                acl
+                authz
+                file_url
+                dcf_indexd_guid
+                cytogenomic_platform
+                guid
+                crdc_id
+                file_size
+              }
+              diagnoses {
+                diagnosis_id
+                submitted_diagnosis
+                diagnosis
+                diagnosis_category
+                diagnosis_classification_system
+                diagnosis_basis
+                diagnosis_comment
+                disease_phase
+                tumor_spatial_extent
+                submitted_anatomic_site
+                anatomic_site
+                toronto_childhood_cancer_staging
+                tumor_stage_clinical_t
+                tumor_stage_clinical_n
+                tumor_stage_clinical_m
+                tumor_stage_source
+                tumor_grade
+                tumor_grade_source
+                year_of_diagnosis
+                laterality
+                guid
+                age_at_diagnosis
+              }
+              methylation_array_files {
+                methylation_array_file_id
+                file_name
+                data_category
+                file_type
+                file_description
+                md5sum
+                file_mapping_level
+                file_access
+                acl
+                authz
+                file_url
+                dcf_indexd_guid
+                methylation_platform
+                reporter_label
+                guid
+                crdc_id
+                file_size
+              }
+              pathology_files {
+                pathology_file_id
+                file_name
+                data_category
+                file_type
+                file_description
+                md5sum
+                file_mapping_level
+                file_access
+                acl
+                authz
+                file_url
+                dcf_indexd_guid
+                image_modality
+                license
+                magnification
+                fixation_embedding_method
+                staining_method
+                deidentification_method
+                slim_url
+                guid
+                crdc_id
+                file_size
+              }
+              sequencing_files {
+                sequencing_file_id
+                file_name
+                data_category
+                file_type
+                file_description
+                md5sum
+                file_mapping_level
+                file_access
+                acl
+                authz
+                file_url
+                dcf_indexd_guid
+                library_id
+                library_selection
+                library_strategy
+                library_layout
+                library_source_material
+                library_source_molecule
+                design_description
+                platform
+                instrument_model
+                reference_genome_assembly
+                checksum_algorithm
+                checksum_value
+                custom_assembly_fasta_file_for_alignment
+                sequence_alignment_software
+                cDNA_read
+                cDNA_read_size
+                cDNA_read_offset
+                cell_barcode_offset
+                cell_barcode_read
+                cell_barcode_size
+                single_cell_entity
+                dissociation_method
+                end_bias
+                total_number_of_input_cells
+                library_construction_method
+                library_strand
+                protocols_link
+                reverse_transcription_primer
+                spike_in
+                UMI_barcode_offset
+                UMI_barcode_read
+                UMI_barcode_size
+                guid
+                crdc_id
+                file_size
+                number_of_bp
+                number_of_reads
+                avg_read_length
+                coverage
+              }
+            }
+          }
         }
+      }
     }
-}}
+    cell_lines {
+      cell_line_id
+      source
+      guid
+      cell_line_passage_number
+      samples {
+        sample_id
+        anatomic_site
+        sample_tumor_status
+        tumor_spatial_extent
+        sample_description
+        laterality
+        guid
+        crdc_id
+        participant_age_at_collection
+        percent_tumor
+        percent_necrosis
+        sequencing_files {
+          sequencing_file_id
+          file_name
+          data_category
+          file_type
+          file_description
+          md5sum
+          file_mapping_level
+          file_access
+          acl
+          authz
+          file_url
+          dcf_indexd_guid
+          library_id
+          library_selection
+          library_strategy
+          library_layout
+          library_source_material
+          library_source_molecule
+          design_description
+          platform
+          instrument_model
+          reference_genome_assembly
+          checksum_algorithm
+          checksum_value
+          custom_assembly_fasta_file_for_alignment
+          sequence_alignment_software
+          cDNA_read
+          cDNA_read_size
+          cDNA_read_offset
+          cell_barcode_offset
+          cell_barcode_read
+          cell_barcode_size
+          single_cell_entity
+          dissociation_method
+          end_bias
+          total_number_of_input_cells
+          library_construction_method
+          library_strand
+          protocols_link
+          reverse_transcription_primer
+          spike_in
+          UMI_barcode_offset
+          UMI_barcode_read
+          UMI_barcode_size
+          guid
+          crdc_id
+          avg_read_length
+          coverage
+          file_size
+          number_of_bp
+          number_of_reads
+        }
+      }
+    }
+  }
+}
 `;
+
 
 export const GET_COHORT_MANIFEST_QUERY = gql`
   query cohortManifest(
