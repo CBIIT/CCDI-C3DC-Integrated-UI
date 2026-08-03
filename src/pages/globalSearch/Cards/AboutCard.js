@@ -17,9 +17,9 @@ const Anchor = ({ link, text, classes }) => {
 // Utility function to truncate title with start...end format
 const truncateTitle = (title, containerWidth) => {
   if (!title || !containerWidth) return { truncated: title, needsTruncation: false };
-  
+
   const maxTitleWidth = containerWidth * 0.5;
-  
+
   const tempElement = document.createElement('span');
   tempElement.style.position = 'absolute';
   tempElement.style.visibility = 'hidden';
@@ -27,34 +27,70 @@ const truncateTitle = (title, containerWidth) => {
   tempElement.style.fontFamily = 'Inter';
   tempElement.style.fontWeight = '500';
   tempElement.textContent = title;
-  
+
   document.body.appendChild(tempElement);
   const titleWidth = tempElement.offsetWidth;
   document.body.removeChild(tempElement);
-  
+
   if (titleWidth <= maxTitleWidth) {
     return { truncated: title, needsTruncation: false };
   }
-  
+
   const ellipsisWidth = 20;
   const availableWidth = maxTitleWidth - ellipsisWidth;
   const charWidth = titleWidth / title.length;
   const availableChars = Math.floor(availableWidth / charWidth);
-  
+
   if (availableChars <= 6) {
     return { truncated: title.substring(0, Math.max(3, availableChars)) + '...', needsTruncation: true };
   }
-  
+
   const startChars = Math.ceil(availableChars * 0.6);
   const endChars = Math.floor(availableChars * 0.4);
-  
+
   const startText = title.substring(0, startChars);
   const endText = title.substring(title.length - endChars);
-  
-  return { 
-    truncated: `${startText}...${endText}`, 
-    needsTruncation: true 
+
+  return {
+    truncated: `${startText}...${endText}`,
+    needsTruncation: true,
   };
+};
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const getHighlightedText = (textFragments, highlight, classes) => {
+  if (!textFragments.length) {
+    return null;
+  }
+
+  const textString = textFragments.reduce((searchResults, currentString) => {
+    const punctuationRegex = /[.,:;!?]$/;
+    if (punctuationRegex.test(currentString)) {
+      return `${searchResults} ${currentString.slice(0, -1)} ...`;
+    }
+    return `${searchResults} ${currentString} ... `;
+  }, '');
+
+  if (!highlight || !highlight.trim()) {
+    return <span>{textString}</span>;
+  }
+
+  const parts = textString.split(new RegExp(`(${escapeRegExp(highlight)})`, 'gi'));
+  const highlightLower = highlight.toLowerCase();
+
+  return (
+    <span>
+      {parts.map((part, i) => (
+        <span
+          key={`about_highlight_${i}`}
+          className={part.toLowerCase() === highlightLower ? classes.highlightText : undefined}
+        >
+          {part}
+        </span>
+      ))}
+    </span>
+  );
 };
 
 const AboutCard = ({
@@ -62,7 +98,7 @@ const AboutCard = ({
 }) => {
   const [containerWidth, setContainerWidth] = useState(0);
   const cardRef = useRef(null);
-  
+
   useEffect(() => {
     const measureWidth = () => {
       if (cardRef.current) {
@@ -73,41 +109,18 @@ const AboutCard = ({
     window.addEventListener('resize', measureWidth);
     return () => window.removeEventListener('resize', measureWidth);
   }, []);
-  
-  const results = data.text.map((result) => result.replaceAll('$', ''));
 
-  function getHighlightedText(text, highlight, classes) {
-    // Split on highlight term and include term into parts, ignore case
-    const textString = text.reduce((searchResults, currentString) => {
-      const punctuationRegex = /[.,:;!?]$/;
-      let newResults = searchResults;
-
-      if (punctuationRegex.test(currentString)) {
-        newResults = `${`${newResults} ${currentString.slice(0, -1)}`} ...`;
-      } else {
-        newResults = `${`${newResults} ${currentString}`} ... `;
-      }
-      return newResults;
-    }, '');
-    const parts = textString.split(new RegExp(`(${highlight})`, 'gi'));
-    return (
-      <span>
-        {' '}
-        {parts.map((part, i) => (
-          <span id={i} className={part.toLowerCase() === highlight.toLowerCase() ? classes.highlightText : {}}>
-            {part}
-          </span>
-        ))}
-        {' '}
-      </span>
-    );
-  }
-
+  // Backend wraps OpenSearch highlight hits with `$` delimiters (GS_HIGHLIGHT_DELIMITER).
+  const results = (data.text || []).map((result) => String(result).replaceAll('$', ''));
+  const pagePath = data.page || '';
+  const pageUrl = pagePath.match(/\w+:\/\//)
+    ? pagePath
+    : `${window.location.origin}${pagePath}`;
   const { truncated, needsTruncation } = truncateTitle(data.title, containerWidth);
-  
+
   return (
     <Grid item container className={classes.card} id={`global_search_card_${index}`} ref={cardRef}>
-      <Grid item xs={true} className={classes.propertyContainer}>
+      <Grid item xs className={classes.propertyContainer}>
         <div className={classes.titleRow}>
           <span className={classes.detailContainerHeader}>ABOUT</span>
           {needsTruncation ? (
@@ -124,16 +137,18 @@ const AboutCard = ({
         </div>
         <div className={classes.cardBody}>
           <div className={classes.text}>{getHighlightedText(results, searchText, classes)}</div>
-          <div className={classes.linkText}>
-            <Anchor link={data.page} text={`${window.location.origin}${data.page}`} classes={classes} />
-          </div>
+          {pagePath && (
+            <div className={classes.linkText}>
+              <Anchor link={pagePath} text={pageUrl} classes={classes} />
+            </div>
+          )}
         </div>
       </Grid>
     </Grid>
   );
 };
 
-const styles = (theme) => {
+const styles = () => {
   const mdBreakpoint = '@media (min-width: 750px)';
   const lgBreakpoint = '@media (min-width: 1000px)';
 
@@ -154,6 +169,10 @@ const styles = (theme) => {
       boxShadow: '0px 4px 20px 0px #00000040',
       marginBottom: '20px',
     },
+    propertyContainer: {
+      margin: '0px',
+      padding: '0px',
+    },
     indexContainer: {
       marginTop: '6px',
       fontFamily: 'Poppins',
@@ -167,44 +186,12 @@ const styles = (theme) => {
       marginRight: '20px',
       [mdBreakpoint]: {
         width: '49px',
-      }
-    },
-    infoContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      margin: '0px',
-      padding: '0px',
-    },
-    keyAndValueRow: {
-      display: 'flex',
-      margin: '0px',
-      padding: '0px',
-    },
-    row: {
-      display: 'flex',
-      flexDirection: 'column', // For smaller screens, stack items vertically
-      margin: '0px',
-      padding: '0px',
-      [lgBreakpoint]: {  // For larger screens, change to row layout
-        flexDirection: 'row',
-      },
-    },
-    column: {
-      flex: 1,
-      margin: '0px',
-      padding: '0px',
-      [lgBreakpoint]: {  // For larger screens, allow for two columns
-        flexBasis: '50%',
-      },
-    },
-    leftColumn: {
-      [lgBreakpoint]: {
-        marginLeft: '20px',
       },
     },
     titleRow: {
       marginBottom: '5px',
       display: 'flex',
+      alignItems: 'center',
     },
     detailContainerHeader: {
       margin: '0px',
@@ -222,6 +209,7 @@ const styles = (theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#BC8924',
+      flexShrink: 0,
     },
     cardTitle: {
       margin: '0px',
@@ -244,7 +232,36 @@ const styles = (theme) => {
       letterSpacing: '2%',
       textAlign: 'left',
       margin: '0px',
-      marginTop: '-2px',
+      marginTop: '8px',
+    },
+    text: {
+      fontFamily: 'Inter',
+      fontWeight: 400,
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: '#2E2E2E',
+      margin: '0 0 10px 0',
+    },
+    highlightText: {
+      color: '#05555C',
+      fontWeight: 700,
+    },
+    linkText: {
+      fontFamily: 'Inter',
+      fontWeight: 400,
+      fontSize: '15px',
+      lineHeight: '24px',
+    },
+    link: {
+      color: '#067781',
+      textDecoration: 'none',
+      fontFamily: 'Inter',
+      fontSize: '15px',
+      fontWeight: 400,
+      lineHeight: '24px',
+      '&:hover': {
+        textDecoration: 'underline',
+      },
     },
   };
 };

@@ -229,7 +229,7 @@ const CPIModal = ({
   const classes = useStyles();
   // const [sortBy, setSortBy] = useState('associated_id');
   // const [sortOrder, setSortOrder] = useState('asc');
-  const [data, setData] = useState(row.cpi_data);
+  const [data, setData] = useState(row.cpi_data || []);
   const themeConfig = createTheme(defaultTheme);
   const [selectedIds, setIds] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -237,10 +237,16 @@ const CPIModal = ({
   const dropdownRef = useRef(null);
 
   const navigation = useNavigate();
-  console.log(row);
+  const participantId = row.participant_id;
+  const studyId = row.study_id;
+
   useEffect(() => {
-    setData(row.cpi_data);
-  }, [row]);
+    // Reset all state when row or open status changes (match Explore CPIModal)
+    setData(row.cpi_data || []);
+    setIds([]);
+    setSelectAll(false);
+    setDropdownOpen(false);
+  }, [row, open]);
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
@@ -517,9 +523,6 @@ const CPIModal = ({
     },
   };
 
-  const participantId = row.participant_id;
-  const studyId = row.study_id;
-
   const displayColumns = [
     {
       dataField: 'associated_id',
@@ -673,6 +676,7 @@ const CPIModal = ({
           <Button
             style={viewInExploreButton}
             onClick={() => {
+              onClose();
               navigation(`/exploreParticipants?p_id=${participantId}&dbgap_accession=${studyId}`);
             }}
             disableRipple
