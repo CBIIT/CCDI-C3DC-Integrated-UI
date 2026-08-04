@@ -15,6 +15,7 @@ import { CohortStateContext } from '../../../../components/CohortSelectorState/C
 import { onAddParticipantsToCohort } from '../../../../components/CohortSelectorState/store/action';
 import ToastNotification from './ToastNotification';
 import ConsentCodesRow from '../ConsentCodesRow';
+import CPIModal from './CPIModal';
 
 /* const removeSquareBracketsFromString = (text) => {
   return text.replace(/\[|\]/g, '');
@@ -91,6 +92,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
     race_str,
     last_known_survival_status_str,
     consent_codes,
+    cpi_data,
   } = data;
 
   const classes = useStyles();
@@ -99,6 +101,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cohortDropdownOpen, setCohortDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', type: 'success' });
   const [treatmentTypeExpanded, setTreatmentTypeExpanded] = useState(false);
   const [treatmentAgentExpanded, setTreatmentAgentExpanded] = useState(false);
@@ -106,8 +109,20 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
   const dropdownRef = useRef(null);
   const cardRef = useRef(null);
 
+  const hasCpiData = Array.isArray(cpi_data) && cpi_data.length > 0;
+
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+    setDropdownOpen(false);
+    setCohortDropdownOpen(false);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   const handleCohortDropdownToggle = () => {
@@ -416,6 +431,14 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
 
   return (
     <div className={classes.card} ref={cardRef}>
+      {modalOpen ? (
+        <CPIModal
+          row={data}
+          open={modalOpen}
+          onClose={handleModalClose}
+        />
+      ) : null}
+
       {/* Header with participant title and actions button */}
       <div className={classes.cardHeader}>
         <Grid container alignItems="flex-start">
@@ -447,7 +470,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
             </div>
           </Grid>
           
-          {/* Available Actions button */}
+          {/* Available Actions button — always visible */}
           <Grid item className={classes.buttonAlignWithTitle}>
             <Box className={classes.dropdownContainer} ref={dropdownRef}>
               <Button 
@@ -462,6 +485,19 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
               {dropdownOpen && (
                 <Box className={classes.dropdown}>
                   <List className={classes.dropdownList}>
+                    {hasCpiData && (
+                      <ListItem
+                        button
+                        className={classes.dropdownItem}
+                        onClick={handleModalOpen}
+                      >
+                        <ListItemText
+                          primary="VIEW CPI MAPPING"
+                          className={classes.dropdownItemText}
+                        />
+                      </ListItem>
+                    )}
+
                     {cohorts.length > 0 && (
                       <ListItem 
                         button 
@@ -548,9 +584,16 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
           </div>
         </div>
         
-        {/* Study ID */}
+        {/* Study ID and CPI Mappings - grouped on one line */}
         <div className={classes.propertyLine}>
-          {renderInfo('Study ID:', study_id)}
+          <div className={classes.groupedProperties}>
+            <div className={classes.propertyGroup}>
+              {renderInfo('Study ID:', study_id)}
+            </div>
+            <div className={classes.propertyGroup}>
+              {renderInfo('CPI Mappings:', hasCpiData ? cpi_data.length : '0')}
+            </div>
+          </div>
         </div>
         
         {/* Treatment Type - with expand/collapse */}

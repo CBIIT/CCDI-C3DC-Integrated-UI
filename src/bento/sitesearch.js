@@ -144,6 +144,15 @@ export const SEARCH_PAGE_RESULT_PARTICIPANTS = gql`
         last_known_survival_status_str
         diagnosis_category_str
         consent_codes
+        cpi_data {
+          associated_id
+          repository_of_synonym_id
+          domain_description
+          domain_category
+          data_location
+          data_type
+          p_id
+        }
       }
     }
   }
