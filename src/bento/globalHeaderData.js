@@ -76,6 +76,11 @@ export const navbarSublists = {
       className: 'navMobileSubItem',
     },
     {
+      name: 'CCDI FAQs',
+      link: '/about',
+      className: 'navMobileSubItem',
+    },
+    {
       name: 'Release Notes',
       link: '/release-notes-pdf',
       className: 'navMobileSubItem',
