@@ -132,7 +132,8 @@ export const Tab = styled.button`
   flex: 0 0 auto;
   font-weight: ${(props) => (props.active ? '600' : '400')};
   color: ${(props) => (props.active ? '#3A7587' : '#4A5C5E')};
-  border-bottom: ${(props) => (props.active ? '5px solid #3A7587' : 'none')};
+  /* Always reserve underline height so bold/active state does not shift the label up */
+  border-bottom: 5px solid ${(props) => (props.active ? '#3A7587' : 'transparent')};
 `;
 
 /**
@@ -596,7 +597,7 @@ export const ModalRadioLabel = styled.label`
   font-size: 16px;
   font-weight: 400;
   line-height: 1.25;
-  color: #1C2B33;
+  color: #5C5C5C;
   cursor: pointer;
   max-width: 100%;
  
