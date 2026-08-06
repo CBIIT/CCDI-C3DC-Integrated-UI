@@ -26,12 +26,16 @@ COPY --from=build /usr/src/app/config/inject.template.js /usr/share/nginx/html/i
 COPY --from=build /usr/src/app/config/nginx.conf /etc/nginx/conf.d/configfile.template
 COPY --from=build /usr/src/app/config/entrypoint.sh /
 
-ENV PORT 80
+ENV PORT=8080
 
-ENV HOST 0.0.0.0
+ENV HOST=0.0.0.0
 
-RUN sh -c "envsubst '\$PORT'  < /etc/nginx/conf.d/configfile.template > /etc/nginx/conf.d/default.conf"
+RUN sh -c "envsubst '\$PORT'  < /etc/nginx/conf.d/configfile.template > /etc/nginx/conf.d/default.conf" \
+	&& sed -i '/^user /d' /etc/nginx/nginx.conf \
+	&& chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx /run
 
-EXPOSE 80
+EXPOSE 8080
+
+USER nginx
 
 ENTRYPOINT [ "sh", "/entrypoint.sh" ]
