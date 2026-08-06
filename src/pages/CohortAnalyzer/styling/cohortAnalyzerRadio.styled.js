@@ -30,8 +30,8 @@ export const CohortAnalyzerRadioLabel = styled.label`
   margin: 0;
   font-family: Poppins, sans-serif;
   font-size: 16px;
-  font-weight: 400;
-  color: #1C2B33;
+  font-weight: 300;
+  color: #5C5C5C;
   cursor: pointer;
 `;
 
@@ -42,7 +42,7 @@ export const CohortAnalyzerRadioFieldset = styled.fieldset`
   gap: 16px;
   padding: 0;
   margin: 10px 0 0;
-  color: #1C2B33;
+  color: #5C5C5C;
   font-size: 16px;
   font-family: Poppins, sans-serif;
   border: none;

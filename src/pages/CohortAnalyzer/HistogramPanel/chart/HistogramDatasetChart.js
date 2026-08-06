@@ -169,7 +169,7 @@ export function HistogramDatasetChart({
   const availableWidth = (estimatedChartWidth / dataLength) * 0.9;
 
   const verticalBarMargin = {
-    top: 20,
+    top: 8,
     right: 30,
     left: 10,
     bottom: bottomMargin,
@@ -209,7 +209,7 @@ export function HistogramDatasetChart({
 
   if (previewShell) {
     const shellMargin = {
-      top: 20,
+      top: 8,
       right: 30,
       left: 10,
       bottom: bottomMargin,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import DownloadIcon from '../../../../assets/icons/Download_Histogram_icon.svg';
 import ExpandIcon from '../../../../assets/icons/Expand_Histogram_icon.svg';
@@ -10,6 +10,9 @@ import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPrev
 import {
   HISTOGRAM_CARD_CHROME_HEIGHT,
   HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX,
+  HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+  HISTOGRAM_HEADER_PAD_TOP_PX,
+  HISTOGRAM_HEADER_PAD_BOTTOM_PX,
 } from '../histogramConstants';
 import {
   ChartWrapper,
@@ -73,12 +76,105 @@ export function HistogramBesideVennHistogramPortal({
   setChartTypeMenuDataset,
   chartTypeMenuRef,
   setChartVisualForPanel,
+  sharedStripHeaderHeightPx = HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+  sharedStripChromeHeightPx = HISTOGRAM_CARD_CHROME_HEIGHT,
+  reportStripHeaderHeight,
 }) {
   if (survivalSelected || !besideDatasetForColumn || survivalBesideVennTarget == null) {
     return null;
   }
 
-  const d = besideDatasetForColumn;
+  return createPortal(
+    <BesideVennHistogramCard
+      d={besideDatasetForColumn}
+      chartRef={chartRef}
+      histogramCardSizes={histogramCardSizes}
+      allInputsEmpty={allInputsEmpty}
+      chartPreviewMode={chartPreviewMode}
+      beginStripChartDrag={beginStripChartDrag}
+      endStripChartDrag={endStripChartDrag}
+      setDragOverDataset={setDragOverDataset}
+      captureHistogramDragCardSize={captureHistogramDragCardSize}
+      clearHistogramDragSize={clearHistogramDragSize}
+      getChartTitle={getChartTitle}
+      data={data}
+      filteredData={filteredData}
+      viewType={viewType}
+      chartVisualByPanelId={chartVisualByPanelId}
+      besideHistogramBarSums={besideHistogramBarSums}
+      besideStripPlotHeight={besideStripPlotHeight}
+      defaultPlotHeightPx={defaultPlotHeightPx}
+      besidePeerShellBox={besidePeerShellBox}
+      besideColumnPlotHeightPx={besideColumnPlotHeightPx}
+      cellHover={cellHover}
+      handleMouseEnter={handleMouseEnter}
+      handleMouseLeave={handleMouseLeave}
+      classes={classes}
+      setExpandedChart={setExpandedChart}
+      setActiveTab={setActiveTab}
+      downloadChart={downloadChart}
+      handleRemoveHistogramDataset={handleRemoveHistogramDataset}
+      handleHistogramCardResizeStart={handleHistogramCardResizeStart}
+      c1Name={c1Name}
+      c2Name={c2Name}
+      c3Name={c3Name}
+      draggingDataset={draggingDataset}
+      chartTypeMenuDataset={chartTypeMenuDataset}
+      setChartTypeMenuDataset={setChartTypeMenuDataset}
+      chartTypeMenuRef={chartTypeMenuRef}
+      setChartVisualForPanel={setChartVisualForPanel}
+      sharedStripHeaderHeightPx={sharedStripHeaderHeightPx}
+      sharedStripChromeHeightPx={sharedStripChromeHeightPx}
+      reportStripHeaderHeight={reportStripHeaderHeight}
+    />,
+    survivalBesideVennTarget,
+  );
+}
+
+function BesideVennHistogramCard({
+  d,
+  chartRef,
+  histogramCardSizes,
+  allInputsEmpty,
+  chartPreviewMode = false,
+  beginStripChartDrag,
+  endStripChartDrag,
+  setDragOverDataset,
+  captureHistogramDragCardSize,
+  clearHistogramDragSize,
+  getChartTitle,
+  data,
+  filteredData,
+  viewType,
+  chartVisualByPanelId,
+  besideHistogramBarSums,
+  besideStripPlotHeight,
+  defaultPlotHeightPx,
+  besidePeerShellBox = null,
+  besideColumnPlotHeightPx,
+  cellHover,
+  handleMouseEnter,
+  handleMouseLeave,
+  classes,
+  setExpandedChart,
+  setActiveTab,
+  downloadChart,
+  handleRemoveHistogramDataset,
+  handleHistogramCardResizeStart,
+  c1Name,
+  c2Name,
+  c3Name,
+  draggingDataset,
+  chartTypeMenuDataset,
+  setChartTypeMenuDataset,
+  chartTypeMenuRef,
+  setChartVisualForPanel,
+  sharedStripHeaderHeightPx,
+  sharedStripChromeHeightPx,
+  reportStripHeaderHeight,
+}) {
+  const chartTitleRef = useRef(null);
+  const actionButtonsRef = useRef(null);
   const isDragSourceHere = draggingDataset === d;
   const plotHeightPx =
     besidePeerShellBox && besideColumnPlotHeightPx != null
@@ -91,7 +187,33 @@ export function HistogramBesideVennHistogramPortal({
   const showChartBody = chartPreviewMode || hasDatasetData;
   const chartPreviewStyle = getChartPreviewContentStyle(chartPreviewMode);
 
-  return createPortal(
+  useLayoutEffect(() => {
+    if (typeof reportStripHeaderHeight !== 'function') return undefined;
+    const titleEl = chartTitleRef.current;
+    const actionsEl = actionButtonsRef.current;
+    if (!titleEl && !actionsEl) return undefined;
+
+    const measure = () => {
+      const contentH = Math.max(
+        titleEl ? titleEl.offsetHeight : 0,
+        actionsEl ? actionsEl.offsetHeight : 0,
+        CHART_HEADER_ACTION_ICON_PX,
+      );
+      reportStripHeaderHeight(
+        d,
+        contentH + HISTOGRAM_HEADER_PAD_TOP_PX + HISTOGRAM_HEADER_PAD_BOTTOM_PX,
+      );
+    };
+
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    if (titleEl) ro.observe(titleEl);
+    if (actionsEl) ro.observe(actionsEl);
+    return () => ro.disconnect();
+  }, [d, reportStripHeaderHeight, getChartTitle, filteredData, histogramCardSizes]);
+
+  return (
     <ChartWrapper
       data-ca-histogram-strip-dataset={d}
       ref={(el) => { chartRef.current[d] = el; }}
@@ -116,8 +238,8 @@ export function HistogramBesideVennHistogramPortal({
                   maxWidth: 'none',
                 }
                 : {}),
-              height: plotHeightPx + HISTOGRAM_CARD_CHROME_HEIGHT,
-              minHeight: plotHeightPx + HISTOGRAM_CARD_CHROME_HEIGHT,
+              height: plotHeightPx + sharedStripChromeHeightPx,
+              minHeight: plotHeightPx + sharedStripChromeHeightPx,
               flexShrink: 0,
               alignSelf: 'flex-start',
               boxSizing: 'border-box',
@@ -143,8 +265,13 @@ export function HistogramBesideVennHistogramPortal({
         endStripChartDrag();
       }}
     >
-      <HeaderSection>
-        <ChartTitle className={`${showChartBody ? '' : 'empty'}`}>
+      <HeaderSection
+        style={{
+          height: sharedStripHeaderHeightPx,
+          minHeight: sharedStripHeaderHeightPx,
+        }}
+      >
+        <ChartTitle ref={chartTitleRef} className={`${showChartBody ? '' : 'empty'}`}>
           <span
             role="button"
             tabIndex={0}
@@ -164,9 +291,11 @@ export function HistogramBesideVennHistogramPortal({
               style={{ display: 'block', flexShrink: 0 }}
             />
           </span>
-          <ChartTitleLabel>{getChartTitle(d)}</ChartTitleLabel>
+          <ChartTitleLabel>
+            <span data-ca-chart-title-text>{getChartTitle(d)}</span>
+          </ChartTitleLabel>
         </ChartTitle>
-        <ChartActionButtons>
+        <ChartActionButtons ref={actionButtonsRef}>
           <ChartTypeDropdownRoot
             ref={chartTypeMenuDataset === d ? chartTypeMenuRef : undefined}
           >
@@ -289,7 +418,6 @@ export function HistogramBesideVennHistogramPortal({
         onMouseDown={(ev) => handleHistogramCardResizeStart(ev, d)}
         style={{ opacity: allInputsEmpty ? 0.35 : 1, pointerEvents: allInputsEmpty ? 'none' : 'auto' }}
       />
-    </ChartWrapper>,
-    survivalBesideVennTarget,
+    </ChartWrapper>
   );
 }

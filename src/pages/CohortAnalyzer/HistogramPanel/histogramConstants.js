@@ -11,8 +11,19 @@ export const HISTOGRAM_CHART_PLOT_MIN_VH = 22;
 /** Card shell min height as % of viewport height (plot + chrome). */
 export const HISTOGRAM_CARD_SHELL_MIN_VH = 28;
 /** Plot + header, radios, padding, borders (~ full ChartWrapper height minus plot).
- *  Tuned so leftover space under the plot is ~30% of the prior ~38px gap (~11px). */
-export const HISTOGRAM_CARD_CHROME_HEIGHT = 97;
+ *  Tuned so leftover space under the plot is ~30% of the prior ~38px gap (~11px).
+ *  Base chrome assumes {@link HISTOGRAM_HEADER_BASE_HEIGHT_PX}; grow by
+ *  `(sharedHeaderPx - HISTOGRAM_HEADER_BASE_HEIGHT_PX)` when titles wrap. */
+export const HISTOGRAM_HEADER_PAD_TOP_PX = 14;
+export const HISTOGRAM_HEADER_PAD_BOTTOM_PX = 8;
+/** Single-line title / grab row (matches CHART_HEADER_ACTION_ICON_PX). */
+export const HISTOGRAM_HEADER_CONTENT_ROW_PX = 19;
+export const HISTOGRAM_HEADER_BASE_HEIGHT_PX =
+  HISTOGRAM_HEADER_PAD_TOP_PX + HISTOGRAM_HEADER_CONTENT_ROW_PX + HISTOGRAM_HEADER_PAD_BOTTOM_PX;
+/** Non-header chrome (radios, borders, content pad) — kept when header grows. */
+export const HISTOGRAM_CARD_NON_HEADER_CHROME_PX = 39;
+export const HISTOGRAM_CARD_CHROME_HEIGHT =
+  HISTOGRAM_HEADER_BASE_HEIGHT_PX + HISTOGRAM_CARD_NON_HEADER_CHROME_PX;
 /** Content area bottom padding under the plot (was 4px; reduced ~70%). */
 export const HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX = 1;
 /** Extra width for the dashed “drop here” preview vs the card layout width (visual breathing room). */

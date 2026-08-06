@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import DownloadIcon from '../../../../assets/icons/Download_Histogram_icon.svg';
 import ExpandIcon from '../../../../assets/icons/Expand_Histogram_icon.svg';
@@ -36,6 +36,9 @@ import {
   HISTOGRAM_CARD_CHROME_HEIGHT,
   HISTOGRAM_CARD_CONTENT_BOTTOM_PAD_PX,
   HISTOGRAM_STRIP_DROP_SLOT_WIDTH_EXTRA_PX,
+  HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+  HISTOGRAM_HEADER_PAD_TOP_PX,
+  HISTOGRAM_HEADER_PAD_BOTTOM_PX,
 } from '../histogramConstants';
 import { getChartPreviewContentStyle } from '../../utils/cohortAnalyzerChartPreview';
 
@@ -78,12 +81,49 @@ export function HistogramStripChartRow({
   setExpandedChart,
   setActiveTab,
   handleRemoveHistogramDataset,
+  sharedStripHeaderHeightPx = HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+  sharedStripChromeHeightPx = HISTOGRAM_CARD_CHROME_HEIGHT,
+  reportStripHeaderHeight,
   c1Name,
   c2Name,
   c3Name,
   besidePanelDraggingRef,
 }) {
   const dispatch = useDispatch();
+  const chartTitleRef = useRef(null);
+  const actionButtonsRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (typeof reportStripHeaderHeight !== 'function') return undefined;
+    const titleEl = chartTitleRef.current;
+    const actionsEl = actionButtonsRef.current;
+    if (!titleEl && !actionsEl) return undefined;
+
+    const measure = () => {
+      const contentH = Math.max(
+        titleEl ? titleEl.offsetHeight : 0,
+        actionsEl ? actionsEl.offsetHeight : 0,
+        CHART_HEADER_ACTION_ICON_PX,
+      );
+      reportStripHeaderHeight(
+        dataset,
+        contentH + HISTOGRAM_HEADER_PAD_TOP_PX + HISTOGRAM_HEADER_PAD_BOTTOM_PX,
+      );
+    };
+
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    if (titleEl) ro.observe(titleEl);
+    if (actionsEl) ro.observe(actionsEl);
+    return () => ro.disconnect();
+  }, [
+    dataset,
+    reportStripHeaderHeight,
+    getChartTitle,
+    filteredData,
+    histogramCardSizes,
+  ]);
 
   let valueA = 0;
   let valueB = 0;
@@ -98,7 +138,7 @@ export function HistogramStripChartRow({
   const cardSize = histogramCardSizes[dataset];
   const plotH = cardSize && cardSize.plotHeight != null ? cardSize.plotHeight : defaultPlotHeightPx;
   // Card shell height tracks plot + chrome so it cannot lag/settle independently of the chart.
-  const outerCardHeight = plotH + HISTOGRAM_CARD_CHROME_HEIGHT;
+  const outerCardHeight = plotH + sharedStripChromeHeightPx;
   const iconScale = histogramHeaderIconScale(plotH, defaultPlotHeightPx);
   const actionIconPx = Math.round(CHART_HEADER_ACTION_ICON_PX * iconScale);
   const chartTypeIconPx = Math.round(CHART_HEADER_CHART_TYPE_ICON_PX * iconScale);
@@ -238,9 +278,16 @@ export function HistogramStripChartRow({
         onDragOver={(e) => handleStripChartDragOver(e, dataset)}
         onDrop={(e) => handleStripChartDrop(e, dataset)}
       >
-        <HeaderSection>
-          <ChartTitle className={`${Array.isArray(data[dataset]) && data[dataset].length > 0 ? '' : 'empty'}`}>
-            <span
+        <HeaderSection
+          style={{
+            height: sharedStripHeaderHeightPx,
+            minHeight: sharedStripHeaderHeightPx,
+          }}
+        >
+          <ChartTitle
+            ref={chartTitleRef}
+            className={`${Array.isArray(data[dataset]) && data[dataset].length > 0 ? '' : 'empty'}`}
+          >            <span
               role="button"
               tabIndex={0}
               data-ca-chart-title-drag
@@ -264,7 +311,7 @@ export function HistogramStripChartRow({
               />
             </span>
             <ChartTitleLabel>
-              {getChartTitle(dataset)}
+              <span data-ca-chart-title-text>{getChartTitle(dataset)}</span>
               {Array.isArray(filteredData[dataset]) && filteredData[dataset].length > 5 && (
                 <ToolTip
                   maxWidth="335px"
@@ -280,20 +327,30 @@ export function HistogramStripChartRow({
                   interactive
                   arrowSize="30px"
                 >
-                  {/* Inline (not a flex sibling) so it hugs the last word of the
-                      title in both the live view and html-to-image PNG/PDF export. */}
-                  <img
-                    alt="Question Icon"
-                    src={questionIcon}
-                    width={10}
-                    style={{ border: '0px', display: 'inline', verticalAlign: 'text-top', marginLeft: '2px' }}
-                  />
+                  {/* Flex sibling of the title text (not vertical-align inline) so
+                      "?" sits on top while “Race” stays level with the grab. */}
+                  <span
+                    data-ca-chart-title-help
+                    style={{
+                      display: 'inline-flex',
+                      flexShrink: 0,
+                      lineHeight: 0,
+                    }}
+                  >
+                    <img
+                      alt="Question Icon"
+                      src={questionIcon}
+                      width={10}
+                      height={10}
+                      style={{ border: '0px', display: 'block' }}
+                    />
+                  </span>
                 </ToolTip>
               )}
             </ChartTitleLabel>
           </ChartTitle>
 
-          <ChartActionButtons>
+          <ChartActionButtons ref={actionButtonsRef}>
             <ChartTypeDropdownRoot
               ref={chartTypeMenuDataset === dataset ? chartTypeMenuRef : undefined}
             >
@@ -393,7 +450,7 @@ export function HistogramStripChartRow({
                       checked={viewType[dataset] === 'count'}
                       onChange={(e) => setViewType({ ...viewType, [dataset]: e.target.value })}
                     />
-                    # of Participants
+                    <span># of Participants</span>
                   </RadioLabel>
                   <RadioLabel>
                     <RadioInput
@@ -403,7 +460,7 @@ export function HistogramStripChartRow({
                       checked={viewType[dataset] === 'percentage'}
                       onChange={(e) => setViewType({ ...viewType, [dataset]: e.target.value })}
                     />
-                    % of Participants
+                    <span>% of Participants</span>
                   </RadioLabel>
                 </RadioGroup>
               </fieldset>

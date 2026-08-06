@@ -5,6 +5,9 @@ import {
   HISTOGRAM_PLOT_MIN_HEIGHT,
   HISTOGRAM_CARD_CHROME_HEIGHT,
   HISTOGRAM_CHART_STROKE_COLOR,
+  HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+  HISTOGRAM_HEADER_PAD_TOP_PX,
+  HISTOGRAM_HEADER_PAD_BOTTOM_PX,
 } from '../histogramConstants';
 
 export const barColors = {
@@ -94,7 +97,8 @@ export const ChartTitle = styled.h2`
   /* 1px between title text and trailing "?" (grab has its own margin). */
   column-gap: 1px;
   overflow: hidden;
-  height: 100%;
+  height: auto;
+  min-height: ${CHART_HEADER_ACTION_ICON_PX}px;
 
   & > [data-ca-chart-title-drag] {
     box-sizing: border-box;
@@ -118,30 +122,42 @@ export const ChartTitle = styled.h2`
 /** Title string beside the drag handle — wraps independently so new lines
  *  still start at the same horizontal inset as the first line of text. */
 export const ChartTitleLabel = styled.span`
-  /* Shrink-wrap to text so the "?" sits 1px away (not pushed by flex-grow). */
+  /* Shrink-wrap to text so the "?" sits next to the title (not pushed by flex-grow). */
   flex: 0 1 auto;
   min-width: 0;
-  /* Size to the text, not the available track. Without this a -webkit-box is
-     laid out at full width during html-to-image (PNG/PDF) export, pushing the
-     trailing "?" tooltip far from the title. Capped at 100% so it still wraps. */
+  /* Size to the text, not the available track. Without this a full-width label
+     during html-to-image (PNG/PDF) export pushes the trailing "?" far from the title.
+     Capped at 100% so it still wraps. */
   width: fit-content;
   max-width: 100%;
   align-self: flex-start;
   margin: 0;
   padding: 0;
-  line-height: 1;
+  /* Title text + optional "?" as siblings: text keeps the 19px grab row;
+     "?" top-aligns without shifting the title via vertical-align. */
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-start;
+  column-gap: 2px;
+  line-height: ${CHART_HEADER_ACTION_ICON_PX}px;
+  font-size: 18px;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
   /* Stay inside the fixed header; extra wrap lines are clipped, not grown into. */
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
 
-  /* Help "?" sits on the top of the title line (not vertically centered). */
+  & > [data-ca-chart-title-text] {
+    min-width: 0;
+    line-height: ${CHART_HEADER_ACTION_ICON_PX}px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   & img {
-    vertical-align: text-top;
+    display: block;
   }
 `;
 
@@ -291,43 +307,59 @@ export const HeaderSection = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  /* Fixed chrome — wrap mode must not grow the header past this size. */
-  height: 58px;
-  min-height: 58px;
-  max-height: 58px;
+  /* Base height for a single-line title; shared strip height may grow when any title wraps. */
+  min-height: ${HISTOGRAM_HEADER_BASE_HEIGHT_PX}px;
+  height: auto;
+  max-height: none;
   margin: 0;
   width: 100%;
   box-sizing: border-box;
-  /* Extra top padding so top-aligned header content reads as centered in the bar. */
-  padding: 14px 12px 8px 15px;
+  /* Slightly top-weighted padding; bottom kept tight so content reads centered. */
+  padding: ${HISTOGRAM_HEADER_PAD_TOP_PX}px 12px ${HISTOGRAM_HEADER_PAD_BOTTOM_PX}px 15px;
   margin-left: 0;
   border-bottom: 1px solid #e5e5e5;
   /* Visible so the chart-type dropdown can paint below the header chrome. */
   overflow: visible;
-  
 `;
 
 export const RadioGroup = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   /* Sit directly under the widget title (header left inset is 15px). */
-  margin: 0 0 2px 15px;
+  margin: 0 0 0 15px;
   gap: 16px;
   justify-content: flex-start;
   flex-direction: row;
+  flex-wrap: nowrap;
   width: auto;
   max-width: 100%;
 `;
 
 export const RadioLabel = styled.label`
   display: flex;
-  align-items: start;
+  flex-direction: row;
+  align-items: flex-start;
+  flex: 0 1 auto;
+  min-width: 0;
   font-family: Poppins;
-  font-size: 13px;
-  line-height: 1.0;
-  color: #494949;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 300;
+  color: #5C5C5C;
   cursor: pointer;
-  margin-top: 4px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  white-space: normal;
+  margin-left: -4px;
+
+  &:first-of-type {
+    margin-left: 7px;
+  }
+
+  /* Text wraps beside the radio (e.g. "# of" / "Participants"), not under it. */
+  & > span {
+    min-width: 0;
+  }
 `;
 
 export const RadioInput = styled.input`
@@ -335,5 +367,5 @@ export const RadioInput = styled.input`
   accent-color: #3A7587;
   width: 16px;
   height: 16px;
-  
+  flex-shrink: 0;
 `;
