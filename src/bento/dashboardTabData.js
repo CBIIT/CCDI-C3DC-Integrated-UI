@@ -1545,7 +1545,6 @@ export const GET_COHORT_MANIFEST_QUERY = gql`
   query cohortManifest(
     # Demographics
     $id: [String],
-
     # Table config
     $first: Int,
     $offset: Int,
@@ -1555,29 +1554,28 @@ export const GET_COHORT_MANIFEST_QUERY = gql`
     cohortManifest(
       # Demographics
       id: $id,
-
-  # Table config
-  first: $first,
-  offset: $offset,
-  order_by: $order_by,
-  sort_direction: $sort_direction
-) {
-  # Diagnosis
-  id
-  diagnosis
-
-      # Participants
+      # Table config
+      first: $first,
+      offset: $offset,
+      order_by: $order_by,
+      sort_direction: $sort_direction
+    ) {
+      # Participant
+      id
       participant_id
-      race
       sex_at_birth
+      race
 
       # Study
-      dbgap_accession
       study_id
 
-  __typename
-}}
-`
+      # Diagnosis
+      diagnosis
+
+      __typename
+    }
+  }
+`;
 
 export const GET_SAMPLES_OVERVIEW_QUERY = gql`
 query sampleOverview(

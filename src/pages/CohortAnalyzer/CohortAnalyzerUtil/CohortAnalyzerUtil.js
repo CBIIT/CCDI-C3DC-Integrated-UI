@@ -226,7 +226,7 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
 // Diagnosis/treatment overview bind `$id` → `participant_ids`, which expects
 // display `participant_id` values (UUIDs return empty). `participantOverview`
 // still filters by internal id — callers remap `id` ← `participant_pk` for that
-// path. `cohortManifest` / `cohortMetadata` use `participant_pk` (UUID).
+// path. `cohortManifest` / `cohortMetadata` use `id` (UUID).
 export function generateQueryVariable(cohortNames, state) {
     const pks = [];
     const displayIds = [];
