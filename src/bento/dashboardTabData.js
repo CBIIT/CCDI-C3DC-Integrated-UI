@@ -3485,7 +3485,6 @@ export const exploreParticipantsTabs = [
         downloadHeader: 'Diagnosis',
         display: true,
         sortable: false,
-        headerType: cellTypes.CUSTOM_ELEM,
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.EXPAND,
         role: cellTypes.DISPLAY,
