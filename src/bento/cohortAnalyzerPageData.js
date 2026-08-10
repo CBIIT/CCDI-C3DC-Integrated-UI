@@ -485,7 +485,7 @@ export const treatmentsTableConfig =
 export const analyzer_query = [participant_query, diagnosis_query, treatment_query];
 export const analyzer_tables = [tableConfig, diagnosesTableConfig, treatmentsTableConfig];
 // Table download/pagination must hit the overview query that matches paginationAPIField
-// (not cohortManifest, which uses participant_pk and a different response shape).
+// (not cohortManifest, which uses id and a different response shape).
 analyzer_tables.forEach((cfg, index) => {
   cfg.api = analyzer_query[index];
 });
