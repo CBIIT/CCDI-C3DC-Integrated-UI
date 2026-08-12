@@ -26,6 +26,7 @@ describe('About menu and announcements route', () => {
     const aboutSubmenu = navbarSublists.About;
     expect(aboutSubmenu.map((item) => item.name)).toEqual([
       'About',
+      "CCDI FAQs",
       'Release Notes',
       'User Guide',
     ]);
