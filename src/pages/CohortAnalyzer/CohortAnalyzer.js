@@ -5,7 +5,6 @@ import { CohortStateContext } from "../../components/CohortSelectorState/CohortS
 import { configColumn } from "../inventory/tabs/tableConfig/Column";
 import { onCreateNewCohort, onDeleteAllCohort, onDeleteSingleCohort } from "../../components/CohortSelectorState/store/action";
 import { tableConfig, analyzer_tables } from "../../bento/cohortAnalyzerPageData";
-import Stats from '../../components/Stats/GlobalStatsController';
 import ConfirmationModal from "../../components/CohortModal/components/shared/ConfirmationModal";
 import NavigateAwayModal from './components/navigateAwayModal';
 import { CohortModalContext } from "../../components/CohortModal/CohortModalContext";
@@ -393,7 +392,6 @@ export const CohortAnalyzer = () => {
                 open={showCohortModal}
                 onCloseModal={() => setShowCohortModal(false)}
             />
-            <Stats />
             <div className={classes.container}  >
 
                 <CohortSelector
