@@ -6,6 +6,14 @@ import { dataFormatTypes } from '@bento-core/table';
 import questionIcon from '../assets/icons/Question_Icon.svg';
 import React from 'react';
 
+// Sentinel age values from OpenSearch (-999) display as "Not Reported"
+const formatAgeValue = (dt) => {
+  if (dt === -999 || dt === '-999' || dt == null || dt === '') {
+    return 'Not Reported';
+  }
+  return dt.toString();
+};
+
 // --------------- Tooltip configuration --------------
 const createNewCohortToolTip = 
   <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
@@ -3632,8 +3640,10 @@ export const exploreParticipantsTabs = [
         display: true,
         hideable: true,
         tooltipText: 'sort',
-        role: cellTypes.COMMA,
-        cellType: cellTypes.COMMA,
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'anatomic_site',
@@ -4000,7 +4010,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: "age_at_treatment_end",
@@ -4009,7 +4021,9 @@ export const exploreParticipantsTabs = [
           hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: "treatment_type",
@@ -4106,7 +4120,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'dbgap_accession',
@@ -4202,7 +4218,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'dbgap_accession',
@@ -4232,7 +4250,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'first_event',
@@ -4361,12 +4381,7 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (!dt || dt === -999) {
-            return 'Not Reported';
-          }
-          return dt.toString();
-        },
+        dataFormatter: formatAgeValue,
         role: cellTypes.DISPLAY,
       },
       {
