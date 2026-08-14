@@ -1,0 +1,182 @@
+diff --git a/node_modules/@bento-core/local-find/src/UploadModal/components/FileUploader.js b/node_modules/@bento-core/local-find/src/UploadModal/components/FileUploader.js
+index 1111111..2222222 100644
+--- a/node_modules/@bento-core/local-find/src/UploadModal/components/FileUploader.js
++++ b/node_modules/@bento-core/local-find/src/UploadModal/components/FileUploader.js
+@@ -3,6 +3,7 @@
+   Button, Typography, Divider, withStyles,
+ } from '@material-ui/core';
+ import RefreshIcon from '@material-ui/icons/Refresh';
++import ToolTip from '@bento-core/tool-tip';
+ 
+ /**
+  * Creates a file upload component with CSV and TXT file
+@@ -59,7 +60,17 @@
+         {
+           filename ? (
+             <div className={classes.fileNameContainer}>
+-              <Typography className={classes.fileName}>{filename}</Typography>
++              <ToolTip
++                className={classes.fileNameTooltip}
++                classes={{ arrow: classes.fileNameTooltipArrow }}
++                title={filename}
++                arrow
++                placement="bottom"
++              >
++                <Typography className={classes.fileName} noWrap>
++                  {filename}
++                </Typography>
++              </ToolTip>
+               <RefreshIcon className={classes.refresh} onClick={onClear} />
+             </div>
+           ) : null
+@@ -115,7 +126,8 @@
+   },
+   horizontal: {
+     height: 1,
+-    width: 214,
++    width: '100%',
++    maxWidth: 214,
+     backgroundColor: '#FFFFFF',
+     marginTop: 30,
+   },
+@@ -124,20 +136,43 @@
+     flexDirection: 'column',
+     alignItems: 'center',
+     paddingTop: '16px',
++    width: '100%',
++    maxWidth: '100%',
++    boxSizing: 'border-box',
+   },
+   fileName: {
+     margin: 'unset',
+     color: '#0D4A94',
+     fontSize: 14,
++    minWidth: 0,
++    flex: '1 1 auto',
++    overflow: 'hidden',
++    textOverflow: 'ellipsis',
++    whiteSpace: 'nowrap',
+   },
+   fileNameContainer: {
+     display: 'flex',
+     alignItems: 'center',
++    width: '100%',
++    maxWidth: '100%',
++    minWidth: 0,
++    boxSizing: 'border-box',
+   },
++  // Match UploadModal help-icon ToolTip (customTooltip / customArrow).
++  fileNameTooltip: {
++    padding: 5,
++  },
++  fileNameTooltipArrow: {
++    '&::before': {
++      border: '#03A383 1px solid',
++    },
++  },
+   refresh: {
+     color: '#1F2F50',
+     height: 14,
+     cursor: 'pointer',
++    flexShrink: 0,
++    marginLeft: 4,
+   },
+ });
+ 
+diff --git a/node_modules/@bento-core/local-find/dist/UploadModal/components/FileUploader.js b/node_modules/@bento-core/local-find/dist/UploadModal/components/FileUploader.js
+index 1111111..2222222 100644
+--- a/node_modules/@bento-core/local-find/dist/UploadModal/components/FileUploader.js
++++ b/node_modules/@bento-core/local-find/dist/UploadModal/components/FileUploader.js
+@@ -7,6 +7,7 @@
+ var _react = _interopRequireDefault(require("react"));
+ var _core = require("@material-ui/core");
+ var _Refresh = _interopRequireDefault(require("@material-ui/icons/Refresh"));
++var _toolTip = _interopRequireDefault(require("@bento-core/tool-tip"));
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ /**
+  * Creates a file upload component with CSV and TXT file
+@@ -63,9 +64,18 @@
+     className: classes.filesection
+   }, filename ? /*#__PURE__*/_react.default.createElement("div", {
+     className: classes.fileNameContainer
++  }, /*#__PURE__*/_react.default.createElement(_toolTip.default, {
++    className: classes.fileNameTooltip,
++    classes: {
++      arrow: classes.fileNameTooltipArrow
++    },
++    title: filename,
++    arrow: true,
++    placement: "bottom"
+   }, /*#__PURE__*/_react.default.createElement(_core.Typography, {
+-    className: classes.fileName
+-  }, filename), /*#__PURE__*/_react.default.createElement(_Refresh.default, {
++    className: classes.fileName,
++    noWrap: true
++  }, filename)), /*#__PURE__*/_react.default.createElement(_Refresh.default, {
+     className: classes.refresh,
+     onClick: onClear
+   })) : null, /*#__PURE__*/_react.default.createElement(_core.Divider, {
+@@ -118,7 +128,8 @@
+   },
+   horizontal: {
+     height: 1,
+-    width: 214,
++    width: '100%',
++    maxWidth: 214,
+     backgroundColor: '#FFFFFF',
+     marginTop: 30
+   },
+@@ -126,24 +137,47 @@
+     display: 'flex',
+     flexDirection: 'column',
+     alignItems: 'center',
+-    paddingTop: '16px'
++    paddingTop: '16px',
++    width: '100%',
++    maxWidth: '100%',
++    boxSizing: 'border-box'
+   },
+   fileName: {
+     margin: 'unset',
+     color: '#0D4A94',
+-    fontSize: 14
++    fontSize: 14,
++    minWidth: 0,
++    flex: '1 1 auto',
++    overflow: 'hidden',
++    textOverflow: 'ellipsis',
++    whiteSpace: 'nowrap'
+   },
+   fileNameContainer: {
+     display: 'flex',
+-    alignItems: 'center'
++    alignItems: 'center',
++    width: '100%',
++    maxWidth: '100%',
++    minWidth: 0,
++    boxSizing: 'border-box'
+   },
++  // Match UploadModal help-icon ToolTip (customTooltip / customArrow).
++  fileNameTooltip: {
++    padding: 5
++  },
++  fileNameTooltipArrow: {
++    '&::before': {
++      border: '#03A383 1px solid'
++    }
++  },
+   refresh: {
+     color: '#1F2F50',
+     height: 14,
+-    cursor: 'pointer'
++    cursor: 'pointer',
++    flexShrink: 0,
++    marginLeft: 4
+   }
+ });
+ var _default = (0, _core.withStyles)(styles, {
+   withTheme: true
+ })(FileUploader);
+-exports.default = _default;
+\ No newline at end of file
++exports.default = _default;

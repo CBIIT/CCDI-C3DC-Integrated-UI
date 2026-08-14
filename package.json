@@ -122,7 +122,8 @@
     "test:ci": "TZ=UTC node scripts/test.js --ci --passWithNoTests --coverage --maxWorkers=2 --logHeapUsage",
     "lint": "eslint src --max-warnings=0",
     "lint:ci": "eslint src --ignore-path .gitignore --max-warnings=0",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -195,6 +196,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "patch-package": "^8.0.1",
     "redux-mock-store": "^1.5.5",
     "use-reducer-logger": "^1.0.2"
   }
