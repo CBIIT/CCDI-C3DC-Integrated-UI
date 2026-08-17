@@ -8,6 +8,12 @@ import React from 'react';
 
 // Sentinel age values from OpenSearch (-999) display as "Not Reported"
 const formatAgeValue = (dt) => {
+  if (Array.isArray(dt)) {
+    if (dt.length === 0) {
+      return 'Not Reported';
+    }
+    return dt.map((value) => formatAgeValue(value)).join('<br>');
+  }
   if (dt === -999 || dt === '-999' || dt == null || dt === '') {
     return 'Not Reported';
   }
@@ -4575,7 +4581,8 @@ export const exploreFilesTabs = [
         display: true,
         tooltipText: 'sort',
         cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.MODAL,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
         role: cellTypes.DISPLAY,
       },
       {
