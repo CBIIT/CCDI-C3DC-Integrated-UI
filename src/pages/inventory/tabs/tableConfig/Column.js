@@ -304,16 +304,24 @@ export const CustomCellView = (props) => {
       );
     }
   } else if (cellStyle === 'MODAL') {
-    // Parse the bracketed list of IDs (e.g., "[BS_TTVFCG7S, BS_R3XEWNNV, BS_0BNNT7Q]")
+    // Values may arrive as:
+    // - bracketed strings: "[BS_TTVFCG7S, BS_R3XEWNNV]"
+    // - GraphQL lists: participant_age_at_collection is [Int]
+    // - single scalars
     const rawData = props[dataField];
     let ids = [];
-    
-    if (rawData) {
-      // Remove brackets and split by comma
+
+    if (Array.isArray(rawData)) {
+      ids = rawData
+        .map((id) => (id == null ? '' : String(id).trim()))
+        .filter((id) => id.length > 0);
+    } else if (typeof rawData === 'string') {
       const cleaned = rawData.replace(/[[\]]/g, '').trim();
       if (cleaned) {
-        ids = cleaned.split(',').map(id => id.trim()).filter(id => id.length > 0);
+        ids = cleaned.split(',').map((id) => id.trim()).filter((id) => id.length > 0);
       }
+    } else if (rawData != null) {
+      ids = [String(rawData)];
     }
     
     if (ids.length === 0) {
