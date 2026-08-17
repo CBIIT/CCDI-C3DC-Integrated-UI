@@ -326,8 +326,7 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
           variables: { ...activeFilters, first: 4000 },
           fetchPolicy: 'network-only'
         });
-        toBeAdded = data.participantOverview.map((item) => ({ participant_id: item.participant_id, id: item.id, dbgap_accession: item.dbgap_accession }));
-
+        toBeAdded = data.participantOverview.map((item) => ({ participant_id: item.participant_id, id: item.id, study_id: item.study_id }));
       }
 
       checkedItems.forEach((item)=>dispatch(onAddParticipantsToCohort(
@@ -360,7 +359,7 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
           variables: { ...activeFilters, first: 4000 },
           fetchPolicy: 'network-only'
         });
-        toBeAdded = data.participantOverview.map((item) => ({ participant_id: item.participant_id, id: item.id, dbgap_accession: item.dbgap_accession }));
+        toBeAdded = data.participantOverview.map((item) => ({ participant_id: item.participant_id, id: item.id, study_id: item.study_id }));
       }
 
       let participantCount = null;
