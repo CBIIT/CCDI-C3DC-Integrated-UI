@@ -3824,12 +3824,14 @@ export const exploreParticipantsTabs = [
       },
       {
         dataField: 'gene_symbol',
-        header: 'Gene Symbol',
+        header: 'Gene Symbol (Top 5)',
+        downloadHeader: 'Gene Symbol',
         display: true,
         hideable: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        sortable: false,
         cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.EXPAND,
+        role: cellTypes.DISPLAY,
       },
       {
         dataField: 'status',
