@@ -38,6 +38,27 @@ const formatRaceValue = (dt) => {
     .join('; ');
 };
 
+// OpenSearch array-as-string values: "[Complete Response]" => "Complete Response"
+const formatBracketedValue = (dt) => {
+  if (Array.isArray(dt)) {
+    return dt
+      .map((value) => formatBracketedValue(value))
+      .filter((value) => value !== '')
+      .join(', ');
+  }
+  if (dt == null || dt === '') {
+    return '';
+  }
+  const text = String(dt).trim();
+  if (text === '[]') {
+    return '';
+  }
+  if (text.startsWith('[') && text.endsWith(']')) {
+    return text.slice(1, -1).trim();
+  }
+  return text;
+};
+
 // --------------- Tooltip configuration --------------
 const createNewCohortToolTip = 
   <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
@@ -4123,7 +4144,9 @@ export const exploreParticipantsTabs = [
         hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: "treatment_response_id",
@@ -4131,16 +4154,22 @@ export const exploreParticipantsTabs = [
         display: true,
         hideable: false,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: 'response',
         header: 'Response',
         display: true,
         hideable: true,
-      tooltipText: "sort",
-      role: cellTypes.DISPLAY,
-    },
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
+      },
     {
       dataField: "age_at_response",
       header: "Age at Response",
@@ -4171,7 +4200,10 @@ export const exploreParticipantsTabs = [
         display: false,
         hideable: true,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: "response_system",
@@ -4179,7 +4211,10 @@ export const exploreParticipantsTabs = [
         display: false,
         hideable: true,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
     ],
     id: 'treatment_response_tab',
