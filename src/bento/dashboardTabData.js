@@ -20,6 +20,24 @@ const formatAgeValue = (dt) => {
   return dt.toString();
 };
 
+const formatRaceValue = (dt) => {
+  if (Array.isArray(dt)) {
+    return dt
+      .map((value) => (value == null ? '' : String(value).trim()))
+      .filter(Boolean)
+      .join('; ');
+  }
+  if (dt == null || dt === '') {
+    return '';
+  }
+  return String(dt)
+    .replace(/^\[|\]$/g, '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .join('; ');
+};
+
 // --------------- Tooltip configuration --------------
 const createNewCohortToolTip = 
   <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
@@ -3415,6 +3433,9 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
         hideable: true,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatRaceValue,
       },
     ],
     id: 'participant_tab',
@@ -3803,12 +3824,14 @@ export const exploreParticipantsTabs = [
       },
       {
         dataField: 'gene_symbol',
-        header: 'Gene Symbol',
+        header: 'Gene Symbol (Top 5)',
+        downloadHeader: 'Gene Symbol',
         display: true,
         hideable: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        sortable: false,
         cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.EXPAND,
+        role: cellTypes.DISPLAY,
       },
       {
         dataField: 'status',
