@@ -388,14 +388,21 @@ export const CustomCellView = (props) => {
       </Tooltip>
     )
   } else if (dataField === 'cohort') {
+    // Cohort Analyzer rows set `cohort` to [{ color, cohort }, ...] via addCohortColumn.
+    // Guard non-arrays (missing/stale cell values) so table view does not crash on .map.
+    const cohorts = Array.isArray(label) ? label : [];
+    if (cohorts.length === 0) {
+      return null;
+    }
     return (
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
         {
-          label.map((cohort, index) => (
-            <Tooltip title={<div>
-
-              {label.map((coh, innerIndex) => (
-                <div style={{ display: 'flex', gap: 10, marginBottom: 5 }}>
+          cohorts.map((cohort, index) => (
+            <Tooltip
+              key={`${cohort.cohort || 'cohort'}-${index}`}
+              title={<div>
+              {cohorts.map((coh, innerIndex) => (
+                <div key={`${coh.cohort || 'coh'}-${innerIndex}`} style={{ display: 'flex', gap: 10, marginBottom: 5 }}>
                   <div style={{
                     backgroundColor: coh["color"],
                     width: 17,
@@ -406,10 +413,11 @@ export const CustomCellView = (props) => {
                   </div>
                   {coh["cohort"]}
                 </div>
-              ))
-              }
-
-            </div>} arrow placement="top">
+              ))}
+            </div>}
+              arrow
+              placement="top"
+            >
               <div style={{
                 backgroundColor: cohort["color"],
                 width: 17,
