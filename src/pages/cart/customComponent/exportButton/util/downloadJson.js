@@ -15,6 +15,39 @@ export function createFileName(fileName) {
     return `${fileName} ${todaysDate} ${hours}-${minutes}-${seconds}${'.csv'}`;
   }
 
+export function formatManifestCellValue(keyName, value) {
+  if (value == null || value === '') {
+    return '';
+  }
+
+  let normalized = value;
+  if (Array.isArray(value)) {
+    normalized = value
+      .filter((entry) => entry != null && String(entry).trim() !== '')
+      .map(String)
+      .join(',');
+  } else {
+    normalized = String(value);
+  }
+
+  if (keyName === 'guid' && normalized !== '') {
+    return `drs://nci-crdc.datacommons.io/${normalized}`;
+  }
+
+  return normalized;
+}
+
+function escapeCsvCell(value) {
+  if (value == null || value === '') {
+    return ' ';
+  }
+  const escaped = String(value).replace(/"/g, '""');
+  if (/("|,|\n|\r)/.test(escaped)) {
+    return `"${escaped}"`;
+  }
+  return escaped;
+}
+
   export function convertToCSV(jsonse, comments, keysToInclude, header) {
     const objArray = jsonse;
     const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
@@ -23,13 +56,8 @@ export function createFileName(fileName) {
       let line = '';
       keysToInclude.map((keyName) => {
         if (line !== '') line += ',';
-        let columnResult = entry[keyName];
-        if (keyName === 'guid') {
-          columnResult = 'drs://nci-crdc.datacommons.io/'.concat(entry[keyName]);
-        }
-        if (typeof columnResult === 'string') columnResult.replace(/"/g, '""');
-        if (typeof columnResult === 'string' && columnResult.search(/("|,|\n)/g) >= 0) columnResult = `"${columnResult}"`;
-        line += columnResult !== null ? columnResult : ' ';
+        const columnResult = formatManifestCellValue(keyName, entry[keyName]);
+        line += escapeCsvCell(columnResult);
         return line;
       });
       if (index === 0) {
