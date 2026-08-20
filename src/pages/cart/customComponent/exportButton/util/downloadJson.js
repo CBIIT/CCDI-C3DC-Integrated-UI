@@ -25,7 +25,7 @@ export function formatManifestCellValue(keyName, value) {
     normalized = value
       .filter((entry) => entry != null && String(entry).trim() !== '')
       .map(String)
-      .join(',');
+      .join(';');
   } else {
     normalized = String(value);
   }
