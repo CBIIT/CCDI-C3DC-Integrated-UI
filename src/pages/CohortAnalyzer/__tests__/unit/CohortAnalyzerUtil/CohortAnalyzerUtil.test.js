@@ -80,20 +80,28 @@ describe('CohortAnalyzerUtil', () => {
     const state = {
       'cohort a': {
         cohortName: 'Cohort A',
-        participants: [{ participant_pk: 'pk1' }],
+        participants: [{ id: 'pk1', participant_pk: 'pk1' }],
       },
     };
 
     it('adds cohort column using participant_pk', () => {
       const rows = [{ participant_pk: 'pk1', value: 1 }];
       const result = addCohortColumn(rows, state, ['cohort a'], 'other');
-      expect(result[0].cohort).toBeDefined();
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Cohort A' },
+      ]);
     });
 
     it('adds cohort column using id for treatment type', () => {
       const rows = [{ id: 'pk1', value: 1 }];
       const result = addCohortColumn(rows, state, ['cohort a'], 'treatment');
-      expect(result[0].cohort).toBeDefined();
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Cohort A' },
+      ]);
+    });
+
+    it('returns empty array when row data is not an array', () => {
+      expect(addCohortColumn(null, state, ['cohort a'])).toEqual([]);
     });
   });
 

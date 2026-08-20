@@ -89,6 +89,9 @@ export const getAllIds = (generalInfo) => {
 }
 
 export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") => {
+    if (!Array.isArray(rowD)) {
+        return [];
+    }
     let finalRowData = rowD.map((row) => {
         if (type === "other") {
 
@@ -112,22 +115,25 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
 }
 
 const getCohortName = (pk, state, selectedCohorts) => {
-    const cohortNames = selectedCohorts
-        .filter(cohortKey =>
-            state[cohortKey].participants.some((participant) => (
-                getParticipantPk(participant) === pk
-                || participant.participant_id === pk
-            ))
-        ).map(cohortKey => state[cohortKey].cohortName);
-    let finalResponse = [];
     const baseColorArray = ["#F0D571", "#A4E9CB", "#A3CCE8"];
-    selectedCohorts.forEach((cohort, index) => {
-        let indexOfHashKey = cohortNames.map(name => name.toLowerCase()).indexOf(cohort.toLowerCase());
-        if (indexOfHashKey >= 0) {
-            finalResponse.push({ color: baseColorArray[index], "cohort": cohortNames[indexOfHashKey] })
+    // Match by selected cohort key (and membership), not by comparing keys to display names.
+    return (selectedCohorts || []).reduce((acc, cohortKey, index) => {
+        const cohortState = state && state[cohortKey];
+        if (!cohortState || !Array.isArray(cohortState.participants)) {
+            return acc;
         }
-    })
-    return finalResponse;
+        const inCohort = cohortState.participants.some((participant) => (
+            getParticipantPk(participant) === pk
+            || participant.participant_id === pk
+        ));
+        if (inCohort) {
+            acc.push({
+                color: baseColorArray[index % baseColorArray.length],
+                cohort: cohortState.cohortName || cohortKey,
+            });
+        }
+        return acc;
+    }, []);
 }
 
 export const resetSelection = (setSelectedCohorts, setNodeIndex, setRowData) => {

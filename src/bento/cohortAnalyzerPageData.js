@@ -70,7 +70,8 @@ export const tableConfig = {
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'participant_tab',
@@ -143,7 +144,8 @@ export const diagnosesTableConfig =
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'participant_tab',
@@ -470,7 +472,8 @@ export const treatmentsTableConfig =
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'treatment_tab',
