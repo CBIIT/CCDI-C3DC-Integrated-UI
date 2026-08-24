@@ -54,7 +54,15 @@ const dynamicFetchPolicyLink = new ApolloLink((operation, forward) => {
 // });
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      // cohortManifest rows reuse participant UUID as `id`, so one participant
+      // with multiple diagnoses must not collapse to a single cached entity.
+      CohortManifestResult: {
+        keyFields: ['participant_id', 'diagnosis'],
+      },
+    },
+  }),
   link: ApolloLink.from([
     dynamicFetchPolicyLink,
     ApolloLink.split(
