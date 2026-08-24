@@ -43,16 +43,13 @@ export async function getAllIds() {
   return [];
 }
 
-/** Max participant rows merged into autocomplete options (synonyms are always appended in full). */
-const MAX_PARTICIPANT_AUTOCOMPLETE = 25000;
-
 /** Pre-built autocomplete rows (participant + synonym); avoids remapping on every search open. */
 let cachedParticipantSearchOptions = null;
 
 /**
  * Participant local-find suggestions: participant IDs plus associated synonym rows.
  * Uses cached GraphQL idsLists and caches the mapped array for the session.
- * Participant list is capped so the merged array stays bounded; all synonym rows are kept.
+ * All participant IDs are included so search can match IDs beyond an arbitrary prefix slice.
  *
  * @async
  * @returns {Promise<Array<{ type: string, title: string, synonym?: string }>>}
@@ -73,10 +70,7 @@ export async function getParticipantSearchSuggestions() {
       synonym: item.associated_id,
     }))
     : [];
-  const cappedParticipants = participantSuggestions.length > MAX_PARTICIPANT_AUTOCOMPLETE
-    ? participantSuggestions.slice(0, MAX_PARTICIPANT_AUTOCOMPLETE)
-    : participantSuggestions;
-  cachedParticipantSearchOptions = cappedParticipants.concat(associatedIdsSuggestions);
+  cachedParticipantSearchOptions = participantSuggestions.concat(associatedIdsSuggestions);
   return cachedParticipantSearchOptions;
 }
 
