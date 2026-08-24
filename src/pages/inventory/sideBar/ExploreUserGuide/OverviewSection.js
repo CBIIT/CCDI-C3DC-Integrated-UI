@@ -9,7 +9,7 @@ const OverviewSection = ({ classes }) => (
     <div className={classes.contentContainer}>
       <p>
         The{" "}
-        <a href="/explore">
+        <a href="/exploreParticipants">
           C3DC Explore Dashboard
         </a>{" "}
         allows for the exploration of demographic and harmonized clinical data

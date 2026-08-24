@@ -15,7 +15,7 @@ const FindDataSection = ({ classes }) => (
     </div>
     <div className={classes.contentContainer}>
       <p>
-        The <a href="/explore">C3DC Explore Dashboard</a> provides row-level
+        The <a href="/exploreParticipants">C3DC Explore Dashboard</a> provides row-level
         metadata and harmonized clinical data for participants with features
         including faceted filters, select visualizations, and an exportable
         table of results. The C3DC Explore Dashboard is participant-centric, meaning that

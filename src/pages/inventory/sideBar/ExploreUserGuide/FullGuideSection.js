@@ -8,12 +8,12 @@ const FullGuideSection = ({ classes }) => (
     <div className={classes.contentContainer}>
       <p  style={{ paddingBottom: '100px' }}>
         To learn more about the{" "}
-        <a href="/explore">
+        <a href="/exploreParticipants">
           C3DC Explore Dashboard
         </a>{" "}
         and accessing harmonized clinical data, please see the complete{" "}
         <a
-          href="/user_guide"
+          href="/user-guide.pdf"
           className={classes.link}
           target="_blank"
           rel="noopener noreferrer"
