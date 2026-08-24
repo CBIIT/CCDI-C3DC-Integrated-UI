@@ -162,7 +162,7 @@ const UseGuideButton = ({classes}) => {
                                         <p>The CCDI Hub Explore Dashboard provides row-level metadata for CCDI study participants and their data objects for review with a filtered search, select visualizations, and an exportable table of results. Here’s how to find and filter information on the Explore Dashboard:</p>
                                         <ol>
                                             <li>
-                                                The CCDI Hub is located at <a href={CCDI_BASE_URL}>ccdi.cancer.gov</a>. From the CCDI Hub Home page, navigate to the Explore Dashboard by clicking “Explore” (Figure 2).
+                                                The CCDI Hub is located at <a href={CCDI_BASE_URL} className={classes.link} target="_blank" rel="noopener noreferrer">ccdi.cancer.gov</a>. From the CCDI Hub Home page, navigate to the Explore Dashboard by clicking “Explore” (Figure 2).
                                                 <div className={classes.figureContainer}><img src={figure2} style={{width: '60%'}} alt='Figure2'/></div>
                                                 <div className={classes.figureText}>Figure 2: CCDI homepage with red box highlighting the “Explore” menu bar link</div> 
                                             </li>
@@ -178,7 +178,7 @@ const UseGuideButton = ({classes}) => {
                                             </li>
                                             <li>Filtering your search will update the Explore Dashboard’s visualizations and the results tables (Figure 5). Each results table will be updated with information on the participants, samples, studies, or files that meet the filtered criteria. Information displayed by default on each table is described below:
                                                 <ol className={classes.alphaList}>
-                                                    <li>“Participants”: Characteristics of a participant in the Explore Dashboard. Participants belong to a study, and they may have one or more samples, diagnoses, or files associated with them. Participant mappings from the <a href={`${CCDI_BASE_URL}/ccdi-participant-index`} target="_blank" rel="noopener noreferrer">CCDI Participant Index (CPI)</a> have a summary of these mappings available from this tab and full mapping details are available by clicking on the adjacent icon.</li>
+                                                    <li>“Participants”: Characteristics of a participant in the Explore Dashboard. Participants belong to a study, and they may have one or more samples, diagnoses, or files associated with them. Participant mappings from the <a href={`${CCDI_BASE_URL}/ccdi-participant-index`} className={classes.link} target="_blank" rel="noopener noreferrer">CCDI Participant Index (CPI)</a> have a summary of these mappings available from this tab and full mapping details are available by clicking on the adjacent icon.</li>
                                                     <li>“Studies”: Studies that are a part of the Explore Dashboard. Participants, diagnosis, samples, and files all belong to a CCDI study.</li>
                                                     <li>“Samples”: Samples available from participants within the Explore Dashboard. Samples belong to a participant and can be associated with one or more files.</li>
                                                     <li>
