@@ -16,6 +16,7 @@ import { onAddParticipantsToCohort } from '../../../../components/CohortSelector
 import ToastNotification from './ToastNotification';
 import ConsentCodesRow from '../ConsentCodesRow';
 import CPIModal from './CPIModal';
+import { formatCartAddMessage, getCartAddCounts } from '@bento-core/cart';
 
 /* const removeSquareBracketsFromString = (text) => {
   return text.replace(/\[|\]/g, '');
@@ -189,46 +190,22 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
         const ids = [...new Set(idsInitial)];
         const fileCount = ids.length;
         if (fileCount <= upperLimit && cartCount < upperLimit) {
-                  if (cartCount + ids.length <= upperLimit) {
-                    // Check for duplicates first
-                    const cartFilesDict = {};
-                    cartFiles.forEach((file) => { cartFilesDict[file] = true; });
-                    const newIds = checkDuplicate(cartFilesDict, ids);
-                    
-                    if (newIds.length === 0) {
-                      // All files are already in cart
-                      showNotification('Files already in cart', 'info');
-                    } else {
-                      // Add new files to cart
-                      addFiles(newIds);
-                      showNotification(`${newIds.length} File(s) successfully added to your cart`, 'success');
-                    }
+          const { addedCount, alreadyInCartCount } = getCartAddCounts(cartFiles, ids);
+          const cartFilesDict = {};
+          cartFiles.forEach((file) => { cartFilesDict[file] = true; });
+          const newIds = checkDuplicate(cartFilesDict, ids);
 
-                    if (setOpenSnackbar) {
-                      setOpenSnackbar(true);
-                    }
-                  } else {
-                    const cartFilesDict = {};
-                    cartFiles.forEach((file) => { cartFilesDict[file] = true; });
-                    const newIds = checkDuplicate(cartFilesDict, ids);
-                    if (cartCount + newIds.length <= upperLimit) {
-                      if (newIds.length === 0) {
-                        // All files are already in cart
-                        showNotification('Files already in cart', 'info');
-                      } else {
-                        // Add new files to cart
-                        addFiles(newIds);
-                        showNotification(`${newIds.length} File(s) successfully added to your cart`, 'success');
-                      }
-                      if (setOpenSnackbar) {
-                        setOpenSnackbar(true);
-                      }
-                    } else {
-                      if (setAlterDisplay) {
-                        setAlterDisplay(true);
-                      }
-                    }
-                  }
+          if (cartCount + newIds.length <= upperLimit) {
+            const message = formatCartAddMessage(addedCount, alreadyInCartCount);
+            addFiles(ids);
+            showNotification(message, addedCount > 0 ? 'success' : 'info');
+
+            if (setOpenSnackbar && (addedCount > 0 || alreadyInCartCount > 0)) {
+              setOpenSnackbar(true);
+            }
+          } else if (setAlterDisplay) {
+            setAlterDisplay(true);
+          }
         } else {
           showNotification('Cart limit reached. Please remove some files first.', 'error');
           if (setAlterDisplay) {
