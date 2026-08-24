@@ -74,6 +74,48 @@ const parseConsentCodes = (consentCodes) => {
     return [];
 };
 
+const parsePubmedIds = (pubmedIds) => {
+    const finalizeIds = (ids) => ids
+        .map(stripCodeBrackets)
+        .filter(Boolean);
+
+    if (!pubmedIds) {
+        return [];
+    }
+
+    if (Array.isArray(pubmedIds)) {
+        return finalizeIds(pubmedIds);
+    }
+
+    if (typeof pubmedIds === 'string') {
+        let trimmed = pubmedIds.trim();
+        if (!trimmed || trimmed === '[]') {
+            return [];
+        }
+
+        if (trimmed.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(trimmed);
+                if (Array.isArray(parsed)) {
+                    return finalizeIds(parsed);
+                }
+            } catch (error) {
+                if (trimmed.endsWith(']')) {
+                    trimmed = trimmed.slice(1, -1);
+                }
+            }
+        }
+
+        return finalizeIds(
+            trimmed
+                .split(';')
+                .map((id) => id.trim()),
+        );
+    }
+
+    return [];
+};
+
 const getCBioPortalLinkLabel = (url) => {
     try {
         const studyParam = new URL(url).searchParams.get('id');
@@ -95,6 +137,7 @@ const OverviewView = ({ data, classes }) => {
     const manifestLink = studyDownloadLinks[data.study_id];
     const hasFileDownloads = manifestLink || (clinicalDataLinks && clinicalDataLinks.length > 0);
     const consentCodes = parseConsentCodes(data.consent_codes);
+    const pubmedIds = parsePubmedIds(data.pubmed_ids);
 
     return (
         <div className={classes.container}>
@@ -218,8 +261,8 @@ const OverviewView = ({ data, classes }) => {
                     <div className={classes.studyItemTitle}>Publications</div>
                     <div className={classes.studyItemContent}>
                         {
-                            data.pubmed_ids !== '' ?
-                            data.pubmed_ids.split(";").map((publicationItem, idx) => {
+                            pubmedIds.length > 0
+                            ? pubmedIds.map((publicationItem, idx) => {
                                 const key = `publication_${idx}`;
                                 return (
                                     <div key={key}>
@@ -228,7 +271,7 @@ const OverviewView = ({ data, classes }) => {
                                             <img className={classes.exportIcon} src={exportIcon} alt="exportIcon" />
                                         </a>
                                     </div>
-                                )
+                                );
                             })
                             : <div>N/A</div>
                         }
