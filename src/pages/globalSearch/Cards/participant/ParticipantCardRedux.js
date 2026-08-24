@@ -25,6 +25,7 @@ const ParticipantCardRedux = (props) => {
       <SnackbarView
         open={openSnackbar}
         count={props.count}
+        alreadyInCartCount={props.alreadyInCartCount}
         onClose={() => setOpenSnackbar(false)}
       />
       {displayAlter && (
@@ -43,6 +44,7 @@ const ParticipantCardRedux = (props) => {
  */
 const mapStateToProps = (state) => ({
   count: state.cartReducer && state.cartReducer.count,
+  alreadyInCartCount: state.cartReducer && state.cartReducer.alreadyInCartCount,
   cartFiles: state.cartReducer && state.cartReducer.filesId,
 });
 

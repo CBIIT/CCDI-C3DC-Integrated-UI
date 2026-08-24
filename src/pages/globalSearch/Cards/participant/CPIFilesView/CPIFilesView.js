@@ -141,7 +141,7 @@ const CPIFilesComponent = (props) => {
             const newIds = checkDuplicate(cartFiles, ids);
             if (cartCount + newIds.length <= upperLimit) {
               setOpen(true);
-              setAddFilesId(newIds);
+              setAddFilesId(ids);
             } else {
               setAlterDisplay(true);
             }
