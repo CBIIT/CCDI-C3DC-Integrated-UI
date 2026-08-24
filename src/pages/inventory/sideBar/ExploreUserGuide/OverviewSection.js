@@ -1,5 +1,5 @@
-import React from "react";
-import figure1 from "./images/figure1.png";
+import React from 'react';
+import figure1 from '../../../../assets/explore/Figure1.jpg';
 
 const OverviewSection = ({ classes }) => (
   <>
@@ -7,48 +7,14 @@ const OverviewSection = ({ classes }) => (
       Overview
     </div>
     <div className={classes.contentContainer}>
-      <p>
-        The{" "}
-        <a href="/explore">
-          C3DC Explore Dashboard
-        </a>{" "}
-        allows for the exploration of demographic and harmonized clinical data
-        of childhood cancers. These data have been harmonized to standard common
-        data elements (CDEs) to facilitate efficient and effective data
-        integration and analysis of participant data across studies. In the C3DC
-        Explore Dashboard users can filter the harmonized data using facets
-        based on properties and values defined in the C3DC Data Model.
-      </p>
-      <p>
-        Upon interaction with these filters (Figure 1A), users can review
-        clinical information through visual summaries (Figure 1B) and browse the
-        row-level data in tabs organized by studies and participants as well as
-        participant associated diagnosis, treatment, treatment response, survival
-        data, and genetic analysis (Figure 1C) to determine which data sets are
-        applicable to their research questions. Users can then download tabular
-        metadata in the format of CSV or JSON at the currently selected tabs in
-        the data table (Figure 1D).         A statistics bar at the top reflects current
-        numbers of diagnoses, participants and studies filtered (Figure 1E).
-        Users can also build synthetic cohort (up to 4,000 participants each
-        cohort) and manage up to 20 cohorts. Users can further compare synthetic
-        cohorts in the{" "}
-        <a href="/cohortAnalyzer" className={classes.link} target="_blank" rel="noopener noreferrer">
-          C3DC Cohort Analyzer
-        </a>
-        , and export synthetic cohorts back to the C3DC Explore Dashboard or to
-        the{" "}
-        <a href="https://ccdi.cancer.gov/explore" className={classes.link} target="_blank" rel="noopener noreferrer">
-          CCDI Hub Explore Dashboard
-        </a>
-        . For additional help and guidance on the Explore Page features, users
-        can click the User Guide button for the quick access (Figure 1F).
-      </p>
+      <p>The <a href="/exploreParticipants">CCDI Hub Explore Dashboard</a> is a tool that allows for the exploration of participant-level, diagnoses, studies, samples, and files information for CCDI-managed data sets. The Explore Dashboard enables researchers to find CCDI data within a single study or across multiple studies and create synthetic cohorts based on filtered search (i.e., demographics, diagnosis, samples, etc.). Upon interaction with these filters (Figure 1A), users can review the open-access information through visual summaries (Figure 1B) and browse the row level data in tabs organized by participants, diagnosis, studies, samples, and files (Figure 1C) to determine which data sets are applicable to their research questions. Users can then add desired files to the cart (Figure 1D), from which they can download a manifest for the selected data or take the manifest directly into the CGC. To access the controlled data, users must request them at the <a className={classes.link} href="https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login" target="_blank" rel="noopener noreferrer">controlled-access login page on dbGaP</a>. Note that bulk downloads are only possible through Command Line Interface (CLI) client as described in Appendices B and C.</p>
       <div className={classes.figureContainer}>
-        <img src={figure1} style={{ width: "85%" }} alt="Figure1" />
+        <img src={figure1} style={{ width: '40%' }} alt="Figure1" />
       </div>
       <div className={classes.figureText}>
-        Figure 1: C3DC Explore Dashboard Features
+        Figure 1: CCDI Hub Explore Dashboard and Cart features
       </div>
+      <p>Step-by-step instructions for finding and exporting data are included below.</p>
     </div>
   </>
 );

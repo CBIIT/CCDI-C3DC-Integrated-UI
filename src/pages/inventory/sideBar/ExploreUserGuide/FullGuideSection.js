@@ -6,21 +6,8 @@ const FullGuideSection = ({ classes }) => (
       Full User Guide
     </div>
     <div className={classes.contentContainer}>
-      <p  style={{ paddingBottom: '100px' }}>
-        To learn more about the{" "}
-        <a href="/explore">
-          C3DC Explore Dashboard
-        </a>{" "}
-        and accessing harmonized clinical data, please see the complete{" "}
-        <a
-          href="/user_guide"
-          className={classes.link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          User Guide
-        </a>
-        .
+      <p style={{ paddingBottom: '100px' }}>
+        To learn more about CCDI Hub, Explore Dashboard, and accessing data, see the complete <a href="/user-guide.pdf" className={classes.link} target="_blank" rel="noopener noreferrer">User Guide</a>.
       </p>
     </div>
   </div>

@@ -38,9 +38,9 @@ const ExploreUserGuide = ({ classes }) => {
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
-          <img src={isHover ? userguideIconWhite : userguideIcon} alt="user guide icon" />
+          <img src={isHover ? userguideIcon : userguideIconWhite} alt="user guide icon" />
         </Button>
-        <div className="buttonText">Explore the C3DC User Guide</div>
+        <div className="buttonText">Explore the CCDI User Guide</div>
       </div>
     </UseGuideButtonContainer>
   );

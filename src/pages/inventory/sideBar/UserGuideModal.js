@@ -6,6 +6,9 @@ import OverviewSection from './ExploreUserGuide/OverviewSection';
 import FindDataSection from './ExploreUserGuide/FindDataSection';
 import CohortSection from './ExploreUserGuide/CohortSection';
 import StudyMetadataSection from './ExploreUserGuide/StudyMetadataSection';
+import CartManifestSection from './ExploreUserGuide/CartManifestSection';
+import HelpDocumentationSection from './ExploreUserGuide/HelpDocumentationSection';
+import AdditionalSearchFeaturesSection from './ExploreUserGuide/AdditionalSearchFeaturesSection';
 import AnalyzingCohortsSection from './ExploreUserGuide/AnalyzingCohortsSection';
 import FullGuideSection from './ExploreUserGuide/FullGuideSection';
 import ContactUsSection from './ExploreUserGuide/ContactUsSection';
@@ -16,10 +19,13 @@ const USER_GUIDE_SECTION_SCROLL_OFFSET_PX = 70;
 export const USER_GUIDE_TITLE_LIST = [
   'Overview',
   'Finding Participants, Studies, Samples, and Files',
+  'Creating and Managing Cohorts',
   'Downloading Metadata from the Studies tab',
-  'Creating and managing cohorts',
-  'Analyzing Cohorts',
-  'Contact Us',
+  'Creating an Exportable File Manifest from the Cart',
+  'Accessing Help Documentation',
+  'Additional Search Features',
+  'Cohort Analyzer',
+  'Contact Information',
   'Full User Guide',
 ];
 
@@ -102,11 +108,14 @@ function UserGuideModal({ classes, open, onClose, pendingSectionId }) {
 
           <div id="UserGuideContentSection" className={classes.contentSection}>
             <div className={classes.contentList}>
-              <div className={classes.contentTitle}>C3DC Explore Dashboard & Cohort(s) Analyzer</div>
+              <div className={classes.contentTitle}>CCDI Hub Explore Dashboard and Cart</div>
               <OverviewSection classes={classes} />
               <FindDataSection classes={classes} />
-              <StudyMetadataSection classes={classes} />
               <CohortSection classes={classes} />
+              <StudyMetadataSection classes={classes} />
+              <CartManifestSection classes={classes} />
+              <HelpDocumentationSection classes={classes} />
+              <AdditionalSearchFeaturesSection classes={classes} />
               <AnalyzingCohortsSection classes={classes} />
               <ContactUsSection classes={classes} />
               <FullGuideSection classes={classes} />
