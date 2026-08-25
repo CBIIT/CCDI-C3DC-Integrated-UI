@@ -103,7 +103,7 @@ const StudiesCard = ({ data = {}, index }) => {
   const handleDownloadManifest = () => {
     const downloadUrl = studyDownloadLinks[study_id];
     if (downloadUrl) {
-      const fileName = `${study_id}_CCDI_Study_Manifest.xlsx`;
+      const fileName = `${study_id}_CCDI_DCC_Study_Manifest.xlsx`;
       openDoubleLink(downloadUrl, fileName);
     } else {
       console.warn(`No download link found for study: ${study_id}`);
