@@ -89,6 +89,14 @@ const getCBioPortalLinkLabel = (url) => {
     }
 };
 
+const truncateMiddle = (text, maxLength) => {
+    if (text.length <= maxLength) {
+        return text;
+    }
+    const midLength = Math.floor((maxLength - 3) / 2);
+    return `${text.slice(0, midLength)}...${text.slice(-midLength)}`;
+};
+
 const OverviewView = ({ data, classes }) => {
     const clinicalDataLinks = studyClinicalDataLinks[data.study_id];
     const cBioPortalLink = studycBioPortalLinks[data.study_id];
@@ -183,10 +191,11 @@ const OverviewView = ({ data, classes }) => {
                                     )}
                                     {clinicalDataLinks && clinicalDataLinks.map((clinicalDataLink, idx) => {
                                         const fileName = clinicalDataLink.split('/').pop() || `File ${idx + 1}`;
+                                        const displayName = truncateMiddle(fileName, 40);
                                         return (
                                             <div key={idx}>
-                                                <a href={clinicalDataLink} style={{ whiteSpace: 'nowrap' }} target="_blank" rel="noopener noreferrer">
-                                                    Source File - {fileName}
+                                                <a href={clinicalDataLink} style={{ whiteSpace: 'nowrap' }}>
+                                                    Source File - {displayName}
                                                     <img className={classes.studyManifestIcon} src={manifestIcon} alt="manifestIcon" />
                                                 </a>
                                             </div>
