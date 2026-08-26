@@ -53,6 +53,17 @@ describe('CohortAnalyzerUtil', () => {
       ];
       expect(filterAllParticipantWithTreatmentType(generalInfo, participants)).toHaveLength(1);
     });
+
+    it('matches array-valued treatment types from treatmentOverview', () => {
+      const generalInfo = { section1: [['Surgery', 'Radiation']] };
+      const participants = [
+        { treatment_type: ['Surgery'] },
+        { treatment_type: ['Chemotherapy'] },
+      ];
+      const result = filterAllParticipantWithTreatmentType(generalInfo, participants);
+      expect(result).toHaveLength(1);
+      expect(result[0].treatment_type).toEqual(['Surgery']);
+    });
   });
 
   describe('getIdsFromCohort', () => {
@@ -97,6 +108,20 @@ describe('CohortAnalyzerUtil', () => {
       const result = addCohortColumn(rows, state, ['cohort a'], 'treatment');
       expect(result[0].cohort).toEqual([
         { color: '#F0D571', cohort: 'Cohort A' },
+      ]);
+    });
+
+    it('adds cohort column for flat treatment rows that only carry participant_id', () => {
+      const treatmentState = {
+        'Example Cohort 1': {
+          cohortName: 'Example Cohort 1',
+          participants: [{ id: 'uuid-1', participant_id: 'PBBWJX' }],
+        },
+      };
+      const rows = [{ participant_id: 'PBBWJX', treatment_type: ['Surgery'] }];
+      const result = addCohortColumn(rows, treatmentState, ['Example Cohort 1'], 'other');
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Example Cohort 1' },
       ]);
     });
 

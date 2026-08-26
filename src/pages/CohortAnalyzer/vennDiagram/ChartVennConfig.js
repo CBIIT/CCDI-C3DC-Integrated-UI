@@ -367,6 +367,18 @@ export const vennCohortLabelFitPlugin = {
 
 export const nodes = ["participant_pk","diagnosis","treatment_type"];
 
+/**
+ * Venn set membership compares values by identity, so array-valued nodes such as
+ * treatment_type have to be flattened into their individual scalars first.
+ */
+export const flattenVennNodeValue = (value) => {
+  if (value == null || value === '') return [];
+  if (Array.isArray(value)) {
+    return value.reduce((acc, item) => acc.concat(flattenVennNodeValue(item)), []);
+  }
+  return [value];
+};
+
 
 // Utility Functions
 export const hexToRgba = (hex, alpha = 1) => {

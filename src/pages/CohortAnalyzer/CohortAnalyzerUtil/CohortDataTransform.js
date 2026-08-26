@@ -10,30 +10,47 @@ const DEFAULT_QUERY_LIMIT = 10000;
 // getAllIds) should already have filtered them out, but we normalize here so no
 // code path can regress.
 // Note: `id` holds display participant_ids for diagnosis/treatment overview;
+// `pid` holds internal participant UUIDs for diagnosisOverview / treatmentOverview;
 // `participant_pk` holds internal UUIDs for participantOverview / manifest.
 const sanitizeQueryVariables = (variables = {}) => {
     if (!variables) return variables;
     const next = { ...variables };
-    if (Array.isArray(next.id)) {
-        next.id = next.id.filter((pk) => pk != null);
-    }
-    if (Array.isArray(next.participant_pk)) {
-        next.participant_pk = next.participant_pk.filter((pk) => pk != null);
-    }
+    ['id', 'pid', 'participant_pk'].forEach((key) => {
+        if (Array.isArray(next[key])) {
+            next[key] = next[key].filter((value) => value != null);
+        }
+    });
     return next;
 };
-
-const withDisplayParticipantFilterIds = (displayIds, participantPks = []) => ({
-    id: displayIds,
-    participant_pk: participantPks,
-    first: DEFAULT_QUERY_LIMIT,
-});
 
 const withInternalParticipantFilterIds = (participantPks) => ({
     id: participantPks,
     participant_pk: participantPks,
     first: DEFAULT_QUERY_LIMIT,
 });
+
+/**
+ * diagnosisOverview / treatmentOverview accept participant UUIDs on `pid` and
+ * display participant_ids on `participant_ids` (bound to `$id`). Prefer `pid`,
+ * but only when we hold a UUID for every selected participant: the backend ANDs
+ * the two filters, so a partial UUID list would silently drop participants that
+ * only have a display id. The unused list is left empty, which the backend
+ * treats as "no filter".
+ */
+const withOverviewParticipantFilterIds = (participantPks = [], displayIds = []) => {
+    const canFilterByPid = participantPks.length > 0
+        && participantPks.length >= displayIds.length;
+    return {
+        pid: canFilterByPid ? participantPks : [],
+        id: canFilterByPid ? [] : displayIds,
+        participant_pk: participantPks,
+        first: DEFAULT_QUERY_LIMIT,
+    };
+};
+
+const hasParticipantFilter = (queryVariables) => (
+    (queryVariables.pid || []).length > 0 || (queryVariables.id || []).length > 0
+);
 
 
 const getJoinedCohortData = async ({
@@ -63,13 +80,14 @@ const getJoinedCohortData = async ({
         };
 
         if (type === "treatment") {
-            // Flat TreatmentOverViewResult — no nested participant. Match cohorts
-            // by display participant_id (overview no longer returns participant UUID).
+            // Flat TreatmentOverViewResult — no nested participant, and its
+            // top-level `id` is a (usually null) treatment id. Cohorts join on the
+            // display participant_id. Deliberately emit no `id` / `participant_pk`:
+            // merging a row into cohort state must not overwrite the participant
+            // UUID, which is the value we send as the `pid` filter.
             return rows
                 .filter((row) => row.participant_id != null)
                 .map(({ id, treatment_id, participant_id, study_id, ...rest }) => ({
-                    id: participant_id,
-                    participant_pk: participant_id,
                     participant_id,
                     study_id,
                     treatment_pk: treatment_id != null ? treatment_id : id,
@@ -77,6 +95,10 @@ const getJoinedCohortData = async ({
                     ...rest,
                 }));
         } else if (type === "diagnosis") {
+            // Flat DiagnosisOverViewResult — top-level `id` is a diagnosis UUID,
+            // not a participant UUID. Do not emit `id` / `participant_pk` on the
+            // flat path so merging into cohort state cannot overwrite the
+            // participant UUID used as the `pid` filter.
             return rows
                 .filter((row) => row.participant != null || row.participant_id != null)
                 .map((row) => {
@@ -95,8 +117,6 @@ const getJoinedCohortData = async ({
                     }
                     const { id, diagnosis_id, participant_id, study_id, ...rest } = row;
                     return {
-                        id: participant_id,
-                        participant_pk: participant_id,
                         participant_id,
                         study_id,
                         diagnosis_pk: diagnosis_id != null ? diagnosis_id : id,
@@ -218,13 +238,12 @@ const getJoinedCohortData = async ({
     }
 
     async function getJoinedCohortByD(selectedCohortSection = null) {
-        let queryVariables = generateQueryVariable(selectedCohorts, state);
-        if (Object.keys(generalInfo).length > 0) {
-            queryVariables = withDisplayParticipantFilterIds(
-                getDisplayIdsFromCohort(state, selectedCohorts),
-                getIdsFromCohort(state, selectedCohorts),
-            );
-        }
+        // Selection-scoped and unscoped loads use the same participant set; the
+        // Venn selection is applied client-side by filterAllParticipantWithDiagnosisName.
+        let queryVariables = withOverviewParticipantFilterIds(
+            getIdsFromCohort(state, selectedCohorts),
+            getDisplayIdsFromCohort(state, selectedCohorts),
+        );
         queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
         let { data } = await client.query({
@@ -232,7 +251,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
-        if (queryVariables.id.length > 0) {
+        if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
 
                 let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
@@ -266,13 +285,12 @@ const getJoinedCohortData = async ({
     }
 
     async function getJoinedCohortByT(selectedCohortSection = null) {
-        let queryVariables = generateQueryVariable(selectedCohorts, state);
-        if (Object.keys(generalInfo).length > 0) {
-            queryVariables = withDisplayParticipantFilterIds(
-                getDisplayIdsFromCohort(state, selectedCohorts),
-                getIdsFromCohort(state, selectedCohorts),
-            );
-        }
+        // Selection-scoped and unscoped loads use the same participant set; the
+        // Venn selection is applied client-side by filterAllParticipantWithTreatmentType.
+        let queryVariables = withOverviewParticipantFilterIds(
+            getIdsFromCohort(state, selectedCohorts),
+            getDisplayIdsFromCohort(state, selectedCohorts),
+        );
         queryVariables = sanitizeQueryVariables(queryVariables);
         setQueryVariable(queryVariables);
         let { data } = await client.query({
@@ -281,7 +299,7 @@ const getJoinedCohortData = async ({
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
 
-        if (queryVariables.id.length > 0) {
+        if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
                 let filteredRowData = data[responseKeys[nodeIndex]].filter((a, b) => a.participant_id.includes(searchValue))
                 if (JSON.stringify(selectedCohortSection) !== "{}") {
