@@ -383,10 +383,15 @@ const diagnosis_query = gql`query diagnosisOverview(
 `;
 
 // treatmentOverview's top-level `id` argument filters by TREATMENT id, not
-// participant id. Participants are filtered via `participant_ids`. We keep the
-// JS variable name `$id` so callers stay uniform and map it to participant_ids.
-// Response is flat (no nested participant) — matching the current backend schema.
+// participant id. Participants can be filtered two ways:
+//   `pid`             — internal participant UUIDs (what cohort state stores)
+//   `participant_ids` — display participant_ids such as "PBBWJX"
+// Both are supported; callers pick one. The backend ANDs every supplied filter,
+// so sending both only narrows the result. An empty list is ignored (no filter).
+// Response is flat (no nested participant), and treatment_type / treatment_agent
+// come back as arrays.
 const treatment_query = gql`query treatmentOverview(
+    $pid: [String],
     $id: [String],
 
     # Table config
@@ -397,6 +402,7 @@ const treatment_query = gql`query treatmentOverview(
 ) {
     treatmentOverview(
         # Demographics — do not bind top-level id (that is treatment id)
+        pid: $pid,
         participant_ids: $id,
 
         # Table config
