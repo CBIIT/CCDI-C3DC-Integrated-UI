@@ -1,6 +1,21 @@
-import { buildVennCohortSetLabel } from '../../../vennDiagram/ChartVennConfig';
+import { buildVennCohortSetLabel, flattenVennNodeValue } from '../../../vennDiagram/ChartVennConfig';
 
 describe('ChartVennConfig', () => {
+  describe('flattenVennNodeValue', () => {
+    it('wraps scalar values', () => {
+      expect(flattenVennNodeValue('Surgery')).toEqual(['Surgery']);
+    });
+
+    it('flattens array values such as treatment_type', () => {
+      expect(flattenVennNodeValue(['Surgery', ['Radiation']])).toEqual(['Surgery', 'Radiation']);
+    });
+
+    it('drops empty values', () => {
+      expect(flattenVennNodeValue(null)).toEqual([]);
+      expect(flattenVennNodeValue('')).toEqual([]);
+    });
+  });
+
   describe('buildVennCohortSetLabel', () => {
     it('includes participant count by default', () => {
       expect(buildVennCohortSetLabel('Cohort A', 12)).toBe('Cohort A (12)');

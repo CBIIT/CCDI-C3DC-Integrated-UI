@@ -5,6 +5,7 @@ import {
   nodes,
   DEFAULT_FONT_SIZE_THRESHOLD,
   hexToRgba,
+  flattenVennNodeValue,
   VENN_CHART_LAYOUT_PADDING,
   VENN_CANVAS_SIZE_SCALE_NORMAL,
   VENN_CANVAS_SIZE_SCALE_NORMAL_TWO_COHORTS,
@@ -228,14 +229,16 @@ if(data){
           !chartPreviewMode,
         ),
         values: cohort.participants
-          .map((p) => {
+          .reduce((acc, p) => {
             const value = p[nodes[intersection]];
             // Participant view: identify by the always-present `id` (=== participant_pk).
             // A selection-driven filtered refetch only re-enriches selected participants
             // with participant_pk, so keying on it drops the rest and zeroes their regions.
-            if (intersection === 0) return p.id != null ? p.id : value;
-            return value;
-          })
+            if (intersection === 0) {
+              return acc.concat(p.id != null ? p.id : value);
+            }
+            return acc.concat(flattenVennNodeValue(value));
+          }, [])
           .filter(value => {
             if (value !== null && value !== undefined && !seenValues.has(value)) {
               seenValues.add(value);

@@ -23,16 +23,26 @@ export const filterAllParticipantWithDiagnosisName = (generalInfo, allParticipan
     return finalIds;
 }
 
+/** treatmentOverview returns treatment_type as an array, so compare flattened values. */
+export const normalizeTreatmentTypeValues = (value) => {
+    if (value == null || value === '') return [];
+    if (Array.isArray(value)) {
+        return value.reduce((acc, item) => acc.concat(normalizeTreatmentTypeValues(item)), []);
+    }
+    return [value];
+};
+
 export const filterAllParticipantWithTreatmentType = (generalInfo, allParticipants) => {
-    let finalIds = [];
-    Object.keys(generalInfo).forEach((section) => {
-        allParticipants.forEach((part) => {
-            if (generalInfo[section].includes(part.treatment_type)) {
-                finalIds = [...finalIds, part]
-            }
-        })
+    const selectedTypes = new Set();
+    Object.keys(generalInfo || {}).forEach((section) => {
+        normalizeTreatmentTypeValues(generalInfo[section]).forEach((type) => selectedTypes.add(type));
     });
-    return finalIds;
+    if (selectedTypes.size === 0) {
+        return [];
+    }
+    return (allParticipants || []).filter((part) => (
+        normalizeTreatmentTypeValues(part.treatment_type).some((type) => selectedTypes.has(type))
+    ));
 }
 
 
@@ -94,8 +104,9 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
     }
     let finalRowData = rowD.map((row) => {
         if (type === "other") {
-
-            let cohortName = getCohortName(row.participant_pk, state, selectedCohorts);
+            // Flat treatment rows carry no participant_pk, only the display id.
+            const rowKey = row.participant_pk != null ? row.participant_pk : row.participant_id;
+            let cohortName = getCohortName(rowKey, state, selectedCohorts);
             return {
                 ...row,
                 cohort: cohortName
