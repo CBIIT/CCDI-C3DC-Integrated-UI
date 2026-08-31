@@ -24,7 +24,7 @@ import WidgetView from './widget/WidgetView';
 import StatsView from '../../components/Stats/StatsView';
 import TabsView from './tabs/TabsView';
 import QueryBarView from './filterQueryBar/QueryBarView';
-import UseGuideButton from './sideBar/UserGuideButton.js';
+import ExploreUserGuide from './sideBar/ExploreUserGuide.js';
 import { CircularProgress } from '@material-ui/core';
 import vectorIcon from '../../assets/icons/Vector_icon.svg';
 import closeIcon from '../../assets/icons/Window_Close_Icon.svg';
@@ -293,7 +293,7 @@ const Inventory = ({
             </label>
             <div className={classes.sideBarMenuSider}>
               <SwitchNav />
-              <UseGuideButton />
+              <ExploreUserGuide />
               <UserNotesButton />
               <ClearAllFiltersBtn
                 Component={CustomClearAllFiltersBtn}

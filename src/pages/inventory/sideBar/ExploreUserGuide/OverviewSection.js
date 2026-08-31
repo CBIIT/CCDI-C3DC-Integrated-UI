@@ -7,13 +7,13 @@ const OverviewSection = ({ classes }) => (
       Overview
     </div>
     <div className={classes.contentContainer}>
-      <p>The <a href="/exploreParticipants">CCDI Hub Explore Dashboard</a> is a tool that allows for the exploration of participant-level, diagnoses, studies, samples, and files information for CCDI-managed data sets. The Explore Dashboard enables researchers to find CCDI data within a single study or across multiple studies and create synthetic cohorts based on filtered search (i.e., demographics, diagnosis, samples, etc.). Upon interaction with these filters (Figure 1A), users can review the open-access information through visual summaries (Figure 1B) and browse the row level data in tabs organized by participants, diagnosis, studies, samples, and files (Figure 1C) to determine which data sets are applicable to their research questions. Users can then add desired files to the cart (Figure 1D), from which they can download a manifest for the selected data or take the manifest directly into the CGC. To access the controlled data, users must request them at the <a className={classes.link} href="https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login" target="_blank" rel="noopener noreferrer">controlled-access login page on dbGaP</a>. Note that bulk downloads are only possible through Command Line Interface (CLI) client as described in Appendices B and C.</p>
+      <p>
+        The C3DC Explore Dashboard in an open-access application which helps researchers find and use deidentified, participant-level clinical data from childhood cancer studies. These data have been harmonized to standard common data elements (CDEs) to facilitate efficient and effective data integration and analysis of participant data across studies. In the C3DC Explore Dashboard users can filter the harmonized data using facets based on properties and values defined in the <a href="https://github.com/CBIIT/c3dc-model" target="_blank" rel="noopener noreferrer">C3DC Data Model</a>. Upon interaction with these filters (Figure 1A), users can review clinical information through visual summaries (Figure 1B) and browse the row-level data in tabs organized by studies and participants as well as diagnosis, treatment, treatment response, survival data, and genetic analysis (Figure 1C) to determine which data sets are applicable to their research questions. Users can then download tabular metadata in the format of CSV or JSON (Figure 1D) or add files to the cart to create a data manifest. Users can also build and manage synthetic cohorts, which can be compared in the C3DC Cohort Analyzer.
+      </p>
       <div className={classes.figureContainer}>
-        <img src={figure1} style={{ width: '40%' }} alt="Figure1" />
+        <img src={figure1} className={classes.figureImage} alt="C3DC Explore Dashboard features labeled A through D" />
       </div>
-      <div className={classes.figureText}>
-        Figure 1: CCDI Hub Explore Dashboard and Cart features
-      </div>
+      <div className={classes.figureText}>Figure 1: C3DC Explore Dashboard Features</div>
       <p>Step-by-step instructions for finding and exporting data are included below.</p>
     </div>
   </>

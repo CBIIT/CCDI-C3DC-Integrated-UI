@@ -10,7 +10,7 @@ export default () => ({
     paperArea: {
         display: 'flex',
         paddingLeft: '64px',
-        paddingTop: '54px',
+        paddingTop: '44px',
     },
     navSection: {
         minWidth: '267px',
@@ -72,7 +72,7 @@ export default () => ({
     contentTitle: {
         fontFamily: 'Poppins',
         fontWeight: '600',
-        fontSize: '35px',
+        fontSize: '30px',
         lineHeight: '38px',
         marginBottom: '0px',
         color: '#05555C',
@@ -89,13 +89,12 @@ export default () => ({
     },
     sectionSubTitle: {
         fontFamily: 'Poppins',
-        fontWeight: '400',
+        fontWeight: '600',
         fontSize: '22px',
         lineHeight: '26px',
         letterSpacing: '-0.02em',
         marginBottom: '20px',
-        color: '#05555C',
-        textTransform: 'uppercase',
+        color: '#007A85',
     },
     contentContainer: {
         fontFamily: 'Inter',
@@ -119,7 +118,17 @@ export default () => ({
     },
     figureContainer: {
         textAlign: 'center',
-        marginTop: '10px',
+        marginTop: '18px',
+        marginBottom: '6px',
+    },
+    figureImage: {
+        display: 'block',
+        maxWidth: '85%',
+        height: 'auto',
+        margin: '0 auto',
+    },
+    figureImageNarrow: {
+        maxWidth: '78%',
     },
     figureText: {
         fontFamily: 'Inter',
@@ -129,6 +138,7 @@ export default () => ({
         lineHeight: '18px',
         letterSpacing: '-0.02em',
         textAlign: 'center',
+        marginBottom: '18px',
     },
     customButton: {
         borderRadius: '9px',
@@ -141,11 +151,10 @@ export default () => ({
         textTransform: 'none',
         color: '#3d4241',
         marginLeft: '0px',
-        backgroundColor: '#ffffff',
-        border: '1px solid #063134',
+        border: '1px solid #ffffff',
         '&:hover': {
-          backgroundColor: '#063134',
-          border: '1px solid #063134',
+          backgroundColor: '#ffffff',
+          border: '1px solid #ffffff',
           color: 'white',
         },
     },
