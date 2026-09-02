@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const FullGuideSection = ({ classes }) => (
   <div>
@@ -6,12 +6,9 @@ const FullGuideSection = ({ classes }) => (
       Full User Guide
     </div>
     <div className={classes.contentContainer}>
-      <p  style={{ paddingBottom: '100px' }}>
-        To learn more about the{" "}
-        <a href="/exploreParticipants">
-          C3DC Explore Dashboard
-        </a>{" "}
-        and accessing harmonized clinical data, please see the complete{" "}
+      <p style={{ paddingBottom: "100px" }}>
+        To learn more about the C3DC Explore Dashboard and accessing harmonized
+        clinical data, please see the complete{" "}
         <a
           href="/user-guide.pdf"
           className={classes.link}

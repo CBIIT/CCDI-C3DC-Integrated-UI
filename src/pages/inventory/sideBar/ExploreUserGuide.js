@@ -7,16 +7,17 @@ import userguideIconWhite from '../../../assets/icons/Explore_User_Guide_Icon_Wh
 import { useUserGuide } from './UserGuideContext';
 
 const UseGuideButtonContainer = styled.div`
+  background-color: #337478;
+
   .buttonContainer {
     display: flex;
-    margin-left: 12.5px;
-    margin-top: 15px;
+    margin-left: 6px;
+    padding-top: 10px;
   }
 
   .buttonText {
-    color: #415153;
-    font-weight: 600;
-    font-family: 'Nunito Sans';
+    color: #ffffff;
+    font-weight: 400;
     font-size: 14px;
     line-height: 30px;
     margin-left: 8px;
@@ -38,9 +39,9 @@ const ExploreUserGuide = ({ classes }) => {
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
-          <img src={isHover ? userguideIconWhite : userguideIcon} alt="user guide icon" />
+          <img src={isHover ? userguideIcon : userguideIconWhite} alt="user guide icon" />
         </Button>
-        <div className="buttonText">Explore the C3DC User Guide</div>
+        <div className="buttonText">Explore the CCDI User Guide</div>
       </div>
     </UseGuideButtonContainer>
   );

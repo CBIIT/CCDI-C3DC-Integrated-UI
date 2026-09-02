@@ -1,5 +1,5 @@
-import React from "react";
-import figure1 from "./images/figure1.png";
+import React from 'react';
+import figure1 from '../../../../assets/explore/Figure1.jpg';
 
 const OverviewSection = ({ classes }) => (
   <>
@@ -8,47 +8,45 @@ const OverviewSection = ({ classes }) => (
     </div>
     <div className={classes.contentContainer}>
       <p>
-        The{" "}
-        <a href="/exploreParticipants">
-          C3DC Explore Dashboard
-        </a>{" "}
-        allows for the exploration of demographic and harmonized clinical data
-        of childhood cancers. These data have been harmonized to standard common
-        data elements (CDEs) to facilitate efficient and effective data
-        integration and analysis of participant data across studies. In the C3DC
-        Explore Dashboard users can filter the harmonized data using facets
-        based on properties and values defined in the C3DC Data Model.
-      </p>
-      <p>
-        Upon interaction with these filters (Figure 1A), users can review
+        The C3DC Explore Dashboard in an open-access application which helps
+        researchers find and use deidentified, participant-level clinical data
+        from childhood cancer studies. These data have been harmonized to
+        standard common data elements (CDEs) to facilitate efficient and
+        effective data integration and analysis of participant data across
+        studies. In the C3DC Explore Dashboard users can filter the harmonized
+        data using facets based on properties and values defined in the{" "}
+        <a
+          href="https://github.com/CBIIT/c3dc-model"
+          className={classes.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          C3DC Data Model
+        </a>
+        . Upon interaction with these filters (Figure 1A), users can review
         clinical information through visual summaries (Figure 1B) and browse the
         row-level data in tabs organized by studies and participants as well as
-        participant associated diagnosis, treatment, treatment response, survival
-        data, and genetic analysis (Figure 1C) to determine which data sets are
-        applicable to their research questions. Users can then download tabular
-        metadata in the format of CSV or JSON at the currently selected tabs in
-        the data table (Figure 1D).         A statistics bar at the top reflects current
-        numbers of diagnoses, participants and studies filtered (Figure 1E).
-        Users can also build synthetic cohort (up to 4,000 participants each
-        cohort) and manage up to 20 cohorts. Users can further compare synthetic
-        cohorts in the{" "}
-        <a href="/cohortAnalyzer" className={classes.link} target="_blank" rel="noopener noreferrer">
-          C3DC Cohort Analyzer
-        </a>
-        , and export synthetic cohorts back to the C3DC Explore Dashboard or to
-        the{" "}
-        <a href="https://ccdi.cancer.gov/explore" className={classes.link} target="_blank" rel="noopener noreferrer">
-          CCDI Hub Explore Dashboard
-        </a>
-        . For additional help and guidance on the Explore Page features, users
-        can click the User Guide button for the quick access (Figure 1F).
+        diagnosis, treatment, treatment response, survival data, and genetic
+        analysis (Figure 1C) to determine which data sets are applicable to
+        their research questions. Users can then download tabular metadata in
+        the format of CSV or JSON (Figure 1D) or add files to the cart to create
+        a data manifest. Users can also build and manage synthetic cohorts,
+        which can be compared in the C3DC Cohort Analyzer.
       </p>
       <div className={classes.figureContainer}>
-        <img src={figure1} style={{ width: "85%" }} alt="Figure1" />
+        <img
+          src={figure1}
+          className={classes.figureImage}
+          alt="C3DC Explore Dashboard features labeled A through D"
+        />
       </div>
       <div className={classes.figureText}>
         Figure 1: C3DC Explore Dashboard Features
       </div>
+      <p>
+        Step-by-step instructions for finding and exporting data are included
+        below.
+      </p>
     </div>
   </>
 );

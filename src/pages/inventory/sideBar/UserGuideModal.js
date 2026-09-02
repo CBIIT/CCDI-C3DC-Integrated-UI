@@ -4,11 +4,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import styles from './ExploreUserGuideStyle';
 import OverviewSection from './ExploreUserGuide/OverviewSection';
 import FindDataSection from './ExploreUserGuide/FindDataSection';
-import CohortSection from './ExploreUserGuide/CohortSection';
 import StudyMetadataSection from './ExploreUserGuide/StudyMetadataSection';
+import CartManifestSection from './ExploreUserGuide/CartManifestSection';
+import CohortSection from './ExploreUserGuide/CohortSection';
 import AnalyzingCohortsSection from './ExploreUserGuide/AnalyzingCohortsSection';
-import FullGuideSection from './ExploreUserGuide/FullGuideSection';
+import AdditionalSearchFeaturesSection from './ExploreUserGuide/AdditionalSearchFeaturesSection';
 import ContactUsSection from './ExploreUserGuide/ContactUsSection';
+import FullGuideSection from './ExploreUserGuide/FullGuideSection';
 
 /** Extra space above the target heading when scrolling (larger = less scroll / section sits lower in view). */
 const USER_GUIDE_SECTION_SCROLL_OFFSET_PX = 70;
@@ -17,9 +19,11 @@ export const USER_GUIDE_TITLE_LIST = [
   'Overview',
   'Finding Participants, Studies, Samples, and Files',
   'Downloading Metadata from the Studies tab',
-  'Creating and managing cohorts',
-  'Analyzing Cohorts',
-  'Contact Us',
+  'Creating an Exportable File Manifest from the Cart',
+  'Creating and Managing Cohorts',
+  'Cohort Analyzer',
+  'Additional Search Features',
+  'Contact Information',
   'Full User Guide',
 ];
 
@@ -102,12 +106,14 @@ function UserGuideModal({ classes, open, onClose, pendingSectionId }) {
 
           <div id="UserGuideContentSection" className={classes.contentSection}>
             <div className={classes.contentList}>
-              <div className={classes.contentTitle}>C3DC Explore Dashboard & Cohort(s) Analyzer</div>
+              <div className={classes.contentTitle}>Childhood Cancer Clinical Data Commons (C3DC) Explore Dashboard and Cohort Analyzer</div>
               <OverviewSection classes={classes} />
               <FindDataSection classes={classes} />
               <StudyMetadataSection classes={classes} />
+              <CartManifestSection classes={classes} />
               <CohortSection classes={classes} />
               <AnalyzingCohortsSection classes={classes} />
+              <AdditionalSearchFeaturesSection classes={classes} />
               <ContactUsSection classes={classes} />
               <FullGuideSection classes={classes} />
             </div>
