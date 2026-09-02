@@ -304,16 +304,24 @@ export const CustomCellView = (props) => {
       );
     }
   } else if (cellStyle === 'MODAL') {
-    // Parse the bracketed list of IDs (e.g., "[BS_TTVFCG7S, BS_R3XEWNNV, BS_0BNNT7Q]")
+    // Values may arrive as:
+    // - bracketed strings: "[BS_TTVFCG7S, BS_R3XEWNNV]"
+    // - GraphQL lists: participant_age_at_collection is [Int]
+    // - single scalars
     const rawData = props[dataField];
     let ids = [];
-    
-    if (rawData) {
-      // Remove brackets and split by comma
+
+    if (Array.isArray(rawData)) {
+      ids = rawData
+        .map((id) => (id == null ? '' : String(id).trim()))
+        .filter((id) => id.length > 0);
+    } else if (typeof rawData === 'string') {
       const cleaned = rawData.replace(/[[\]]/g, '').trim();
       if (cleaned) {
-        ids = cleaned.split(',').map(id => id.trim()).filter(id => id.length > 0);
+        ids = cleaned.split(',').map((id) => id.trim()).filter((id) => id.length > 0);
       }
+    } else if (rawData != null) {
+      ids = [String(rawData)];
     }
     
     if (ids.length === 0) {
@@ -369,7 +377,7 @@ export const CustomCellView = (props) => {
   } else if (cellStyle === 'STUDY_DOWNLOAD') {
     const study_id = props[dataField];
     const study_download_url = studyDownloadLinks[props[dataField]];
-    const fileName = study_id + "_CCDI_Study_Manifest.xlsx";
+    const fileName = study_download_url ? decodeURIComponent(study_download_url.split('/').pop()) : `${study_id}_CCDI_DCC_Study_Manifest.xlsx`;
     return (
       <Tooltip title="Download study manifest">
         <span onClick={() => {
@@ -380,14 +388,21 @@ export const CustomCellView = (props) => {
       </Tooltip>
     )
   } else if (dataField === 'cohort') {
+    // Cohort Analyzer rows set `cohort` to [{ color, cohort }, ...] via addCohortColumn.
+    // Guard non-arrays (missing/stale cell values) so table view does not crash on .map.
+    const cohorts = Array.isArray(label) ? label : [];
+    if (cohorts.length === 0) {
+      return null;
+    }
     return (
-      <div style={{ display: 'flex', gap: 10, justifyContent: 'center', width: 67 }}>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
         {
-          label.map((cohort, index) => (
-            <Tooltip title={<div>
-
-              {label.map((coh, innerIndex) => (
-                <div style={{ display: 'flex', gap: 10, marginBottom: 5 }}>
+          cohorts.map((cohort, index) => (
+            <Tooltip
+              key={`${cohort.cohort || 'cohort'}-${index}`}
+              title={<div>
+              {cohorts.map((coh, innerIndex) => (
+                <div key={`${coh.cohort || 'coh'}-${innerIndex}`} style={{ display: 'flex', gap: 10, marginBottom: 5 }}>
                   <div style={{
                     backgroundColor: coh["color"],
                     width: 17,
@@ -398,10 +413,11 @@ export const CustomCellView = (props) => {
                   </div>
                   {coh["cohort"]}
                 </div>
-              ))
-              }
-
-            </div>} arrow placement="top">
+              ))}
+            </div>}
+              arrow
+              placement="top"
+            >
               <div style={{
                 backgroundColor: cohort["color"],
                 width: 17,

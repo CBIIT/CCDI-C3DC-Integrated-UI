@@ -70,7 +70,8 @@ export const tableConfig = {
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'participant_tab',
@@ -143,7 +144,8 @@ export const diagnosesTableConfig =
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'participant_tab',
@@ -182,209 +184,68 @@ participantOverview(
 }}`;
 
 // Cohort Analyzer only ever filters diagnoses/treatments by the selected cohort's
-// participant ids — we don't want the multi-filter Explore Dashboard shape here,
-// because every unused variable would be sent to the backend as `null` and blow up
-// the OpenSearch `terms` filter ("No value specified for terms query").
-// diagnosisOverview's top-level `id` argument filters by DIAGNOSIS id, not
-// participant id — passing participant ids there returns an empty list. The
-// backend's participant filter on this endpoint is `participant_ids`, so we map
-// our JS-side `$id` variable to that argument below.
+// participants. diagnosisOverview's top-level `id` argument filters by DIAGNOSIS
+// id, not participant id. Participants can be filtered two ways:
+//   `pid`             — internal participant UUIDs (what cohort state stores)
+//   `participant_ids` — display participant_ids such as "PBBWJX"
+// The backend ANDs every supplied filter, so callers send only one. An empty
+// list is ignored (no filter). Response is flat (no nested participant).
 const diagnosis_query = gql`query diagnosisOverview(
-  $import_data: [String]
-  # Demographics
-  $id: [String]
-  $race: [String]
-  $sex_at_birth: [String]
-  # Diagnoses
-  $age_at_diagnosis: [Int]
-  $age_at_diagnosis_unknownAges: [String]
-  $diagnosis_anatomic_site: [String]
-  $disease_phase: [String]
-  $diagnosis_classification_system: [String]
-  $diagnosis_basis: [String]
-  $diagnosis: [String]
-  $diagnosis_category: [String]
-  # Genetic Analyses
-  $alteration: [String]
-  $alteration_type: [String]
-  $fusion_partner_gene: [String]
-  $gene_symbol: [String]
-  $reported_significance: [String]
-  $reported_significance_system: [String]
-  $status: [String]
-  # Survivals
-  $age_at_last_known_survival_status: [Int]
-  $age_at_last_known_survival_status_unknownAges: [String]
-  $cause_of_death: [String]
-  $first_event: [String]
-  $last_known_survival_status: [String]
-  # Treatments
-  $age_at_treatment_start: [Int]
-  $age_at_treatment_start_unknownAges: [String]
-  $age_at_treatment_end: [Int]
-  $age_at_treatment_end_unknownAges: [String]
-  $treatment_type: [String]
-  $treatment_agent: [String]
-  # Treatment Responses
-  $response: [String]
-  $age_at_response: [Int]
-  $age_at_response_unknownAges: [String]
-  $response_category: [String]
-  $response_system: [String]
-  # Samples
-  $sample_anatomic_site: [String]
-  $participant_age_at_collection: [Int]
-  $participant_age_at_collection_unknownAges: [String]
-  $sample_tumor_status: [String]
-  # Files
-  $data_category: [String]
-  $file_type: [String]
-  $file_mapping_level: [String]
-  $library_selection: [String]
-  $library_source_material: [String]
-  $library_source_molecule: [String]
-  $library_strategy: [String]
-  $anatomic_site: [String]
-  $tumor_spatial_extent: [String]
-  $sample_description: [String]
-  $percent_tumor: [String]
-  $percent_necrosis: [String]
-  $file_size: [String]
-  $file_description: [String]
-  $consent_codes: [String]
-  $file_access: [String]
-  $fixation_embedding_method: [String]
-  $staining_method: [String]
-  # Studies
-  $dbgap_accession: [String]
-  $study_name: [String]
-  $study_phase: [String]
-  # Table config
-  $first: Int
-  $offset: Int
-  $order_by: String
-  $sort_direction: String
-) {
-  diagnosisOverview(
-    import_data: $import_data
-
-    # Demographics
-    # NOTE: the top-level 'id' argument on this endpoint filters by diagnosis id,
-    # not participant id. We deliberately do not bind it — participants are
-    # filtered via participant_ids below.
-    participant_ids: $id
-    race: $race
-    sex_at_birth: $sex_at_birth
-
-    # Diagnoses
-    age_at_diagnosis: $age_at_diagnosis
-    age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges
-    diagnosis_anatomic_site: $diagnosis_anatomic_site
-    disease_phase: $disease_phase
-    diagnosis_classification_system: $diagnosis_classification_system
-    diagnosis_basis: $diagnosis_basis
-    diagnosis: $diagnosis
-    diagnosis_category: $diagnosis_category
-
-    # Genetic Analyses
-    alteration: $alteration
-    alteration_type: $alteration_type
-    fusion_partner_gene: $fusion_partner_gene
-    gene_symbol: $gene_symbol
-    reported_significance: $reported_significance
-    reported_significance_system: $reported_significance_system
-    status: $status
-
-    # Survivals
-    age_at_last_known_survival_status: $age_at_last_known_survival_status
-    age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges
-    cause_of_death: $cause_of_death
-    first_event: $first_event
-    last_known_survival_status: $last_known_survival_status
-
-    # Treatments
-    age_at_treatment_start: $age_at_treatment_start
-    age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges
-    age_at_treatment_end: $age_at_treatment_end
-    age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges
-    treatment_type: $treatment_type
-    treatment_agent: $treatment_agent
-
-    # Treatment Responses
-    response: $response
-    age_at_response: $age_at_response
-    age_at_response_unknownAges: $age_at_response_unknownAges
-    response_category: $response_category
-    response_system: $response_system
-
-    # Samples
-    sample_anatomic_site: $sample_anatomic_site
-    participant_age_at_collection: $participant_age_at_collection
-    participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges
-    sample_tumor_status: $sample_tumor_status
-
-    # Files
-    data_category: $data_category
-    file_type: $file_type
-    file_mapping_level: $file_mapping_level
-    library_selection: $library_selection
-    library_source_material: $library_source_material
-    library_source_molecule: $library_source_molecule
-    library_strategy: $library_strategy
-    anatomic_site: $anatomic_site
-    tumor_spatial_extent: $tumor_spatial_extent
-    sample_description: $sample_description
-    percent_tumor: $percent_tumor
-    percent_necrosis: $percent_necrosis
-    file_size: $file_size
-    file_description: $file_description
-    consent_codes: $consent_codes
-    file_access: $file_access
-    fixation_embedding_method: $fixation_embedding_method
-    staining_method: $staining_method
-
-    # Studies
-    dbgap_accession: $dbgap_accession
-    study_name: $study_name
-    study_phase: $study_phase
+    $pid: [String],
+    $id: [String],
 
     # Table config
-    first: $first
-    offset: $offset
-    order_by: $order_by
-    sort_direction: $sort_direction
-  ) {
-    id
-    diagnosis_id
-    participant_id
-    sample_id
-    dbgap_accession
-    study_id
-    diagnosis
-    anatomic_site
-    disease_phase
-    diagnosis_classification_system
-    diagnosis_category
-    diagnosis_basis
-    age_at_diagnosis
-    diagnosis_comment
-    tumor_spatial_extent
-    toronto_childhood_cancer_staging
-    tumor_grade
-    tumor_stage_clinical_t
-    tumor_stage_clinical_n
-    tumor_stage_clinical_m
-    files
-    __typename
-  }
-}
-`;
+    $first: Int,
+    $offset: Int,
+    $order_by: String,
+    $sort_direction: String
+) {
+    diagnosisOverview(
+        # Demographics — do not bind top-level id (that is diagnosis id)
+        pid: $pid,
+        participant_ids: $id,
+
+        # Table config
+        first: $first,
+        offset: $offset,
+        order_by: $order_by,
+        sort_direction: $sort_direction
+    ) {
+        id
+        diagnosis_id
+        participant_id
+        sample_id
+        dbgap_accession
+        study_id
+        diagnosis
+        anatomic_site
+        disease_phase
+        diagnosis_classification_system
+        diagnosis_category
+        diagnosis_basis
+        age_at_diagnosis
+        diagnosis_comment
+        tumor_spatial_extent
+        toronto_childhood_cancer_staging
+        tumor_grade
+        tumor_stage_clinical_t
+        tumor_stage_clinical_n
+        tumor_stage_clinical_m
+        files
+        __typename
+    }
+}`;
 
 // treatmentOverview's top-level `id` argument filters by TREATMENT id, not
-// participant id. Participants are filtered via `participant_ids`. We keep the
-// JS variable name `$id` so callers stay uniform and map it to participant_ids.
-// Response is flat (no nested participant) — matching the current backend schema.
+// participant id. Participants can be filtered two ways:
+//   `pid`             — internal participant UUIDs (what cohort state stores)
+//   `participant_ids` — display participant_ids such as "PBBWJX"
+// Both are supported; callers pick one. The backend ANDs every supplied filter,
+// so sending both only narrows the result. An empty list is ignored (no filter).
+// Response is flat (no nested participant), and treatment_type / treatment_agent
+// come back as arrays.
 const treatment_query = gql`query treatmentOverview(
+    $pid: [String],
     $id: [String],
 
     # Table config
@@ -395,6 +256,7 @@ const treatment_query = gql`query treatmentOverview(
 ) {
     treatmentOverview(
         # Demographics — do not bind top-level id (that is treatment id)
+        pid: $pid,
         participant_ids: $id,
 
         # Table config
@@ -470,7 +332,8 @@ export const treatmentsTableConfig =
       display: true,
       tooltipText: "This entry is found in the following cohorts",
       role: cellTypes.DISPLAY,
-      cellType: cellTypes.CUSTOM_ELEM
+      cellType: cellTypes.CUSTOM_ELEM,
+      stripSurroundingBrackets: false,
     }
   ],
   id: 'treatment_tab',
@@ -485,7 +348,7 @@ export const treatmentsTableConfig =
 export const analyzer_query = [participant_query, diagnosis_query, treatment_query];
 export const analyzer_tables = [tableConfig, diagnosesTableConfig, treatmentsTableConfig];
 // Table download/pagination must hit the overview query that matches paginationAPIField
-// (not cohortManifest, which uses participant_pk and a different response shape).
+// (not cohortManifest, which uses id and a different response shape).
 analyzer_tables.forEach((cfg, index) => {
   cfg.api = analyzer_query[index];
 });

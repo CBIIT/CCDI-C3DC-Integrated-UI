@@ -6,6 +6,59 @@ import { dataFormatTypes } from '@bento-core/table';
 import questionIcon from '../assets/icons/Question_Icon.svg';
 import React from 'react';
 
+// Sentinel age values from OpenSearch (-999) display as "Not Reported"
+const formatAgeValue = (dt) => {
+  if (Array.isArray(dt)) {
+    if (dt.length === 0) {
+      return 'Not Reported';
+    }
+    return dt.map((value) => formatAgeValue(value)).join('<br>');
+  }
+  if (dt === -999 || dt === '-999' || dt == null || dt === '') {
+    return 'Not Reported';
+  }
+  return dt.toString();
+};
+
+const formatRaceValue = (dt) => {
+  if (Array.isArray(dt)) {
+    return dt
+      .map((value) => (value == null ? '' : String(value).trim()))
+      .filter(Boolean)
+      .join('; ');
+  }
+  if (dt == null || dt === '') {
+    return '';
+  }
+  return String(dt)
+    .replace(/^\[|\]$/g, '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .join('; ');
+};
+
+// OpenSearch array-as-string values: "[Complete Response]" => "Complete Response"
+const formatBracketedValue = (dt) => {
+  if (Array.isArray(dt)) {
+    return dt
+      .map((value) => formatBracketedValue(value))
+      .filter((value) => value !== '')
+      .join(', ');
+  }
+  if (dt == null || dt === '') {
+    return '';
+  }
+  const text = String(dt).trim();
+  if (text === '[]') {
+    return '';
+  }
+  if (text.startsWith('[') && text.endsWith(']')) {
+    return text.slice(1, -1).trim();
+  }
+  return text;
+};
+
 // --------------- Tooltip configuration --------------
 const createNewCohortToolTip = 
   <p style={{ fontFamily: "Poppins", fontWeight: 400, margin: 0 }}>
@@ -1545,7 +1598,6 @@ export const GET_COHORT_MANIFEST_QUERY = gql`
   query cohortManifest(
     # Demographics
     $id: [String],
-
     # Table config
     $first: Int,
     $offset: Int,
@@ -1555,29 +1607,28 @@ export const GET_COHORT_MANIFEST_QUERY = gql`
     cohortManifest(
       # Demographics
       id: $id,
-
-  # Table config
-  first: $first,
-  offset: $offset,
-  order_by: $order_by,
-  sort_direction: $sort_direction
-) {
-  # Diagnosis
-  id
-  diagnosis
-
-      # Participants
+      # Table config
+      first: $first,
+      offset: $offset,
+      order_by: $order_by,
+      sort_direction: $sort_direction
+    ) {
+      # Participant
+      id
       participant_id
-      race
       sex_at_birth
+      race
 
       # Study
-      dbgap_accession
       study_id
 
-  __typename
-}}
-`
+      # Diagnosis
+      diagnosis
+
+      __typename
+    }
+  }
+`;
 
 export const GET_SAMPLES_OVERVIEW_QUERY = gql`
 query sampleOverview(
@@ -3403,6 +3454,9 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
         hideable: true,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatRaceValue,
       },
     ],
     id: 'participant_tab',
@@ -3487,7 +3541,6 @@ export const exploreParticipantsTabs = [
         downloadHeader: 'Diagnosis',
         display: true,
         sortable: false,
-        headerType: cellTypes.CUSTOM_ELEM,
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.EXPAND,
         role: cellTypes.DISPLAY,
@@ -3634,8 +3687,10 @@ export const exploreParticipantsTabs = [
         display: true,
         hideable: true,
         tooltipText: 'sort',
-        role: cellTypes.COMMA,
-        cellType: cellTypes.COMMA,
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'anatomic_site',
@@ -3790,12 +3845,14 @@ export const exploreParticipantsTabs = [
       },
       {
         dataField: 'gene_symbol',
-        header: 'Gene Symbol',
+        header: 'Gene Symbol (Top 5)',
+        downloadHeader: 'Gene Symbol',
         display: true,
         hideable: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
+        sortable: false,
         cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.EXPAND,
+        role: cellTypes.DISPLAY,
       },
       {
         dataField: 'status',
@@ -4002,7 +4059,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: "age_at_treatment_end",
@@ -4011,7 +4070,9 @@ export const exploreParticipantsTabs = [
           hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: "treatment_type",
@@ -4083,7 +4144,9 @@ export const exploreParticipantsTabs = [
         hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: "treatment_response_id",
@@ -4091,16 +4154,22 @@ export const exploreParticipantsTabs = [
         display: true,
         hideable: false,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: 'response',
         header: 'Response',
         display: true,
         hideable: true,
-      tooltipText: "sort",
-      role: cellTypes.DISPLAY,
-    },
+        tooltipText: "sort",
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
+      },
     {
       dataField: "age_at_response",
       header: "Age at Response",
@@ -4108,7 +4177,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'dbgap_accession',
@@ -4129,7 +4200,10 @@ export const exploreParticipantsTabs = [
         display: false,
         hideable: true,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
       {
         dataField: "response_system",
@@ -4137,7 +4211,10 @@ export const exploreParticipantsTabs = [
         display: false,
         hideable: true,
         tooltipText: "sort",
-        role: cellTypes.DISPLAY
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatBracketedValue,
       },
     ],
     id: 'treatment_response_tab',
@@ -4204,7 +4281,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'dbgap_accession',
@@ -4234,7 +4313,9 @@ export const exploreParticipantsTabs = [
         hideable: true,
         tooltipText: "sort",
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.COMMA,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
       },
       {
         dataField: 'first_event',
@@ -4363,12 +4444,7 @@ export const exploreParticipantsTabs = [
         tooltipText: 'sort',
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (!dt || dt === -999) {
-            return 'Not Reported';
-          }
-          return dt.toString();
-        },
+        dataFormatter: formatAgeValue,
         role: cellTypes.DISPLAY,
       },
       {
@@ -4563,7 +4639,8 @@ export const exploreFilesTabs = [
         display: true,
         tooltipText: 'sort',
         cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.MODAL,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
         role: cellTypes.DISPLAY,
       },
       {

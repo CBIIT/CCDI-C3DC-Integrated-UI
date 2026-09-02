@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as DownArrowIcon } from '../../assets/Down_Arrow.svg';
 import { ReactComponent as UpArrowIcon } from '../../assets/Up_Arrow.svg';
 import ToastNotification from '../participant/ToastNotification';
+import { formatCartAddMessage, getCartAddCounts } from '@bento-core/cart';
 
 const removeSquareBracketsFromString = (text) => {
   return text.replace(/\[|\]/g, '');
@@ -147,15 +148,16 @@ const FilesCard = ({ data = {}, index, addFiles, cartFiles = [] }) => {
       return;
     }
 
-    // Check if file is already in cart
-    if (cartFiles.includes(id)) {
-      showNotification('File already in cart', 'error');
+    const { addedCount, alreadyInCartCount } = getCartAddCounts(cartFiles, [id]);
+
+    if (alreadyInCartCount > 0) {
+      showNotification(formatCartAddMessage(addedCount, alreadyInCartCount), 'info');
       return;
     }
 
     if (cartCount + 1 <= upperLimit) {
       addFiles([id]);
-      showNotification('1 File successfully added to your cart', 'success');
+      showNotification(formatCartAddMessage(addedCount, alreadyInCartCount), 'success');
     } else {
       showNotification('Cart limit reached. Please remove some files first.', 'error');
     }

@@ -67,7 +67,6 @@ jest.mock('../../CohortAnalyzerUtil/CohortDataTransform', () => ({
   getJoinedCohortData: (...args) => mockGetJoinedCohortData(...args),
 }));
 
-jest.mock('../../../../components/Stats/GlobalStatsController', () => () => <div data-testid="stats" />);
 jest.mock('../../components/navigateAwayModal', () => () => null);
 jest.mock('../../../../components/CohortModal/components/shared/ConfirmationModal', () => ({
   __esModule: true,

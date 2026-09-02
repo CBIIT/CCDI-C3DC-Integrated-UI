@@ -20,7 +20,7 @@ export default function DownloadSelectedCohort({ queryVariable, isSelected }) {
     }
 
     // The Cohort Analyzer emits query variables under both `id` (overview
-    // endpoints) and `participant_pk` (cohortManifest / cohortMetadata).
+    // endpoints) and `id` (cohortManifest / cohortMetadata).
     const getParticipantIds = () => (
         (queryVariable && (queryVariable.participant_pk || queryVariable.id)) || []
     );

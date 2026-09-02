@@ -3,6 +3,16 @@ import LogoSmall from '../assets/header/Portal_Logo_Small.svg';
 import searchbarIcon from '../assets/header/Search_Icon.svg';
 import cartLogo from '../assets/header/Cart_Logo.svg';
 import usFlagSmall from "../assets/header/us_flag_small.png";
+import env from '../utils/env';
+
+const CCDI_BASE_URL = String(env.REACT_APP_CCDI || '').replace(/\/$/, '');
+
+function ccdiUrl(path = '') {
+  if (!path) {
+    return `${CCDI_BASE_URL}/`;
+  }
+  return `${CCDI_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+}
 
 // globalHeaderLogo image 468x100
 // globalHeaderImage: image 2200x100
@@ -73,6 +83,11 @@ export const navbarSublists = {
     {
       name: 'About',
       link: '/about',
+      className: 'navMobileSubItem',
+    },
+    {
+      name: 'CCDI FAQs',
+      link: ccdiUrl('/faqs'),
       className: 'navMobileSubItem',
     },
     {

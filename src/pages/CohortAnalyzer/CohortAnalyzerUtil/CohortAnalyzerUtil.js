@@ -23,16 +23,26 @@ export const filterAllParticipantWithDiagnosisName = (generalInfo, allParticipan
     return finalIds;
 }
 
+/** treatmentOverview returns treatment_type as an array, so compare flattened values. */
+export const normalizeTreatmentTypeValues = (value) => {
+    if (value == null || value === '') return [];
+    if (Array.isArray(value)) {
+        return value.reduce((acc, item) => acc.concat(normalizeTreatmentTypeValues(item)), []);
+    }
+    return [value];
+};
+
 export const filterAllParticipantWithTreatmentType = (generalInfo, allParticipants) => {
-    let finalIds = [];
-    Object.keys(generalInfo).forEach((section) => {
-        allParticipants.forEach((part) => {
-            if (generalInfo[section].includes(part.treatment_type)) {
-                finalIds = [...finalIds, part]
-            }
-        })
+    const selectedTypes = new Set();
+    Object.keys(generalInfo || {}).forEach((section) => {
+        normalizeTreatmentTypeValues(generalInfo[section]).forEach((type) => selectedTypes.add(type));
     });
-    return finalIds;
+    if (selectedTypes.size === 0) {
+        return [];
+    }
+    return (allParticipants || []).filter((part) => (
+        normalizeTreatmentTypeValues(part.treatment_type).some((type) => selectedTypes.has(type))
+    ));
 }
 
 
@@ -89,10 +99,14 @@ export const getAllIds = (generalInfo) => {
 }
 
 export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") => {
+    if (!Array.isArray(rowD)) {
+        return [];
+    }
     let finalRowData = rowD.map((row) => {
         if (type === "other") {
-
-            let cohortName = getCohortName(row.participant_pk, state, selectedCohorts);
+            // Flat treatment rows carry no participant_pk, only the display id.
+            const rowKey = row.participant_pk != null ? row.participant_pk : row.participant_id;
+            let cohortName = getCohortName(rowKey, state, selectedCohorts);
             return {
                 ...row,
                 cohort: cohortName
@@ -112,22 +126,25 @@ export const addCohortColumn = (rowD, state, selectedCohorts, type = "other") =>
 }
 
 const getCohortName = (pk, state, selectedCohorts) => {
-    const cohortNames = selectedCohorts
-        .filter(cohortKey =>
-            state[cohortKey].participants.some((participant) => (
-                getParticipantPk(participant) === pk
-                || participant.participant_id === pk
-            ))
-        ).map(cohortKey => state[cohortKey].cohortName);
-    let finalResponse = [];
     const baseColorArray = ["#F0D571", "#A4E9CB", "#A3CCE8"];
-    selectedCohorts.forEach((cohort, index) => {
-        let indexOfHashKey = cohortNames.map(name => name.toLowerCase()).indexOf(cohort.toLowerCase());
-        if (indexOfHashKey >= 0) {
-            finalResponse.push({ color: baseColorArray[index], "cohort": cohortNames[indexOfHashKey] })
+    // Match by selected cohort key (and membership), not by comparing keys to display names.
+    return (selectedCohorts || []).reduce((acc, cohortKey, index) => {
+        const cohortState = state && state[cohortKey];
+        if (!cohortState || !Array.isArray(cohortState.participants)) {
+            return acc;
         }
-    })
-    return finalResponse;
+        const inCohort = cohortState.participants.some((participant) => (
+            getParticipantPk(participant) === pk
+            || participant.participant_id === pk
+        ));
+        if (inCohort) {
+            acc.push({
+                color: baseColorArray[index % baseColorArray.length],
+                cohort: cohortState.cohortName || cohortKey,
+            });
+        }
+        return acc;
+    }, []);
 }
 
 export const resetSelection = (setSelectedCohorts, setNodeIndex, setRowData) => {
@@ -226,7 +243,7 @@ export const SearchBox = (classes, handleSearchValue, searchValue, searchReferen
 // Diagnosis/treatment overview bind `$id` → `participant_ids`, which expects
 // display `participant_id` values (UUIDs return empty). `participantOverview`
 // still filters by internal id — callers remap `id` ← `participant_pk` for that
-// path. `cohortManifest` / `cohortMetadata` use `participant_pk` (UUID).
+// path. `cohortManifest` / `cohortMetadata` use `id` (UUID).
 export function generateQueryVariable(cohortNames, state) {
     const pks = [];
     const displayIds = [];

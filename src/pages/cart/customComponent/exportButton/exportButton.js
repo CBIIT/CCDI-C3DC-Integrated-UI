@@ -15,7 +15,7 @@ import cgcIcon from './assets/cgc.svg';
 import manifestIcon from './assets/manifest.svg';
 // import { getManifestData } from './util/TableService';
 import { exportStyles } from './exportStyles';
-import { downloadJson } from './util/downloadJson';
+import { downloadJson, formatManifestCellValue } from './util/downloadJson';
 import ToolTip from "@bento-core/tool-tip";
 
 const ExportButtonView = (props,) => {
@@ -48,22 +48,11 @@ const ExportButtonView = (props,) => {
       if (!manifestContent || (manifestContent.filesManifestInList && manifestContent.filesManifestInList.length === 0)) {
         return null;
       }
-      const appendString = 'drs://nci-crdc.datacommons.io/'
       const processedStoreManifestPayload = manifestContent.filesManifestInList.map((el) => {
         const obj = {}
         for (let i = 0; i < manifestData.keysToInclude.length; i++) {
-          if (manifestData.keysToInclude[i] === 'guid') {
-            obj[manifestData.header[i]] = el && el[manifestData.keysToInclude[i]] ? 
-              appendString + el[manifestData.keysToInclude[i]] 
-              : 
-              "";
-          }
-          else {
-            obj[manifestData.header[i]] = el && el[manifestData.keysToInclude[i]] ? 
-            el[manifestData.keysToInclude[i]] 
-            : 
-            "";
-          }
+          const key = manifestData.keysToInclude[i];
+          obj[manifestData.header[i]] = formatManifestCellValue(key, el && el[key]);
         }
         return obj;
         });

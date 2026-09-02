@@ -53,6 +53,17 @@ describe('CohortAnalyzerUtil', () => {
       ];
       expect(filterAllParticipantWithTreatmentType(generalInfo, participants)).toHaveLength(1);
     });
+
+    it('matches array-valued treatment types from treatmentOverview', () => {
+      const generalInfo = { section1: [['Surgery', 'Radiation']] };
+      const participants = [
+        { treatment_type: ['Surgery'] },
+        { treatment_type: ['Chemotherapy'] },
+      ];
+      const result = filterAllParticipantWithTreatmentType(generalInfo, participants);
+      expect(result).toHaveLength(1);
+      expect(result[0].treatment_type).toEqual(['Surgery']);
+    });
   });
 
   describe('getIdsFromCohort', () => {
@@ -80,20 +91,42 @@ describe('CohortAnalyzerUtil', () => {
     const state = {
       'cohort a': {
         cohortName: 'Cohort A',
-        participants: [{ participant_pk: 'pk1' }],
+        participants: [{ id: 'pk1', participant_pk: 'pk1' }],
       },
     };
 
     it('adds cohort column using participant_pk', () => {
       const rows = [{ participant_pk: 'pk1', value: 1 }];
       const result = addCohortColumn(rows, state, ['cohort a'], 'other');
-      expect(result[0].cohort).toBeDefined();
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Cohort A' },
+      ]);
     });
 
     it('adds cohort column using id for treatment type', () => {
       const rows = [{ id: 'pk1', value: 1 }];
       const result = addCohortColumn(rows, state, ['cohort a'], 'treatment');
-      expect(result[0].cohort).toBeDefined();
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Cohort A' },
+      ]);
+    });
+
+    it('adds cohort column for flat treatment rows that only carry participant_id', () => {
+      const treatmentState = {
+        'Example Cohort 1': {
+          cohortName: 'Example Cohort 1',
+          participants: [{ id: 'uuid-1', participant_id: 'PBBWJX' }],
+        },
+      };
+      const rows = [{ participant_id: 'PBBWJX', treatment_type: ['Surgery'] }];
+      const result = addCohortColumn(rows, treatmentState, ['Example Cohort 1'], 'other');
+      expect(result[0].cohort).toEqual([
+        { color: '#F0D571', cohort: 'Example Cohort 1' },
+      ]);
+    });
+
+    it('returns empty array when row data is not an array', () => {
+      expect(addCohortColumn(null, state, ['cohort a'])).toEqual([]);
     });
   });
 

@@ -46,7 +46,7 @@ export const CustomCellView = (props) => {
   } else if (cellStyle === 'STUDY_DOWNLOAD') {
     const study_id = props[dataField];
     const study_download_url = studyDownloadLinks[props[dataField]];
-    const fileName = study_id + "_CCDI_Study_Manifest.xlsx";
+    const fileName = study_download_url ? decodeURIComponent(study_download_url.split('/').pop()) : `${study_id}_CCDI_DCC_Study_Manifest.xlsx`;
     return(
       <Tooltip title="Download study manifest">
         <span onClick={()=>{

@@ -20,7 +20,10 @@ import { patchChartVisuals } from '../store/cohortAnalyzerLayoutActions';
 import {
   COHORT_ANALYZER_HISTOGRAM_TITLES as titles,
 } from '../store/cohortAnalyzerDefaultPanelRegistry';
-import { HISTOGRAM_CARD_CHROME_HEIGHT } from './histogramConstants';
+import {
+  HISTOGRAM_CARD_CHROME_HEIGHT,
+  HISTOGRAM_HEADER_BASE_HEIGHT_PX,
+} from './histogramConstants';
 import { hasAnyAddableChartCatalogEntry } from '../config/cohortAnalyzerChartCatalog';
 import {
   defaultHistogramPlotHeightPx,
@@ -291,6 +294,45 @@ const Histogram = ({
     return orderedVisibleHistograms[0];
   }, [survivalSelected, orderedVisibleHistograms, besideStripPanelId]);
 
+  /** Natural header heights per dataset; strip shares the max so wrapped titles grow every card. */
+  const [stripHeaderHeightByDataset, setStripHeaderHeightByDataset] = useState({});
+
+  const reportStripHeaderHeight = useCallback((dataset, heightPx) => {
+    if (!dataset || !(heightPx > 0)) return;
+    const nextH = Math.ceil(heightPx);
+    setStripHeaderHeightByDataset((prev) => {
+      if (prev[dataset] === nextH) return prev;
+      return { ...prev, [dataset]: nextH };
+    });
+  }, []);
+
+  const sharedStripHeaderHeightPx = useMemo(() => {
+    let max = HISTOGRAM_HEADER_BASE_HEIGHT_PX;
+    orderedVisibleHistograms.forEach((id) => {
+      const h = stripHeaderHeightByDataset[id];
+      if (h != null && h > max) max = h;
+    });
+    return max;
+  }, [orderedVisibleHistograms, stripHeaderHeightByDataset]);
+
+  const sharedStripChromeHeightPx = useMemo(
+    () => HISTOGRAM_CARD_CHROME_HEIGHT - HISTOGRAM_HEADER_BASE_HEIGHT_PX + sharedStripHeaderHeightPx,
+    [sharedStripHeaderHeightPx],
+  );
+
+  useEffect(() => {
+    setStripHeaderHeightByDataset((prev) => {
+      const keep = new Set(orderedVisibleHistograms);
+      let changed = false;
+      const next = {};
+      Object.keys(prev).forEach((id) => {
+        if (keep.has(id)) next[id] = prev[id];
+        else changed = true;
+      });
+      return changed ? next : prev;
+    });
+  }, [orderedVisibleHistograms]);
+
   const mainHistogramRowOrder = useMemo(() => {
     if (!besideDatasetForColumn) return orderedVisibleHistograms;
     return orderedVisibleHistograms.filter((d) => d !== besideDatasetForColumn);
@@ -480,6 +522,9 @@ const Histogram = ({
         setChartTypeMenuDataset={setChartTypeMenuDataset}
         chartTypeMenuRef={chartTypeMenuRef}
         setChartVisualForPanel={(panelId, type) => dispatch(patchChartVisuals({ [panelId]: type }))}
+        sharedStripHeaderHeightPx={sharedStripHeaderHeightPx}
+        sharedStripChromeHeightPx={sharedStripChromeHeightPx}
+        reportStripHeaderHeight={reportStripHeaderHeight}
       />
       <HistogramSurvivalBesideVennPortal
         selectedDatasets={selectedDatasets}
@@ -636,6 +681,9 @@ const Histogram = ({
             c2Name={c2Name}
             c3Name={c3Name}
             besidePanelDraggingRef={besidePanelDraggingRef}
+            sharedStripHeaderHeightPx={sharedStripHeaderHeightPx}
+            sharedStripChromeHeightPx={sharedStripChromeHeightPx}
+            reportStripHeaderHeight={reportStripHeaderHeight}
           />
           );
         })}

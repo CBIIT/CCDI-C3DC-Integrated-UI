@@ -12,4 +12,5 @@ window.injectedEnv = {
   REACT_APP_INTEROP_SERVICE_API: 'https://ccdi-dev.cancer.gov/api/interoperation/',
   REACT_APP_DMN_URL: 'https://cbiit.github.io/crdc-data-model-navigator/?config=https://raw.githubusercontent.com/CBIIT/ccdi-dcc-model/refs/tags/1.0.0/',
   REACT_APP_STATIC_CONTENT_URL: 'https://raw.githubusercontent.com/CBIIT/CCDI_Hub_Static_Contents/dev',
+  REACT_APP_CCDI: 'https://ccdi-dev.cancer.gov',
 };
