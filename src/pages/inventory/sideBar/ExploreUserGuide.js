@@ -6,23 +6,6 @@ import userguideIcon from '../../../assets/icons/Explore_User_Guide_Icon.svg';
 import userguideIconWhite from '../../../assets/icons/Explore_User_Guide_Icon_White.svg';
 import { useUserGuide } from './UserGuideContext';
 
-// const UseGuideButtonContainer = styled.div`
-//   .buttonContainer {
-//     display: flex;
-//     margin-left: 12.5px;
-//     margin-top: 15px;
-//   }
-
-//   .buttonText {
-//     color: #415153;
-//     font-weight: 600;
-//     font-family: 'Nunito Sans';
-//     font-size: 14px;
-//     line-height: 30px;
-//     margin-left: 8px;
-//   }
-// `;
-
 const UseGuideButtonContainer = styled.div`
   background-color: #337478;
 

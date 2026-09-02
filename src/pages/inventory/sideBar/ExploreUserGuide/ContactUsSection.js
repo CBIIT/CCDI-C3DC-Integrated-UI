@@ -7,7 +7,11 @@ const ContactUsSection = ({ classes }) => (
     </div>
     <div className={classes.contentContainer}>
       <p>
-        Please direct any questions or requests for further information to the <a href="mailto:NCIChildhoodCancerDataInitiative@mail.nih.gov">CCDI mailbox</a>.
+        Please direct any questions or requests for further information to the{" "}
+        <a href="mailto:NCIChildhoodCancerDataInitiative@mail.nih.gov">
+          CCDI mailbox
+        </a>
+        .
       </p>
     </div>
   </div>
