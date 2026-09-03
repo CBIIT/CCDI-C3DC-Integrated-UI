@@ -23,12 +23,12 @@ import { formatCartAddMessage, getCartAddCounts } from '@bento-core/cart';
 };*/
 
 const addFileQuery = gql`
-query search (          
-  $participant_ids: [String],
+query search (
+  $pid: [String],
 ){
-  fileIDsFromList (          
-      participant_ids: $participant_ids,
-  ) 
+  fileIDsFromList (
+      pid: $pid,
+  )
 }
 `;
 
@@ -177,7 +177,7 @@ const ParticipantCard = ({ data = {}, index, addFiles, setAlterDisplay, setOpenS
     const toAdd = [id];
     const fileIds = getFilesID({
       client,
-      variables: { participant_ids: toAdd },
+      variables: { pid: toAdd },
       query: addFileQuery,
     });
     const upperLimit = 200000;
