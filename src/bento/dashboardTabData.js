@@ -2711,12 +2711,12 @@ export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
   `;
 
 export const GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL = gql`
-query search (          
-  $participant_ids: [String],
+query search (
+  $pid: [String],
 ){
-  fileIDsFromList (          
-      participant_ids: $participant_ids,
-  ) 
+  fileIDsFromList (
+      pid: $pid,
+  )
 }
   `;
 
@@ -3467,7 +3467,7 @@ export const exploreParticipantsTabs = [
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
-    addFilesRequestVariableKey: 'participant_ids',
+    addFilesRequestVariableKey: 'pid',
     addFilesResponseKeys: ['fileIDsFromList'],
     addAllFilesResponseKeys: ['participantOverview', 'files'],
     addAllFileQuery: GET_ALL_FILEIDS_FROM_PARTICIPANTSTAB_FOR_ADD_ALL_CART,

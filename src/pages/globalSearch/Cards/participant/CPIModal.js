@@ -238,6 +238,7 @@ const CPIModal = ({
 
   const navigation = useNavigate();
   const participantId = row.participant_id;
+  const participantPid = row.id;
   const studyId = row.study_id;
 
   useEffect(() => {
@@ -696,51 +697,55 @@ const CPIModal = ({
             </Button>
             
             {dropdownOpen && (
-              <>
-                <div
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    zIndex: 1,
-                  }}
-                  onClick={() => setDropdownOpen(false)}
-                />
-                <div className={classes.dropdown}>
-                  <div className={classes.dropdownList}>
-                    <div className={classes.dropdownItem}>
-                      <AddFileButtonView
-                        {...wrapperConfig.items[0]}
-                        buttonStyle={addAllFilesButton}
-                        rowID={row.id}
-                      />
-                    </div>
-                    <div className={classes.dropdownItem}>
-                      <AddFileButtonView
-                        {...wrapperConfig.items[1]}
-                        buttonStyle={addSelectedFilesButton}
-                        rowID={row.id}
-                        disabled={selectedIds.length === 0}
-                      />
-                    </div>
-                    <div className={classes.dropdownItem}>
-                      <Button
-                        style={goToCartButton}
-                        onClick={() => {
-                          navigation('/fileCentricCart');
-                          setDropdownOpen(false);
-                        }}
-                        disableRipple
-                      >
-                        GO TO CART
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </>
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 1,
+                }}
+                onClick={() => setDropdownOpen(false)}
+              />
             )}
+            {/* Keep cart actions mounted while closed so the success toast is not unmounted. */}
+            <div
+              className={classes.dropdown}
+              style={{ display: dropdownOpen ? 'block' : 'none' }}
+            >
+              <div className={classes.dropdownList}>
+                <div className={classes.dropdownItem}>
+                  <AddFileButtonView
+                    {...wrapperConfig.items[0]}
+                    buttonStyle={addAllFilesButton}
+                    rowID={participantPid}
+                    onOptionClick={() => setDropdownOpen(false)}
+                  />
+                </div>
+                <div className={classes.dropdownItem}>
+                  <AddFileButtonView
+                    {...wrapperConfig.items[1]}
+                    buttonStyle={addSelectedFilesButton}
+                    rowID={participantPid}
+                    disabled={selectedIds.length === 0}
+                    onOptionClick={() => setDropdownOpen(false)}
+                  />
+                </div>
+                <div className={classes.dropdownItem}>
+                  <Button
+                    style={goToCartButton}
+                    onClick={() => {
+                      navigation('/fileCentricCart');
+                      setDropdownOpen(false);
+                    }}
+                    disableRipple
+                  >
+                    GO TO CART
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="footer" style={footer}>
@@ -763,3 +768,4 @@ const CPIModal = ({
 };
 
 export default withStyles(styles)(CPIModal);
+
