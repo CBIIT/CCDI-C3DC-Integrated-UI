@@ -1,0 +1,126 @@
+export const styles = () => ({
+    container: {
+        display: 'contents',
+    },
+    leftContainer: {
+        borderRight: '1px solid #939393',
+        padding: '34px 40px 20px 70px',
+    },
+    rightContainer: {
+        padding: '34px 70px 20px 40px',
+    },
+    studyItem: {
+        marginBottom: '33px',
+    },
+    studyItemTitle: {
+        color: '#00818D',
+        fontFamily: 'Poppins',
+        fontSize: '18px',
+        fontWeight: 500,
+        fontStyle: 'normal',
+        lineHeight: '18px',
+        letterSpacing: '0',
+    },
+    studyItemContent: {
+        color: '#000000',
+        fontFamily: 'Inter',
+        fontSize: '16px',
+        fontWeight: 500,
+        lineHeight: '22px',
+        paddingLeft: '20px',
+        marginTop: '8px',
+        '& a': {
+            color: '#455299',
+            fontFamily: 'Inter',
+            fontSize: '16px',
+            fontStyle: 'normal',
+            fontWeight: 700,
+            lineHeight: '22px',
+        },
+    },
+    exportIcon: {
+        marginLeft: '8px',
+    },
+    studyManifestIcon: {
+        marginLeft: '10px',
+    },
+    consentCodesPanel: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 15px 0px #0000004D',
+        padding: '16px 20px',
+        marginTop: '8px',
+        marginBottom: '16px',
+    },
+    consentCodesLabel: {
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '2px',
+        fontFamily: 'Inter',
+        fontSize: '16px',
+        fontWeight: 700,
+        lineHeight: '22px',
+        color: '#000000',
+        marginBottom: '8px',
+    },
+    consentCodesTooltipWrapper: {
+        display: 'inline-flex',
+        marginTop: '-3px',
+        lineHeight: 0,
+    },
+    consentCodesTooltipIcon: {
+        width: '13px',
+        height: '13px',
+        display: 'block',
+        cursor: 'pointer',
+        border: 'none',
+    },
+    consentCodesTooltipText: {
+        fontFamily: 'Poppins',
+        fontWeight: 400,
+        fontSize: '13px',
+        lineHeight: '17.5px',
+        letterSpacing: '-0.01em',
+    },
+    consentCodesList: {
+        paddingLeft: '20px',
+    },
+    consentCodeLink: {
+        color: '#455299',
+        fontFamily: 'Inter',
+        fontSize: '16px',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        lineHeight: '150%',
+        letterSpacing: '-0.02em',
+        textDecoration: 'underline',
+        textDecorationStyle: 'solid',
+        textUnderlineOffset: '0',
+    },
+    accessDataSubsection: {
+        marginTop: '16px',
+        '&:first-of-type': {
+            marginTop: 0,
+        },
+    },
+    accessDataSubsectionTitle: {
+        fontFamily: 'Inter',
+        fontSize: '16px',
+        fontWeight: 700,
+        lineHeight: '22px',
+        color: '#000000',
+        marginBottom: '8px',
+    },
+    accessDataSubsectionContent: {
+        paddingLeft: '20px',
+    },
+    accessDataInfoHeader: {
+        fontFamily: 'Inter',
+        fontSize: '16px',
+        fontWeight: 500,
+        lineHeight: '22px',
+        color: '#000000',
+        marginBottom: '4px',
+    },
+});
+

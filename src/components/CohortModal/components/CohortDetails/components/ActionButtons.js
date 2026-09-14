@@ -1,0 +1,289 @@
+import React, { useState, useRef, useEffect, useCallback, useContext, memo } from 'react';
+import { withStyles, Button } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
+import ExpandMoreIcon from '../../../../../assets/icons/Expand_More_Icon.svg';
+import ToolTip from '@bento-core/tool-tip';
+import { downloadCohortManifest, downloadCohortMetadata } from '../../../utils';
+import { CohortModalContext } from '../../../CohortModalContext';
+import { TOOLTIP_MESSAGES } from '../../../../../bento/cohortModalData';
+
+const ActionButtons = (props) => {
+    const {
+        classes,
+        localCohort
+    } = props;
+    
+    const navigate = useNavigate();
+    const { showAlert } = useContext(CohortModalContext);
+    
+    // Loading states
+    const [isDownloading, setIsDownloading] = useState(false);
+    
+    // Download functions (memoized for performance with error handling)
+    const handleDownloadManifest = useCallback(async () => {
+        if (isDownloading) return; // Prevent multiple simultaneous downloads
+
+        await downloadCohortManifest(localCohort.participants, localCohort.cohortId, {
+            showAlert,
+            onLoadingStateChange: setIsDownloading
+        });
+    }, [localCohort.participants, localCohort.cohortId, isDownloading, showAlert]);
+
+    const handleDownloadMetadata = useCallback(async () => {
+        if (isDownloading) return; // Prevent multiple simultaneous downloads
+
+        await downloadCohortMetadata(localCohort.participants, localCohort.cohortId, {
+            showAlert,
+            onLoadingStateChange: setIsDownloading
+        });
+    }, [localCohort.participants, localCohort.cohortId, isDownloading, showAlert]);
+    
+    const handleViewAnalysisClick = useCallback(() => {
+        try {
+            navigate(`/cohortAnalyzer`, {state: {cohort: localCohort}});
+        } catch (error) {
+            console.error('Error navigating to cohort analyzer:', error);
+            showAlert('error', 'Failed to navigate to Cohort Analyzer. Please try again.');
+        }
+    }, [navigate, localCohort, showAlert]);
+    
+    
+    const viewCohortAnalyzerTooltip = TOOLTIP_MESSAGES.viewCohortAnalyzer;
+
+    const [showDownloadDropdown, setShowDownloadDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Click outside handler to close dropdown
+    const handleClickOutside = useCallback((event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowDownloadDropdown(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (showDownloadDropdown) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showDownloadDropdown, handleClickOutside]);
+
+    const handleDownloadDropdown = useCallback(() => {
+        setShowDownloadDropdown(!showDownloadDropdown);
+    }, [showDownloadDropdown]);
+
+    const handleDownloadFile = useCallback((download) => {
+        download();
+        setShowDownloadDropdown(false);
+    }, []);
+
+    return (
+        <div className={classes.actionButtonsContainer}>
+            <div className={classes.dropdownSection} ref={dropdownRef}>
+                <Button
+                    variant="contained"
+                    className={showDownloadDropdown ? classes.downloadButtonOpened : classes.downloadButton}
+                    onClick={handleDownloadDropdown}
+                    disabled={isDownloading}
+                    aria-label="Download cohort data - select format"
+                >
+                    <div className={classes.downloadButtonText}>
+                        <span>Download Selected</span>
+                        <span>Cohorts</span>
+                    </div>
+                    <img
+                        src={ExpandMoreIcon}
+                        alt="expand download icon"
+                        className={`${classes.expandMoreIcon} ${showDownloadDropdown ? classes.rotatedIcon : ''}`}
+                    />
+                </Button>
+                {showDownloadDropdown && (
+                    <div className={classes.dropdownMenu}>
+                        <div
+                            className={classes.dropdownItem + ' ' + classes.firstDropdownItem}
+                            onClick={() => { handleDownloadFile(handleDownloadManifest) }}
+                        >
+                            Manifest CSV
+                        </div>
+                        <div
+                            className={classes.dropdownItem}
+                            onClick={() => { handleDownloadFile(handleDownloadMetadata) }}
+                        >
+                            Metadata JSON
+                        </div>
+                    </div>
+                )}
+            </div>
+            
+            <ToolTip
+                title={viewCohortAnalyzerTooltip}
+                placement="top-end"
+                arrow
+                arrowSize="30px"
+            >
+                <Button 
+                    variant="contained" 
+                    className={classes.viewCohortAnalyzerButton} 
+                    onClick={handleViewAnalysisClick}
+                    aria-label="Navigate to Cohort Analyzer page"
+                >
+                    View Cohort <br/> Analyzer
+                </Button>
+            </ToolTip>
+        </div>
+    );
+};
+
+const styles = () => {
+  // Base button style for common properties
+  const baseButtonStyle = {
+    height: "41px",
+    borderRadius: "5px",
+    boxShadow: "none",
+    fontFamily: "Poppins",
+    fontWeight: "600",
+    fontSize: "12px",
+    color: "#FFFFFF",
+    display: "flex",
+    "&:hover": {
+      boxShadow: "none",
+    },
+  };
+
+  // Standard action button style (137px width)
+  const standardActionButtonStyle = {
+    ...baseButtonStyle,
+    width: "137px",
+    lineHeight: "13px",
+    letterSpacing: "2%",
+    verticalAlign: "middle",
+    textTransform: "uppercase",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  };
+
+  return {
+    actionButtonsContainer: {
+      display: "flex",
+      flexDirection: "row",
+      gap: 8,
+      justifyContent: "center",
+    },
+    dropdownSection: {
+      position: "relative",
+      "& button": {
+        height: "41px",
+        fontFamily: "Poppins",
+        fontSize: "12px",
+        fontWeight: "600",
+        lineHeight: "16px",
+        color: "#FFFFFF",
+      },
+    },
+    downloadButton: {
+      ...baseButtonStyle,
+      backgroundColor: "#4F5D69",
+      border: "1.25px solid #4F5D69",
+      width: "200px",
+      justifyContent: "space-between",
+      lineHeight: "13px !important",
+
+      "&:hover": {
+        backgroundColor: "#374149",
+        boxShadow: "none",
+      },
+    },
+    downloadButtonOpened: {
+      ...baseButtonStyle,
+      backgroundColor: "#4F5D69",
+      border: "1.25px solid #73A9C7",
+      width: "200px",
+      borderTopLeftRadius: "5px",
+      borderTopRightRadius: "5px",
+      borderBottomLeftRadius: "0px",
+      borderBottomRightRadius: "0px",
+      justifyContent: "space-between",
+      lineHeight: "13px !important",
+      zIndex: "1",
+      "&:hover": {
+        backgroundColor: "#374149",
+        boxShadow: "none",
+      },
+    },
+    downloadButtonText: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "start !important",
+    },
+    expandMoreIcon: {
+      width: "12px",
+      height: "12px",
+      transition: "transform 0.2s ease",
+    },
+    rotatedIcon: {
+      transform: "rotate(180deg)",
+    },
+    dropdownMenu: {
+      position: "absolute",
+      width: "200px",
+      backgroundColor: "#EFF2F6",
+      border: "1px solid #0C534C",
+      borderBottomLeftRadius: "5px",
+      borderBottomRightRadius: "5px",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+      fontFamily: "Poppins",
+      fontSize: "12px",
+      lineHeight: "16px",
+      fontWeight: "500",
+      textTransform: "capitalize",
+      "& div": {
+        padding: "13.2px 21px",
+        "&:hover": {
+          backgroundColor: "#CCD5E1",
+          cursor: "pointer",
+        },
+      },
+    },
+    firstDropdownItem: {
+      borderBottom: "1px solid #0C534C",
+    },
+    viewCohortAnalyzerButton: {
+      ...standardActionButtonStyle,
+      backgroundColor: "#003F74",
+      border: "1.25px solid #73A9C7",
+      textAlign: "left",
+      "&:hover": {
+        backgroundColor: "#073F60",
+        boxShadow: "none",
+      },
+    },
+    exploreButton: {
+      ...standardActionButtonStyle,
+      backgroundColor: "#086C78",
+      border: "1.25px solid #4EA1A1",
+      "&:hover": {
+        backgroundColor: "#1d4d67",
+        boxShadow: "none",
+      },
+    },
+    exploreButtonFaded: {
+      ...standardActionButtonStyle,
+      backgroundColor: "#BBC1C3",
+      border: "1.25px solid #4EA1A1",
+      cursor: "not-allowed",
+      "&:hover": {
+        backgroundColor: "#BBC1C3",
+        boxShadow: "none",
+      },
+    },
+  };
+};
+
+export default memo(withStyles(styles, { withTheme: true })(ActionButtons));

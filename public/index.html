@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta charset="utf-8" />
+  <meta name="robots" content="index" />
+  <meta name="description" content="Welcome to Childhood Cancer Clinical Data Commons. A primary source for deidentified, individual-level harmonized data that describes the demographic and phenotypic characteristics of participants."/>
+  <meta name="keywords" content="Childhood Cancer Clinical Data Commons, Pediatric Cancer Data, Pediatric Cancer Reseach, Harmonized Clinical Data, Pediatric Cancer Data Discoveries, Childhood Cancer Phenotyping, Harmonized Patient Data, Phenotypic Characteristics, Deidentified Clinical Data, Pediatric Oncology Data, Clinical Data Harmonization, Childhood Oncology Research, Pediatric Oncology Research, Paediatric Oncology Research, Pediatric Cancer Data, Paediatric Cancer Data, Childhood Cancer Research, Pediatric Cancer Research, Paediatric Cancer Research, Childhood Tumor Data, Pediatric Tumor Data, Paediatric Tumour Data, Cancer Data Sharing, Childhood Cancer Insights, Pediatric Cancer Insights, Paediatric Cancer Insights, Childhood Oncology Collaboration, Pediatric Oncology Collaboration, Paediatric Oncology Collaboration, Childhood Cancer Data Repository, Pediatric Cancer Data Repository, Paediatric Cancer Data Repository, Childhood Cancer Research Resources, Pediatric Cancer Research Resources, Paediatric Cancer Research Resources, Childhood Cancer Data Partnerships, Pediatric Cancer Data Partnerships, Paediatric Cancer Data Partnerships, Childhood Cancer Data Access, Pediatric Cancer Data Access, Paediatric Cancer Data Access, Childhood Oncology Innovations, Pediatric Oncology Innovations, Paediatric Oncology Innovations, Childhood Cancer Data Discoveries, Pediatric Cancer Data Discoveries, Paediatric Cancer Data Discoveries, Childhood Cancer Data Solutions, Pediatric Cancer Data Science, Paediatric Cancer Data Science, Childhood Cancer Data Science"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta property="og:title" content="Childhood Cancer Clinical Data Commons">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://clinicalcommons.ccdi.cancer.gov/">
+  <meta property="og:description" content="Welcome to Childhood Cancer Clinical Data Commons. A primary source for deidentified, individual-level harmonized data that describes the demographic and phenotypic characteristics of participants.">
+  <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  <!-- <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans|Poppins|Raleway|Oswald|Inter|Nunito:wght@100;200;300;400;500;600;700;800;900|Inter:wght@100;200;300;400;500;600;700;800;900|Lato&display=swap"
+    rel="stylesheet"> -->
+  <!-- <link rel="stylesheet" href="https://use.typekit.net/zza5wdp.css"> -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link href="%PUBLIC_URL%/css/index.css" rel="stylesheet" />
+  <!--
+      Change line below to update favicon application
+      Ideal size: 32x32 px.
+    -->
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <script src="%PUBLIC_URL%/js/session.js"></script>
+  <!--
+      Inject environment variable to windows object. 
+    -->
+  <script src="%PUBLIC_URL%/injectEnv.js"></script>
+
+  <title>C3DC</title>
+
+  <!-- Adobe Analytics and DAP analytics -->
+  <!-- <script src=https://assets.adobedtm.com/6a4249cd0a2c/f4e387f9e3a3/launch-13b63a2d928c.min.js> </script> -->
+  <script src="https://assets.adobedtm.com/6a4249cd0a2c/785de09de161/launch-70d67a6a40a8.min.js"async></script>
+
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <style type="text/css">
+    body {
+      padding-right: 0px;
+      /* min-width: 1440px; */
+    }
+
+    #root {
+      overflow: hidden;
+    }
+
+    .recharts-wrapper *:focus {
+      outline: none;
+    }
+
+    /* Disable tap highlight */
+    .recharts-wrapper {
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+</body>
+
+</html>

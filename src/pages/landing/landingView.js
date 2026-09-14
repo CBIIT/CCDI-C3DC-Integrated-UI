@@ -1,0 +1,1024 @@
+import React from 'react';
+import {
+  Grid,
+  withStyles,
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { landingPageData } from '../../bento/landingPageData';
+import icon from '../../assets/landing/LP_ReadMore.svg';
+import iconAbout from '../../assets/landing/LP_About_Fullarticle.Arrow.svg';
+
+// Layout constants
+const TILE_IMAGE_HEIGHT = '249px';
+const DC_WORDS_HEIGHT = '200px';
+const LAYOUT_GAP = '18px';
+const CONTENT_LEFT_WIDTH = '300px';
+const CONTENT_RIGHT_WIDTH = '604px';
+const CONTAINER_PADDING = '20px';
+const TILE4_SECTION_HEIGHT = `calc(${TILE_IMAGE_HEIGHT} + ${DC_WORDS_HEIGHT} - ${LAYOUT_GAP})`;
+
+const LandingView = ({ classes, statsData }) => (
+  <div className={classes.page}>
+    <div className={classes.container}>
+      <div className={classes.hero}>
+        <Grid container spacing={16} direction="row">
+          <div className={classes.heroImage}>
+            <div className={classes.heroFrame}>
+              <div className={classes.heroTextContainer}>
+                <div className={classes.heroTextWrapper}>
+                  <h1 className={classes.headerTitle}>
+                    { landingPageData.callToActionTitle }
+                  </h1>
+                  <h2 className={classes.headerContent}>
+                    { landingPageData.callToActionDescription}
+                  </h2>
+                  <div className={classes.statsBubbleContainer}>
+                    <div className={classes.statsBubbleDiagnoses}>
+                      <div className={classes.statsBubbleDiagnosesCount}>
+                        <div className={classes.statsBubbleDiagnosesNumber}>
+                          {statsData.numberOfDiseases.num}
+                        </div>
+                        <div className={classes.statsBubbleDiagnosesMagnitude}>
+                          {statsData.numberOfDiseases.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                      Diagnoses
+                      </div>
+                      <div className={classes.statsBubbleDiagnosesIcon}>
+                        <img 
+                          src={landingPageData.landingPageStatsIcons.diagnosesIcon} 
+                          alt={landingPageData.landingPageStatsIcons.diagnosesIconAlt} 
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.statsBubbleParticipants}>
+                      <div className={classes.statsBubbleParticipantsCount}> 
+                        <div className={classes.statsBubbleParticipantsNumber}>
+                          {statsData.numberOfParticipants.num}
+                        </div>
+                        <div className={classes.statsBubbleParticipantsMagnitude}>
+                          {statsData.numberOfParticipants.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                        Participants
+                      </div>
+                      <div className={classes.statsBubbleParticipantsIcon}>
+                        <img
+                          src={landingPageData.landingPageStatsIcons.participantsIcon}
+                          alt={landingPageData.landingPageStatsIcons.participantsIconAlt}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.statsBubbleStudies}>
+                      <div className={classes.statsBubbleStudiesCount}>
+                        <div className={classes.statsBubbleStudiesNumber}>
+                          {statsData.numberOfStudies.num}
+                        </div>
+                        <div className={classes.statsBubbleStudiesMagnitude}>
+                          {statsData.numberOfStudies.char}
+                        </div>
+                      </div>
+                      <div className={classes.statsBubbleText}>
+                        Studies
+                      </div>
+                      <div className={classes.statsBubbleStudiesIcon}>
+                        <img
+                          src={landingPageData.landingPageStatsIcons.studiesIcon}
+                          alt={landingPageData.landingPageStatsIcons.studiesIconAlt}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className={classes.headerButtonSection}>
+                    <Link to={landingPageData.callToActionLink} className={classes.headerLink}>
+                      <Button className={classes.buttonText} bgColor="neonBlue" color="white">
+                        {landingPageData.callToActionButtonText}
+                      </Button>
+                    </Link>
+                  </div> */}
+                </div>
+              </div>
+            </div>
+            <div className={classes.heartbeartAnimation}>
+              <div className={classes.heartbeatPulse}>
+                  <img
+                    src={landingPageData.heartbeatAnimation.heartlineFull}
+                    className={classes.heartbeatPulseImage}
+                    alt={landingPageData.heartbeatAnimation.lineAlt}
+                    />
+              </div>
+              <div className={classes.heartlineTracker}>
+                  <img
+                    src={landingPageData.heartbeatAnimation.tracker}
+                    className={classes.heartlineTrackerImage}
+                    alt={landingPageData.heartbeatAnimation.trackerAlt}
+                    />
+              </div>
+            </div>
+          </div>
+        </Grid>
+      </div>
+    </div>
+    <div className={classes.whiteSection} />
+    {/* <StatsView stats={landingPageData.landingPageStatsBar} statsData={statsData} /> */}
+    <div className={classes.container}>
+      <div className={classes.texture}>
+        <Grid container spacing={16} direction="row" className={classes.landingContainer}>
+          <div className={classes.landingContainerInner}>
+            <div className={classes.contentLeft}>
+              <div className={classes.about}>
+                <div className={classes.aboutImageSection}>
+                  <img
+                    src={landingPageData.tile1.img}
+                    className={classes.aboutImage}
+                    alt={landingPageData.tile1.alt}
+                    id="tile1_image"
+                  />
+                </div>
+                <h3 className={classes.DCWords} id="tile1_title">
+                {landingPageData.tile1.titleText}
+                  {/* {landingPageData.tile1.titleText.match(/\b(\w+)\b/g).map((word) => (
+                    <>
+                      {word} 
+                    </>
+                  ))} */}
+                </h3>
+                <div className={classes.aboutContent} id="tile1_description">
+                  {landingPageData.tile1.descriptionText}
+                </div>
+                <div className={classes.aboutButtonSection}>
+                  <div className={classes.aboutButtonLeft}>
+                    <img src={iconAbout} className={classes.iconAbout} alt="CTDC about icon" />
+                  </div>
+                  <div className={classes.aboutButtonRight} id="tile1_button">
+                    <Link
+                      to={landingPageData.tile1.callToActionLink}
+                      className={classes.aboutButton}
+                      reloadDocument={true}
+                    >
+                      {landingPageData.tile1.callToActionText}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={classes.contentRight}>
+              <div className={classes.contentRightBottom}>
+                <div className={classes.cases} id="tile4_image">
+                  <h3 className={classes.mountainMeadowContentHeader} id="tile4_title">
+                    {landingPageData.tile4.titleText}
+                  </h3>
+                  <div className={classes.mountainMeadowContent} id="tile4_description">
+                    {landingPageData.tile4.descriptionText}
+                  </div>
+                  <div className={classes.mountainMeadowButtonSection}>
+                    <img className={classes.mountainMeadowIcon} src={icon} alt="" />
+                    <Link
+                      to={landingPageData.tile4.callToActionLink}
+                      className={classes.mountainMeadowButton}
+                      reloadDocument={true}
+                      id="tile4_button"
+                    >
+                      {landingPageData.tile4.callToActionText}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className={classes.contentRightTop}>
+                <div className={classes.studies}>
+                  <div className={classes.studyImg}>
+                    <img
+                      className={classes.image}
+                      src={landingPageData.tile3.img}
+                      alt={landingPageData.tile3.alt}
+                      id="tile3_image"
+                    />
+                  </div>
+                  <div className={classes.tile3Content}>
+                    <h3 className={classes.contentHeader} id="tile3_title">
+                      {landingPageData.tile3.titleText}
+                    </h3>
+                    <div className={classes.contentContainer} id="tile3_description">
+                      {landingPageData.tile3.descriptionText}
+                    </div>
+
+                  </div>
+                  <div className={classes.blueButton}>
+                    <div className={classes.blueButtonLeft}>
+                      <img className={classes.icon} src={icon} alt="CTDC about " />
+                      {' '}
+                    </div>
+                    <div className={classes.blueButtonRight} id="tile3_button">
+                      <Link
+                        to={landingPageData.tile3.callToActionLink}
+                        className={classes.blueButton}
+                        reloadDocument={true}
+                      >
+                        {landingPageData.tile3.callToActionText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                <div className={classes.study}>
+                  <div className={classes.studyImg}>
+                    <img
+                      className={classes.image}
+                      src={landingPageData.tile2.img}
+                      alt={landingPageData.tile2.alt}
+                      id="tile2_image"
+                    />
+                  </div>
+                  <div className={classes.content}>
+                    <h3 className={classes.contentHeader} id="tile2_title">
+                      {landingPageData.tile2.titleText}
+                    </h3>
+                    <div className={classes.contentContainer} id="tile2_description">
+                      {landingPageData.tile2.descriptionText}
+                    </div>
+
+                  </div>
+                  <div className={classes.blueButton}>
+                    <div className={classes.blueButtonLeft}>
+                      <img className={classes.icon} src={icon} alt="CTDC about " />
+                      {' '}
+                    </div>
+                    <div className={classes.blueButtonRight} id="tile2_button">
+                      <Link
+                        to={landingPageData.tile2.callToActionLink}
+                        className={classes.blueButton}
+                      >
+                        {landingPageData.tile2.callToActionText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </Grid>
+      </div>
+
+    </div>
+  </div>
+);
+const styles = () => ({
+  "@keyframes heartbeatPulse": {
+    "0%": {
+      clipPath: "inset(0px 100% 0px 0px)" 
+    },
+    "32.33%": { //left
+      clipPath: "inset(0px 47.1% 0px 0px)" 
+    },
+    "39.67%": { //peak
+      clipPath: "inset(0px 45.2% 0px 0px)" 
+    },
+    "47%": { //drop -3
+      clipPath: "inset(0px 43% 0px 0px)" 
+    },
+    "51.56%": { //left -4
+      clipPath: "inset(0px 31.0% 0px 0px)" 
+    },
+    "58.89%": { //peak -5
+      clipPath: "inset(0px 29.0% 0px 0px)" 
+    },
+    "66.22%": { //drop -6
+      clipPath: "inset(0px 26.8% 0px 0px)" 
+    },
+    "70.78%": { //left -7
+      clipPath: "inset(0px 14.8% 0px 0px)" 
+    },
+    "78.11%": { //peak -8
+      clipPath: "inset(0px 12.9% 0px 0px)" 
+    },
+    "85.44%": { //drop -9 
+      clipPath: "inset(0px 10.7% 0px 0px)" 
+    },
+    "88%": {
+      clipPath: "inset(0px 1.7% 0px 0px)",
+      opacity: '1'
+    },
+    "100%": {
+      clipPath: "inset(0px 1.7% 0px 0px)",
+      opacity: '0'
+    },
+  },
+  heartbeatPulse:{
+    '--svg-width': '618px',
+    '--svg-height': '67px',
+    position: 'absolute',
+    left: '50%',
+    marginLeft: '-720px',
+    top: '515px',
+    animation: '6s $heartbeatPulse infinite linear',
+  },
+  "@keyframes heartlineTracking": {
+    "0%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "-726px", 
+    },
+    "32.33%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "47px",  
+    },
+    "39.67%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "77px", 
+    },
+    "47%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "107px",  
+    },
+    "51.56%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "284px",
+    },
+    "58.89%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "314px", 
+    },
+    "66.22%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "344px", 
+    },
+    "70.78%": { //left
+      top: '570px',
+      left: '50%',
+      marginLeft: "520px", 
+    },
+    "78.11%": { //peak
+      top: '510px',
+      left: '50%',
+      marginLeft: "550px", 
+    },
+    "85.44%": { //drop
+      top: '570px',
+      left: '50%',
+      marginLeft: "580px", 
+    },
+    "88%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "711px", 
+      opacity: '1'
+    },
+    "100%": {
+      top: '570px',
+      left: '50%',
+      marginLeft: "711px", 
+      opacity: '0'
+    },
+  },
+  heartlineTracker:{
+    position: 'absolute',
+    top: '570px',
+    left: '50%',
+    marginLeft: "-726px",
+    animation: '6s $heartlineTracking infinite linear'
+  },
+  page: {
+    marginTop: '0px',
+  },
+  heroImage: {
+    width: '100%',
+    maxWidth: '100%',
+    height: '670px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundImage: `url(${landingPageData.landingPageHero.img})`,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  heroFrame: {
+    height: '614px',
+    width: '1440px',
+    border: 'solid 3.25px #f7fbfd',
+    borderRadius: '12px'
+  },
+  texture: {
+    backgroundSize: 'cover',
+    padding: '50px 0 80px 0',
+    backgroundImage: `url(${landingPageData.landingTileBackground.img})`,
+  },
+  container: {
+    fontFamily: 'Raleway, sans-serif',
+    margin: '0 auto',
+
+  },
+  whiteSection: {
+    background: 'white',
+  },
+  redButton: {
+    height: '13px',
+    color: '#FFFFFF',
+    fontFamily: 'Raleway',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    lineHeight: '47px',
+    textAlign: 'center',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    letterSpacing: '0.8px',
+  },
+  headerTitle: {
+    fontFamily: 'Poppins, Inter, Raleway, sans-serif',
+    fontSize: '45px',
+    fontWeight: '600',
+    lineHeight: '45px',
+    color: '#009485',
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
+    margin: '0',
+  },
+  paddingLeft50: {
+    paddingLeft: '50px',
+  },
+  headerContent: {
+    color: '#0C534C',
+    fontFamily: 'Inter',
+    fontSize: '22px',
+    fontWeight: '500',
+    lineHeight: '28px',
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
+    paddingTop: '14px',
+    margin: '0',
+  },
+  headerLink: {
+    textDecoration: 'none',
+  },
+  statsBubbleContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '669px',
+    paddingTop: '33px',
+  },
+  statsBubbleText: {
+    fontFamily: 'Poppins',
+    fontWeight: '600',
+    fontSize: '15px',
+    lineHeight: '20px',
+    letterSpacing: '2%',
+    color: '#004358',
+    textTransform: 'uppercase',
+  },
+  "@keyframes diagnosesHighlight": {
+    "39.67%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "47%": {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "58.39%%": {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "58.89%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleDiagnoses: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    marginRight: '42px',
+    '&:hover': {
+      border: 'solid 3px #24b0ff',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleDiagnosesCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    animation: '6s $diagnosesHighlight infinite cubic-bezier(0,1.12,0,.97)',
+  },
+  "@keyframes participantsHighlight": {
+    "58.89%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "66.22%": {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "77.61%": {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "78.11%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleParticipants: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    marginRight: '42px',
+    '&:hover': {
+      border: 'solid 3px #21aa79',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleParticipantsCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    animation: '6s $participantsHighlight infinite cubic-bezier(0,1.12,0,.97)', 
+  },
+  "@keyframes studiesHighlight": {
+    "78.11%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+    "95.44%": {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "96.83%": {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    "97.33%": {
+      border: 'solid 3px #8E8E8E',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
+  },
+  statsBubbleStudies: {
+    width: '195px',
+    height: '195px',
+    borderRadius: '50%',
+    border: 'solid 3px #8E8E8E',
+    boxShadow: '0px 4px 15px 10px rgba(142, 142, 142, 0.30)',
+    '&:hover': {
+      border: 'solid 3px #ffbe18',
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    '&:hover $statsBubbleStudiesCount': {
+      visibility: 'visible',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    animation: '6s $studiesHighlight infinite cubic-bezier(0,1.12,0,.97)',  
+  },
+  "@keyframes diagnosesNumberHighlight": {
+    "39.67%": {
+      visibility: 'hidden',
+    },
+    "47%": {
+      visibility: 'visible',
+    },
+    "58.89%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleDiagnosesCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#007dd9',
+    visibility: 'hidden',
+    animation: '6s $diagnosesNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  statsBubbleDiagnosesNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleDiagnosesMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  "@keyframes participantsNumberHighlight": {
+    "58.89%": {
+      visibility: 'hidden',
+    },
+    "66.22%": {
+      visibility: 'visible',
+    },
+    "78.11%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleParticipantsCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    fontSize: '28px',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#21aa79',
+    visibility: 'hidden',
+    animation: '6s $participantsNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+
+  },
+  statsBubbleParticipantsNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleParticipantsMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  "@keyframes studiesNumberHighlight": {
+    "78.11%": {
+      visibility: 'hidden',
+    },
+    "95.44%": {
+      visibility: 'visible',
+    },
+    "97.33%": {
+      visibility: 'hidden',
+    },
+  },
+  statsBubbleStudiesCount: {
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    fontSize: '28px',
+    lineHeight: '40px',
+    letterSpacing: '2%',
+    align: 'center',
+    color: '#ffbe18',
+    visibility: 'hidden',
+    animation: '6s $studiesNumberHighlight infinite linear', 
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  statsBubbleStudiesNumber: {
+    fontSize: '42px',
+  },
+  statsBubbleStudiesMagnitude: {
+    fontSize: '28px',
+    marginLeft: '5px',
+    marginBottom:'-5px',
+  },
+  statsBubbleDiagnosesIcon: {
+    width: '41px',
+    height: '41px',
+    marginTop: '13px',
+  },
+  statsBubbleParticipantsIcon: {
+    width: '34px',
+    height: '43px',
+    marginTop: '11px',
+  },
+  statsBubbleStudiesIcon: {
+    width: '36px',
+    height: '38px',
+    marginTop: '16px',
+  },
+  iconAbout: {
+    height: '17px',
+    width: '9px',
+    marginTop: '15px',
+    marginLeft: '20px',
+  },
+  icon: {
+    width: '20px',
+    marginTop: '13px',
+    marginLeft: '23px',
+  },
+
+  aboutImage: {
+    width: '100%',
+    height: TILE_IMAGE_HEIGHT,
+    objectFit: 'cover',
+  },
+  aboutImageSection: {
+    height: TILE_IMAGE_HEIGHT,
+    width: '100%',
+    overflow: 'hidden',
+  },
+  DCWords: {
+    height: DC_WORDS_HEIGHT,
+    background: '#334a9b',
+    color: '#FFFFFF',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    lineHeight: '33px',
+    fontWeight: '500',    
+    padding: '20px 28px 28px 24px',
+    margin: '0',
+  },
+  landingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contentLeft: {
+    flex: `0 0 ${CONTENT_LEFT_WIDTH}`,
+    boxSizing: 'border-box',
+    display: 'flex',
+  },
+  contentRight: {
+    flex: `0 0 ${CONTENT_RIGHT_WIDTH}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: LAYOUT_GAP,
+    boxSizing: 'border-box',
+    alignSelf: 'stretch',
+  },
+  about: {
+    width: CONTENT_LEFT_WIDTH,
+    height: '100%',
+    backgroundColor: 'white',
+    border: 'solid 2px #096761',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  image: {
+    width: '100%',
+    height: TILE_IMAGE_HEIGHT,
+    objectFit: 'cover',
+  },
+  aboutContent: {
+    background: 'white',
+    minHeight: '372px',
+    width: '296px',
+    padding: '25px 35px 0px 24px',
+    color: '#000000',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    fontWeight: '400',
+    lineHeight: '24px',
+    flex: 1,
+  },
+  aboutButtonSection: {
+    height: '45px',
+    width: '100%',
+    marginTop: 'auto',
+    flexShrink: 0,
+  },
+  aboutButtonLeft: {
+    float: 'left',
+    background: '#AE5E1B',
+    height: '45px',
+    width: '48px',
+  },
+  aboutButtonRight: {
+    background: '#844715',
+    float: 'left',
+    height: '45px',
+    width: 'calc(100% - 48px)',
+    lineHeight: '45px',
+  },
+  aboutButton: {
+    color: '#ffffff',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    fontFamily: 'Raleway, sans-serif',
+    fontSize: '12px',
+    fontWeight: '600',
+    fontStyle: 'normal',
+    lineHeight: '45px',
+    letterSpacing: '1px',
+    verticalAlign: 'middle',
+    paddingLeft: '8px',
+    boxShadow: 'none',
+  },
+
+  content: {
+    width: '100%',
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    background: '#fff',
+    paddingLeft: '30px',
+    paddingTop: '5px',
+    paddingBottom: '24px',
+  },
+  tile3Content: {
+    width: '100%',
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    background: '#fff',
+    paddingLeft: '30px',
+    paddingTop: '5px',
+  },
+  contentHeader: {
+    color: '#343434',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    fontWeight: '500',
+    lineHeight: '32px',
+    padding: '12px 0 6px 0',
+    margin: '0',
+  },
+  contentContainer: {
+    width: '245px',
+    color: '#000',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    fontWeight: '400',
+    lineHeight: '24px',
+  },
+
+  contentRightTop: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: LAYOUT_GAP,
+    boxSizing: 'border-box',
+    flex: 1,
+    alignItems: 'stretch',
+  },
+  study: {
+    border: 'solid 2px #096761',
+    flex: 1,
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    '& > $blueButton': {
+      marginTop: 'auto',
+      flexShrink: 0,
+      width: '100%',
+    },
+  },
+  studyImg: {
+    background: '#fff',
+    height: TILE_IMAGE_HEIGHT,
+    width: '100%',
+    overflow: 'hidden',
+    flexShrink: 0,
+  },
+  studies: {
+    border: 'solid 2px #096761',
+    flex: 1,
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    '& > $blueButton': {
+      marginTop: 'auto',
+      flexShrink: 0,
+      width: '100%',
+    },
+  },
+
+  contentRightBottom: {
+    background: '#fff',
+    backgroundImage: `url(${landingPageData.tile4.img})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    height: TILE4_SECTION_HEIGHT,
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'stretch',
+  },
+  cases: {
+    flex: 1,
+    marginLeft: '368px',
+    background: '#0d4545',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingLeft: '20px',
+    paddingRight: '12px',
+    boxSizing: 'border-box',
+  },
+  mountainMeadowButtonSection: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    height: '44px',
+    width: '184px',
+    marginTop: '32px',
+    backgroundColor: 'transparent',
+    border: '1px white solid',
+    boxSizing: 'border-box',
+    padding: '0 16px',
+  },
+  blueButton: {
+    height: '45px',
+    background: '#096761',
+    color: '#FFFFFF',
+    fontFamily: 'Raleway, sans-serif',
+    fontSize: '12px',
+    fontWeight: '600',
+    fontStyle: 'normal',
+    lineHeight: '45px',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    verticalAlign: 'middle',
+    paddingLeft: '8px',
+    textDecoration: 'none',
+  },
+  blueButtonLeft: {
+    float: 'left',
+  },
+  blueButtonRight: {
+    float: 'left',
+    lineHeight: '45px',
+    marginLeft: '8px',
+    color: '#fff',
+  },
+  mountainMeadowContentHeader: {
+    color: '#ffffff',
+    fontFamily: 'Poppins',
+    fontSize: '28px',
+    fontWeight: '500',
+    lineHeight: '32px',
+    padding: '0 0 8px 0',
+    margin: '0',
+  },
+  mountainMeadowContent: {
+    width: '184px',
+    color: '#ffffff',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    lineHeight: '24px',
+  },
+  mountainMeadowIcon: {
+    width: '20px',
+    height: '20px',
+    flexShrink: 0,
+    display: 'block',
+  },
+  mountainMeadowButton: {
+    color: '#FFFFFF',
+    fontFamily: 'Raleway, sans-serif',
+    fontSize: '12px',
+    fontWeight: '600',
+    fontStyle: 'normal',
+    lineHeight: '1',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    textDecoration: 'none',
+    whiteSpace: 'nowrap',
+    '&:hover': {
+      color: '#ffffff',
+    },
+  },
+  paddingBottom50: {
+    paddingBottom: '50px',
+  },
+  paddingTop30: {
+    paddingTop: '30px',
+  },
+  animationContainer: {
+    position: 'relative',
+    left: '33%',
+  },
+
+  paddingLeft2: {
+    paddingLeft: '2px',
+  },
+  heroTextContainer: {
+    position: 'relative',
+    width: '669px',
+    margin: 'auto',
+    left: '321px',
+  },
+  heroTextWrapper: {
+    paddingTop: '68px',
+  },
+  buttonText: {
+    padding: '12px 30px',
+    height: '40px',
+  },
+  landingContainerInner: {
+    display: 'flex',
+    gap: LAYOUT_GAP,
+    background: '#e2fff6',
+    padding: CONTAINER_PADDING,
+    boxSizing: 'border-box',
+  },
+});
+export default withStyles(styles, { withTheme: true })(LandingView);

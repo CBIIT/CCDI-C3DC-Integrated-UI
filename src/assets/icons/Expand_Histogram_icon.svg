@@ -1,0 +1,20 @@
+<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#ca_histogram_expand_0)">
+<rect x="1" y="1" width="21" height="21" rx="2" fill="white"/>
+<path d="M16.128 1C17.16 1 18 1.84 18 2.872V16.128C18 17.16 17.16 18 16.128 18H2.872C1.84 18 1 17.16 1 16.128V2.872C1 1.84 1.84 1 2.872 1H16.128ZM16.128 0H2.872C1.286 0 0 1.286 0 2.872V16.128C0 17.714 1.286 19 2.872 19H16.128C17.714 19 19 17.714 19 16.128V2.872C19 1.286 17.714 0 16.128 0Z" fill="#5C5C5C"/>
+<g clip-path="url(#ca_histogram_expand_1)">
+<path d="M15.5744 3H11.763V3.8519H14.547L10.8906 7.50655L11.4921 8.1097L15.1484 4.45334V7.23735H16.0003V3.42595L15.5744 3Z" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25"/>
+<path d="M7.50826 10.8906L3.8519 14.5453V11.7613H3V15.5744L3.42595 16.0003H7.23906V15.1484H4.45505L8.1114 11.4921L7.50826 10.8906Z" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25"/>
+<path d="M3.8519 7.23735V4.44993L7.50826 8.1097L8.1097 7.50826L4.46016 3.8519H7.23906V3H3.42595L3 3.42595V7.23735H3.8519Z" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25"/>
+<path d="M15.1484 14.5399L11.4921 10.8887L10.8906 11.4918L14.5521 15.1482H11.763V16.0001H15.5744L16.0003 15.5741V11.761H15.1484V14.5399Z" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25"/>
+</g>
+</g>
+<defs>
+<clipPath id="ca_histogram_expand_0">
+<rect width="19" height="19" fill="white"/>
+</clipPath>
+<clipPath id="ca_histogram_expand_1">
+<rect width="13" height="13" fill="white" transform="translate(3 3)"/>
+</clipPath>
+</defs>
+</svg>

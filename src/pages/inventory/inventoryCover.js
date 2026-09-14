@@ -1,0 +1,335 @@
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+    useLocation,
+    useSearchParams,
+    useNavigate,
+  } from "react-router-dom";
+import { useApolloClient } from '@apollo/client';
+import { updateFilterState } from '@bento-core/facet-filter';
+import { updateUploadData, updateAutocompleteData, updateUploadMetadata, resetUploadData, } from '@bento-core/local-find';
+import store from '../../store';
+import { withStyles, CircularProgress, Backdrop } from '@material-ui/core';
+import {
+    inDataloading, updateImportfrom, syncUpDashboard, afterInitialLoading, return2Page, returnQueryUrl, changeTab, restoreActionType, exploreBasePathFromPathname,
+} from '../../components/Inventory/InventoryState';
+import styles from './inventoryStyle';
+import { DASHBOARD_QUERY_NEW } from '../../bento/dashboardTabData';
+import { queryParams } from '../../bento/dashTemplate';
+import { parseParticipantAutocompleteFromUrl } from './sideBar/BentoFilterUtils';
+
+const InventoryCover = ({
+  classes,
+}) => {
+    const [searchParams] = useSearchParams();
+    // const filterState = useSelector((state) => state.statusReducer.filterState);
+    // const localFindAutocomplete = useSelector((state) => state.localFind.autocomplete);
+    // const localFindUpload = useSelector((state) => state.localFind.upload);
+    const isDataloading = useSelector((state) => state.inventoryReducer.isDataloading);
+    const initialLoading = useSelector((state) => state.inventoryReducer.initialLoading);
+    const return_2_page= useSelector((state) => state.inventoryReducer.return_2_page);
+    const return_query_url= useSelector((state) => state.inventoryReducer.return_query_url);
+    const action_type= useSelector((state) => state.inventoryReducer.action_type);
+    
+    const client = useApolloClient();
+
+    const query = new URLSearchParams(useLocation().search);
+
+    const location = useLocation();
+
+    const navigationType = location.state && location.state.navigationType;
+
+    const navigate = useNavigate();
+
+    // Must match the URL, not Redux exploreMode (avoids one-frame lag and navigate loops).
+    const navigateBasePath = exploreBasePathFromPathname(location.pathname);
+
+    async function getData(filters) {
+        let result = await client.query({
+        query: DASHBOARD_QUERY_NEW,
+        variables: filters,
+        })
+        .then((response) => response.data);
+        return result;
+    }
+
+    const generateFacetFilters = (filters, query, queryParams) => {
+        let newFilterState = {};
+        let unknownAgesState = {};
+        
+        queryParams.forEach((param) => {
+            if (param === 'import_from' || param === 'p_id' || param === 'p_syn' || param === 'u' || param === 'u_fc' || param === 'u_um'
+                || param === 'tab_participants' || param === 'tab_files') {
+                    return;
+            }
+            const paramValues = query.get(param);
+            if (paramValues) {
+                if (param === 'age_at_diagnosis' || param === 'age_at_treatment_start' || param === 'age_at_treatment_end' || param === 'age_at_response' || param === 'age_at_last_known_survival_status' || param === 'participant_age_at_collection') {
+                    const rangeParams = paramValues.split(',');
+                    const lowerBound = parseInt(rangeParams[0]);
+                    const upperBound = parseInt(rangeParams[1]);
+                    if (rangeParams.length !== 2 || typeof lowerBound !==  'number' || Number.isNaN(lowerBound) || typeof upperBound !==  'number' || Number.isNaN(upperBound)) {
+                        return;
+                    } else {
+                        filters[param] = [lowerBound, upperBound];
+                        newFilterState[param] = [lowerBound, upperBound];
+                        
+                        // Handle unknownAges parameter for age-related filters
+                        const unknownAgesParam = `${param}_unknownAges`;
+                        const unknownAgesValue = query.get(unknownAgesParam);
+                        if (unknownAgesValue) {
+                            unknownAgesState[param] = unknownAgesValue;
+                        } else {
+                            // Default to "include" if not specified
+                            unknownAgesState[param] = 'include';
+                        }
+                    }
+                } else {
+                    filters[param] = paramValues.split('|');
+                    newFilterState[param] = {};
+                    paramValues.split('|').forEach((item) => {
+                        newFilterState[param][item] = true;
+                    });
+                }
+            }
+        });
+        
+        // Set default unknownAges values for age-related parameters that don't have values
+        const ageRelatedParams = ['age_at_diagnosis', 'age_at_treatment_start', 'age_at_treatment_end', 'age_at_response', 'age_at_last_known_survival_status', 'participant_age_at_collection'];
+        ageRelatedParams.forEach(param => {
+            if (!unknownAgesState[param]) {
+                unknownAgesState[param] = 'include';
+            }
+        });
+        
+        // Add unknownAgesState to the return object
+        return { newFilterState, unknownAgesState };
+    }
+
+    useEffect(() => {
+
+        // If there are no query parameters and the user is returning to a page,
+        if (query.size === 0 && return_2_page === true) {
+            navigate(`${navigateBasePath}${return_query_url}`);
+            return;
+        }
+
+        //Check if the user is returning to the same page from the main menu
+        if (query.size === 0 && return_2_page === false && return_query_url !== '' && navigationType === 'main_menu') {
+            navigate(`${navigateBasePath}${return_query_url}`);
+            return;
+        }
+        
+        // Parse all query params
+        let filters = {};
+        const import_from = query.get('import_from');
+        const participant_id = query.get('p_id');
+        const participant_synonyms = query.get('p_syn');
+        const upload = query.get('u');
+        const upload_filecontent = query.get('u_fc');
+        const upload_unmatched = query.get('u_um');
+        const tab_participants = query.get('tab_participants');
+        const tab_files = query.get('tab_files');
+        const tab = query.get('tab');
+        // After the filter is applied, strip the (potentially huge) participant-id
+        // `u` param from the address bar so the user isn't left staring at a giant URL.
+        // Native replaceState keeps react-router's location untouched, so this effect
+        // does NOT re-run (which would reset the filter). return_query_url has already
+        // captured the full search before this runs, so return-to-page still restores it.
+        const stripUploadParamsFromAddressBar = () => {
+            if (upload) {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        };
+        // Helper to finish the rest of the logic after import_from is handled
+        const continueWithFilters = (extraParticipantIds = []) => {
+            filters.participant_ids = [];
+            if (participant_id) {
+                filters.participant_ids = [...filters.participant_ids, ...participant_id.split('|')];
+            }
+            if (upload) {
+                filters.participant_ids = [...filters.participant_ids, ...upload.split('|')];
+            }
+            if (extraParticipantIds.length > 0) {
+                filters.import_data = extraParticipantIds;
+            }
+            const { newFilterState, unknownAgesState } = generateFacetFilters(filters, query, queryParams);
+
+            // Add unknownAges parameters to filters for GraphQL query
+            // Only include unknownAges parameters if they are not "include" (default)
+            Object.keys(unknownAgesState).forEach(key => {
+                const unknownAgesValue = unknownAgesState[key];
+                // Handle both string and array values
+                const value = Array.isArray(unknownAgesValue) ? unknownAgesValue[0] : unknownAgesValue;
+                if (value && value !== 'include') {
+                    const unknownAgesParam = `${key}_unknownAges`;
+                    filters[unknownAgesParam] = [value];
+                }
+            });
+
+            // Update autocomplete data (participant IDs vs synonym-associated IDs)
+            if (participant_id) {
+                const data = parseParticipantAutocompleteFromUrl(participant_id, participant_synonyms);
+                store.dispatch(updateAutocompleteData(data));
+            } else {
+                store.dispatch(updateAutocompleteData([]));
+            }
+
+            // Update upload data and metadata
+            if (upload) {
+                const data = upload.split('|').map((item) => ({
+                    participant_id: item,
+                }));
+                let fc = '';
+                let um = [];
+                if (upload_filecontent && upload_unmatched) {
+                    fc = upload_filecontent.split('|').join(',');
+                    um = upload_unmatched.split('|');
+                } else {
+                    fc = upload.split('|').join(',');
+                    um = [];
+                }
+                const metadata = {
+                    filename: "",
+                    fileContent: fc,
+                    matched: data,
+                    unmatched: um,
+                };
+                store.dispatch(updateUploadData(data));
+                store.dispatch(updateUploadMetadata(metadata));
+            } else {
+                store.dispatch(resetUploadData());
+            }
+
+            store.dispatch(updateFilterState(newFilterState));
+
+            const tabParticipants = parseInt(tab_participants || tab, 10);
+            const tabFiles = parseInt(tab_files || tab, 10);
+            if (!isNaN(tabParticipants ) && !isNaN(tabFiles)) {
+                store.dispatch(changeTab(tabParticipants, tabFiles, 'facet'));
+            }
+
+            // Data loading logic
+            if (action_type === "facet") {
+                store.dispatch(inDataloading(true));
+                getData(filters).then((result) => {
+                    if (result.searchParticipants) {
+                        store.dispatch(return2Page(false));
+                        store.dispatch(returnQueryUrl(window.location.search));
+                        store.dispatch(afterInitialLoading());
+                        store.dispatch(inDataloading(false));
+                        store.dispatch(syncUpDashboard(filters, result.searchParticipants));
+                        stripUploadParamsFromAddressBar();
+                    }
+                });
+            } else {
+                store.dispatch(return2Page(false));
+                store.dispatch(returnQueryUrl(window.location.search));
+                store.dispatch(restoreActionType());
+                stripUploadParamsFromAddressBar();
+            }
+        };
+
+        // Handle import_from if present
+        if (import_from) {
+            fetch(import_from)
+                .then(response => response.json())
+                .then(jsonData => {
+                    store.dispatch(updateImportfrom(import_from, jsonData));
+                    // If jsonData is an array of participant IDs, pass them to continueWithFilters
+                    continueWithFilters(Array.isArray(jsonData) ? jsonData.map(obj => JSON.stringify(obj)) : []);
+                })
+                .catch(error => {
+                    console.error("Failed to fetch import_from JSON:", error);
+                    store.dispatch(updateImportfrom(null, []));
+                    continueWithFilters();
+                });
+        } else {
+            store.dispatch(updateImportfrom(null, []));
+            continueWithFilters();
+        }
+    }, [searchParams, navigationType]);
+
+    // Listen for unknownAgesState changes and update URL
+    const unknownAgesState = useSelector((state) => state.statusReducer.unknownAgesState);
+    const [previousUnknownAgesState, setPreviousUnknownAgesState] = useState(null);
+    
+    // useEffect(() => {
+    //     if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
+    //         const q = new URLSearchParams(window.location.search);
+    //         let hasChanges = false;
+            
+    //         // Update URL with unknownAges parameters
+    //         Object.keys(unknownAgesState).forEach(key => {
+    //             const unknownAgesParam = `${key}_unknownAges`;
+    //             const value = unknownAgesState[key];
+    //             // Only update URL if value is not "include" (default)
+    //             if (value && value !== 'include') {
+    //                 q.set(unknownAgesParam, value);
+    //                 hasChanges = true;
+    //             } else if (value === 'include') {
+    //                 // Remove parameter if it's the default value
+    //                 q.delete(unknownAgesParam);
+    //                 hasChanges = true;
+    //             }
+    //         });
+            
+    //         if (hasChanges) {
+    //             const qs = q.toString();
+    //             const next = `${navigateBasePath}${qs ? `?${qs}` : ''}`;
+    //             const current = `${location.pathname}${location.search}`;
+    //             if (next !== current) {
+    //                 navigate(next, { replace: true });
+    //             }
+    //         }
+            
+    //         setPreviousUnknownAgesState(unknownAgesState);
+    //     }
+    // }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath, location.pathname, location.search]);
+
+
+    useEffect(() => {
+        if (unknownAgesState && previousUnknownAgesState !== unknownAgesState) {
+            const query = new URLSearchParams(window.location.search);
+            let hasChanges = false;
+            
+            // Update URL with unknownAges parameters
+            Object.keys(unknownAgesState).forEach(key => {
+                const unknownAgesParam = `${key}_unknownAges`;
+                const value = unknownAgesState[key];
+                // Only update URL if value is not "include" (default)
+                if (value && value !== 'include') {
+                    query.set(unknownAgesParam, value);
+                    hasChanges = true;
+                } else if (value === 'include') {
+                    // Remove parameter if it's the default value
+                    query.delete(unknownAgesParam);
+                    hasChanges = true;
+                }
+            });
+            
+            // Update URL if there are changes
+            if (hasChanges) {
+                const newUrl = `${navigateBasePath}${query.toString() ? '?' + query.toString() : ''}`;
+                navigate(newUrl, { replace: true });
+            }
+            
+            setPreviousUnknownAgesState(unknownAgesState);
+        }
+    }, [unknownAgesState, navigate, previousUnknownAgesState, navigateBasePath]);
+
+    useEffect(() => {
+        return () => {
+            console.log("do something when left!");
+            store.dispatch(return2Page(true));
+        };
+    }, []);
+
+    return (
+        <Backdrop className={classes.backdrop} open={!initialLoading && isDataloading}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
+    );
+};
+
+export default withStyles(styles)(InventoryCover);
