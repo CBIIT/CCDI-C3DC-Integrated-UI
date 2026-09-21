@@ -16,7 +16,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build --silent
 FROM nginx:1.29.8-alpine-slim AS fnl_base_image
 RUN apk add --no-cache ca-certificates && update-ca-certificates
 # pcre2>=10.48-r0 fixes CVE-2026-89161 and CVE-2026-89157
-RUN apk update && apk add --no-cache --upgrade \
+RUN apk add --no-cache --upgrade \
 	'musl>=1.2.5-r3' \
 	'zlib>=1.3.2-r0' \
 	'openssl>=3.3.7-r0' \
