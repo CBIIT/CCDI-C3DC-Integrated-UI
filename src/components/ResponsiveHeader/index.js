@@ -9,7 +9,8 @@ import HeaderTablet from './HeaderTablet';
 import HeaderMobile from './HeaderMobile';
 
 const HeaderContainer = styled.div`
- @media (min-width: 1024px) {
+  /* Desktop nav is a 1420px layout; keep the tablet header until that width fits. */
+ @media (min-width: 1440px) {
     .desktop {
       display: block;
     }
@@ -21,7 +22,7 @@ const HeaderContainer = styled.div`
     }
   }
 
-  @media (min-width:768px) and (max-width: 1023px) {
+  @media (min-width:768px) and (max-width: 1439px) {
     .desktop {
       display: none;
     }
