@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles, CssBaseline } from '@material-ui/core';
-import { Route, Routes, } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Footer from '../ResponsiveFooter/';
 import Header from '../ResponsiveHeader/';
 import Home from '../../pages/landing/landingController';
@@ -31,6 +31,10 @@ const Layout = () => {
           <Route path="/release-notes-pdf" element={<PdfReader />} />
           <Route path="/user-guide" element={<PdfReader />} />
           <Route path="/sitesearch" element={<Search />} />
+          <Route
+            path="/explore"
+            element={<Navigate to={`/exploreParticipants${window.location.search}`} replace />}
+          />
           <Route path="/exploreParticipants" element={<Inventory />} />
           <Route path="/exploreFiles" element={<Inventory />} />
           <Route path="/fileCentricCart" element={<Cart />} />
