@@ -31,7 +31,6 @@ const Layout = () => {
           <Route path="/release-notes-pdf" element={<PdfReader />} />
           <Route path="/user-guide" element={<PdfReader />} />
           <Route path="/sitesearch" element={<Search />} />
-          {/* <Route path="/explore" element={<Navigate to="/exploreParticipants" replace />} /> */}
           <Route
             path="/explore"
             element={<Navigate to={`/exploreParticipants${window.location.search}`} replace />}
