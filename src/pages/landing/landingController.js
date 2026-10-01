@@ -24,7 +24,7 @@ const landingController = () => {
 
 export default landingController;
 
-function formatNumbers(statCounts) {
+export function formatNumbers(statCounts) {
   const resultObject = {};
 
   Object.keys(statCounts).forEach((key) => {

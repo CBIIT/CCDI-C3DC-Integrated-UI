@@ -268,11 +268,11 @@ const NavBar = () => {
             navMobileList.map((navMobileItem, idx) => {
               const navkey = `nav_${idx}`;
               return (
-                <>
+                <React.Fragment key={navkey}>
                 {
                   navMobileItem.className === 'navMobileItem'
                   &&
-                  <LiSection key={navkey}>
+                  <LiSection>
                     <div className='navTitle directLink'>
                       <NavLink to={exploreNavTo(navMobileItem.link, location)}
                                target={navMobileItem.externalLink ? "_blank" : "_self"}
@@ -293,7 +293,7 @@ const NavBar = () => {
                 {
                   navMobileItem.className === 'navMobileItem clickable'
                   &&
-                  <LiSection key={navkey}>
+                  <LiSection>
                     <div className={clickedTitle === navMobileItem.name ? 'navTitleClicked' : 'navTitle'}>
                       <div
                         className={clickedTitle === navMobileItem.name ? 'navText clicked' : 'navText'}
@@ -307,7 +307,7 @@ const NavBar = () => {
                     </div>
                   </LiSection>
                 }
-                </>
+                </React.Fragment>
               )
             })
           }
