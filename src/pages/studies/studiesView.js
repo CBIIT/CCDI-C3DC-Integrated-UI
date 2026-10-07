@@ -26,32 +26,10 @@ const StudiesContainer = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
   }
+
   .breadcrumbIcon {
     position: relative;
     top: 4px;
-  }
-  .resourceHeader {
-    width: 100%;
-    background: #e6ebee;
-  }
-
-  .resourceHeaderBackground {
-    width: 100%;
-    height: 214px;
-    background-image: url(${headerImg});
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size: cover;
-  }
-
-  .resourceHeaderText {
-    // width: 1420px;
-    margin: 0 auto;
-    padding: 150px 0 0 88px;
-    color: #19676D;
-    font-family: Poppins;
-    font-size: 40px;
-    font-weight: 400;
   }
 
   .resourceTitleContainer {
@@ -255,11 +233,6 @@ const StudiesView = () => {
       <div className='breadcrumb'><a href='/'>Home</a>
         <img src={breadcrumbIcon} alt="breadcrumb icon" className='breadcrumbIcon'/>
       Studies
-      </div>
-      <div className='resourceHeader'>
-        <div className='resourceHeaderBackground'>
-          <div className='resourceHeaderText'>{/*Title here*/}</div>
-        </div>
       </div>
       <div className='resourceTitleContainer'>
         <div className='resourceTitle'>Studies<img src={studyIcon} alt="study icon" className='studyIcon'/></div>

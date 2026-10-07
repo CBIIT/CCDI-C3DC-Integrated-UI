@@ -28,29 +28,6 @@ const StudiesDetailContainer = styled.div`
         top: 4px;
     }
 
-    .resourceHeader {
-        width: 100%;
-    }
-
-    .resourceHeaderBackground {
-        width: 100%;
-        background-image: url(${headerImg});
-        background-repeat:no-repeat;
-        background-position:center; 
-    }
-
-    .resourceHeaderText {
-        width: 1420px;
-        margin: 0 auto;
-        padding: 34px 0 10px 36px;
-        color: #0E546E;
-        font-family: Poppins;
-        font-size: 40px;
-        font-weight: 400;
-        line-height: 45px;
-        letter-spacing: 0.8px;
-    }
-
     .resourceTitleContainer {
         background: #0E546E;
     }
@@ -115,10 +92,6 @@ const StudiesDetailContainer = styled.div`
             margin: 0 auto;
         }
         .resourceTitle {
-            width: 1420px;
-        }
-
-        .resourceHeaderText {
             width: 1420px;
         }
 
@@ -209,11 +182,6 @@ const StudiesDetail = ({data}) => {
                 <a href='/studies'>Studies</a>
                 <img src={breadcrumbIcon} className='breadcrumbIcon' alt="breadcrumb icon" />
                 <span>Study Code {data.study_id}</span>
-            </div>
-            <div className='resourceHeader'>
-                <div className='resourceHeaderBackground'>
-                    <div className='resourceHeaderText'>{/*Title here*/}</div>
-                </div>
             </div>
             <div className='resourceTitleContainer'>
                 <div className='resourceTitle'>
