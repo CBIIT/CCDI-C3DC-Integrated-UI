@@ -313,7 +313,7 @@ export function SurvivalAnalysisCardBody({
             />
           </span>
           <ChartTitleLabel>
-            Overall Survival by Diagnosis
+            Overall Survival
             <ToolTip
               maxWidth="235px"
               border="1px solid #598ac5"
