@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import headerImg from '../../assets/resources/Studies_Header.png';
 import { table } from '../../bento/studiesData';
 import { TableView } from '@bento-core/paginated-table';
 import { themeConfig } from './tableConfig/Theme';

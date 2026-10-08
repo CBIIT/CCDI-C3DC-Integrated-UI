@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import headerImg from '../../assets/studies/studyDetailBackground.png';
 import breadcrumbIcon from '../../assets/icons/Breadcrumb_Icon.svg';
 import bookIcon from '../../assets/studies/bookIcon.svg';
 import OverviewView from './overview/overviewView';
