@@ -136,32 +136,36 @@ export default () => ({
     color: '#357288',
     fontWeight: 600,
   },
-  activeFacetDemographics: {
+  activeFacetGeneticanalysis: {
     color: '#8C3F8D',
     fontWeight: 600,
   },
-  activeFacetTreatment: {
+  activeFacetDemographics: {
     color: '#4555AB',
     fontWeight: 600,
   },
-  activeFacetTreatmentresponse: {
+  activeFacetSurvival: {
     color: '#E9B34A',
     fontWeight: 600,
   },
-  activeFacetSurvival: {
-    color: '#CD5C4E',
+  activeFacetTreatment: {
+    color: '#C04F42',
     fontWeight: 600,
   },
-  activeFacetSamples: {
+  activeFacetTreatmentresponse: {
     color: '#1F6BBF',
     fontWeight: 600,
   },
-  activeFacetDatacategory: {
-    color: '#60C4A1',
+  activeFacetSamples: {
+    color: '#2A9A78',
     fontWeight: 600,
   },
   activeFacetStudy: {
     color: '#357288',
+    fontWeight: 600,
+  },
+  activeFacetDatacategory: {
+    color: '#60C4A1',
     fontWeight: 600,
   },
   activeFacetSequencinglibrary: {
@@ -199,11 +203,9 @@ export default () => ({
     fontWeight: '400',
     height: 32,
     width: '100%',
-    // display: 'flex',
     justifyContent: 'space-between',
-    backgroundColor: '#974599',
+    backgroundColor: '#4150A4',
     color: '#fff',
-    // border: '1px solid #0D8461',
     borderRadius: 10,
     fontFamily: 'Lato',
     fontSize: 11,
@@ -211,7 +213,7 @@ export default () => ({
     paddingLeft: 16,
     paddingRight: 12,
     '&:hover': {
-      backgroundColor: '#974599',
+      backgroundColor: '#4150A4',
     },
   },
   iconSpan: {
