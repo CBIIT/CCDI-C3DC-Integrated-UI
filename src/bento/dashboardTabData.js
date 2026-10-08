@@ -658,7 +658,7 @@ query fileOverview(
         library_source_material: $library_source_material,
         library_source_molecule: $library_source_molecule,
         library_strategy: $library_strategy,
-        file_mapping_level: $file_mapping_level
+        file_mapping_level: $file_mapping_level,
         first: $first, 
         offset: $offset, 
         order_by: $order_by,
@@ -676,6 +676,8 @@ query fileOverview(
         file_id
         anatomic_site
         participant_age_at_collection
+        sample_tumor_status
+        tumor_spatial_extent
         sample_description
         percent_tumor
         percent_necrosis

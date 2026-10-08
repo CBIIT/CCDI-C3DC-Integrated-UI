@@ -98,6 +98,10 @@ query fileOverview($file_ids: [String], $offset: Int = 0, $first: Int = 10, $ord
     study_id
     participant_id
     sample_id
+    anatomic_site
+    participant_age_at_collection
+    sample_tumor_status
+    tumor_spatial_extent
     file_id
     md5sum
     library_selection
@@ -110,8 +114,8 @@ query fileOverview($file_ids: [String], $offset: Int = 0, $first: Int = 10, $ord
 `;
 
 export const customFilesTabDownloadCSV = {
-  keysToInclude: ['file_name', 'data_category', 'file_description', 'file_type', 'file_size', 'study_id', 'participant_id', 'sample_id', 'file_id', 'md5sum', 'library_selection', 'library_source_material', 'library_strategy', 'library_source_molecule', 'file_mapping_level'],
-  header: ['File Name', 'File Category', 'File Description', 'File Type', 'File Size', 'Study ID', 'Participant ID', 'Sample ID', 'GUID', 'MD5sum', 'Library Selection', 'Library Source', 'Library Strategy', 'File Mapping'],
+  keysToInclude: ['file_name', 'data_category', 'file_description', 'file_type', 'file_size', 'study_id', 'participant_id', 'sample_id', 'anatomic_site', 'participant_age_at_collection', 'sample_tumor_status', 'tumor_spatial_extent', 'file_id', 'md5sum', 'library_selection', 'library_source_material', 'library_strategy', 'library_source_molecule', 'file_mapping_level'],
+  header: ['File Name', 'File Category', 'File Description', 'File Type', 'File Size', 'Study ID', 'Participant ID', 'Sample ID', 'Anatomic Site', 'Age at Collection', 'Sample Tumor Status', 'Tumor Spatial Extent', 'GUID', 'MD5sum', 'Library Selection', 'Library Source', 'Library Strategy', 'File Mapping'],
   query: GET_FILES_TAB,
   apiVariable: 'fileOverview',
   fileName: 'tableDownload',
