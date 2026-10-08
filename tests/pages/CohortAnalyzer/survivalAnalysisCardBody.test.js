@@ -50,7 +50,7 @@ describe('SurvivalAnalysisCardBody', () => {
         handleRemoveHistogramDataset={handleRemoveHistogramDataset}
       />,
     );
-    expect(screen.getByText('Overall Survival by Diagnosis')).toBeInTheDocument();
+    expect(screen.getByText('Overall Survival')).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText('Expand survival chart'));
     expect(setExpandedChart).toHaveBeenCalledWith('survivalAnalysis');
     fireEvent.click(screen.getByLabelText('Survival chart download options'));
