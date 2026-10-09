@@ -271,6 +271,13 @@ more covered paths to reach 90%. Cohort Analyzer is about 82% branches
 (2481/3035); the largest remaining CA pools are histogram bootstrap, dataset
 charts, and the page controller.
 
+## Mutation testing
+
+Line coverage does not prove tests check outcomes. Use Stryker 5 (not
+current Stryker) against this Jest 23 suite to see whether a change in
+production code would fail a test. Setup, commands, and how to read
+killed vs survived mutants are in `tests/STRYKER.md`.
+
 ## Commands
 
 From the repository root:
