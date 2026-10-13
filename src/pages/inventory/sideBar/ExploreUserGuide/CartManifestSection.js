@@ -46,7 +46,7 @@ const CartManifestSection = ({ classes }) => (
             />
           </div>
           <div className={classes.figureText}>
-            Figure 9: CCDI Hub menu bar with box highlighting the My Files
+            Figure 9: CCDI menu bar with box highlighting the My Files
             shopping cart
           </div>
         </li>

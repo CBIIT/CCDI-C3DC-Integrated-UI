@@ -125,7 +125,7 @@ const { UploadModal } = UploadModalGenerator({
     matchedLabel: 'Submitted Participant ID',
     associateId: 'dbgap_accession',
     associateLabel: '',
-    projectName: 'CCDI Hub',
+    projectName: 'CCDI',
     caseIds: 'Participant IDs',
   },
 });
