@@ -4524,7 +4524,7 @@ export const exploreParticipantsTabs = [
     tableID: 'sample_tab_table',
     tabIndex: '7',
     tableDownloadCSV: customSamplesTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Samples Download',
+    downloadFileName: 'CCDI Samples Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
@@ -4807,7 +4807,7 @@ export const exploreFilesTabs = [
     tabIndex: '8',
     selectableRows: true,
     tableDownloadCSV: customFilesTabDownloadCSV,
-    downloadFileName: 'CCDI Hub Files Download',
+    downloadFileName: 'CCDI Files Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
