@@ -37,7 +37,7 @@ const AnalyzingCohortsSection = ({ classes }) => (
         Users can toggle comparisons using radio buttons to explore comparisons
         between participant IDs, diagnoses and treatments. Users may export
         results in CSV or JSON formats or export cohort selections into the C3DC
-        Explore Dashboard or CCDI Hub Explore Dashboard for additional analysis
+        Explore Dashboard or CCDI Explore Dashboard for additional analysis
         or to find files associated with cohort.
       </p>
 

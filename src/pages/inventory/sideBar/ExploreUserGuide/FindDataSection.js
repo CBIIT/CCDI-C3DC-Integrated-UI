@@ -15,7 +15,7 @@ const FindDataSection = ({ classes }) => (
     </div>
     <div className={classes.contentContainer}>
       <p>
-        The CCDI Hub Explore Dashboard provides row-level metadata for CCDI
+        The CCDI Explore Dashboard provides row-level metadata for CCDI
         study participants (Explore Participants page) and their data objects
         (Explore Files) for review with a filtered search, select
         visualizations, and an exportable table of results. To find and filter
