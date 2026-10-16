@@ -316,7 +316,7 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
       if (value === "all participants") {
         const activeFilters = {
           ...getFilters(filterState),
-          participant_id: [
+          participant_ids: [
             ...(localFindUpload || []).map((obj) => obj.participant_id),
             ...(localFindAutocomplete || []).map((obj) => obj.title),
           ],
@@ -347,7 +347,7 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
 
         const activeFilters = {
           ...getFilters(filterState),
-          participant_id: [
+          participant_ids: [
             ...(localFindUpload || []).map((obj) => obj.participant_id),
             ...(localFindAutocomplete || []).map((obj) => obj.title),
           ],
