@@ -190,7 +190,13 @@ describe('CustomDropDown', () => {
     await openMenu('CREATE NEW COHORT');
     fireEvent.click(screen.getByText('All Participants'));
     await waitFor(() => {
-      expect(client.query).toHaveBeenCalled();
+      expect(client.query).toHaveBeenCalledWith(expect.objectContaining({
+        variables: {
+          participant_ids: ['U1', 'A1'],
+          first: 4000,
+        },
+        fetchPolicy: 'network-only',
+      }));
       expect(onCreateNewCohort).toHaveBeenCalled();
     });
   });
@@ -256,7 +262,13 @@ describe('CustomDropDown', () => {
     fireEvent.click(screen.getByLabelText('select c1'));
     fireEvent.click(screen.getByText('All Participants'));
     await waitFor(() => {
-      expect(client.query).toHaveBeenCalled();
+      expect(client.query).toHaveBeenCalledWith(expect.objectContaining({
+        variables: {
+          participant_ids: ['U1', 'A1'],
+          first: 4000,
+        },
+        fetchPolicy: 'network-only',
+      }));
       expect(onAddParticipantsToCohort).toHaveBeenCalled();
     });
   });
