@@ -31,6 +31,16 @@ describe('SupportingDataView', () => {
         'https://portal.imaging.datacommons.cancer.gov/explore/',
       );
       fireEvent.click(idcLink);
+
+      const doiLink = screen.getByRole('link', { name: '10.5281/zenodo.11099086' });
+      expect(doiLink).toHaveAttribute('href', 'https://doi.org/10.5281/zenodo.11099086');
+      expect(doiLink).toHaveAttribute('target', '_blank');
+
+      const collectionLink = screen.getByRole('link', { name: 'ccdi_mci' });
+      expect(collectionLink).toHaveAttribute(
+        'href',
+        'https://portal.imaging.datacommons.cancer.gov/explore/filters/?collection_id=ccdi&collection_id=ccdi_mci',
+      );
     });
   });
 

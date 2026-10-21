@@ -20,7 +20,7 @@ export const studyDetail = {
   supporting_data: [
     {
       data_category: 'IDC',
-      data_object: '{"collection_name":"<b>IDC collection</b>"}',
+      data_object: '{"collection_name":"<b>IDC collection</b>","doi":"10.5281/zenodo.11099086","collection_id":"ccdi_mci"}',
     },
   ],
 };
