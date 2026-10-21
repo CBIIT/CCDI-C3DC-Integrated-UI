@@ -126,8 +126,10 @@ describe('HistogramStripChartRow', () => {
       captureHistogramDragCardSize,
       setDragOverDataset,
     });
-    fireEvent.click(screen.getByLabelText('Pie chart'));
-    expect(mockDispatch).toHaveBeenCalled();
+    fireEvent.click(screen.getByLabelText('Stack Chart'));
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ payload: { sexAtBirth: 'horizontalBar' } }),
+    );
     expect(setChartTypeMenuDataset).toHaveBeenCalledWith(null);
 
     const card = container.querySelector('[data-ca-histogram-strip-dataset]');

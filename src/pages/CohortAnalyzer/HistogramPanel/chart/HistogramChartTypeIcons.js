@@ -208,8 +208,6 @@ function ChartTypeIconBase({ type, size = 20, iconVariant = 'compact' }) {
 }
 
 export const CHART_TYPE_OPTIONS = [
-  { type: CHART_TYPE_KEYS.PIE, label: 'Pie chart' },
   { type: CHART_TYPE_KEYS.VERTICAL_BAR, label: 'Bar Chart' },
   { type: CHART_TYPE_KEYS.HORIZONTAL_BAR, label: 'Stack Chart' },
-  { type: CHART_TYPE_KEYS.LINE, label: 'Line Graph' },
 ];
