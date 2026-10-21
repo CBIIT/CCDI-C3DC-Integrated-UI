@@ -57,6 +57,15 @@ export const styles = () => ({
         cursor: 'pointer',
         color: '#0E546E',
     },
+    propertyLink: {
+        display: 'inline-flex',
+        alignItems: 'center',
+    },
+    propertyLinkIcon: {
+        width: '14px',
+        height: '14px',
+        marginLeft: '4px',
+    },
     accordionDetails: {
         padding: 0,
     },
@@ -77,6 +86,13 @@ export const styles = () => ({
         },
         '& tr:nth-child(even)': {
             backgroundColor: '#FAFAFA',
+        },
+        '& a': {
+            color: '#005EA2',
+            textDecoration: 'underline',
+            '&:hover': {
+                color: '#0E546E',
+            },
         },
     },
     emptyState: {

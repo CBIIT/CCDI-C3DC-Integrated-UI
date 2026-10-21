@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { styles } from './supportingDataStyle';
 
-// Configuration mapping for supporting data repositories
+// Configuration mapping for supporting data repositories.
 const supportingDataConfig = {
     'IDC': {
         data_name: 'Imaging Data Commons (IDC)',
@@ -25,6 +25,14 @@ const supportingDataConfig = {
         data_name: 'The Cancer Imaging Archive (TCIA)',
         data_url: 'https://wiki.cancerimagingarchive.net/pages/viewpage.action?pageId=70227341',
     }
+};
+
+// Properties that render as external links.
+const valueLinks = {
+    doi: (value) => `https://doi.org/${value}`,
+    collection_id: (value) => (
+        `https://portal.imaging.datacommons.cancer.gov/explore/filters/?collection_id=ccdi&collection_id=${encodeURIComponent(value)}`
+    ),
 };
 
 
@@ -40,6 +48,25 @@ const mergeSupportingData = (data, config) => {
             data_object: hasDataObject ? JSON.parse(repo.data_object) : {},
         };
     });
+};
+
+const renderPropertyValue = (key, value, classes) => {
+    const buildHref = valueLinks[key];
+    if (typeof buildHref === 'function' && value) {
+        return (
+            <a
+                href={buildHref(value)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.propertyLink}
+            >
+                {value}
+                <OpenInNewIcon className={classes.propertyLinkIcon} aria-hidden="true" />
+            </a>
+        );
+    }
+
+    return <span dangerouslySetInnerHTML={{ __html: value }} />;
 };
 
 const SupportingDataView = ({ data, classes }) => {
@@ -94,7 +121,9 @@ const SupportingDataView = ({ data, classes }) => {
                                             {Object.entries(repository.data_object).map(([key, value], rowIndex) => (
                                                 <TableRow key={rowIndex}>
                                                     <TableCell>{key.replace(/_/g, ' ')}</TableCell>
-                                                    <TableCell dangerouslySetInnerHTML={{ __html: value }}></TableCell>
+                                                    <TableCell>
+                                                        {renderPropertyValue(key, value, classes)}
+                                                    </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
