@@ -699,6 +699,7 @@ const Histogram = ({
               borderStyle: 'dashed',
               borderWidth: 2,
               borderColor: 'rgba(24, 103, 122, 0.55)',
+              minHeight: defaultPlotHeightPx,
             }}
           >
             <div

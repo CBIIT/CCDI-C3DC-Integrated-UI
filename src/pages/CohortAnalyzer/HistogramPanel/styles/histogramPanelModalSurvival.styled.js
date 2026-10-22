@@ -137,7 +137,7 @@ export const Tab = styled.button`
 `;
 
 /**
- * Chart type selector (pie / vertical bar / horizontal bar / line).
+ * Chart type selector (vertical bar / horizontal bar).
  * Strip cards pass `$hitTarget` matching expand/download/close (19px).
  * Expanded modal keeps the default 38px hit-target.
  */

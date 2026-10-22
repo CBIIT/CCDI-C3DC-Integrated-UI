@@ -1,6 +1,12 @@
 jest.mock('../../../src/pages/CohortAnalyzer/HistogramPanel/chart/HistogramDatasetChart', () => ({
   HistogramDatasetChart: () => <div>Dataset chart</div>,
-  DEFAULT_CHART_TYPE: 'bar',
+  DEFAULT_CHART_TYPE: 'verticalBar',
+  CHART_TYPE_KEYS: {
+    PIE: 'pie',
+    VERTICAL_BAR: 'verticalBar',
+    HORIZONTAL_BAR: 'horizontalBar',
+    LINE: 'line',
+  },
 }));
 
 import React from 'react';

@@ -373,7 +373,6 @@ export function HistogramStripChartRow({
               </ChartTypeTriggerButton>
               {chartTypeMenuDataset === dataset && !allInputsEmpty && (
                 <ChartTypeDropdownPanel
-                  $heightPx={137}
                   role="listbox"
                   aria-label="Choose chart type"
                 >

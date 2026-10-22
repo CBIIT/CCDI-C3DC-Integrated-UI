@@ -20,6 +20,9 @@ export const useHistogramPanelMuiStyles = makeStyles({
   chartPlotArea: {
     width: '100%',
     flex: '0 0 auto',
+    '& .recharts-surface': {
+      display: 'block',
+    },
   },
   headerCloseButton: {
     display: 'inline-flex',

@@ -102,8 +102,8 @@ describe('histogram and survival portals', () => {
         chartTypeMenuDataset="sexAtBirth"
       />,
     );
-    fireEvent.click(screen.getByLabelText('Pie chart'));
-    expect(props.setChartVisualForPanel).toHaveBeenCalledWith('sexAtBirth', 'pie');
+    fireEvent.click(screen.getByLabelText('Stack Chart'));
+    expect(props.setChartVisualForPanel).toHaveBeenCalledWith('sexAtBirth', 'horizontalBar');
 
     const actionImages = target.querySelectorAll('img');
     fireEvent.click(actionImages[1].parentElement);

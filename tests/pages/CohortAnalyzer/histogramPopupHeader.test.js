@@ -144,8 +144,8 @@ describe('HistogramPopupModalHeader', () => {
         onSetChartVisual={onSetChartVisual}
       />,
     );
-    fireEvent.click(screen.getByLabelText('Pie chart'));
-    expect(onSetChartVisual).toHaveBeenCalledWith('race', 'pie');
+    fireEvent.click(screen.getByLabelText('Stack Chart'));
+    expect(onSetChartVisual).toHaveBeenCalledWith('race', 'horizontalBar');
     expect(setShowChartTypeMenu).toHaveBeenCalledWith(false);
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[buttons.length - 1]);

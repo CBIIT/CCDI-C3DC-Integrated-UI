@@ -238,8 +238,8 @@ const AddChartInlinePanel = ({
             aria-label="Close"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="0.177734" y="0.926758" width="1.06064" height="11.6671" transform="rotate(-45 0.177734 0.926758)" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25" />
-              <rect x="8.42773" y="0.176758" width="1.06064" height="11.6671" transform="rotate(45 8.42773 0.176758)" fill="#5C5C5C" stroke="#5C5C5C" stroke-width="0.25" />
+              <rect x="0.177734" y="0.926758" width="1.06064" height="11.6671" transform="rotate(-45 0.177734 0.926758)" fill="#5C5C5C" stroke="#5C5C5C" strokeWidth="0.25" />
+              <rect x="8.42773" y="0.176758" width="1.06064" height="11.6671" transform="rotate(45 8.42773 0.176758)" fill="#5C5C5C" stroke="#5C5C5C" strokeWidth="0.25" />
             </svg>
 
           </button>
