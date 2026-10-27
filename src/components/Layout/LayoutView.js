@@ -16,6 +16,7 @@ import StudiesView from '../../pages/studies/studiesView';
 import StudiesDetail from "../../pages/studyDetail/studyDetailController";
 import OverlayWindow from '../OverlayWindow/OverlayWindow';
 import CohortAnalyzerController  from "../../pages/CohortAnalyzer/controllers/CohortAnalyzerController";
+import ReleaseNotesPageView from '../../pages/releaseNotePage/releaseNotePageController';
 
 const Layout = () => {
     return (
@@ -28,7 +29,7 @@ const Layout = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/data-model" element={<DataModelNavigator />} />
-          <Route path="/release-notes-pdf" element={<PdfReader />} />
+          <Route path="/release-notes-pdf" element={<ReleaseNotesPageView />} />
           <Route path="/user-guide" element={<PdfReader />} />
           <Route path="/sitesearch" element={<Search />} />
           <Route
