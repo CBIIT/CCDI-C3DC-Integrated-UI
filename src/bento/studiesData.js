@@ -53,22 +53,76 @@ const studyDownloadLinks = {
 };
 
 const studycBioPortalLinks = {
-  'phs000463': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000464': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000465': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000466': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000467': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000468': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000469': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000470': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs000471': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs001437': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs002276': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs002517': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs002790': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs002790',
-  'phs002883': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs003432': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-  'phs003519': 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  phs000464: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000465: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000466: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000467: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000468: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000470: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs000471: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs001327: [{
+    name: 'CCSS',
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs001327_ccss_sn',
+  }],
+  phs001437: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs002276: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs002517: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs002529: [{
+    name: 'Kansas',
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs002529',
+  }],
+  phs002790: [{
+    name: 'MCI',
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs002790',
+  }],
+  phs002883: [
+    {
+      name: 'OpenPedCan', 
+      url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+    },
+    {
+      name: 'PedMATCH',
+      url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=pedmatch_phs002883',
+    },
+  ],
+  phs003432: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
+  phs004222: [{
+    name: 'OpenPedCan', 
+    url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+  }],
 };
 
 const studyClinicalDataLinks = {
