@@ -4817,4 +4817,193 @@ export const exploreFilesTabs = [
     addAllFileQuery: GET_ALL_FILEIDS_FROM_FILESTAB_FOR_ADD_ALL_CART,
     addSelectedFilesQuery: GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL,
   },
+  {
+    name: 'Imaging Data',
+    dataField: 'dataIDC',
+    api: GET_SAMPLES_OVERVIEW_QUERY,
+    count: 'numberOfSamples',
+    fileCount: 'samplesFileCount',
+    paginationAPIField: 'sampleOverview',
+    dataKey: 'id',
+    defaultSortField: 'sample_id',
+    defaultSortDirection: 'asc',
+    toolTipText: "Count of Imaging Data Record",
+    tableID: 'imaging_data_tab_table',
+    extendedViewConfig: {
+      pagination: true,
+      manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+    },
+    saveButtonDefaultStyle: {
+      color: '#fff',
+      backgroundColor: '#00AEEF',
+      opacity: '1',
+      border: '0px',
+      cursor: 'pointer',
+    },
+    DeactiveSaveButtonDefaultStyle: {
+      opacity: '0.3',
+      cursor: 'auto',
+    },
+    ActiveSaveButtonDefaultStyle: {
+      cursor: 'pointer',
+      opacity: 'unset',
+      border: 'unset',
+    },
+
+    columns: [
+      // {
+      //   cellType: cellTypes.CHECKBOX,
+      //   display: true,
+      //   role: cellTypes.CHECKBOX,
+      // },
+      {
+        dataField: 'participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_id',
+        header: 'Sample ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'study_id',
+        header: 'Study ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: '/studies/',
+        },
+      },
+      {
+        dataField: 'tumor_spatial_extent',
+        header: 'Tumor Spatial Extent',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'anatomic_site',
+        header: 'Anatomic Site',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'laterality',
+        header: 'Laterality',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'participant_age_at_collection',
+        header: 'Participant Age at Collection (days)',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_tumor_status',
+        header: 'Sample Tumor Status',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_description',
+        header: 'Sample Description',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'percent_tumor',
+        header: 'Percent Tumor',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'percent_necrosis',
+        header: 'Percent Necrosis',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'pdx_id',
+        header: 'PDX ID',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: (dt) => {
+          if (dt instanceof Array) {
+            return dt.join(', ');
+          }
+          if (dt == null) {
+            return '';
+          }
+          return dt.toString();
+        },
+      },
+      {
+        dataField: 'cell_line_id',
+        header: 'Cell Line ID',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: (dt) => {
+          if (dt instanceof Array) {
+            return dt.join(', ');
+          }
+          if (dt == null) {
+            return '';
+          }
+          return dt.toString();
+        },
+      },
+    ],
+    id: '_tab',
+    tableID: 'imaging_data_tab_table',
+    tabIndex: '2',
+    tableDownloadCSV: customSamplesTabDownloadCSV,
+    downloadFileName: 'CCDI Imaging Data Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+    addFilesRequestVariableKey: 'sample_ids',
+    addFilesResponseKeys: ['fileIDsFromList'],
+    addAllFilesResponseKeys: ['sampleOverview', 'files'],
+    addAllFileQuery: GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART,
+    addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
+  }
 ];
