@@ -88,10 +88,12 @@ const getJoinedCohortData = async ({
             return rows
                 .filter((row) => row.participant_id != null)
                 .map(({ id, treatment_id, participant_id, study_id, ...rest }) => ({
-                    participant_id,
-                    study_id,
+                    id: id,
+                    participant_pk: id,
+                    participant_id: participant_id,
+                    study_id: study_id,
                     treatment_pk: treatment_id != null ? treatment_id : id,
-                    treatment_id,
+                    treatment_id: treatment_id,
                     ...rest,
                 }));
         } else if (type === "diagnosis") {
@@ -117,10 +119,12 @@ const getJoinedCohortData = async ({
                     }
                     const { id, diagnosis_id, participant_id, study_id, ...rest } = row;
                     return {
-                        participant_id,
-                        study_id,
+                        id: id,
+                        participant_pk: id,
+                        participant_id: participant_id,
+                        study_id: study_id,
                         diagnosis_pk: diagnosis_id != null ? diagnosis_id : id,
-                        diagnosis_id,
+                        diagnosis_id: diagnosis_id,
                         ...rest,
                     };
                 });
