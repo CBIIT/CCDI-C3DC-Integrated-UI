@@ -73,6 +73,7 @@ export const cohortAnalyzerCoreStyles = (theme) => ({
     alignSelf: 'stretch',
     width: '100%',
     maxWidth: '100%',
+    marginLeft: 0,
     boxSizing: 'border-box',
     minWidth: CA_VENN_OUTER_MIN_W,
     maxHeight: CA_VENN_OUTER_MAX_H,
