@@ -251,7 +251,7 @@ export const ChartResizeHandle = styled.div`
   align-items: flex-end;
   justify-content: flex-end;
   box-sizing: border-box;
-  padding: 0 6px 2px 0;
+  padding: 0 5px 5px 0;
   &::after {
     content: '';
     display: block;
