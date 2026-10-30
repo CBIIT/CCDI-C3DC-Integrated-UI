@@ -1,34 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useLocation, Navigate } from "react-router-dom";
 import { pdfList } from "../../bento/aboutPageData";
 
+const containerStyle = {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '40px 0',
+};
+
+const iframeStyle = {
+    width: 'min(1120px, 95%)',
+    height: '85dvh',
+    border: 0,
+};
+
+const titles = {
+    "release-notes-pdf": "C3DC Release Notes PDF",
+    "user-guide": "C3DC User Guide PDF",
+};
+
 export default function PdfReader() {
-    const containerStyle = {
-        width: '100%',
-        height: '160dvh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-    };
+    const { pathname } = useLocation();
+    const key = pathname.replace(/^\/|\/$/g, "");
+    const pdfUrl = pdfList[key];
 
-    const iframeStyle = {
-        width: '50%',
-        minHeight: '94%',
-        margin: 40
-    };
-
-    const [pdfUrl,setPdfUrl] = useState("");
-    useEffect(()=>{
-        const pathname = new URL(window.location.href).pathname.substring(1).replace("/","");
-    
-        const pdfUrl1 = pathname ? pdfList[pathname] : '';
-        setPdfUrl(pdfUrl1);
-    },[])
-   
+    if (!pdfUrl) {
+        return <Navigate to="/" replace />;
+    }
 
     return (
         <div style={containerStyle}>
-            <iframe style={iframeStyle} src={pdfUrl} frameBorder="0" title="C3DC Release Notes PDF"></iframe>
+            <iframe style={iframeStyle} src={pdfUrl} title={titles[key]} />
         </div>
     );
 }
