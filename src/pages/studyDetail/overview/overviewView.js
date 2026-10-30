@@ -116,20 +116,15 @@ const parsePubmedIds = (pubmedIds) => {
     return [];
 };
 
-const getCBioPortalLinkLabel = (url) => {
-    try {
-        const studyParam = new URL(url).searchParams.get('id');
-        if (studyParam === 'openpedcan_v15') {
-            return 'Open Pediatric Cancer Project v15';
-        }
-        if (studyParam === 'phs002790') {
-            return 'Molecular Characterization Initiative';
-        }
-        return studyParam || 'View Study';
-    } catch (error) {
-        return 'View Study';
-    }
+const cBioPortalLinkLabels = {
+    OpenPedCan: 'Open Pediatric Cancer Project v15',
+    MCI: 'Molecular Characterization Initiative',
+    CCSS: 'CCSS Therapy-Related Mutational Signatures in Subsequent Neoplasms',
+    PedMATCH: 'NCI-COG Pediatric MATCH Precision Medicine Clinical Trial',
+    Kansas: 'Genomic Sequencing of Pediatric Cancer Cases (CMRI/KUCC)',
 };
+
+const getCBioPortalLinkLabel = (link) => cBioPortalLinkLabels[link.name] || link.name;
 
 const truncateMiddle = (text, maxLength) => {
     if (text.length <= maxLength) {
@@ -141,7 +136,7 @@ const truncateMiddle = (text, maxLength) => {
 
 const OverviewView = ({ data, classes }) => {
     const clinicalDataLinks = studyClinicalDataLinks[data.study_id];
-    const cBioPortalLink = studycBioPortalLinks[data.study_id];
+    const cBioPortalLinks = studycBioPortalLinks[data.study_id] || [];
     const manifestLink = studyDownloadLinks[data.study_id];
     const hasFileDownloads = manifestLink || (clinicalDataLinks && clinicalDataLinks.length > 0);
     const consentCodes = parseConsentCodes(data.consent_codes);
@@ -218,7 +213,7 @@ const OverviewView = ({ data, classes }) => {
                             </div>
                         </div>
                     )}
-                    {(hasFileDownloads || cBioPortalLink) && (
+                    {(hasFileDownloads || cBioPortalLinks.length > 0) && (
                     <div className={classes.studyItemContent}>
                         {hasFileDownloads && (
                             <div className={classes.accessDataSubsection}>
@@ -247,19 +242,21 @@ const OverviewView = ({ data, classes }) => {
                                 </div>
                             </div>
                         )}
-                        {cBioPortalLink && (
+                        {cBioPortalLinks.length > 0 && (
                             <div className={classes.accessDataSubsection}>
                                 <div className={classes.accessDataSubsectionTitle}>More information:</div>
                                 <div className={classes.accessDataSubsectionContent}>
                                     <div className={classes.accessDataInfoHeader}>
                                         View in CCDI cBioPortal Data Explorer:
                                     </div>
-                                    <div>
-                                        <a href={cBioPortalLink} target="_blank" rel="noopener noreferrer">
-                                            {getCBioPortalLinkLabel(cBioPortalLink)}
-                                            <img className={classes.exportIcon} src={exportIcon} alt="exportIcon" />
-                                        </a>
-                                    </div>
+                                    {cBioPortalLinks.map((link) => (
+                                        <div key={link.url}>
+                                            <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                                {getCBioPortalLinkLabel(link)}
+                                                <img className={classes.exportIcon} src={exportIcon} alt="exportIcon" />
+                                            </a>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
