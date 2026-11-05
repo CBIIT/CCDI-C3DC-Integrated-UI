@@ -17,10 +17,32 @@ jest.mock('../../../src/bento/studiesData', () => ({
     phs002790: 'https://example.org/manifest.xlsx',
   },
   studycBioPortalLinks: {
-    phs002790: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs002790',
-    phs000463: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
-    phs999: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=other-study',
-    invalid: 'not-a-url',
+    phs002790: [{
+      name: 'MCI',
+      url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=phs002790',
+    }],
+    phs000463: [{
+      name: 'OpenPedCan',
+      url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+    }],
+    phs002883: [
+      {
+        name: 'OpenPedCan',
+        url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+      },
+      {
+        name: 'PedMATCH',
+        url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=pedmatch_phs002883',
+      },
+    ],
+    phs999: [{
+      name: 'Other',
+      url: 'https://cbioportal.ccdi.cancer.gov/study/summary?id=other-study',
+    }],
+    invalid: [{
+      name: 'Invalid',
+      url: 'not-a-url',
+    }],
   },
   studyClinicalDataLinks: {
     phs002790: [
@@ -145,18 +167,31 @@ describe('OverviewView', () => {
       expect(screen.getByRole('link', { name: /PMID:999/i })).toBeInTheDocument();
     });
 
-    it('should label known and unknown cBioPortal study links', () => {
+    it('should label cBioPortal links and list every link for an accession', () => {
       const { rerender } = render(
         <OverviewView data={{ ...studyDetail, study_id: 'phs000463' }} />,
       );
-      expect(screen.getByRole('link', { name: /Open Pediatric Cancer Project v15/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Open Pediatric Cancer Project v15/i })).toHaveAttribute(
+        'href',
+        'https://cbioportal.ccdi.cancer.gov/study/summary?id=openpedcan_v15',
+      );
       expect(screen.getByText(/Source File - short.xlsx/)).toBeInTheDocument();
 
+      rerender(<OverviewView data={{ ...studyDetail, study_id: 'phs002883' }} />);
+      expect(screen.getByRole('link', { name: /Open Pediatric Cancer Project v15/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Pediatric MATCH/i })).toHaveAttribute(
+        'href',
+        'https://cbioportal.ccdi.cancer.gov/study/summary?id=pedmatch_phs002883',
+      );
+
       rerender(<OverviewView data={{ ...studyDetail, study_id: 'phs999' }} />);
-      expect(screen.getByRole('link', { name: /other-study/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /^Other/i })).toBeInTheDocument();
 
       rerender(<OverviewView data={{ ...studyDetail, study_id: 'invalid' }} />);
-      expect(screen.getByRole('link', { name: /View Study/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Invalid/ })).toHaveAttribute('href', 'not-a-url');
+
+      rerender(<OverviewView data={{ ...studyDetail, study_id: 'missing' }} />);
+      expect(screen.queryByText('View in CCDI cBioPortal Data Explorer:')).not.toBeInTheDocument();
     });
   });
 });
