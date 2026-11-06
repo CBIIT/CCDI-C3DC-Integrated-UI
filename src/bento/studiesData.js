@@ -38,10 +38,12 @@ const studyDownloadLinks = {
   "phs002677": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs002677_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs002790": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs002790_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs002823": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs002823_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs002827": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs002827_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs002883": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs002883_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003111": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003111_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003160": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003160_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003161": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003161_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs003162": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003162_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003163": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003163_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003164": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003164_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003215": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003215_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
@@ -50,6 +52,8 @@ const studyDownloadLinks = {
   "phs003975": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003975_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003987": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003987_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs004222": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004222_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs004232": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004232_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs004490": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004490_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
 };
 
 const studycBioPortalLinks = {
