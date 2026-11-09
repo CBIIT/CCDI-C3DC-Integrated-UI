@@ -63,6 +63,24 @@ describe('downloadJson utilities', () => {
       expect(csv).toContain('second');
     });
 
+    it('should not append a trailing empty cell when comment is empty', () => {
+      const csv = convertToCSV(
+        [
+          { guid: 'abc123', label: 'first' },
+          { guid: 'def456', label: 'second' },
+        ],
+        '',
+        keysToInclude,
+        header,
+      );
+
+      const rows = csv.trimEnd().split('\r\n');
+      expect(rows[0]).toBe('drs_id,name');
+      expect(rows[1]).toBe('drs://nci-crdc.datacommons.io/abc123,first');
+      expect(rows[1].endsWith(',')).toBe(false);
+      expect(rows[2]).toBe('drs://nci-crdc.datacommons.io/def456,second');
+    });
+
     it('should stringify a JSON array string input', () => {
       const csv = convertToCSV(
         JSON.stringify([{ guid: 'x', label: 'y' }]),
