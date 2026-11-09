@@ -87,11 +87,13 @@ const getJoinedCohortData = async ({
             // UUID, which is the value we send as the `pid` filter.
             return rows
                 .filter((row) => row.participant_id != null)
-                .map(({ id, treatment_id, participant_id, study_id, ...rest }) => ({
-                    participant_id,
-                    study_id,
+                .map(({ id, pid, treatment_id, participant_id, study_id, ...rest }) => ({
+                    id: pid,
+                    participant_pk: pid,
+                    participant_id: participant_id,
+                    study_id: study_id,
                     treatment_pk: treatment_id != null ? treatment_id : id,
-                    treatment_id,
+                    treatment_id: treatment_id,
                     ...rest,
                 }));
         } else if (type === "diagnosis") {
@@ -115,12 +117,14 @@ const getJoinedCohortData = async ({
                             ...rest,
                         };
                     }
-                    const { id, diagnosis_id, participant_id, study_id, ...rest } = row;
+                    const { id, pid, diagnosis_id, participant_id, study_id, ...rest } = row;
                     return {
-                        participant_id,
-                        study_id,
+                        id: pid,
+                        participant_pk: pid,
+                        participant_id: participant_id,
+                        study_id: study_id,
                         diagnosis_pk: diagnosis_id != null ? diagnosis_id : id,
-                        diagnosis_id,
+                        diagnosis_id: diagnosis_id,
                         ...rest,
                     };
                 });
@@ -251,6 +255,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
+        
         if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
 
