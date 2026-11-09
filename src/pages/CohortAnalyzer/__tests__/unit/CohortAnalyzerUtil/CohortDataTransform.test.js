@@ -108,6 +108,7 @@ describe('CohortDataTransform', () => {
     const treatmentRows = [
       {
         id: null,
+        pid: 'c6dc811c-0833-5eb8-800a-a053a7c197ea',
         participant_id: 'PBBWJX',
         study_id: 'phs002790',
         treatment_id: '158aee77-db56-5f46-8440-0facce60144f',
@@ -206,6 +207,7 @@ describe('CohortDataTransform', () => {
     const diagnosisRows = [
       {
         id: 'ca21eb9e-c830-54e6-ba23-77ec9b0cf2de',
+        pid: 'c6dc811c-0833-5eb8-800a-a053a7c197ea',
         diagnosis_id: '0DEAYS_diag',
         participant_id: 'PBBWJX',
         study_id: 'phs002790',
