@@ -3376,7 +3376,7 @@ query getFilenames(
 `;
 
 // --------------- Tabs Table configuration --------------
-export const exploreParticipantsTabs = [
+const allExploreParticipantsTabs = [
 {
     name: 'Participants',
     dataField: 'dataParticipant',
@@ -4535,6 +4535,37 @@ export const exploreParticipantsTabs = [
     addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
   }
 ];
+
+
+/** Participant explore tables removed from the UI.
+ * Kept for property inventory / future consolidation into the Participants table.
+ * Do not add these back to exploreParticipantsTabs without an explicit product decision.
+ */
+export const DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES = [
+  'Diagnosis',
+  'Treatments',
+  'Treatment Responses',
+  'Survival',
+];
+
+export const deferredExploreParticipantsTabs = allExploreParticipantsTabs.filter((tab) => (
+  DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES.includes(tab.name)
+));
+
+/** Flat dataField inventory from deferred tables (for future Participants consolidation). */
+export const deferredExploreParticipantTableProperties = deferredExploreParticipantsTabs.reduce(
+  (acc, tab) => {
+    acc[tab.name] = (tab.columns || [])
+      .map((column) => column.dataField)
+      .filter(Boolean);
+    return acc;
+  },
+  {},
+);
+
+export const exploreParticipantsTabs = allExploreParticipantsTabs.filter((tab) => (
+  !DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES.includes(tab.name)
+));
 
 export const exploreFilesTabs = [
   {
