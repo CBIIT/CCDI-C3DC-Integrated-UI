@@ -2712,6 +2712,111 @@ export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
   }
   `;
 
+export const GET_IDC_OVERVIEW_QUERY = gql`
+  query idcOverview(
+    $import_data: [String]
+    $participant_ids: [String]
+    $sex_at_birth: [String]
+    $race: [String]
+    $age_at_diagnosis: [Int]
+    $age_at_diagnosis_unknownAges: [String]
+    $diagnosis_anatomic_site: [String]
+    $disease_phase: [String]
+    $diagnosis: [String]
+    $diagnosis_classification_system: [String]
+    $diagnosis_category: [String]
+    $diagnosis_basis: [String]
+    $last_known_survival_status: [String]
+    $age_at_last_known_survival_status: [Int]
+    $age_at_last_known_survival_status_unknownAges: [String]
+    $first_event: [String]
+    $treatment_type: [String]
+    $treatment_agent: [String]
+    $age_at_treatment_start: [Int]
+    $age_at_treatment_start_unknownAges: [String]
+    $response_category: [String]
+    $age_at_response: [Int]
+    $age_at_response_unknownAges: [String]
+    $sample_anatomic_site: [String]
+    $participant_age_at_collection: [Int]
+    $participant_age_at_collection_unknownAges: [String]
+    $sample_tumor_status: [String]
+    $tumor_spatial_extent: [String]
+    $data_category: [String]
+    $file_type: [String]
+    $dbgap_accession: [String]
+    $study_name: [String]
+    $study_phase: [String]
+    $library_selection: [String]
+    $library_source_material: [String]
+    $library_source_molecule: [String]
+    $library_strategy: [String]
+    $file_mapping_level: [String]
+    $first: Int
+    $offset: Int
+    $order_by: String
+    $sort_direction: String
+  ) {
+    idcOverview(
+      import_data: $import_data
+      participant_ids: $participant_ids
+      sex_at_birth: $sex_at_birth
+      race: $race
+      age_at_diagnosis: $age_at_diagnosis
+      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges
+      diagnosis_anatomic_site: $diagnosis_anatomic_site
+      disease_phase: $disease_phase
+      diagnosis: $diagnosis
+      diagnosis_classification_system: $diagnosis_classification_system
+      diagnosis_category: $diagnosis_category
+      diagnosis_basis: $diagnosis_basis
+      last_known_survival_status: $last_known_survival_status
+      age_at_last_known_survival_status: $age_at_last_known_survival_status
+      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges
+      first_event: $first_event
+      treatment_type: $treatment_type
+      treatment_agent: $treatment_agent
+      age_at_treatment_start: $age_at_treatment_start
+      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges
+      response_category: $response_category
+      age_at_response: $age_at_response
+      age_at_response_unknownAges: $age_at_response_unknownAges
+      sample_anatomic_site: $sample_anatomic_site
+      participant_age_at_collection: $participant_age_at_collection
+      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges
+      sample_tumor_status: $sample_tumor_status
+      tumor_spatial_extent: $tumor_spatial_extent
+      data_category: $data_category
+      file_type: $file_type
+      dbgap_accession: $dbgap_accession
+      study_name: $study_name
+      study_phase: $study_phase
+      library_selection: $library_selection
+      library_source_material: $library_source_material
+      library_source_molecule: $library_source_molecule
+      library_strategy: $library_strategy
+      file_mapping_level: $file_mapping_level
+      first: $first
+      offset: $offset
+      order_by: $order_by
+      sort_direction: $sort_direction
+    ) {
+      id
+      slim_url
+      study_uid
+      series_uid
+      study_id
+      participant_id
+      sample_id
+      image_modality
+      magnification
+      fixation_embedding_method
+      staining_method
+      __typename
+    }
+  }
+`;
+
 export const GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL = gql`
 query search (
   $pid: [String],
@@ -4820,12 +4925,12 @@ export const exploreFilesTabs = [
   {
     name: 'Imaging Data',
     dataField: 'dataIDC',
-    api: GET_SAMPLES_OVERVIEW_QUERY,
-    count: 'numberOfSamples',
-    fileCount: 'samplesFileCount',
-    paginationAPIField: 'sampleOverview',
+    api: GET_IDC_OVERVIEW_QUERY,
+    count: 'numberOfFiles',
+    fileCount: 'filesFileCount',
+    paginationAPIField: 'idcOverview',
     dataKey: 'id',
-    defaultSortField: 'sample_id',
+    defaultSortField: 'participant_id',
     defaultSortDirection: 'asc',
     toolTipText: "Count of Imaging Data Record",
     tableID: 'imaging_data_tab_table',
@@ -4853,11 +4958,6 @@ export const exploreFilesTabs = [
     },
 
     columns: [
-      // {
-      //   cellType: cellTypes.CHECKBOX,
-      //   display: true,
-      //   role: cellTypes.CHECKBOX,
-      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
@@ -4870,8 +4970,9 @@ export const exploreFilesTabs = [
         dataField: 'sample_id',
         header: 'Sample ID',
         display: true,
-        hideable: false,
         tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
         role: cellTypes.DISPLAY,
       },
       {
@@ -4887,123 +4988,69 @@ export const exploreFilesTabs = [
         },
       },
       {
-        dataField: 'tumor_spatial_extent',
-        header: 'Tumor Spatial Extent',
+        dataField: 'image_modality',
+        header: 'Image Modality',
         display: true,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'anatomic_site',
-        header: 'Anatomic Site',
+        dataField: 'magnification',
+        header: 'Magnification',
         display: true,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'laterality',
-        header: 'Laterality',
+        dataField: 'study_uid',
+        header: 'Study UID',
         display: false,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'participant_age_at_collection',
-        header: 'Participant Age at Collection (days)',
-        display: true,
-        hideable: true,
-        tooltipText: 'sort',
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: formatAgeValue,
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'sample_tumor_status',
-        header: 'Sample Tumor Status',
-        display: true,
-        hideable: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-      },
-      {
-        dataField: 'sample_description',
-        header: 'Sample Description',
+        dataField: 'series_uid',
+        header: 'Series UID',
         display: false,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'percent_tumor',
-        header: 'Percent Tumor',
+        dataField: 'slim_url',
+        header: 'Slim URL',
         display: false,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'percent_necrosis',
-        header: 'Percent Necrosis',
+        dataField: 'fixation_embedding_method',
+        header: 'Fixation/Embedding Method',
         display: false,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
       {
-        dataField: 'pdx_id',
-        header: 'PDX ID',
+        dataField: 'staining_method',
+        header: 'Staining Method',
         display: false,
         hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (dt instanceof Array) {
-            return dt.join(', ');
-          }
-          if (dt == null) {
-            return '';
-          }
-          return dt.toString();
-        },
-      },
-      {
-        dataField: 'cell_line_id',
-        header: 'Cell Line ID',
-        display: false,
-        hideable: true,
-        tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
-        cellType: cellTypes.CUSTOM_ELEM,
-        cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: (dt) => {
-          if (dt instanceof Array) {
-            return dt.join(', ');
-          }
-          if (dt == null) {
-            return '';
-          }
-          return dt.toString();
-        },
       },
     ],
     id: '_tab',
     tableID: 'imaging_data_tab_table',
-    tabIndex: '2',
+    tabIndex: '9',
     tableDownloadCSV: customSamplesTabDownloadCSV,
     downloadFileName: 'CCDI Imaging Data Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
     },
-    addFilesRequestVariableKey: 'sample_ids',
-    addFilesResponseKeys: ['fileIDsFromList'],
-    addAllFilesResponseKeys: ['sampleOverview', 'files'],
-    addAllFileQuery: GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART,
-    addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
   }
 ];
