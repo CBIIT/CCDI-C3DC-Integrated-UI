@@ -213,6 +213,7 @@ const diagnosis_query = gql`query diagnosisOverview(
     ) {
         id
         diagnosis_id
+        pid
         participant_id
         sample_id
         dbgap_accession
@@ -267,6 +268,7 @@ const treatment_query = gql`query treatmentOverview(
     ) {
         id
         dbgap_accession
+        pid
         participant_id
         study_id
         treatment_id

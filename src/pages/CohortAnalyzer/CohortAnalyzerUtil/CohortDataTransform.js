@@ -87,9 +87,9 @@ const getJoinedCohortData = async ({
             // UUID, which is the value we send as the `pid` filter.
             return rows
                 .filter((row) => row.participant_id != null)
-                .map(({ id, treatment_id, participant_id, study_id, ...rest }) => ({
-                    id: id,
-                    participant_pk: id,
+                .map(({ id, pid, treatment_id, participant_id, study_id, ...rest }) => ({
+                    id: pid,
+                    participant_pk: pid,
                     participant_id: participant_id,
                     study_id: study_id,
                     treatment_pk: treatment_id != null ? treatment_id : id,
@@ -117,10 +117,10 @@ const getJoinedCohortData = async ({
                             ...rest,
                         };
                     }
-                    const { id, diagnosis_id, participant_id, study_id, ...rest } = row;
+                    const { id, pid, diagnosis_id, participant_id, study_id, ...rest } = row;
                     return {
-                        id: id,
-                        participant_pk: id,
+                        id: pid,
+                        participant_pk: pid,
                         participant_id: participant_id,
                         study_id: study_id,
                         diagnosis_pk: diagnosis_id != null ? diagnosis_id : id,
@@ -255,6 +255,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
+        console.log("data for diagnosis", data);
         if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
 
@@ -302,6 +303,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
+        console.log("data for treatment", data);
 
         if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
