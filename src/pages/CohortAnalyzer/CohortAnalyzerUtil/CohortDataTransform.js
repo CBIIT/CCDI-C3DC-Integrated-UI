@@ -255,7 +255,7 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "diagnosis") }
-        console.log("data for diagnosis", data);
+        
         if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
 
@@ -303,7 +303,6 @@ const getJoinedCohortData = async ({
             variables: queryVariables,
         });
         data = { [responseKeys[nodeIndex]]: transformData(data[responseKeys[nodeIndex]], "treatment") }
-        console.log("data for treatment", data);
 
         if (hasParticipantFilter(queryVariables)) {
             if (searchValue !== "") {
