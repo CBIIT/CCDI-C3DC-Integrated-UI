@@ -260,31 +260,26 @@ export const CustomCellView = (props) => {
   };
 
   if (props.linkAttr) {
-    const { rootPath, linkField } = props.linkAttr;
-    //If the link requires another field, provide it in the linkField otherwise will use current field (label)
-    if (rootPath.startsWith('http://') || rootPath.startsWith('https://')) {
-      return (
-        <Link
-          className={cellTypes.LINK}
-          href={`${rootPath}${linkField ? props[linkField] : label}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-
-          <Typography >{label}</Typography>
-        </Link>
-      );
+    const { rootPath = '', linkField, linkText, target } = props.linkAttr;
+    const hrefValue = linkField ? props[linkField] : label;
+    if (!hrefValue) {
+      return <></>;
     }
-    else {
-      return (
-        <Link
-          className={cellTypes.LINK}
-          href={`${rootPath}${linkField ? props[linkField] : label}`}
-        >
-          <Typography >{label}</Typography>
-        </Link>
-      );
-    }
+    const href = `${rootPath}${hrefValue}`;
+    const displayText = linkText || label;
+    const openInNewTab = target === '_blank'
+      || rootPath.startsWith('http://')
+      || rootPath.startsWith('https://');
+    return (
+      <Link
+        className={cellTypes.LINK}
+        href={href}
+        target={openInNewTab ? '_blank' : undefined}
+        rel={openInNewTab ? 'noopener noreferrer' : undefined}
+      >
+        <Typography>{displayText}</Typography>
+      </Link>
+    );
   }
 
   if (cellStyle === 'TRANSFORM') {

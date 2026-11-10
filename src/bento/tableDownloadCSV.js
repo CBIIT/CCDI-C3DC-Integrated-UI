@@ -123,46 +123,46 @@ export const customFilesTabDownloadCSV = {
 };
 
 export const GET_IDC_TAB = gql`
-query idcOverview($id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String ="participant_id"){
+query idcOverview($id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String ="study_uid"){
   idcOverview(id: $id, offset: $offset, first: $first, order_by: $order_by) {
-    participant_id
-    sample_id
-    study_id
-    image_modality
-    magnification
     study_uid
     series_uid
+    study_id
+    participant_id
+    sample_id
     slim_url
-    fixation_embedding_method
+    image_modality
     staining_method
+    fixation_embedding_method
+    magnification
   }
 }
 `;
 
 export const customImagingDataTabDownloadCSV = {
   keysToInclude: [
-    'participant_id',
-    'sample_id',
-    'study_id',
-    'image_modality',
-    'magnification',
     'study_uid',
     'series_uid',
+    'study_id',
+    'participant_id',
+    'sample_id',
     'slim_url',
-    'fixation_embedding_method',
+    'image_modality',
     'staining_method',
+    'fixation_embedding_method',
+    'magnification',
   ],
   header: [
-    'Participant ID',
-    'Sample ID',
-    'Study ID',
-    'Image Modality',
-    'Magnification',
     'Study UID',
     'Series UID',
-    'Slim URL',
-    'Fixation/Embedding Method',
+    'Study ID',
+    'Participant ID',
+    'Sample ID',
+    'IDC Histopathology Viewer',
+    'Image Modality',
     'Staining Method',
+    'Fixation/Embedding Method',
+    'Magnification',
   ],
   query: GET_IDC_TAB,
   apiVariable: 'idcOverview',
