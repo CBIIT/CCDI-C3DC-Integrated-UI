@@ -4,7 +4,12 @@ import {
   deferredExploreParticipantTableProperties,
   exploreParticipantsTabs,
   exploreFilesTabs,
+  GET_FILES_OVERVIEW_QUERY,
+  GET_FILENAMES_QUERY,
+  GET_PARTICIPANTS_OVERVIEW_QUERY,
 } from '../../src/bento/dashboardTabData';
+
+const queryBody = (document) => document.loc.source.body;
 
 describe('explore participant table tabs', () => {
   it('should hide deferred tables from the visible exploreParticipants tabs', () => {
@@ -42,5 +47,17 @@ describe('explore participant table tabs', () => {
 
   it('should keep exploreFiles limited to the Files table', () => {
     expect(exploreFilesTabs.map((tab) => tab.name)).toEqual(['Files']);
+  });
+
+  it('should send cause_of_death with the exploreFiles download query', () => {
+    const fileQuery = queryBody(GET_FILES_OVERVIEW_QUERY);
+    const filenameQuery = queryBody(GET_FILENAMES_QUERY);
+    const participantQuery = queryBody(GET_PARTICIPANTS_OVERVIEW_QUERY);
+
+    expect(exploreFilesTabs[0].api).toBe(GET_FILES_OVERVIEW_QUERY);
+    expect(fileQuery).toContain('$cause_of_death: [String]');
+    expect(fileQuery).toContain('cause_of_death: $cause_of_death');
+    expect(filenameQuery).toContain('cause_of_death: $cause_of_death');
+    expect(participantQuery).toContain('cause_of_death: $cause_of_death');
   });
 });
