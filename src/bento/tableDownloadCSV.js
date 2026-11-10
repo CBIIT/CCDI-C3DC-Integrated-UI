@@ -122,6 +122,54 @@ export const customFilesTabDownloadCSV = {
   defaultFullTableDownload: false,
 };
 
+export const GET_IDC_TAB = gql`
+query idcOverview($id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String ="participant_id"){
+  idcOverview(id: $id, offset: $offset, first: $first, order_by: $order_by) {
+    participant_id
+    sample_id
+    study_id
+    image_modality
+    magnification
+    study_uid
+    series_uid
+    slim_url
+    fixation_embedding_method
+    staining_method
+  }
+}
+`;
+
+export const customImagingDataTabDownloadCSV = {
+  keysToInclude: [
+    'participant_id',
+    'sample_id',
+    'study_id',
+    'image_modality',
+    'magnification',
+    'study_uid',
+    'series_uid',
+    'slim_url',
+    'fixation_embedding_method',
+    'staining_method',
+  ],
+  header: [
+    'Participant ID',
+    'Sample ID',
+    'Study ID',
+    'Image Modality',
+    'Magnification',
+    'Study UID',
+    'Series UID',
+    'Slim URL',
+    'Fixation/Embedding Method',
+    'Staining Method',
+  ],
+  query: GET_IDC_TAB,
+  apiVariable: 'idcOverview',
+  fileName: 'tableDownload',
+  defaultFullTableDownload: false,
+};
+
 export const GET_STUDY_TAB = gql`
 query studyOverview($study_id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
   studyOverview(study_id: $participant_id, offset: $offset,first: $first, order_by: $order_by) {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import gql from 'graphql-tag';
 import { cellTypes, cellStyles } from '@bento-core/table';
-import { customParticipantsTabDownloadCSV, customFilesTabDownloadCSV, customSamplesTabDownloadCSV, customStudyTabDownloadCSV, customDiagnosisTabDownloadCSV, customGeneticAnalysisTabDownloadCSV, customTreatmentTabDownloadCSV, customTreatmentResponseTabDownloadCSV, customSurvivalTabDownloadCSV } from './tableDownloadCSV';
+import { customParticipantsTabDownloadCSV, customFilesTabDownloadCSV, customSamplesTabDownloadCSV, customImagingDataTabDownloadCSV, customStudyTabDownloadCSV, customDiagnosisTabDownloadCSV, customGeneticAnalysisTabDownloadCSV, customTreatmentTabDownloadCSV, customTreatmentResponseTabDownloadCSV, customSurvivalTabDownloadCSV } from './tableDownloadCSV';
 import { dataFormatTypes } from '@bento-core/table';
 import questionIcon from '../assets/icons/Question_Icon.svg';
 import React from 'react';
@@ -5047,7 +5047,7 @@ export const exploreFilesTabs = [
     id: '_tab',
     tableID: 'imaging_data_tab_table',
     tabIndex: '9',
-    tableDownloadCSV: customSamplesTabDownloadCSV,
+    tableDownloadCSV: customImagingDataTabDownloadCSV,
     downloadFileName: 'CCDI Imaging Data Download',
     tableMsg: {
       noMatch: 'No Matching Records Found',
