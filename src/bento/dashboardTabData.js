@@ -1,7 +1,7 @@
 /* eslint-disable */
 import gql from 'graphql-tag';
 import { cellTypes, cellStyles } from '@bento-core/table';
-import { customParticipantsTabDownloadCSV, customFilesTabDownloadCSV, customSamplesTabDownloadCSV, customStudyTabDownloadCSV, customDiagnosisTabDownloadCSV, customGeneticAnalysisTabDownloadCSV, customTreatmentTabDownloadCSV, customTreatmentResponseTabDownloadCSV, customSurvivalTabDownloadCSV } from './tableDownloadCSV';
+import { customParticipantsTabDownloadCSV, customFilesTabDownloadCSV, customSamplesTabDownloadCSV, customImagingDataTabDownloadCSV, customStudyTabDownloadCSV, customDiagnosisTabDownloadCSV, customGeneticAnalysisTabDownloadCSV, customTreatmentTabDownloadCSV, customTreatmentResponseTabDownloadCSV, customSurvivalTabDownloadCSV } from './tableDownloadCSV';
 import { dataFormatTypes } from '@bento-core/table';
 import questionIcon from '../assets/icons/Question_Icon.svg';
 import React from 'react';
@@ -332,13 +332,14 @@ query search (
     ) {
         numberOfDiagnosis
         numberOfGeneticAnalyses
-        numberOfFiles
         numberOfParticipants
         numberOfSamples
         numberOfStudies
         numberOfSurvivals
         numberOfTreatments
         numberOfTreatmentResponses
+        numberOfFiles
+        numberOfIDC
         participantsFileCount
         
         # Widget counts
@@ -2736,6 +2737,110 @@ export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
   }
   `;
 
+export const GET_IDC_OVERVIEW_QUERY = gql`
+  query idcOverview(
+    $import_data: [String]
+    $participant_ids: [String]
+    $sex_at_birth: [String]
+    $race: [String]
+    $age_at_diagnosis: [Int]
+    $age_at_diagnosis_unknownAges: [String]
+    $diagnosis_anatomic_site: [String]
+    $disease_phase: [String]
+    $diagnosis: [String]
+    $diagnosis_classification_system: [String]
+    $diagnosis_category: [String]
+    $diagnosis_basis: [String]
+    $last_known_survival_status: [String]
+    $age_at_last_known_survival_status: [Int]
+    $age_at_last_known_survival_status_unknownAges: [String]
+    $first_event: [String]
+    $treatment_type: [String]
+    $treatment_agent: [String]
+    $age_at_treatment_start: [Int]
+    $age_at_treatment_start_unknownAges: [String]
+    $response_category: [String]
+    $age_at_response: [Int]
+    $age_at_response_unknownAges: [String]
+    $sample_anatomic_site: [String]
+    $participant_age_at_collection: [Int]
+    $participant_age_at_collection_unknownAges: [String]
+    $sample_tumor_status: [String]
+    $tumor_spatial_extent: [String]
+    $data_category: [String]
+    $file_type: [String]
+    $dbgap_accession: [String]
+    $study_name: [String]
+    $study_phase: [String]
+    $library_selection: [String]
+    $library_source_material: [String]
+    $library_source_molecule: [String]
+    $library_strategy: [String]
+    $file_mapping_level: [String]
+    $first: Int
+    $offset: Int
+    $order_by: String
+    $sort_direction: String
+  ) {
+    idcOverview(
+      import_data: $import_data
+      participant_ids: $participant_ids
+      sex_at_birth: $sex_at_birth
+      race: $race
+      age_at_diagnosis: $age_at_diagnosis
+      age_at_diagnosis_unknownAges: $age_at_diagnosis_unknownAges
+      diagnosis_anatomic_site: $diagnosis_anatomic_site
+      disease_phase: $disease_phase
+      diagnosis: $diagnosis
+      diagnosis_classification_system: $diagnosis_classification_system
+      diagnosis_category: $diagnosis_category
+      diagnosis_basis: $diagnosis_basis
+      last_known_survival_status: $last_known_survival_status
+      age_at_last_known_survival_status: $age_at_last_known_survival_status
+      age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges
+      first_event: $first_event
+      treatment_type: $treatment_type
+      treatment_agent: $treatment_agent
+      age_at_treatment_start: $age_at_treatment_start
+      age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges
+      response_category: $response_category
+      age_at_response: $age_at_response
+      age_at_response_unknownAges: $age_at_response_unknownAges
+      sample_anatomic_site: $sample_anatomic_site
+      participant_age_at_collection: $participant_age_at_collection
+      participant_age_at_collection_unknownAges: $participant_age_at_collection_unknownAges
+      sample_tumor_status: $sample_tumor_status
+      tumor_spatial_extent: $tumor_spatial_extent
+      data_category: $data_category
+      file_type: $file_type
+      dbgap_accession: $dbgap_accession
+      study_name: $study_name
+      study_phase: $study_phase
+      library_selection: $library_selection
+      library_source_material: $library_source_material
+      library_source_molecule: $library_source_molecule
+      library_strategy: $library_strategy
+      file_mapping_level: $file_mapping_level
+      first: $first
+      offset: $offset
+      order_by: $order_by
+      sort_direction: $sort_direction
+    ) {
+      id
+      slim_url
+      study_uid
+      series_uid
+      study_id
+      participant_id
+      sample_id
+      image_modality
+      magnification
+      fixation_embedding_method
+      staining_method
+    }
+  }
+`;
+
 export const GET_ALL_FILEIDS_PARTICIPANTSTAB_FOR_SELECT_ALL = gql`
 query search (
   $pid: [String],
@@ -4896,4 +5001,142 @@ export const exploreFilesTabs = [
     addAllFileQuery: GET_ALL_FILEIDS_FROM_FILESTAB_FOR_ADD_ALL_CART,
     addSelectedFilesQuery: GET_ALL_FILEIDS_FILESTAB_FOR_SELECT_ALL,
   },
+  {
+    name: 'Imaging Data',
+    dataField: 'dataIDC',
+    api: GET_IDC_OVERVIEW_QUERY,
+    count: 'numberOfIDC',
+    fileCount: 'filesIDCCount',
+    paginationAPIField: 'idcOverview',
+    dataKey: 'id',
+    defaultSortField: 'study_uid',
+    defaultSortDirection: 'asc',
+    toolTipText: "Count of Imaging Data Record",
+    tableID: 'imaging_data_tab_table',
+    extendedViewConfig: {
+      pagination: true,
+      manageViewColumns: {
+        title: 'Displayed Columns',
+      },
+    },
+    saveButtonDefaultStyle: {
+      color: '#fff',
+      backgroundColor: '#00AEEF',
+      opacity: '1',
+      border: '0px',
+      cursor: 'pointer',
+    },
+    DeactiveSaveButtonDefaultStyle: {
+      opacity: '0.3',
+      cursor: 'auto',
+    },
+    ActiveSaveButtonDefaultStyle: {
+      cursor: 'pointer',
+      opacity: 'unset',
+      border: 'unset',
+    },
+
+    columns: [
+      {
+        dataField: 'study_uid',
+        header: 'Study UID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'series_uid',
+        header: 'Series UID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'study_id',
+        header: 'Study ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: '/studies/',
+        },
+      },
+      {
+        dataField: 'participant_id',
+        header: 'Participant ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'sample_id',
+        header: 'Sample ID',
+        display: true,
+        hideable: false,
+        tooltipText: 'sort',
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.MODAL,
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'slim_url',
+        header: 'IDC Histopathology Viewer',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          linkText: 'View Pathology Study/Series',
+          linkField: 'slim_url',
+          target: '_blank',
+        },
+      },
+      {
+        dataField: 'image_modality',
+        header: 'Image Modality',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'staining_method',
+        header: 'Staining Method',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'fixation_embedding_method',
+        header: 'Fixation/Embedding Method',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'magnification',
+        header: 'Magnification',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+    ],
+    id: '_tab',
+    tableID: 'imaging_data_tab_table',
+    tabIndex: '9',
+    tableDownloadCSV: customImagingDataTabDownloadCSV,
+    downloadFileName: 'CCDI Imaging Data Download',
+    tableMsg: {
+      noMatch: 'No Matching Records Found',
+    },
+  }
 ];

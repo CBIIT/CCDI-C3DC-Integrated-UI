@@ -72,6 +72,11 @@ export const customTheme = {
           color: '#000000',
           borderTop: '6px solid #07679C',
         },
+        '&.imaging_data': {
+          background: '#B3D6EA',
+          color: '#000000',
+          borderTop: '6px solid #07679C',
+        },
         '&.MuiTypography-body1': {
           color: 'red',
         },

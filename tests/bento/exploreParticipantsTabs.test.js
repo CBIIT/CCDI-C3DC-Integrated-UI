@@ -46,7 +46,7 @@ describe('explore participant table tabs', () => {
   });
 
   it('should keep exploreFiles limited to the Files table', () => {
-    expect(exploreFilesTabs.map((tab) => tab.name)).toEqual(['Files']);
+    expect(exploreFilesTabs.map((tab) => tab.name)).toEqual(["Files", "Imaging Data"]);
   });
 
   it('should send cause_of_death with the exploreFiles download query', () => {
