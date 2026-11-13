@@ -123,8 +123,8 @@ export const customFilesTabDownloadCSV = {
 };
 
 export const GET_IDC_TAB = gql`
-query idcOverview($id: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String ="study_uid"){
-  idcOverview(id: $id, offset: $offset, first: $first, order_by: $order_by) {
+query idcOverview($study_uid: [String], $offset: Int = 0, $first: Int = 1000, $order_by:String =""){
+  idcOverview(study_uid: $study_uid, offset: $offset, first: $first, order_by: $order_by) {
     study_uid
     series_uid
     study_id

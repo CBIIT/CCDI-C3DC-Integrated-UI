@@ -332,13 +332,14 @@ query search (
     ) {
         numberOfDiagnosis
         numberOfGeneticAnalyses
-        numberOfFiles
         numberOfParticipants
         numberOfSamples
         numberOfStudies
         numberOfSurvivals
         numberOfTreatments
         numberOfTreatmentResponses
+        numberOfFiles
+        numberOfIDC
         participantsFileCount
         
         # Widget counts
@@ -2812,7 +2813,6 @@ export const GET_IDC_OVERVIEW_QUERY = gql`
       magnification
       fixation_embedding_method
       staining_method
-      __typename
     }
   }
 `;
@@ -4926,8 +4926,8 @@ export const exploreFilesTabs = [
     name: 'Imaging Data',
     dataField: 'dataIDC',
     api: GET_IDC_OVERVIEW_QUERY,
-    count: 'none',
-    fileCount: 'none',
+    count: 'numberOfIDC',
+    fileCount: 'filesIDCCount',
     paginationAPIField: 'idcOverview',
     dataKey: 'id',
     defaultSortField: 'study_uid',
@@ -4962,7 +4962,7 @@ export const exploreFilesTabs = [
         dataField: 'study_uid',
         header: 'Study UID',
         display: true,
-        hideable: true,
+        hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
@@ -4970,7 +4970,7 @@ export const exploreFilesTabs = [
         dataField: 'series_uid',
         header: 'Series UID',
         display: true,
-        hideable: true,
+        hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
@@ -4998,7 +4998,7 @@ export const exploreFilesTabs = [
         dataField: 'sample_id',
         header: 'Sample ID',
         display: true,
-        hideable: true,
+        hideable: false,
         tooltipText: 'sort',
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.MODAL,
