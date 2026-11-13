@@ -30,5 +30,6 @@ yarn-error.log*
 /src_c3dc
 
 .agents/
+.claude/
 
 .twistlock-runs/

@@ -205,7 +205,7 @@ const InventoryCover = ({
 
             const tabParticipants = parseInt(tab_participants || tab, 10);
             const tabFiles = parseInt(tab_files || tab, 10);
-            if (!isNaN(tabParticipants ) && !isNaN(tabFiles)) {
+            if (!isNaN(tabParticipants) && !isNaN(tabFiles)) {
                 store.dispatch(changeTab(tabParticipants, tabFiles, 'facet'));
             }
 

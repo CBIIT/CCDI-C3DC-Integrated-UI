@@ -454,6 +454,15 @@ module.exports = function(webpackEnv) {
                 'sass-loader'
               ),
             },
+            // Emit PDFs without a content hash so the browser's PDF viewer
+            // downloads them under their original filename.
+            {
+              test: /\.pdf$/,
+              loader: require.resolve('file-loader'),
+              options: {
+                name: 'static/media/[name].[ext]',
+              },
+            },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.

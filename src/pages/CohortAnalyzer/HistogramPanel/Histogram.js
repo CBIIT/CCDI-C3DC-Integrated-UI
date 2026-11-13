@@ -287,12 +287,13 @@ const Histogram = ({
 
   const besideDatasetForColumn = useMemo(() => {
     if (survivalSelected) return null;
+    if (survivalBesideVennTarget == null) return null;
     if (orderedVisibleHistograms.length === 0) return null;
     if (besideStripPanelId && orderedVisibleHistograms.includes(besideStripPanelId)) {
       return besideStripPanelId;
     }
     return orderedVisibleHistograms[0];
-  }, [survivalSelected, orderedVisibleHistograms, besideStripPanelId]);
+  }, [survivalSelected, survivalBesideVennTarget, orderedVisibleHistograms, besideStripPanelId]);
 
   /** Natural header heights per dataset; strip shares the max so wrapped titles grow every card. */
   const [stripHeaderHeightByDataset, setStripHeaderHeightByDataset] = useState({});

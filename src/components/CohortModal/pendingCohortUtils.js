@@ -26,20 +26,39 @@ export const getNextNewCohortId = (cohortState = {}) => {
  * @returns {{ cohortId: string, cohortName: string, cohortDescription: string, participants: Array, lastUpdated: string }}
  */
 export const buildPendingNewCohortFromRowData = (cohortState, rowData = []) => {
+  // Get next new cohort id
   const cohortId = getNextNewCohortId(cohortState);
-  const participants = (Array.isArray(rowData) ? rowData : [])
-    .map((row) => {
-      if (!row || typeof row !== 'object') return null;
-      const id = row.id != null ? String(row.id) : (row.participant_pk != null ? String(row.participant_pk) : '');
-      const participant_id = row.participant_id != null ? String(row.participant_id) : '';
-      const study_id = row.study_id != null && String(row.study_id).trim() !== ''
-        ? String(row.study_id)
-        : (row.dbgap_accession != null ? String(row.dbgap_accession) : '');
-      if (!id || !participant_id || !study_id) return null;
-      return { id, participant_id, study_id };
-    })
-    .filter(Boolean);
 
+  // Convert value to string if it is not null
+  const asString = (value) => (value != null ? String(value) : "");
+
+  // Convert row to participant object
+  const toParticipant = (row) => {
+    if (!row || typeof row !== "object") return null;
+    const id = row.id != null ? asString(row.id) : asString(row.participant_pk);
+    const participant_id = asString(row.participant_id);
+    const study_id = asString(row.study_id).trim()
+      ? asString(row.study_id)
+      : asString(row.dbgap_accession);
+    if (!id || !participant_id || !study_id) return null;
+    return { id, participant_id, study_id };
+  };
+
+  // Track seen IDs to filter out duplicates
+  const seenIds = new Set();
+
+  // Map to participants and filter out duplicates
+  const participants = (Array.isArray(rowData) ? rowData : [])
+    .map(toParticipant)
+    .filter(Boolean)
+    .filter((participant) => {
+      // Remove duplicates id participants by tracking seen IDs
+      if (seenIds.has(participant.id)) return false;
+      seenIds.add(participant.id);
+      return true;
+    });
+
+  // Return cohort object
   return {
     cohortId,
     cohortName: cohortId,

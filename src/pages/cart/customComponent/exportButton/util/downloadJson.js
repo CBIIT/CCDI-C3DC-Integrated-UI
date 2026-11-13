@@ -62,9 +62,16 @@ function escapeCsvCell(value) {
       });
       if (index === 0) {
         str = header.join(',');
-        let commentResult = comments.replace(/"/g, '""');
-        if (commentResult.search(/("|,|\n)/g) >= 0) commentResult = `"${commentResult}"`;
-        str += `\r\n${line},${commentResult}\r\n`;
+        // Only append a comment cell when one was provided; an empty comment
+        // used to leave a trailing comma (extra empty CSV field) on row 1.
+        const hasComment = comments != null && String(comments).length > 0;
+        if (hasComment) {
+          let commentResult = String(comments).replace(/"/g, '""');
+          if (commentResult.search(/("|,|\n)/g) >= 0) commentResult = `"${commentResult}"`;
+          str += `\r\n${line},${commentResult}\r\n`;
+        } else {
+          str += `\r\n${line}\r\n`;
+        }
       } else {
         str += `${line}\r\n`;
       }

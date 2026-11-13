@@ -591,15 +591,27 @@ query fileOverview(
     $diagnosis_classification_system: [String] ,
     $diagnosis_category: [String],
     $diagnosis_basis: [String] ,
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
     $last_known_survival_status: [String] ,
     $age_at_last_known_survival_status: [Int],
     $age_at_last_known_survival_status_unknownAges: [String],
     $first_event: [String],
+    $cause_of_death: [String],
     $treatment_type: [String],
     $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $response: [String],
     $response_category: [String] ,
+    $response_system: [String],
     $age_at_response: [Int] ,
     $age_at_response_unknownAges: [String],
     $sample_anatomic_site: [String] ,
@@ -634,15 +646,27 @@ query fileOverview(
         diagnosis_classification_system: $diagnosis_classification_system,
         diagnosis_category: $diagnosis_category,
         diagnosis_basis: $diagnosis_basis,
+        alteration: $alteration,
+        alteration_type: $alteration_type,
+        fusion_partner_gene: $fusion_partner_gene,
+        gene_symbol: $gene_symbol,
+        reported_significance: $reported_significance,
+        reported_significance_system: $reported_significance_system,
+        status: $status,
         last_known_survival_status: $last_known_survival_status,
         age_at_last_known_survival_status: $age_at_last_known_survival_status,
         age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
         first_event: $first_event,
+        cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
         treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+        age_at_treatment_end: $age_at_treatment_end,
+        age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+        response: $response,
         response_category: $response_category,
+        response_system: $response_system,
         age_at_response: $age_at_response,
         age_at_response_unknownAges: $age_at_response_unknownAges,
         sample_anatomic_site: $sample_anatomic_site,
@@ -3371,15 +3395,27 @@ query getFilenames(
     $diagnosis_classification_system: [String],
     $diagnosis_category: [String],
     $diagnosis_basis: [String],
+    $alteration: [String],
+    $alteration_type: [String],
+    $fusion_partner_gene: [String],
+    $gene_symbol: [String],
+    $reported_significance: [String],
+    $reported_significance_system: [String],
+    $status: [String],
     $last_known_survival_status: [String],
     $age_at_last_known_survival_status: [Int],
     $age_at_last_known_survival_status_unknownAges: [String],
     $first_event: [String],
+    $cause_of_death: [String],
     $treatment_type: [String],
     $treatment_agent: [String],
     $age_at_treatment_start: [Int],
     $age_at_treatment_start_unknownAges: [String],
+    $age_at_treatment_end: [Int],
+    $age_at_treatment_end_unknownAges: [String],
+    $response: [String],
     $response_category: [String],
+    $response_system: [String],
     $age_at_response: [Int],
     $age_at_response_unknownAges: [String],
     $sample_anatomic_site: [String],
@@ -3416,15 +3452,27 @@ query getFilenames(
         diagnosis_classification_system: $diagnosis_classification_system,
         diagnosis_category: $diagnosis_category,
         diagnosis_basis: $diagnosis_basis,
+        alteration: $alteration,
+        alteration_type: $alteration_type,
+        fusion_partner_gene: $fusion_partner_gene,
+        gene_symbol: $gene_symbol,
+        reported_significance: $reported_significance,
+        reported_significance_system: $reported_significance_system,
+        status: $status,
         last_known_survival_status: $last_known_survival_status,
         age_at_last_known_survival_status: $age_at_last_known_survival_status,
         age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
         first_event: $first_event,
+        cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
         treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
+        age_at_treatment_end: $age_at_treatment_end,
+        age_at_treatment_end_unknownAges: $age_at_treatment_end_unknownAges,
+        response: $response,
         response_category: $response_category,
+        response_system: $response_system,
         age_at_response: $age_at_response,
         age_at_response_unknownAges: $age_at_response_unknownAges,
         sample_anatomic_site: $sample_anatomic_site,
@@ -3481,7 +3529,7 @@ query getFilenames(
 `;
 
 // --------------- Tabs Table configuration --------------
-export const exploreParticipantsTabs = [
+const allExploreParticipantsTabs = [
 {
     name: 'Participants',
     dataField: 'dataParticipant',
@@ -4640,6 +4688,37 @@ export const exploreParticipantsTabs = [
     addSelectedFilesQuery: GET_ALL_FILEIDS_SAMPLESTAB_FOR_SELECT_ALL,
   }
 ];
+
+
+/** Participant explore tables removed from the UI.
+ * Kept for property inventory / future consolidation into the Participants table.
+ * Do not add these back to exploreParticipantsTabs without an explicit product decision.
+ */
+export const DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES = [
+  'Diagnosis',
+  'Treatments',
+  'Treatment Responses',
+  'Survival',
+];
+
+export const deferredExploreParticipantsTabs = allExploreParticipantsTabs.filter((tab) => (
+  DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES.includes(tab.name)
+));
+
+/** Flat dataField inventory from deferred tables (for future Participants consolidation). */
+export const deferredExploreParticipantTableProperties = deferredExploreParticipantsTabs.reduce(
+  (acc, tab) => {
+    acc[tab.name] = (tab.columns || [])
+      .map((column) => column.dataField)
+      .filter(Boolean);
+    return acc;
+  },
+  {},
+);
+
+export const exploreParticipantsTabs = allExploreParticipantsTabs.filter((tab) => (
+  !DEFERRED_EXPLORE_PARTICIPANT_TAB_NAMES.includes(tab.name)
+));
 
 export const exploreFilesTabs = [
   {
