@@ -51,8 +51,10 @@ const studyDownloadLinks = {
   "phs003519": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003519_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003975": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003975_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs003987": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs003987_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs004017": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004017_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs004222": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004222_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs004232": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004232_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
+  "phs004306": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004306_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
   "phs004490": "https://d2xnga7irezzit.cloudfront.net/metadata_files/phs004490_CCDI_DCC_Study_Manifest_v1.0.0.xlsx",
 };
 
