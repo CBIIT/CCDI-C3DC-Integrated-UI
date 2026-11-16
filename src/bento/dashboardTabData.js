@@ -38,6 +38,56 @@ const formatRaceValue = (dt) => {
     .join('; ');
 };
 
+// One entry per diagnosis record. Sites inside a single diagnosis stay comma-separated.
+const formatDiagnosisItem = (item) => {
+  if (Array.isArray(item)) {
+    return item
+      .map((part) => (part == null || part === '' ? 'Not Reported' : String(part).trim()))
+      .join(', ');
+  }
+  if (item == null) {
+    return '';
+  }
+  const text = String(item).trim();
+  if (text === '[]') {
+    return '';
+  }
+  if (text.startsWith('[') && text.endsWith(']')) {
+    return text.slice(1, -1).trim();
+  }
+  return text;
+};
+
+const formatDiagnosisList = (value) => {
+  if (Array.isArray(value)) {
+    return value.map((item) => formatDiagnosisItem(item)).join('; ');
+  }
+  return formatDiagnosisItem(value);
+};
+
+const formatDiagnosisAge = (value) => {
+  const one = (item) => {
+    if (item === -999 || item === '-999' || item == null || item === '') {
+      return 'Not Reported';
+    }
+    return String(item);
+  };
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return 'Not Reported';
+    }
+    return value.map(one).join('; ');
+  }
+  return one(value);
+};
+
+const diagnosisListCell = {
+  cellType: cellTypes.CUSTOM_ELEM,
+  cellStyle: cellStyles.TRANSFORM,
+  dataFormatter: formatDiagnosisList,
+  valueDelimiter: '; ',
+};
+
 // OpenSearch array-as-string values: "[Complete Response]" => "Complete Response"
 const formatBracketedValue = (dt) => {
   if (Array.isArray(dt)) {
@@ -252,7 +302,6 @@ query search (
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -304,7 +353,6 @@ query search (
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -480,10 +528,6 @@ query search (
           group
           subjects
         }
-        filterParticipantCountByTreatmentAgent{
-          group
-          subjects
-        }
         filterParticipantCountByAgeAtTreatmentStart {
           lowerBound
           upperBound
@@ -604,7 +648,6 @@ query fileOverview(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -659,7 +702,6 @@ query fileOverview(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -1684,7 +1726,6 @@ query sampleOverview(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -1739,7 +1780,6 @@ query sampleOverview(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -1814,7 +1854,6 @@ query participantOverview(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -1869,7 +1908,6 @@ query participantOverview(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -1901,10 +1939,42 @@ query participantOverview(
     ) {
         id
         participant_id
-        dbgap_accession
-        study_id
         race
         sex_at_birth
+        diagnosis
+        diagnosis_category
+        age_at_diagnosis
+        diagnosis_anatomic_site
+        disease_phase
+        last_known_survival_status
+        age_at_last_known_survival_status
+        event_free_survival_status
+        age_at_event_free_survival_status
+        first_event
+        cause_of_death
+        treatment_type
+        age_at_treatment_start
+        age_at_treatment_end
+        dbgap_accession
+        study_id
+        diagnosis_classification_system
+        diagnosis_comment
+        tumor_classification
+        toronto_childhood_cancer_staging
+        tumor_grade
+        tumor_stage_clinical_t
+        tumor_stage_clinical_n
+        tumor_stage_clinical_m
+        tumor_spatial_extent
+        diagnosis_basis
+        chemotherapy_agent
+        radiation_therapy_type
+        beam_radiation_type
+        surgery_type
+        other_treatment_type
+        response
+        age_at_response
+        consent_group_id
         cpi_data {
           associated_id
           repository_of_synonym_id
@@ -1945,7 +2015,6 @@ query studyOverview(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2000,7 +2069,6 @@ query studyOverview(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -2075,7 +2143,6 @@ query diagnosisOverview(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2131,7 +2198,6 @@ query diagnosisOverview(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -2215,7 +2281,6 @@ export const GET_GENETIC_ANALYSIS_OVERVIEW_QUERY = gql`
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2271,7 +2336,6 @@ export const GET_GENETIC_ANALYSIS_OVERVIEW_QUERY = gql`
       first_event: $first_event,
       cause_of_death: $cause_of_death,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -2360,7 +2424,6 @@ export const GET_TREATMENT_OVERVIEW_QUERY = gql`query treatmentOverview(
   $first_event: [String],
   $cause_of_death: [String],
   $treatment_type: [String],
-  $treatment_agent: [String],
   $age_at_treatment_start: [Int],
   $age_at_treatment_start_unknownAges: [String],
   $age_at_treatment_end: [Int],
@@ -2427,7 +2490,6 @@ export const GET_TREATMENT_OVERVIEW_QUERY = gql`query treatmentOverview(
     first_event: $first_event,
     cause_of_death: $cause_of_death,
     treatment_type: $treatment_type,
-    treatment_agent: $treatment_agent,
     age_at_treatment_start: $age_at_treatment_start,
     age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
     age_at_treatment_end: $age_at_treatment_end,
@@ -2508,7 +2570,6 @@ export const GET_TREATMENT_RESPONSE_OVERVIEW_QUERY = gql`
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2564,7 +2625,6 @@ export const GET_TREATMENT_RESPONSE_OVERVIEW_QUERY = gql`
       first_event: $first_event,
       cause_of_death: $cause_of_death,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -2635,7 +2695,6 @@ export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2691,7 +2750,6 @@ export const GET_SURVIVAL_OVERVIEW_QUERY = gql`
       first_event: $first_event,
       cause_of_death: $cause_of_death,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -2756,7 +2814,6 @@ export const GET_IDC_OVERVIEW_QUERY = gql`
     $age_at_last_known_survival_status_unknownAges: [String]
     $first_event: [String]
     $treatment_type: [String]
-    $treatment_agent: [String]
     $age_at_treatment_start: [Int]
     $age_at_treatment_start_unknownAges: [String]
     $response_category: [String]
@@ -2800,7 +2857,6 @@ export const GET_IDC_OVERVIEW_QUERY = gql`
       age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges
       first_event: $first_event
       treatment_type: $treatment_type
-      treatment_agent: $treatment_agent
       age_at_treatment_start: $age_at_treatment_start
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges
       response_category: $response_category
@@ -2908,7 +2964,6 @@ query participantsAddAllToCart(
     $age_at_last_known_survival_status_unknownAges: [String],
     $first_event: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int] ,
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -2964,7 +3019,6 @@ query participantsAddAllToCart(
       age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
       first_event: $first_event,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -3026,7 +3080,6 @@ export const GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART = gql`
       $first_event: [String],
       $cause_of_death: [String],
       $treatment_type: [String],
-      $treatment_agent: [String],
       $age_at_treatment_start: [Int] ,
       $age_at_treatment_start_unknownAges: [String],
       $age_at_treatment_end: [Int],
@@ -3081,7 +3134,6 @@ export const GET_ALL_FILEIDS_FROM_SAMPLETAB_FOR_ADD_ALL_CART = gql`
           cause_of_death: $cause_of_death,
           first_event: $first_event,
           treatment_type: $treatment_type,
-          treatment_agent: $treatment_agent,
           age_at_treatment_start: $age_at_treatment_start,
           age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
           age_at_treatment_end: $age_at_treatment_end,
@@ -3143,7 +3195,6 @@ query fileAddAllToCart(
   $first_event: [String],
   $cause_of_death: [String],
   $treatment_type: [String],
-  $treatment_agent: [String],
   $age_at_treatment_start: [Int] ,
   $age_at_treatment_start_unknownAges: [String],
   $age_at_treatment_end: [Int],
@@ -3199,7 +3250,6 @@ query fileAddAllToCart(
       age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
       first_event: $first_event,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -3261,7 +3311,6 @@ query studyAddAllToCart(
   $age_at_last_known_survival_status_unknownAges: [String],
   $first_event: [String],
   $treatment_type: [String],
-  $treatment_agent: [String],
   $age_at_treatment_start: [Int] ,
   $age_at_treatment_start_unknownAges: [String],
   $age_at_treatment_end: [Int],
@@ -3316,7 +3365,6 @@ query studyAddAllToCart(
       age_at_last_known_survival_status_unknownAges: $age_at_last_known_survival_status_unknownAges,
       first_event: $first_event,
       treatment_type: $treatment_type,
-      treatment_agent: $treatment_agent,
       age_at_treatment_start: $age_at_treatment_start,
       age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
       age_at_treatment_end: $age_at_treatment_end,
@@ -3408,7 +3456,6 @@ query getFilenames(
     $first_event: [String],
     $cause_of_death: [String],
     $treatment_type: [String],
-    $treatment_agent: [String],
     $age_at_treatment_start: [Int],
     $age_at_treatment_start_unknownAges: [String],
     $age_at_treatment_end: [Int],
@@ -3465,7 +3512,6 @@ query getFilenames(
         first_event: $first_event,
         cause_of_death: $cause_of_death,
         treatment_type: $treatment_type,
-        treatment_agent: $treatment_agent,
         age_at_treatment_start: $age_at_treatment_start,
         age_at_treatment_start_unknownAges: $age_at_treatment_start_unknownAges,
         age_at_treatment_end: $age_at_treatment_end,
@@ -3556,21 +3602,11 @@ const allExploreParticipantsTabs = [
         display: true,
         role: cellTypes.CHECKBOX,
       },
-      // {
-      //   dataField: 'participant_id',
-      //   header: 'Participant ID',
-      //   cellType: cellTypes.LINK,
-      //   linkAttr : {
-      //     rootPath: '/participant',
-      //     pathParams: ['participant_id'],
-      //   },
-      //   display: true,
-      //   tooltipText: 'sort',
-      // },
       {
         dataField: 'participant_id',
         header: 'Participant ID',
         display: true,
+        hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
       },
@@ -3578,40 +3614,359 @@ const allExploreParticipantsTabs = [
         dataField: 'cpi_data',
         header: 'Available CPI Mapping',
         display: true,
+        hideable: false,
         sortable: false,
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CPI_MAPPING,
         cellStyle: cellStyles.EXCLUDE_FROM_DOWNLOAD,
       },
       {
-        dataField: 'study_id',
-        header: 'Study ID',
-        display: true,
+        dataField: 'race',
+        header: 'Race',
+        display: false,
+        hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
-        linkAttr: {
-          rootPath: '/studies/',
-        },
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatRaceValue,
       },
       {
         dataField: 'sex_at_birth',
         header: 'Sex at Birth',
         display: true,
+        hideable: true,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
-        hideable: true,
       },
       {
-        dataField: 'race',
-        header: 'Race',
+        dataField: 'diagnosis',
+        header: 'Diagnosis',
         display: true,
+        hideable: false,
         tooltipText: 'sort',
         role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'diagnosis_category',
+        header: 'Diagnosis Category',
+        display: true,
         hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'age_at_diagnosis',
+        header: 'Age at Diagnosis (days)',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
         cellType: cellTypes.CUSTOM_ELEM,
         cellStyle: cellStyles.TRANSFORM,
-        dataFormatter: formatRaceValue,
+        dataFormatter: formatDiagnosisAge,
+        valueDelimiter: '; ',
+      },
+      {
+        dataField: 'diagnosis_anatomic_site',
+        header: 'Anatomic Site',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'disease_phase',
+        header: 'Disease Phase',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'last_known_survival_status',
+        header: 'Last Known Survival Status',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'age_at_last_known_survival_status',
+        header: 'Age at Last Known Survival Status',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
+      },
+      {
+        dataField: 'event_free_survival_status',
+        header: 'Event-Free Survival Status',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'age_at_event_free_survival_status',
+        header: 'Age at Event-Free Survival Status',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
+      },
+      {
+        dataField: 'first_event',
+        header: 'First Event',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'cause_of_death',
+        header: 'Cause of Death',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'treatment_type',
+        header: 'Treatment Type',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'age_at_treatment_start',
+        header: 'Age at Treatment Start',
+        display: true,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatDiagnosisAge,
+        valueDelimiter: '; ',
+      },
+      {
+        dataField: 'age_at_treatment_end',
+        header: 'Age at Treatment End',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatDiagnosisAge,
+        valueDelimiter: '; ',
+      },
+      {
+        dataField: 'dbgap_accession',
+        header: 'dbGaP Accession',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        linkAttr: {
+          rootPath: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=',
+        },
+      },
+      {
+        dataField: 'study_id',
+        header: 'Study ID',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'diagnosis_classification_system',
+        header: 'Diagnosis Classification System',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'diagnosis_comment',
+        header: 'Diagnosis Comment',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_classification',
+        header: 'Tumor Classification',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'toronto_childhood_cancer_staging',
+        header: 'Toronto Childhood Cancer Staging',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_grade',
+        header: 'Tumor Grade',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_stage_clinical_t',
+        header: 'Tumor Stage Clinical T',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_stage_clinical_n',
+        header: 'Tumor Stage Clinical N',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_stage_clinical_m',
+        header: 'Tumor Stage Clinical M',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'tumor_spatial_extent',
+        header: 'Tumor Spatial Extent',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'diagnosis_basis',
+        header: 'Diagnosis Basis',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'chemotherapy_agent',
+        header: 'Chemotherapy Treatment Agent',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'radiation_therapy_type',
+        header: 'Radiation Therapy Type',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'beam_radiation_type',
+        header: 'Beam Radiation Type',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'surgery_type',
+        header: 'Surgery Type',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'other_treatment_type',
+        header: 'Other Treatment Type',
+        display: false,
+        hideable: false,
+        downloadOnly: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        ...diagnosisListCell,
+      },
+      {
+        dataField: 'response',
+        header: 'Response',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+      },
+      {
+        dataField: 'age_at_response',
+        header: 'Age at Response',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
+        cellType: cellTypes.CUSTOM_ELEM,
+        cellStyle: cellStyles.TRANSFORM,
+        dataFormatter: formatAgeValue,
+      },
+      {
+        dataField: 'consent_group_id',
+        header: 'Consent Group',
+        display: false,
+        hideable: true,
+        tooltipText: 'sort',
+        role: cellTypes.DISPLAY,
       },
     ],
     id: 'participant_tab',
