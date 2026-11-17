@@ -97,6 +97,37 @@ describe('useBesidePanelDnD', () => {
     );
   });
 
+  it.each([
+    ['left to right', 20, 482, 20, true],
+    ['right to left', 482, 20, 20, true],
+    ['stacked', 20, 20, 432, false],
+  ])('detects the rendered layout for a %s drag', (label, sourceLeft, peerLeft, peerTop, isHorizontal) => {
+    const row = document.createElement('div');
+    const source = document.createElement('div');
+    const peer = document.createElement('div');
+    const card = document.createElement('div');
+    source.setAttribute('data-beside-panel', 'survival');
+    peer.setAttribute('data-beside-panel', 'venn');
+    source.getBoundingClientRect = () => ({
+      left: sourceLeft, right: sourceLeft + 450, top: 20, width: 450, height: 400,
+    });
+    peer.getBoundingClientRect = () => ({
+      left: peerLeft, right: peerLeft + 450, top: peerTop, width: 450, height: 400,
+    });
+    card.id = 'cohort-analyzer-survival-beside-card';
+    card.getBoundingClientRect = () => ({ width: 450, height: 400 });
+    source.appendChild(card);
+    row.appendChild(source);
+    row.appendChild(peer);
+    document.body.appendChild(row);
+    render(<Probe />);
+
+    act(() => latest.survivalBesideDrag.onDragStart({ dataTransfer: dataTransfer('') }));
+
+    expect(latest.besidePanelDragging.isHorizontal).toBe(isHorizontal);
+    row.remove();
+  });
+
   it('promotes a histogram into the beside slot', () => {
     render(<Probe />);
     const payload = encodePanelDragPayload({ kind: 'histogram', dataset: 'race' });

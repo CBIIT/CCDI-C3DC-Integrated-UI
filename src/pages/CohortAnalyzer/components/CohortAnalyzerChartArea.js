@@ -190,6 +190,7 @@ export function CohortAnalyzerChartArea({
             besideDropTarget !== columnId
             || !besidePanelDragging
             || besidePanelDragging.kind === columnId
+            || besidePanelDragging.isHorizontal
         ) {
             return null;
         }
@@ -300,16 +301,12 @@ export function CohortAnalyzerChartArea({
                     <div
                         className={classes.vennSurvivalRow}
                         onDragLeave={handleBesideRowDragLeave}
-                        style={
-                            besidePanelDragging
-                                ? { flexWrap: 'nowrap', alignContent: 'flex-start' }
-                                : undefined
-                        }
                     >
                         {topRowOrder.map((panel) => (
                             panel === 'venn' ? (
                                 <div
                                     key="venn"
+                                    data-beside-panel="venn"
                                     className={classes.vennColumn}
                                     style={{
                                         ...vennColumnDragStyle,
@@ -338,6 +335,7 @@ export function CohortAnalyzerChartArea({
                             ) : (
                                 <div
                                     key="survival"
+                                    data-beside-panel="survival"
                                     className={classes.survivalBesideVennColumn}
                                     style={{
                                         ...survivalColumnDragStyle,

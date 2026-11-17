@@ -155,6 +155,36 @@ describe('CohortAnalyzerChartArea', () => {
     expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
+  it.each(['venn', 'survival'])('highlights the horizontal %s target without moving the cards', (target) => {
+    const { container } = renderArea({
+      besideDropTarget: target,
+      besideColumnDropTargetStyle: { outline: '2px solid #679AAA' },
+      besidePanelDragging: {
+        kind: target === 'venn' ? 'survival' : 'venn',
+        width: 450,
+        height: 400,
+        isHorizontal: true,
+      },
+    });
+    const column = container.querySelector(`[data-beside-panel="${target}"]`);
+    expect(column.style.outline).toBe('2px solid #679AAA');
+    expect(column.querySelector('[aria-hidden="true"]')).toBeNull();
+    expect(container.querySelector('[style*="transform"]')).toBeNull();
+  });
+
+  it('keeps the vertical drop preview in flow for stacked or wrapped cards', () => {
+    const { container } = renderArea({
+      besideDropTarget: 'venn',
+      besidePanelDragging: { kind: 'survival', width: 450, height: 400 },
+    });
+    const venn = container.querySelector('[data-beside-panel="venn"]');
+    const preview = venn.querySelector('[aria-hidden="true"]');
+    expect(preview.style.position).toBe('');
+    expect(preview.style.height).toBe('400px');
+    expect(preview.style.marginBottom).toBe('10px');
+    expect(venn.parentElement.style.flexWrap).toBe('');
+  });
+
   it('should support nested participant IDs and scroll to a newly opened panel', () => {
     window.requestAnimationFrame = (callback) => {
       callback();

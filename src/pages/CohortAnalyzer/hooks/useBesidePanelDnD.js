@@ -43,7 +43,7 @@ export function useBesidePanelDnD(panelDragHandlesEnabled) {
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 if (besideDragSessionRef.current !== session) return;
-                setBesidePanelDragging({ kind: panelId, width: dims.width, height: dims.height });
+                setBesidePanelDragging({ kind: panelId, ...dims });
             });
         });
     }, []);
@@ -62,6 +62,7 @@ export function useBesidePanelDnD(panelDragHandlesEnabled) {
         e.dataTransfer.effectAllowed = 'move';
         let w = 400;
         let h = 380;
+        let isHorizontal = false;
         if (typeof document !== 'undefined') {
             const domId = panelId === 'venn' ? 'cohort-analyzer-venn-card' : 'cohort-analyzer-survival-beside-card';
             const el = document.getElementById(domId);
@@ -70,11 +71,24 @@ export function useBesidePanelDnD(panelDragHandlesEnabled) {
                 w = Math.round(r.width);
                 h = Math.round(r.height);
                 e.dataTransfer.setDragImage(el, 32, 20);
+                // Measure the rendered columns: even a wide viewport can have a wrapped row.
+                const column = el.closest('[data-beside-panel]');
+                const peer = column && Array.from(column.parentElement.children)
+                    .find((child) => child !== column && child.hasAttribute('data-beside-panel'));
+                if (peer) {
+                    const sourceRect = column.getBoundingClientRect();
+                    const peerRect = peer.getBoundingClientRect();
+                    if (sourceRect.width > 0 && peerRect.width > 0
+                        && Math.abs(sourceRect.top - peerRect.top) < 2
+                        && (sourceRect.right <= peerRect.left || peerRect.right <= sourceRect.left)) {
+                        isHorizontal = true;
+                    }
+                }
             }
         }
-        const dragState = { kind: panelId, width: w, height: h };
+        const dragState = { kind: panelId, width: w, height: h, isHorizontal };
         besidePanelDraggingRef.current = dragState;
-        beginBesidePanelDrag(panelId, { width: w, height: h });
+        beginBesidePanelDrag(panelId, { width: w, height: h, isHorizontal });
     }, [beginBesidePanelDrag]);
 
     const handleBesidePanelDragEnd = useCallback(() => {
