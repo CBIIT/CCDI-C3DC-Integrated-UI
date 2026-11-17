@@ -3793,7 +3793,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
       },
       {
         dataField: 'diagnosis_classification_system',
@@ -3811,7 +3810,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3821,7 +3819,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3831,7 +3828,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3841,7 +3837,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3851,7 +3846,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3861,7 +3855,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3871,7 +3864,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3898,7 +3890,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3908,7 +3899,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3918,7 +3908,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3928,7 +3917,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {
@@ -3938,7 +3926,6 @@ const allExploreParticipantsTabs = [
         hideable: false,
         downloadOnly: true,
         tooltipText: 'sort',
-        role: cellTypes.DISPLAY,
         ...diagnosisListCell,
       },
       {

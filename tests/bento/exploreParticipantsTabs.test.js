@@ -90,6 +90,8 @@ describe('consolidated participant table', () => {
       'Diagnosis',
     ]);
 
+    expect(dataColumns.filter((column) => column.downloadOnly).every((column) => column.role !== 'DISPLAY')).toBe(true);
+
     expect(headers((column) => column.downloadOnly)).toEqual([
       'Study ID',
       'Diagnosis Comment',
