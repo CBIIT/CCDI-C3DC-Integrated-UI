@@ -119,8 +119,11 @@ describe('CustomButton', () => {
       </CohortStateContext.Provider>,
     );
     fireEvent.click(screen.getByText('CREATE'));
-    expect(screen.getByText(/20 cohorts/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByText('close-popup'));
+    expect(global.__cohortBtnNotify).toHaveBeenCalledWith(
+      'You have reached the max capacity of 20 cohorts.',
+      5000,
+      expect.objectContaining({ nowrap: true }),
+    );
     expect(screen.queryByText(/20 cohorts/i)).not.toBeInTheDocument();
   });
 

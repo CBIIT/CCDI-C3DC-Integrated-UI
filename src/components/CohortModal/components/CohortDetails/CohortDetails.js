@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
 import { onMutateSingleCohort, onCreateNewCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortModalContext } from '../../CohortModalContext';
+import { useGlobal } from '../../../../components/Global/GlobalProvider';
+import { COHORT_LIMIT_MESSAGE, COHORT_LIMIT_TOAST_OPTIONS, hasReachedCohortLimit } from '../../../../components/CohortSelectorState/cohortLimit';
 import CohortMetadata from './components/CohortMetadata';
 import ParticipantList from './components/ParticipantList';
 import ActionButtons from './components/ActionButtons';
@@ -29,6 +31,7 @@ const CohortDetails = (props) => {
         clearPendingNewCohort,
         setSelectedCohort,
     } = useContext(CohortModalContext);
+    const { Notification } = useGlobal();
 
     const isPendingNewCohort = Boolean(
         pendingNewCohort
@@ -96,6 +99,10 @@ const CohortDetails = (props) => {
     }, [dispatch, showAlert, clearCurrentCohortChanges]);
 
     const handleSavePendingNewCohort = useCallback((nextLocalCohort) => {
+        if (hasReachedCohortLimit(state)) {
+            Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+            return;
+        }
         const cohortName = (nextLocalCohort.cohortName || '').trim() || nextLocalCohort.cohortId;
         dispatch(onCreateNewCohort(
             cohortName,
@@ -108,10 +115,14 @@ const CohortDetails = (props) => {
                 showAlert('success', 'Cohort created successfully!');
             },
             (error) => {
+                if (error && error.message === COHORT_LIMIT_MESSAGE) {
+                    Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+                    return;
+                }
                 showAlert('error', `Failed to create cohort: ${error.message}`);
             },
         ));
-    }, [dispatch, clearPendingNewCohort, clearCurrentCohortChanges, setSelectedCohort, showAlert]);
+    }, [dispatch, state, Notification, clearPendingNewCohort, clearCurrentCohortChanges, setSelectedCohort, showAlert]);
 
     // Memoized save handler to prevent unnecessary re-renders
     const handleSave = useCallback(() => {

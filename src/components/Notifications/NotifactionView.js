@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
   alertStyles: {
     // Widths & Size
     width: (props) => props.width || '235px',
-    maxWidth: (props) => props.width || '235px',
+    maxWidth: (props) => (props.nowrap ? 'none' : (props.width || '235px')),
     minHeight: '50px',
     boxSizing: 'border-box',
     display: 'flex',
@@ -51,7 +51,8 @@ const useStyles = makeStyles(() => ({
       alignItems: (props) => (props.textAlign === 'left' ? 'flex-start' : 'center'),
       justifyContent: (props) => (props.textAlign === 'left' ? 'flex-start' : 'center'),
       textAlign: (props) => props.textAlign || 'center',
-      width: '100%',
+      width: (props) => (props.nowrap ? 'auto' : '100%'),
+      whiteSpace: (props) => (props.nowrap ? 'nowrap' : 'normal'),
       margin: 0,
       padding: 0,
     },
@@ -62,8 +63,8 @@ const useStyles = makeStyles(() => ({
     marginRight: (props) => (props.textAlign === 'left' ? 10 : 8),
   },
   notificationMessage: {
-    flex: 1,
-    whiteSpace: 'pre-line',
+    flex: (props) => (props.nowrap ? '0 0 auto' : 1),
+    whiteSpace: (props) => (props.nowrap ? 'nowrap' : 'pre-line'),
     textAlign: (props) => props.textAlign || 'center',
   },
 }));

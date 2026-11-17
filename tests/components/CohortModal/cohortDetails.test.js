@@ -1,5 +1,9 @@
 jest.mock('@bento-core/tool-tip', () => ({ children }) => children);
 
+jest.mock('../../../src/components/Global/GlobalProvider', () => ({
+  useGlobal: () => ({ Notification: { show: jest.fn() } }),
+}));
+
 jest.mock('use-reducer-logger', () => ({
   __esModule: true,
   default: (reducer) => reducer,

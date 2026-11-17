@@ -7,6 +7,7 @@ import { CohortStateContext } from '../../../../components/CohortSelectorState/C
 import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
 import { onRowSelectHidden } from '@bento-core/paginated-table/dist/table/state/Actions';
 import ConfirmationModal from '../../../../components/CohortModal/components/shared/ConfirmationModal';
+import { COHORT_LIMIT_MESSAGE, COHORT_LIMIT_TOAST_OPTIONS, hasReachedCohortLimit } from '../../../../components/CohortSelectorState/cohortLimit';
 
 const ButtonContainer = styled.div`
   position: relative;
@@ -91,23 +92,6 @@ export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohorts
     dispatch(onRowSelectHidden([]));
   }
 
-  // Checks if the created cohorts exceed the 20 cohort limit
-  const exceedLimitCreatedCohost = (hiddenCohortState) => {
-    let cohortStateCount = 0;
-
-    // Count the number of cohost
-    if (hiddenCohortState && typeof hiddenCohortState === 'object') {
-        cohortStateCount = Object.keys(hiddenCohortState).length;
-    }
-
-    // Return true if the cohort total would exceed 4, otherwise false
-    if (cohortStateCount >=  20) {
-        return true;
-    }
-
-    return false;
-  }
-
   // Checks if the selected participants for the new cohort exceed the 4000 participant limit
   const exceedLimitSelectedParticipant = (hiddenSelectedRows) => {
     let selectedRowsCount = 0;
@@ -135,10 +119,8 @@ export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohorts
           hiddenSelectedRows = []
         } = context;
 
-        // Check if the created cohorts exceed the 20 cohort limit
-        if (exceedLimitCreatedCohost(state)) {
-          // Show Popup notification if the cohort limit would be exceeded
-          setShowPopupMessage("You are not allowed to create more that 20 cohorts");
+        if (hasReachedCohortLimit(state)) {
+          Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
           return;
         }
 
@@ -158,7 +140,13 @@ export const CustomButton = ({ label, backgroundColor, type, hoverColor, cohorts
             triggerNotification(count);
             setShowCohortModal(true);
           },
-          (error) => alert(error)
+          (error) => {
+            if (error && error.message === COHORT_LIMIT_MESSAGE) {
+              Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+              return;
+            }
+            alert(error);
+          }
         ));
       }
 
