@@ -13,6 +13,8 @@ import DEFAULT_CONFIG from '../../config';
 import { confirmationTypes } from '../shared/ConfirmationModal';
 import CohortListItem from './components/CohortListItem';
 import { TOOLTIP_MESSAGES } from '../../../../bento/cohortModalData';
+import { useGlobal } from '../../../../components/Global/GlobalProvider';
+import { COHORT_LIMIT_MESSAGE, COHORT_LIMIT_TOAST_OPTIONS, hasReachedCohortLimit, MAX_COHORT_COUNT } from '../../../../components/CohortSelectorState/cohortLimit';
 
 /**
  * Helper function to escape special regex characters in a string
@@ -34,6 +36,7 @@ const CohortList = (props) => {
     } = props;
 
     const { state, dispatch } = useContext(CohortStateContext);
+    const { Notification } = useGlobal();
     const {
         selectedCohort,
         setSelectedCohort,
@@ -69,6 +72,11 @@ const CohortList = (props) => {
     const handleDuplicateCohort = useCallback((cohortId) => {
         const cohortToDuplicate = state[cohortId];
         if (!cohortToDuplicate) return;
+
+        if (hasReachedCohortLimit(state)) {
+            Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+            return;
+        }
 
         // Extract the base name by removing existing copy suffixes
         let baseName = cohortToDuplicate.cohortName;
@@ -116,10 +124,14 @@ const CohortList = (props) => {
                 setSelectedCohort(normalizedCohortId);
             },
             (error) => {
+                if (error && error.message === COHORT_LIMIT_MESSAGE) {
+                    Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+                    return;
+                }
                 showAlert('error', `Failed to duplicate cohort: ${error.message}`);
             }
         ));
-    }, [state, dispatch, showAlert, setSelectedCohort]);
+    }, [state, dispatch, showAlert, setSelectedCohort, Notification]);
 
     const handleDeleteAllClick = useCallback(() => {
         setConfirmModalProps({
@@ -204,7 +216,7 @@ const CohortList = (props) => {
 
     const isAtCohortLimit = useMemo(() => {
         const pendingCount = pendingNewCohort && !state[pendingNewCohort.cohortId] ? 1 : 0;
-        return Object.keys(state).length + pendingCount >= 20;
+        return Object.keys(state).length + pendingCount >= MAX_COHORT_COUNT;
     }, [state, pendingNewCohort]);
 
     // Handle empty state - close modal when no cohorts and no draft exist
@@ -248,7 +260,7 @@ const CohortList = (props) => {
         <div className={classes.cohortListSection}>
                 <div className={classes.cohortListHeading}>
                     <span>
-                        {listHeading} ({cohortOrderedList.length}/20)
+                        {listHeading} ({cohortOrderedList.length}/{MAX_COHORT_COUNT})
                     </span>
                     <span>
                         <ToolTip title={TOOLTIP_MESSAGES.removeAllCohorts} placement="top-end" arrow>

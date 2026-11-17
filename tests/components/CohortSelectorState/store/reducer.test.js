@@ -107,6 +107,30 @@ describe('CohortSelectorState reducer', () => {
       expect(error).toHaveBeenCalledWith(expect.any(Error));
     });
 
+    it('should reject a new cohort when 20 cohorts already exist', () => {
+      const error = jest.fn();
+      const seeded = {};
+      for (let index = 0; index < 20; index += 1) {
+        const cohortId = `cohort-${index}`;
+        seeded[cohortId] = buildCohort(cohortId);
+      }
+
+      const next = reducer(seeded, {
+        type: actionTypes.CREATE_NEW_COHORT,
+        payload: {
+          cohortId: 'cohort-extra',
+          participants: [validParticipant],
+          error,
+        },
+      });
+
+      expect(next).toBe(seeded);
+      expect(Object.keys(next)).toHaveLength(20);
+      expect(error).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'You have reached the max capacity of 20 cohorts.',
+      }));
+    });
+
     it('should call error when participant data is invalid', () => {
       const error = jest.fn();
       const next = reducer(initialState, {

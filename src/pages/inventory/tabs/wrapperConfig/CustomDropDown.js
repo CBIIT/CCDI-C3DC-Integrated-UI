@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { onAddParticipantsToCohort } from '../../../../components/CohortSelectorState/store/action';
 import { onCreateNewCohort } from '../../../../components/CohortSelectorState/store/action';
 import { CohortStateContext } from '../../../../components/CohortSelectorState/CohortStateContext';
+import { COHORT_LIMIT_MESSAGE, COHORT_LIMIT_TOAST_OPTIONS, hasReachedCohortLimit } from '../../../../components/CohortSelectorState/cohortLimit';
 import { CohortModalContext } from '../../../../components/CohortModal/CohortModalContext';
 import { useGlobal } from '../../../../components/Global/GlobalProvider';
 import client from "../../../../utils/graphqlClient"
@@ -277,7 +278,7 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
     }
 
   };
-  const { dispatch } = useContext(CohortStateContext);
+  const { dispatch, state } = useContext(CohortStateContext);
   const { context } = tableContext;
   const {
     hiddenSelectedRows = [],
@@ -363,6 +364,10 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
       }
 
       let participantCount = null;
+      if (hasReachedCohortLimit(state)) {
+        Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+        return;
+      }
       clearSelection();
       dispatch(onCreateNewCohort(
         "",
@@ -372,7 +377,11 @@ const CustomDropDownComponent = ({ options, label, isHidden, backgroundColor, ty
           participantCount = count;
         },
         (error) => {
-        setWarningMessage(error.toString().replace("Error:",""));
+          if (error && error.message === COHORT_LIMIT_MESSAGE) {
+            Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
+            return;
+          }
+          setWarningMessage(error.toString().replace("Error:",""));
         }
       ));
 

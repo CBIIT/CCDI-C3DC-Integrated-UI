@@ -10,6 +10,7 @@ import NavigateAwayModal from './components/navigateAwayModal';
 import { CohortModalContext } from "../../components/CohortModal/CohortModalContext";
 import CohortModal from "../../components/CohortModal/CohortModal";
 import { buildPendingNewCohortFromRowData } from "../../components/CohortModal/pendingCohortUtils";
+import { COHORT_LIMIT_MESSAGE, COHORT_LIMIT_TOAST_OPTIONS, hasReachedCohortLimit } from "../../components/CohortSelectorState/cohortLimit";
 import Alert from '@material-ui/lab/Alert';
 import { useGlobal } from "../../components/Global/GlobalProvider";
 import questionIcon from "../../assets/icons/Question_icon_2.svg";
@@ -238,8 +239,8 @@ export const CohortAnalyzer = () => {
             return;
         }
 
-        if (Object.keys(state || {}).length >= 20) {
-            setWarningMessage('Cannot create a new cohort. You have reached the maximum limit of 20 cohorts.');
+        if (hasReachedCohortLimit(state)) {
+            Notification.show(COHORT_LIMIT_MESSAGE, 5000, COHORT_LIMIT_TOAST_OPTIONS);
             return;
         }
 

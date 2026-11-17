@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { COHORT_LIMIT_MESSAGE, hasReachedCohortLimit } from "../cohortLimit";
 
 export const initialState = {
 };
@@ -50,6 +51,10 @@ const isValidCohort = (cohort) => {
 
 const createNewCohort = (state, payload) => {
   let { cohortId, cohortName, participants, cohortDescription = '' } = payload;
+
+  if (hasReachedCohortLimit(state)) {
+    throw new Error(COHORT_LIMIT_MESSAGE);
+  }
 
   // If no cohortId is provided, default to "New Cohort"
   if (!cohortId) {
