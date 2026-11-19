@@ -70,30 +70,31 @@ const CartContainer = styled.div`
 
   .cartCounter2Wrapper {
     margin-top: 6px;
-    margin-left: 12px;
+    margin-left: 4px;
   }
 
   .cartCounter2 {
     height: 15px;
     font-size: 11px;
     line-height: 16px;
-    min-width: 17px;
+    min-width: 43px;
     text-align: center;
     font-weight: 600;
     background: #24415C;
     border-radius: 5px;
-    margin: 2px 6px 0 -19px;
-    padding-left: 3px;
+    margin: 2px 8px 0 -19px;
+    padding-left: 7px;
   }
 
   .cartLabel {
     height: 14px;
-    min-width: 16px;
+    min-width: 37px;
     color: #585C65;
     font-weight: 600;
     letter-spacing: 0.8px;
     text-align: start;
     font-size: 12px;
+    margin: 0 0 0 -4px;
   }
 `;
 

@@ -12,7 +12,7 @@ const LogoArea = styled.div`
     }
 
     .logoContainer {
-      margin-top: 20px;
+      margin-top: 28px;
     }
 
     .imgContainer {
