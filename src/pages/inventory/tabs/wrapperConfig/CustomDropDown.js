@@ -21,8 +21,9 @@ const DropdownContainer = styled.div`
   position: relative;
   margin-top: 10px;
   display: inline-block;
-  width: 200px;
-  margin-left: 20px;
+  width: 189px;
+  margin-left: 19px;
+  margin-right: 4px;
   margin-bottom: 10px;
   top: -6px;
 `;

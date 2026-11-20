@@ -4,7 +4,9 @@ export const customTheme = {
       paddingTop: '5px',
       '& img': {
         position:'relative',
-        top: '-10px',
+        top: '-14px',
+        width: '10px',
+        height: '10px',
       },
       '&.container_header': {
         textAlign: 'right',
@@ -36,8 +38,8 @@ export const customTheme = {
         '& img': {
           position:'relative',
           top: '8px',
-          width: '13px',
-          height: '13px',
+          width: '10px',
+          height: '10px',
         },
       },
       '&.container_footer_last': {
