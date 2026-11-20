@@ -126,8 +126,8 @@ const theme = {
     MuiTypography: {
       root: {
         '&.diagnosisSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -136,8 +136,8 @@ const theme = {
 
         },
         '&.geneticanalysisSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -145,8 +145,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.demographicsSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -155,8 +155,8 @@ const theme = {
 
         },
         '&.treatmentSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -165,8 +165,8 @@ const theme = {
 
         },
         '&.treatmentresponseSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -174,8 +174,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.survivalSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -183,8 +183,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.samplesSubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -192,8 +192,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.datacategorySubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -201,8 +201,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.studySubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',
@@ -210,8 +210,8 @@ const theme = {
           fontWeight: '600',
         },
         '&.sequencinglibrarySubjects': {
-          color: '#325A67',
-          backgroundColor: '#CEECEB',
+          color: '#504343',
+          backgroundColor: '#D8D8D8',
           padding: '1px 2px',
           fontSize: '11px',
           fontFamily: 'Nunito',

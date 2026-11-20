@@ -114,7 +114,7 @@ const Knob = styled.span`
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #6b46c1;
+  background: #2A6E93;
   transition: transform 0.2s ease;
   transform: translateX(${(p) => (p.$files ? `${KNOB_TRAVEL_PX}px` : '0')});
   pointer-events: none;

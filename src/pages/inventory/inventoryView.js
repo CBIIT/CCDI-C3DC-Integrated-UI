@@ -307,7 +307,6 @@ const Inventory = ({
                 {sectionList.map((category, idx) => {
                   return (
                     <React.Fragment key={category}>
-                      <Divider className={`${classes.divider} divider${idx}`} />
                       <li onClick={() => handleCategoryClick(idx)}>
                         <div className={classes.categoryContainer}>
                           <div className={classes.categoryTitleContainer}>
@@ -346,6 +345,7 @@ const Inventory = ({
                           )}
                         </div>
                       </li>
+                      <Divider className={`${classes.divider} divider${idx}`} />
                     </React.Fragment>
                   );
                 })}
