@@ -12,16 +12,17 @@ const UserNotesButtonContainer = styled.div`
     background-color: #337478;
     .buttonContainer {
         display: flex;
-        margin-left: 6px;
-        padding-top: 10px;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12.5px 0;
     }
 
     .buttonText {
         color: #ffffff;
-        font-weight: 400;
+        font-family: "Nunito";
+        font-weight: 600;
         font-size: 14px;
-        line-height: 30px;
-        margin-left: 8px;
+        line-height: 8px;
     }
 `;
 

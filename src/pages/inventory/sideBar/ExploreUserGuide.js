@@ -11,16 +11,18 @@ const UseGuideButtonContainer = styled.div`
 
   .buttonContainer {
     display: flex;
-    margin-left: 6px;
-    padding-top: 10px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12.5px 0;
   }
 
   .buttonText {
     color: #ffffff;
-    font-weight: 400;
+    font-family: "Nunito";
     font-size: 14px;
-    line-height: 30px;
-    margin-left: 8px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 8px;
   }
 `;
 
