@@ -10,23 +10,25 @@ import ToolTip from '@bento-core/tool-tip';
 import helpIcon from '../../../assets/icons/Question_icon_2_white.svg';
 
 const KNOB_TRAVEL_PX = 24;
-const TRACK_W = 48;
-const TRACK_H = 24;
+const TRACK_W = 64;
+const TRACK_H = 33;
 
 const Root = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 98px 64px 72px;
   justify-content: center;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   width: 100%;
-  margin-top: 10px;
-  margin-bottom: 16px;
-  padding: 0 5px;
+  height: 52px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 6px;
 `;
 
 const LabelTextButton = styled.button`
   margin: 0;
-  padding: 4px 0 4px 3px;
+  padding: 0;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -34,7 +36,7 @@ const LabelTextButton = styled.button`
   text-align: left;
 
   &:focus-visible {
-    outline: 2px solid #2A6E93;
+    outline: 2px solid #5d53f6;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -43,7 +45,7 @@ const LabelTextButton = styled.button`
 const LabelRow = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 6px;
+  justify-content: space-between;
 `;
 
 const LabelText = styled.span`
@@ -79,8 +81,8 @@ const HelpIconButton = styled.button`
 `;
 
 const HelpIconImg = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   display: block;
   color: #ffffff;
   &:hover {
@@ -107,10 +109,10 @@ const Track = styled.div`
 
 const Knob = styled.span`
   position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 20px;
-  height: 20px;
+  top: 3px;
+  left: 6.5px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background: #6b46c1;
   transition: transform 0.2s ease;
