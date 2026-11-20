@@ -131,7 +131,9 @@ const WidgetView = ({
                             alignItems: 'center',
                           }}
                         >
-                          <Typography className={classes.widgetTitle}>
+                          <Typography 
+                            weight="medium"
+                            className={classes.widgetTitle}>
                             {widget.title}
                             {datasetLength > WIDGET_DATASET_LIMIT && widget.title !== 'Study' && (
                               <ToolTipIconView
@@ -180,7 +182,6 @@ const WidgetView = ({
         </Grid>
       </CustomCollapse>
       {collapse && <div className={classes.dashboardDividerTop} />}
-      {collapse && <div className={classes.dashboardDivider} />}
     </>
   );
 };

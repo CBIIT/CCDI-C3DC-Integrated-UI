@@ -2,10 +2,6 @@ const styles = (theme) => ({
   dashboardContainer: {
     backgroundColor: '#FFFFFF',
   },
-  dashboardDivider: {
-    height: 16,
-    backgroundColor: '#E2E7EC',
-  },
   dashboardDividerTop: {
     height: 16,
     backgroundColor: theme.palette.widgetBackground.main,
@@ -24,9 +20,12 @@ const styles = (theme) => ({
     background: theme.palette.widgetBackground.main,
   },
   widgetTitle: {
-    fontSize: '19px !important',
-    fontWeight: '500',
     fontFamily: 'Lato',
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: '19px !important',
+    lineHeight: '14px',
+    letterSpacing: '0.076px',
     color: theme.palette.text.primary,
     textAlign: "start",
     width: "100%",
