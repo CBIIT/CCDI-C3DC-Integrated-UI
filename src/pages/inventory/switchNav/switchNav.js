@@ -17,7 +17,7 @@ const Root = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   width: 100%;
   margin-top: 10px;
   margin-bottom: 16px;
@@ -26,7 +26,7 @@ const Root = styled.div`
 
 const LabelTextButton = styled.button`
   margin: 0;
-  padding: 4px 0 4px 6px;
+  padding: 4px 0 4px 3px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -34,7 +34,7 @@ const LabelTextButton = styled.button`
   text-align: left;
 
   &:focus-visible {
-    outline: 2px solid #5d53f6;
+    outline: 2px solid #2A6E93;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -48,12 +48,15 @@ const LabelRow = styled.div`
 
 const LabelText = styled.span`
   display: block;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.0color
+  font-family: Poppins;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0;
   cursor: pointer;
   color: ${(p) => (p.$active ? '#ffffff' : '#dddddd')};
-  text-transform: uppercase;
   transition: color 0.2s ease;
 `;
 
