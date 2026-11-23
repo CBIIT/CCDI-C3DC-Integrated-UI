@@ -11,8 +11,8 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" npm set progress=false
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm ci --legacy-peer-deps
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build --silent
 
-FROM nginx:1.30.5-alpine3.24-slim AS fnl_base_image
-RUN apk add --no-cache --upgrade ca-certificates 'busybox>=1.37.0-r31' \
+FROM nginx:1.30.7-alpine-slim AS fnl_base_image
+RUN apk add --no-cache --upgrade ca-certificates 'busybox>=1.37.0-r31' 'zlib>=1.4-r0' \
 	&& update-ca-certificates
 
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
