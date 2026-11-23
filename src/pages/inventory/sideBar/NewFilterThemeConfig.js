@@ -40,64 +40,64 @@ const theme = {
     MuiListItem: {
       root: {
         '&.diagnosisCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.diagnosisCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.geneticanalysisCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.geneticanalysisCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.demographicsCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.demographicsCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.treatmentCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.treatmentCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.treatmentresponseCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.treatmentresponseCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.survivalCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.survivalCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.samplesCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.samplesCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.datacategoryCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.datacategoryCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.studyCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.studyCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
         '&.sequencinglibraryCheckedEven': {
-          backgroundColor: '#E4F6F5',
+          backgroundColor: '#EFF3F1',
         },
         '&.sequencinglibraryCheckedOdd': {
-          backgroundColor: '#EAFFFE',
+          backgroundColor: '#F9FAFA',
         },
       },
     },
