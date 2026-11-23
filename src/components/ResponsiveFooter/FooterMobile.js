@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import FooterData from '../../bento/globalFooterData';
 const FooterStyled = styled.footer`
-  background-color: #1F4571;
+  background-color: #1B496E;
   bottom: 0;
   width: 100%;
   z-index: 10;
@@ -125,7 +125,7 @@ const FooterLinksContainer = styled.div`
     flex-direction: row;
     vertical-align: middle;
     text-align: left;
-    background-color: #1F4571;
+    background-color: #1B496E;
     width: 100%;
     font-family: 'Open Sans';
     font-style: normal;
@@ -172,7 +172,7 @@ const FooterLinksContainer = styled.div`
 `;
 
 const BottomFooter = styled.div`
-  background-color: #122F4B;
+ background: #14315C;
 
   span {
     display: block;
