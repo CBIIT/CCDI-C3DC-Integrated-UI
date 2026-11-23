@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import FooterData from '../../bento/globalFooterData';
 
 const FooterStyled = styled.footer`
-  background-color: #1F4571;
+  background-color: #1B496E;
   border-top: 1px solid #6C727B;
   bottom: 0;
   width: 100%;
@@ -129,7 +129,7 @@ const FooterLinksContainer = styled.div`
 `;
 
 const BottomFooter = styled.div`
-  background-color: #122F4B;
+ background: #14315C;
 
   span {
     display: block;

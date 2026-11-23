@@ -45,10 +45,6 @@ const LiSection = styled.li`
   text-align: center;
   transition:all 0.3s ease-in-out;
 
-  & + & {
-    margin-left: -8px;
-  }
-
   a {
     color: #585C65;
     text-decoration: none;
@@ -63,7 +59,7 @@ const LiSection = styled.li`
     line-height: 40px;
     letter-spacing: normal;
     text-decoration: none;
-    margin: 0 5px;
+    margin: 0 13px 0 5px;
     padding: 0 15px;
     user-select:none;
   }
@@ -157,7 +153,7 @@ const LiSection = styled.li`
     line-height: 40px;
     letter-spacing: normal;
     text-decoration: none;
-    margin: 0 5px;
+    margin: 0 13px 0 5px;
     padding: 0 15px;
     user-select:none;
     background: #1F4671;
