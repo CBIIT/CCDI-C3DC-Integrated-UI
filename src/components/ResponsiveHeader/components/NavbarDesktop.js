@@ -73,7 +73,6 @@ const LiSection = styled.li`
   }
 
   .navText {
-    // padding: 0 10px;
     border-bottom: 4px solid transparent;
   }
 
