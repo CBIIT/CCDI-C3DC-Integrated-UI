@@ -1,5 +1,5 @@
 import latestRelease from '../assets/releaseNotes/C3DC_Release_Notes_R11_V2.pdf';
-import userGuide from '../assets/releaseNotes/C3DC_User_Guide_R9_V2.pdf';
+import userGuide from '../assets/releaseNotes/C3DC_User_Guide_R10_V2.pdf';
 
 export const aboutData = {
   aboutHeaderText:
