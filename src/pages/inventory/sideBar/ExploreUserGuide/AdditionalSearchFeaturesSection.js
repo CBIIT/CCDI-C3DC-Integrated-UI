@@ -1,5 +1,5 @@
 import React from 'react';
-import figure16 from '../../../../assets/explore/Figure16.jpg';
+import figure16 from '../../../../assets/explore/Figure16.webp';
 
 const AdditionalSearchFeaturesSection = ({ classes }) => (
   <div>

@@ -1,9 +1,9 @@
 import React from 'react';
-import figure2 from '../../../../assets/explore/Figure2.jpg';
-import figure3 from '../../../../assets/explore/Figure3.jpg';
-import figure4 from '../../../../assets/explore/Figure4.jpg';
-import figure5 from '../../../../assets/explore/Figure5.jpg';
-import figure6 from '../../../../assets/explore/Figure6.jpg';
+import figure2 from '../../../../assets/explore/Figure2.webp';
+import figure3 from '../../../../assets/explore/Figure3.webp';
+import figure4 from '../../../../assets/explore/Figure4.webp';
+import figure5 from '../../../../assets/explore/Figure5.webp';
+import figure6 from '../../../../assets/explore/Figure6.webp';
 
 const FindDataSection = ({ classes }) => (
   <div>
@@ -15,7 +15,7 @@ const FindDataSection = ({ classes }) => (
     </div>
     <div className={classes.contentContainer}>
       <p>
-        The CCDI Explore Dashboard provides row-level metadata for CCDI
+        The CCDI Hub Explore Dashboard provides row-level metadata for CCDI
         study participants (Explore Participants page) and their data objects
         (Explore Files) for review with a filtered search, select
         visualizations, and an exportable table of results. To find and filter
@@ -81,25 +81,9 @@ const FindDataSection = ({ classes }) => (
               study.
             </li>
             <li>
-              “Diagnosis”: Age, anatomic site, classification, and other
-              attributes of each participant’s diagnosis are included here.
-            </li>
-            <li>
               “Genetic Analysis”: Analysis ID, Gene Symbol(s) of implicated
               genes, and reported status and significance are part of the
               genetic analysis summary.
-            </li>
-            <li>
-              “Treatments”: This tab includes treatment IDs, age at start and
-              end of treatments, and treatment type and agent.
-            </li>
-            <li>
-              “Treatment Responses”: This tab includes response ID, the
-              response, and the age at which a response was recorded.
-            </li>
-            <li>
-              “Survival”: This tab includes survival ID, last known survival
-              status, and age at last known survival status.
             </li>
             <li>
               “Samples”: Samples available from participants within the Explore
@@ -139,9 +123,8 @@ const FindDataSection = ({ classes }) => (
         </li>
 
         <li>
-          Users can download the table contents of the Participants, Studies,
-          Diagnosis, Genetic Analyses, Treatments, Treatment Responses,
-          Survival, and Sample tables by selecting the “Download Data” button
+          Users can download the contents of the Participants, Studies, Genetic
+          Analyses, and Samples tables by selecting the "Download Data" button
           under the table tab headers (Figure 5). Users can download filtered
           data in CSV with high-level metadata or JSON format with comprehensive
           clinical metadata (including CPI synonyms).
@@ -176,19 +159,27 @@ const FindDataSection = ({ classes }) => (
       </ul>
 
       <p>
-        Similarly, users can toggle to <strong>Explore Files</strong> and apply
-        the same types of filters on the corresponding file data. Row-level data
-        are limited to a single “Files” view, including various annotations to
-        describe that given file. Files may belong to a study and may be
-        associated with one or more participants or samples. Files may also be
-        of many types, including sequencing, proteomics, imaging files, etc.
-        File paths to images are provided in the downloadable study manifest
-        described in the{" "}
-        <a href="#Downloading Metadata from the Studies tab">
-          Downloading Metadata from the Studies table
-        </a>{" "}
-        section. File attributes, including but not limited to file name, can be
-        searched in this tab.
+        Switch to <strong>Explore Files</strong> to filter and browse available
+        data in two tabs:
+      </p>
+      <ul>
+        <li>
+          Files: View individual files and their associated study, participant,
+          and sample metadata.
+        </li>
+        <li>
+          Imaging Data: Browse pathology DICOM image series and click “View
+          Pathology Study/Series” in the IDC Histopathology Viewer column to open
+          the series in the Imaging Data Commons (IDC) viewer in a new browser
+          tab.
+        </li>
+      </ul>
+      <p>
+        The Imaging Data table and tab count update with your filters. Each row
+        represents a unique image series (Study UID/Series UID pair), not an
+        individual file. Only series with an available IDC viewer link appear in
+        this tab; pathology DICOM files without a viewer link remain in the Files
+        tab.
       </p>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import figure11 from '../../../../assets/explore/Figure11.jpg';
-import figure12 from '../../../../assets/explore/Figure12.jpg';
+import figure11 from '../../../../assets/explore/Figure11.webp';
+import figure12 from '../../../../assets/explore/Figure12.webp';
 
 const CohortSection = ({ classes }) => (
   <div>

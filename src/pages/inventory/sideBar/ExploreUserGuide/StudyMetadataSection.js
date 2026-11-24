@@ -1,6 +1,6 @@
 import React from 'react';
-import figure7 from '../../../../assets/explore/Figure7.jpg';
-import figure8 from '../../../../assets/explore/Figure8.jpg';
+import figure7 from '../../../../assets/explore/Figure7.webp';
+import figure8 from '../../../../assets/explore/Figure8.webp';
 
 const StudyMetadataSection = ({ classes }) => (
   <div>
