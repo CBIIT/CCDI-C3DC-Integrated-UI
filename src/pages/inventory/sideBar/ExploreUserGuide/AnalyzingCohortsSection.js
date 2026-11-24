@@ -1,7 +1,7 @@
 import React from 'react';
-import figure13 from '../../../../assets/explore/Figure13.jpg';
-import figure14 from '../../../../assets/explore/Figure14.jpg';
-import figure15 from '../../../../assets/explore/Figure15.jpg';
+import figure13 from '../../../../assets/explore/Figure13.webp';
+import figure14 from '../../../../assets/explore/Figure14.webp';
+import figure15 from '../../../../assets/explore/Figure15.webp';
 
 const AnalyzingCohortsSection = ({ classes }) => (
   <div>
@@ -37,7 +37,7 @@ const AnalyzingCohortsSection = ({ classes }) => (
         Users can toggle comparisons using radio buttons to explore comparisons
         between participant IDs, diagnoses and treatments. Users may export
         results in CSV or JSON formats or export cohort selections into the C3DC
-        Explore Dashboard or CCDI Explore Dashboard for additional analysis
+        Explore Dashboard or CCDI Hub Explore Dashboard for additional analysis
         or to find files associated with cohort.
       </p>
 

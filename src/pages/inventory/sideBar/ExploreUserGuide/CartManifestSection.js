@@ -1,6 +1,6 @@
 import React from 'react';
-import figure9 from '../../../../assets/explore/Figure9.jpg';
-import figure10 from '../../../../assets/explore/Figure10.jpg';
+import figure9 from '../../../../assets/explore/Figure9.webp';
+import figure10 from '../../../../assets/explore/Figure10.webp';
 
 const CartManifestSection = ({ classes }) => (
   <div>
@@ -46,7 +46,7 @@ const CartManifestSection = ({ classes }) => (
             />
           </div>
           <div className={classes.figureText}>
-            Figure 9: CCDI menu bar with box highlighting the My Files
+            Figure 9: CCDI Hub menu bar with box highlighting the My Files
             shopping cart
           </div>
         </li>

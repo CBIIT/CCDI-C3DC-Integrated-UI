@@ -1,5 +1,5 @@
 import React from 'react';
-import figure1 from '../../../../assets/explore/Figure1.jpg';
+import figure1 from '../../../../assets/explore/Figure1.webp';
 
 const OverviewSection = ({ classes }) => (
   <>
