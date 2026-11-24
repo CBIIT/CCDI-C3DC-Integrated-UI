@@ -186,8 +186,8 @@ const styles = () => {
     },
     downloadButton: {
       ...baseButtonStyle,
-      backgroundColor: "#4F5D69",
-      border: "1.25px solid #4F5D69",
+      backgroundColor: "#556469",
+      border: "1.25px solid #73A9C7",
       width: "200px",
       justifyContent: "space-between",
       lineHeight: "13px !important",

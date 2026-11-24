@@ -189,6 +189,8 @@ const styles = () => ({
         backgroundColor: '#FFFFFF',
         borderTop: '2px solid #8A7F7C',
         borderBottom: '1px solid #909090',
+        borderLeft: '0.5px solid #8B98AF',
+        borderRight: '0.5px solid #8B98AF',
     },
     headerColumn: {
         display: 'flex',
@@ -331,10 +333,10 @@ const styles = () => ({
             letterSpacing: '-0.32px',
         },
         '&:nth-child(odd)': {
-            backgroundColor: '#D9DFE6',
+            backgroundColor: '#EFF2F6',
         },
         '&:nth-child(even)': {
-            backgroundColor: '#F8F8F8',
+            backgroundColor: '#FFFFFF',
         },
     },
 });
